@@ -1,0 +1,663 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:Investrend/component/component_creator.dart';
+import 'package:Investrend/component/image_picker_component.dart';
+import 'package:Investrend/objects/data_object.dart';
+import 'package:Investrend/objects/dynamic_ui.dart';
+import 'package:Investrend/objects/riverpod_change_notifier.dart';
+import 'package:Investrend/utils/error_handling_util.dart';
+import 'package:Investrend/utils/investrend_theme.dart';
+import 'package:Investrend/utils/string_utils.dart';
+import 'package:dio/dio.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart' as riverpod;
+import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
+import 'package:crypto/crypto.dart';
+import 'package:skeleton_text/skeleton_text.dart';
+
+class ScreenRegisterRDN extends StatefulWidget {
+  @override
+  _ScreenRegisterRDNState createState() => _ScreenRegisterRDNViewState();
+}
+
+abstract class _ScreenRegisterRDNState extends State<ScreenRegisterRDN> {
+  ScreenRegisterRDNViewModel viewModel = ScreenRegisterRDNViewModel();
+  String endpointUrl = "http://olt1.buanacapital.com:8899/oa_form.php";
+
+  @override
+  void initState() {
+    super.initState();
+    getToken(context).then((value) {
+      getUi();
+    });
+  }
+
+  Future<void> getToken(BuildContext context) async {
+    debugPrint("Register RDN Create Device Id");
+    viewModel.startLoading();
+    Token token = Token('', '');
+
+    final container = riverpod.ProviderContainer();
+
+    MyDevice myDevice = MyDevice();
+    await myDevice.load();
+    debugPrint("Register RDN Create Device Id : " + myDevice.unique_id);
+    String uniqId = myDevice.unique_id;
+    String devtoken = md5.convert(utf8.encode("INV2201$uniqId")).toString();
+
+    debugPrint("================================= RizkyP " +
+        uniqId +
+        "====" +
+        devtoken);
+
+    if (StringUtils.isEmtpy(uniqId) || StringUtils.isEmtpy(devtoken)) {
+      SnackBar(
+        content: Text("Error"),
+      );
+    }
+
+    // String userId = container.read(dataHolderChangeNotifier).user.username;
+    // debugPrint("USER ID RDN INI = " + userId);
+
+    bool hasToken = false;
+    try {
+      bool tkn = await token.load();
+      hasToken = !StringUtils.isEmtpy(token.access_token) &&
+          !StringUtils.isEmtpy(token.refresh_token);
+      debugPrint('LOGIN LOAD FIRST TIME TOKEN.LOAD HASTOKEN : $hasToken');
+      debugPrint("${token.access_token}");
+    } catch (e) {
+      print(e);
+    }
+
+    if (uniqId == "") {
+      debugPrint("Register RDN Error On Create Device ID");
+      viewModel.stopLoading(isError: true, message: "error on device load");
+    } else {
+      debugPrint(" ");
+      debugPrint(" ");
+      debugPrint("===============================================");
+      debugPrint("Register RDN Device Id Created : $uniqId");
+      debugPrint("Register RDN Request Token");
+      debugPrint("===============================================");
+      debugPrint(" ");
+      debugPrint(" ");
+      debugPrint("===============================================");
+      debugPrint("action : registration");
+      debugPrint("devid : " + uniqId);
+      debugPrint("devtoken : " +
+          md5.convert(utf8.encode("INV2201$uniqId")).toString());
+      debugPrint("userid : " + "rizkypebrian");
+      debugPrint("usertoken : " + token.access_token);
+      debugPrint("===============================================");
+      debugPrint(" ");
+      debugPrint(" ");
+      return http.post(
+        Uri.parse(endpointUrl),
+        body: {
+          "action": "registration",
+          "devid": uniqId,
+          "devtoken": devtoken,
+          "userid": "rizkypebrian",
+          "usertoken": token.access_token,
+        },
+      ).then(
+        (token) {
+          viewModel.oaid = json.decode(token.body)["oaid"];
+          viewModel.oatoken = json.decode(token.body)["oatoken"];
+          return;
+        },
+      );
+    }
+
+    return;
+    /*
+    debugPrint("Register RDN Create Device Id");
+    viewModel.startLoading();
+    return MyDevice().getUniqId().then(
+      (uniqId) {
+        if (uniqId == "") {
+          debugPrint("Register RDN Error On Create Device ID");
+          viewModel.stopLoading(isError: true, message: "error on device load");
+        } else {
+          debugPrint("Register RDN Device Id Created : $uniqId");
+          debugPrint("Register RDN Request Token");
+          return http.post(Uri.parse(endpointUrl), body: {
+            "action": "registration",
+            "devid": uniqId,
+            "devtoken": md5.convert(utf8.encode("INV2201$uniqId")).toString(),
+          }, headers: {
+            "Accept": "application/json"
+          }).then(
+            (token) {
+              viewModel.oaid = json.decode(token.body)["oaid"];
+              viewModel.oatoken = json.decode(token.body)["oatoken"];
+              return;
+            },
+          );
+        }
+      },
+    ).catchError(
+      (e) {
+        viewModel.stopLoading(
+          isError: true,
+          message: ErrorHandlingUtil.handleApiError(e),
+        );
+      },
+    ).timeout(
+      Duration(minutes: 1),
+      onTimeout: () {
+        viewModel.stopLoading(
+          isError: true,
+          message: "Request Timeout",
+        );
+      },
+    );
+     */
+  }
+
+  // Future<void> getToken() {
+  //   debugPrint("Register RDN Create Device Id");
+  //   viewModel.startLoading();
+  //   return MyDevice().getUniqId().then(
+  //     (uniqId) {
+  //       if (uniqId == "") {
+  //         debugPrint("Register RDN Error On Create Device ID");
+  //         viewModel.stopLoading(isError: true, message: "error on device load");
+  //       } else {
+  //         debugPrint("Register RDN Device Id Created : $uniqId");
+  //         debugPrint("Register RDN Request Token");
+  //         return http.post(Uri.parse(endpointUrl), body: {
+  //           "action": "registration",
+  //           "devid": uniqId,
+  //           "devtoken": md5.convert(utf8.encode("INV2201$uniqId")).toString(),
+  //         }, headers: {
+  //           "Accept": "application/json"
+  //         }).then(
+  //           (token) {
+  //             viewModel.oaid = json.decode(token.body)["oaid"];
+  //             viewModel.oatoken = json.decode(token.body)["oatoken"];
+  //             return;
+  //           },
+  //         );
+  //       }
+  //     },
+  //   ).catchError(
+  //     (e) {
+  //       viewModel.stopLoading(
+  //         isError: true,
+  //         message: ErrorHandlingUtil.handleApiError(e),
+  //       );
+  //     },
+  //   ).timeout(
+  //     Duration(minutes: 1),
+  //     onTimeout: () {
+  //       viewModel.stopLoading(
+  //         isError: true,
+  //         message: "Request Timeout",
+  //       );
+  //     },
+  //   );
+  // }
+
+  void getUi({
+    FormData data,
+    bool autoReCreate = true,
+    ValueChanged<DynamicUi> onGetNewUi,
+    Function(int, int) onSendProgress,
+    String headers: "application/json",
+  }) {
+    viewModel.startLoading();
+    data = data ?? FormData();
+    data.fields.addAll([
+      MapEntry("action", "registration"),
+      MapEntry("oaid", viewModel.oaid),
+      MapEntry("oatoken", viewModel.oatoken),
+    ]);
+    debugPrint("data send $data");
+    Future.delayed(Duration(seconds: 1), () {
+      Dio()
+          .post(
+        endpointUrl,
+        data: data,
+        onSendProgress: onSendProgress,
+        options: Options(
+          headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        ),
+      )
+          .then(
+        (form) {
+          if (form.statusCode != 200) {
+            debugPrint(
+                "Register RDN Error On Request form ${ErrorHandlingUtil.handleApiError(form)}");
+            viewModel.stopLoading(
+                isError: true, message: ErrorHandlingUtil.handleApiError(form));
+          } else {
+            debugPrint("Request RDN Request Form Success");
+            try {
+              var newUI = DynamicUi.fromJson(
+                json.decode(form.data),
+                onChanged: onFieldChanged,
+              );
+              if (newUI.lastpage != viewModel?.dynamicUi?.lastpage)
+                viewModel.scrollController.jumpTo(
+                    viewModel.scrollController.position.minScrollExtent);
+              if (autoReCreate == true) viewModel.dynamicUi = newUI;
+              if (onGetNewUi != null) onGetNewUi(newUI);
+              viewModel.stopLoading();
+              if (viewModel.dynamicUi.oamessage != null &&
+                  viewModel.dynamicUi.oamessage != "") {
+                showMessage(
+                  message: viewModel.dynamicUi.oamessage,
+                );
+              }
+              viewModel.commit();
+            } catch (e) {
+              viewModel.stopLoading();
+              showMessage(
+                height: MediaQuery.of(context).size.height / 2,
+                message: e.toString(),
+              );
+            }
+          }
+        },
+      ).catchError((onError) {
+        viewModel.stopLoading();
+        showMessage(
+          height: MediaQuery.of(context).size.height / 2,
+          message: ErrorHandlingUtil.handleApiError(onError),
+        );
+      });
+    });
+  }
+
+  Future<void> nextPage() async {
+    // if ([2, 5, 7].contains(viewModel.dynamicUi.lastpage)) {
+    //   viewModel.dynamicUi.lastpage++;
+    //   // // // showMessage();
+    //   viewModel.commit();
+    //   return;
+    // }
+    // var data = await collectData();
+    // getUi(
+    //   data: data,
+    // );
+    if (!validateMandatory()) {
+      showMessage(
+        message: "Harap isi seluruh kolom yang bertanda bintang",
+      );
+      return;
+    }
+    // else if (viewModel.dynamicUi.pages.first.page == 8) {
+    //   Navigator.pushNamed(context, '/');
+    // }
+    else {
+      var data = await collectData();
+      getUi(
+        data: data,
+      );
+    }
+  }
+
+  void showMessage({
+    String message,
+    double height,
+  }) {
+    showModalBottomSheet(
+        context: context,
+        builder: (ctx) {
+          return Container(
+            height: height ?? 250,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.all(5),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          height: 30,
+                        ),
+                        Icon(
+                          Icons.info_outline,
+                          size: 50,
+                          color: Theme.of(context).colorScheme.secondary,
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Expanded(
+                          child: Container(
+                            child: SingleChildScrollView(
+                              child: Text(
+                                "$message",
+                                style: InvestrendTheme.of(context).regular_w400,
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                Container(
+                  height: 45,
+                  width: double.infinity,
+                  child: ComponentCreator.roundedButton(
+                    context,
+                    'button_ok'.tr(),
+                    Theme.of(context).colorScheme.secondary,
+                    Theme.of(context).primaryColor,
+                    Theme.of(context).colorScheme.secondary,
+                    () {
+                      Navigator.of(context).pop();
+                    },
+                    radius: 0,
+                  ),
+                )
+              ],
+            ),
+          );
+        });
+  }
+
+  void prevPage() {
+    if (viewModel.dynamicUi.lastpage == 1) {
+      Navigator.of(context).pop();
+    } else {
+      viewModel.dynamicUi.lastpage--;
+      viewModel.commit();
+    }
+  }
+
+  bool validateMandatory() {
+    DynamicUIPage page = viewModel.dynamicUi.pages
+        .where((e) => e.page == viewModel.dynamicUi.lastpage)
+        .first;
+    List<DynamicUIField> form = page.form;
+    if (form
+            .where((e) =>
+                ((e.content == null || e.content == "") &&
+                    e.mandatory == true) &&
+                e.isShowUi(page) == true)
+            .toList()
+            .length >
+        0) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  Future<FormData> collectData() async {
+    FormData data = FormData();
+    List<DynamicUIField> form = viewModel.dynamicUi.pages
+        .where((e) => e.page == viewModel.dynamicUi.lastpage)
+        .first
+        .form;
+    for (var f in form) {
+      if (DynamicUIType.basicInput.contains(f.ui)) {
+        data.fields.add(
+          MapEntry(f.id, f.content.toString()),
+        );
+      } else if (DynamicUIType.checkBox == f.ui &&
+          (f.content != null && f.content != "")) {
+        data.fields.add(
+          MapEntry(f.id, (f.content as bool) == true ? "Y" : "N"),
+        );
+      } else if (DynamicUIType.datePicker == f.ui &&
+          (f.content != null && f.content != "")) {
+        data.fields.add(
+          MapEntry(f.id, (f.content as DateTime).toIso8601String()),
+        );
+      }
+      // else if (DynamicUIType.fileInput.contains(f.ui) &&
+      //     (f.content != null && f.content != "")) {
+      //   data.files.add(
+      //     MapEntry(
+      //       f.id,
+      //       await MultipartFile.fromFile(f.content),
+      //     ),
+      //   );
+      // }
+    }
+    data.fields.add(MapEntry("submitpage", "${viewModel.dynamicUi.lastpage}"));
+    return data;
+  }
+
+  Future<void> onFieldChanged(DynamicUIField field) async {
+    FormData data = FormData();
+    data.fields.add(MapEntry("submitpage", "${viewModel.dynamicUi.lastpage}"));
+    switch (field.ui) {
+      case DynamicUIType.upload:
+        data.files.add(
+          MapEntry(
+            field.id,
+            await MultipartFile.fromFile(field.content),
+          ),
+        );
+        getUi(
+            data: data,
+            autoReCreate: false,
+            onSendProgress: (uploaded, fileSize) {
+              debugPrint("Upload File Changed $uploaded/$fileSize");
+              if (field.controller is ImagePickerController) {
+                ImagePickerController ctrl = field.controller;
+                ctrl.onUploadProgress(uploaded, fileSize);
+              }
+            },
+            onGetNewUi: (ui) {
+              String status = (ui.pages
+                      .where((p) => p.page == viewModel.dynamicUi.lastpage)
+                      .first
+                      .form
+                      .where((f) => f.id == field.id)
+                      .first as UploadUI)
+                  .status;
+              print("upload status $status ");
+              (field as UploadUI).status = status;
+              (field as UploadUI).status = status;
+              if (field.controller is ImagePickerController) {
+                ImagePickerController ctrl = field.controller;
+                ctrl.setUploaded(status);
+              }
+            });
+        break;
+    }
+    viewModel.commit();
+  }
+}
+
+class _ScreenRegisterRDNViewState extends _ScreenRegisterRDNState {
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider.value(
+      value: super.viewModel,
+      child: Scaffold(
+        backgroundColor: Theme.of(context).backgroundColor,
+        appBar: appBar(),
+        body: SingleChildScrollView(
+          controller: viewModel.scrollController,
+          child: Container(
+            padding: EdgeInsets.all(15),
+            child: Column(
+              children: [
+                printPage(),
+              ],
+            ),
+          ),
+        ),
+        bottomNavigationBar: bottomNavigationBar(),
+      ),
+    );
+  }
+
+  //appbar
+  PreferredSizeWidget appBar() {
+    return AppBar(
+      backgroundColor: Theme.of(context).backgroundColor,
+      automaticallyImplyLeading: false,
+      // leading: Consumer<ScreenRegisterRDNViewModel>(
+      //   builder: (c, d, w) {
+      //     return d.isLoading == true
+      //         ? Center(
+      //             child: Padding(
+      //               padding: const EdgeInsets.only(left: 15),
+      //               child: skeletonLoading(height: 45),
+      //             ),
+      //           )
+      //     : IconButton(
+      //         icon: Image.asset('images/icons/action_back.png'),
+      //         onPressed: () {
+      //           if (viewModel.dynamicUi.lastpage > 0) {
+      //             print("masuk sini");
+      //             super.prevPage();
+      //           } else {
+      //             Navigator.of(context).pop();
+      //           }
+      //         },
+      //       );
+      //   },
+      // ),
+      title: getTitle(context),
+      centerTitle: true,
+      elevation: 0,
+    );
+  }
+
+  Widget getTitle(BuildContext context) {
+    return Container(
+      child: Consumer<ScreenRegisterRDNViewModel>(
+        builder: (c, d, w) {
+          if (d.dynamicUi != null) {
+            return Text(
+                d.dynamicUi.pages
+                    .where((e) => e.page == d.dynamicUi.lastpage)
+                    .first
+                    .title,
+                style: Theme.of(context).appBarTheme.titleTextStyle);
+          } else {
+            return skeletonLoading(height: 50);
+          }
+        },
+      ),
+    );
+  }
+
+  Widget printPage() {
+    return Container(
+      child: Consumer<ScreenRegisterRDNViewModel>(
+        builder: (c, d, w) {
+          if (d.dynamicUi != null) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: List.generate(
+                d.dynamicUi.pages
+                    .where((e) => e.page == d.dynamicUi.lastpage)
+                    .first
+                    .form
+                    .length,
+                (index) {
+                  return d.dynamicUi.pages
+                      .where((e) => e.page == d.dynamicUi.lastpage)
+                      .first
+                      .form[index]
+                      .onRecreate(() => viewModel.commit())
+                      .printUi(
+                        context,
+                        page: d.dynamicUi.pages
+                            .where((e) => e.page == d.dynamicUi.lastpage)
+                            .first,
+                      );
+                },
+              ),
+            );
+          } else {
+            return skeletonLoading(
+                height: MediaQuery.of(context).size.height - 50);
+          }
+        },
+      ),
+    );
+  }
+
+  Widget skeletonLoading({
+    double height,
+  }) {
+    return SkeletonAnimation(
+      child: Container(
+        height: height,
+        decoration: BoxDecoration(
+            color: Colors.grey[300],
+            borderRadius: const BorderRadius.all(Radius.circular(5))),
+      ),
+    );
+  }
+
+  Widget bottomNavigationBar() {
+    return Container(
+      //color: Colors.yellow,
+      width: double.maxFinite,
+      padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+      child: FractionallySizedBox(
+        widthFactor: 0.8,
+        child: Consumer<ScreenRegisterRDNViewModel>(
+          builder: (c, d, w) {
+            if (d.dynamicUi == null || d.isLoading == true)
+              return skeletonLoading(height: 45);
+            return ComponentCreator.roundedButton(
+              context,
+              'register_rdn_button_continue'.tr(),
+              Theme.of(context).colorScheme.secondary,
+              Theme.of(context).primaryColor,
+              Theme.of(context).colorScheme.secondary,
+              () {
+                if (viewModel.dynamicUi.lastpage <
+                    viewModel.dynamicUi.pages.length) {
+                  super.nextPage();
+                }
+              },
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class ScreenRegisterRDNViewModel extends ChangeNotifier {
+  String oaid;
+  String oatoken;
+  bool isLoading = false;
+  bool isError = false;
+  String message = "";
+  DynamicUi dynamicUi;
+  ScrollController scrollController = new ScrollController();
+  User user = User('', '', 0.0, 1, null, null, null, null, null, null, null, 0,
+      null, null, 0);
+
+  void startLoading() {
+    isLoading = true;
+    commit();
+  }
+
+  void stopLoading({
+    String message,
+    bool isError = false,
+  }) {
+    this.message = message;
+    this.isError = isError;
+    this.isLoading = false;
+    commit();
+  }
+
+  void commit() {
+    notifyListeners();
+  }
+}

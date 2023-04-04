@@ -1,0 +1,805 @@
+import 'package:Investrend/objects/data_object.dart';
+import 'package:Investrend/utils/string_utils.dart';
+import 'package:Investrend/utils/utils.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:xml/xml.dart';
+
+abstract class SerializeableIII {
+  String asPlain();
+
+  String identity();
+
+  //String serialize = '{identity:"Stock" data:"$plain"}';
+  static String tagIdentity = 'identity';
+  static String tagData = 'data';
+
+  String serialize() {
+    return '{identity:"' + identity() + '" data:"' + asPlain() + '" }';
+  }
+
+  // static List<String> unserialize(String serialize){
+  //   String identity = StringUtils.between(serialize, '$tagIdentity:"', '" ') ?? '';
+  //   String data = StringUtils.between(serialize, '$tagData:"', '" ') ?? '';
+  //   return [identity, data];
+  // }
+
+  static SerializeableIII unserialize(String serialize) {
+    String tag1 = tagIdentity + ":\"";
+    String tag2 = tagData + ":\"";
+    String tagEnd = "\" ";
+    String identity = StringUtils.between(serialize, tag1, tagEnd) ?? '';
+    String data = StringUtils.between(serialize, tag2, tagEnd) ?? '';
+
+    print('unserialize for identity : $identity  data : $data   $serialize');
+
+    if (StringUtils.equalsIgnoreCase(identity, 'Broker')) {
+      Broker broker = Broker.fromPlain(data);
+      return broker;
+    } else if (StringUtils.equalsIgnoreCase(identity, 'Stock')) {
+      Stock stock = Stock.fromPlain(data);
+      return stock;
+    } else if (StringUtils.equalsIgnoreCase(identity, 'Index')) {
+      Index index = Index.fromPlain(data);
+      return index;
+    } else if (StringUtils.equalsIgnoreCase(identity, 'People')) {
+      People people = People.fromPlain(data);
+      return people;
+    } else {
+      print('unserialize failed for identity : $identity  data : $data   $serialize');
+    }
+    return null;
+  }
+}
+
+abstract class CodeNameIII extends SerializeableIII {
+  String code;
+  String name;
+  static final String PACKET_HEADER = 'RF';
+
+  CodeNameIII(this.code, this.name);
+// String asPlain();
+// String identity();
+// //String serialize = '{identity:"Stock" data:"$plain"}';
+// static String tagIdentity = 'identity';
+// static String tagData = 'data';
+//
+// String serialize() {
+//   return '{identity:"'+identity()+'" data:"'+asPlain()+'"}';
+// }
+//
+// // static List<String> unserialize(String serialize){
+// //   String identity = StringUtils.between(serialize, '$tagIdentity:"', '" ') ?? '';
+// //   String data = StringUtils.between(serialize, '$tagData:"', '" ') ?? '';
+// //   return [identity, data];
+// // }
+//
+// static CodeName unserialize(String serialize){
+//   String identity = StringUtils.between(serialize, '$tagIdentity:"', '" ') ?? '';
+//   String data = StringUtils.between(serialize, '$tagData:"', '" ') ?? '';
+//   if(StringUtils.equalsIgnoreCase(identity, 'Broker')){
+//     Broker broker = Broker.fromPlain(data);
+//     return broker;
+//   }else if(StringUtils.equalsIgnoreCase(identity, 'Stock')){
+//     Stock stock = Stock.fromPlain(data);
+//     return stock;
+//   }else if(StringUtils.equalsIgnoreCase(identity, 'Index')){
+//     Index index = Index.fromPlain(data);
+//     return index;
+//   }
+//   return null;
+// }
+}
+
+class Stock extends CodeNameIII {
+  String time;
+  //String code;
+  //String name;
+  String type;
+  String sub_sector;
+  int lot_size;
+  String remark_1;
+  String remark_2;
+  int rg_status;
+  int ng_status;
+  int tn_status;
+
+  String identity() {
+    return 'Stock';
+  }
+  // static final String _PACKET_HEADER = 'RF';
+  static final String _PACKET_TYPE = '2';
+  Stock(String code, String name, this.time, this.type, this.sub_sector, this.lot_size, this.remark_1, this.remark_2, this.rg_status,
+      this.ng_status, this.tn_status)
+      : super(code, name);
+
+  factory Stock.fromPlain(String data) {
+    // 0 1    2      3                    4         5   6   7  8            9                   10 11 12
+    //RF|3|15:00:00|PICO|Pelangi Indah Canindo Tbk|ORDI|33|100|-|--U-210000000033--------------|0 |0 |0
+    //FORMAT:
+    // 0    1       2   3    4       5        6          7       8       9        10       11        12
+    //RF|MSG_TYPE|TIME|CODE|NAME|SEC TYPE|SUB SECTOR|LOT SIZE|REMARK1|REMARK2|RG STATUS|NG STATUS|TN STATUS
+
+    List<String> datas = data.split('|');
+    if (datas != null && datas.isNotEmpty && datas.length >= 13) {
+      String packet_header = StringUtils.noNullString(datas.elementAt(0));
+      String packet_type = StringUtils.noNullString(datas.elementAt(1));
+      if (StringUtils.equalsIgnoreCase(packet_header, CodeNameIII.PACKET_HEADER) || StringUtils.equalsIgnoreCase(packet_type, _PACKET_TYPE)) {
+        String time = StringUtils.noNullString(datas.elementAt(2));
+        String code = StringUtils.noNullString(datas.elementAt(3));
+        String name = StringUtils.noNullString(datas.elementAt(4));
+        String type = StringUtils.noNullString(datas.elementAt(5));
+        String sub_sector = StringUtils.noNullString(datas.elementAt(6));
+        int lot_size = Utils.safeInt(datas.elementAt(7));
+        String remark_1 = StringUtils.noNullString(datas.elementAt(8));
+        String remark_2 = StringUtils.noNullString(datas.elementAt(9));
+        int rg_status = Utils.safeInt(datas.elementAt(10));
+        int ng_status = Utils.safeInt(datas.elementAt(11));
+        int tn_status = Utils.safeInt(datas.elementAt(12));
+
+        return Stock(code, name, time, type, sub_sector, lot_size, remark_1, remark_2, rg_status, ng_status, tn_status);
+      }
+    }
+    return null;
+  }
+
+
+  @override
+  String asPlain() {
+    String plain = CodeNameIII.PACKET_HEADER;
+    plain += '|' + _PACKET_TYPE;
+    plain += '|' + time;
+    plain += '|' + code;
+    plain += '|' + name;
+    plain += '|' + type;
+    plain += '|' + sub_sector;
+    plain += '|' + lot_size.toString();
+    plain += '|' + remark_1;
+    plain += '|' + remark_2;
+    plain += '|' + rg_status.toString();
+    plain += '|' + ng_status.toString();
+    plain += '|' + tn_status.toString();
+    return plain;
+  }
+
+  @override
+  String toString() {
+    return '[Stock --> $code, $name, $time, $type, $sub_sector, $lot_size, $remark_1, $remark_2, $rg_status, $ng_status, $tn_status]';
+  }
+}
+
+class Broker extends CodeNameIII {
+
+  String time;
+  //String code;
+  //String name;
+  String status;
+
+
+
+  Broker(String code, String name, this.time, this.status) : super(code, name);
+
+  String identity() {
+    return 'Broker';
+  }
+
+  static final String _PACKET_TYPE = '2';
+  factory Broker.fromPlain(String data) {
+    // 0    1       2       3        4     5
+    //RF|MSG_TYPE|TIME|BROKER CODE|NAME|STATUS
+
+    List<String> datas = data.split('|');
+
+    if (datas != null && datas.isNotEmpty && datas.length >= 6) {
+      String packet_header = StringUtils.noNullString(datas.elementAt(0));
+      String packet_type = StringUtils.noNullString(datas.elementAt(1));
+      if (StringUtils.equalsIgnoreCase(packet_header, CodeNameIII.PACKET_HEADER) || StringUtils.equalsIgnoreCase(packet_type, _PACKET_TYPE)) {
+        String time = StringUtils.noNullString(datas.elementAt(0));
+        String code = StringUtils.noNullString(datas.elementAt(2));
+        String name = StringUtils.noNullString(datas.elementAt(3));
+        String status = StringUtils.noNullString(datas.elementAt(4));
+        return Broker(code, name, time, status);
+      }
+
+
+
+    }
+    return null;
+  }
+
+  @override
+  String asPlain() {
+    String plain = CodeNameIII.PACKET_HEADER;
+    plain += '|' + _PACKET_TYPE;
+    plain += '|' + time;
+    plain += '|' + code;
+    plain += '|' + name;
+    plain += '|' + status;
+    return plain;
+  }
+
+  @override
+  String toString() {
+    // TODO: implement toString
+    return '[Broker --> $code, $name, $status, $time]';
+  }
+}
+
+class Index extends CodeNameIII {
+  //<a start="1" end="37"
+  // code="COMPOSITE" name="Jakarta Composite Index (JCI)"
+  // grouping="INDEX" color="FFFFFF" color_digit="-"/>
+  //String code;
+  //String name;
+  String grouping;
+  String color;
+  String color_digit;
+  bool isSector = false;
+  bool isComposite = false;
+  List<Stock> listMembers = List<Stock>.empty(growable: true);
+
+  Index(String code, String name, this.grouping, this.color, this.color_digit, this.isSector, this.isComposite) : super(code, name);
+
+  String identity() {
+    return 'Index';
+  }
+
+  factory Index.fromXml(XmlElement element) {
+    // data
+    String code = StringUtils.noNullString(element.getAttribute('code'));
+    String name = StringUtils.noNullString(element.getAttribute('name'));
+    String grouping = StringUtils.noNullString(element.getAttribute('grouping'));
+    String color = StringUtils.noNullString(element.getAttribute('color'));
+    String color_digit = StringUtils.noNullString(element.getAttribute('color_digit'));
+
+    // logic
+    bool isSector = StringUtils.equalsIgnoreCase(grouping, 'JCI SECTOR');
+    bool isComposite = StringUtils.equalsIgnoreCase(code, 'COMPOSITE');
+
+    return Index(code, name, grouping, color, color_digit, isSector, isComposite);
+  }
+
+  factory Index.fromPlain(String data) {
+    List<String> datas = data.split('|');
+
+    if (datas != null && datas.isNotEmpty && datas.length >= 5) {
+      // data
+      String code = StringUtils.noNullString(datas.elementAt(0));
+      String name = StringUtils.noNullString(datas.elementAt(1));
+      String grouping = StringUtils.noNullString(datas.elementAt(2));
+      String color = StringUtils.noNullString(datas.elementAt(3));
+      String color_digit = StringUtils.noNullString(datas.elementAt(4));
+
+      // logic
+      bool isSector = StringUtils.equalsIgnoreCase(grouping, 'JCI SECTOR');
+      bool isComposite = StringUtils.equalsIgnoreCase(code, 'COMPOSITE');
+
+      return Index(code, name, grouping, color, color_digit, isSector, isComposite);
+    }
+
+    return null;
+  }
+
+  @override
+  String asPlain() {
+    String plain = code;
+    plain += '|' + name;
+    plain += '|' + grouping;
+    plain += '|' + color;
+    plain += '|' + color_digit;
+
+    return plain;
+  }
+
+  void checkAndAddMembers(Stock stock) {
+    if (stock != null) {
+      // if (stock.sector.startsWith(color_digit)) {
+      //   if (!listMembers.contains(stock)) {
+      //     listMembers.add(stock);
+      //   }
+      // }
+    }
+  }
+
+  @override
+  String toString() {
+    return '[Index --> $code, $name, $grouping, $color, $color_digit, $isSector, ' + listMembers.length.toString() + ']';
+  }
+
+  void copyValueFrom(Index newValue) {
+    if (newValue != null) {
+      this.code = newValue.code;
+      this.name = newValue.name;
+      this.grouping = newValue.grouping;
+      this.color = newValue.color;
+      this.color_digit = newValue.color_digit;
+      this.isSector = newValue.isSector;
+      this.isComposite = newValue.isComposite;
+      this.listMembers = newValue.listMembers;
+    }
+  }
+}
+
+class MD5StockBrokerIndex {
+  //<a md5broker="68c64e816e03797159d17ca23f2e2b16"
+  // md5stock="5fba8fa0d5dc83c21d60d85caf12f170"
+  // md5index="6816c63704d23fdf4cef8a66472f4359"
+  // md5brokerUpdate="2021-04-26 08:47:42"
+  // md5stockUpdate="2021-04-26 08:47:42"
+  // md5indexUpdate="2021-04-26 08:47:42"
+  // sharePerLot="100"/>
+
+  String md5broker;
+  String md5stock;
+  String md5index;
+  int sharePerLot;
+
+  String md5brokerUpdate;
+  String md5stockUpdate;
+  String md5indexUpdate;
+
+  MD5StockBrokerIndex(
+      this.md5broker, this.md5stock, this.md5index, this.sharePerLot, this.md5brokerUpdate, this.md5stockUpdate, this.md5indexUpdate);
+
+  bool isValid() {
+    return !StringUtils.isEmtpy(this.md5broker) &&
+        !StringUtils.isEmtpy(this.md5stock) &&
+        !StringUtils.isEmtpy(this.md5index) &&
+        this.sharePerLot > 0;
+  }
+
+  factory MD5StockBrokerIndex.fromXml(XmlElement element) {
+    String md5broker = StringUtils.noNullString(element.getAttribute('md5broker'));
+    String md5stock = StringUtils.noNullString(element.getAttribute('md5stock'));
+    String md5index = StringUtils.noNullString(element.getAttribute('md5index'));
+    int sharePerLot = Utils.safeInt(element.getAttribute('sharePerLot'));
+    String md5brokerUpdate = StringUtils.noNullString(element.getAttribute('md5brokerUpdate'));
+    String md5stockUpdate = StringUtils.noNullString(element.getAttribute('md5stockUpdate'));
+    String md5indexUpdate = StringUtils.noNullString(element.getAttribute('md5indexUpdate'));
+
+    return MD5StockBrokerIndex(md5broker, md5stock, md5index, sharePerLot, md5brokerUpdate, md5stockUpdate, md5indexUpdate);
+  }
+
+  Future<bool> safe(/*SharedPreferences prefs*/) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool savedBroker = await prefs.setString('md5broker', md5broker);
+    bool savedStock = await prefs.setString('md5stock', md5stock);
+    bool savedIndex = await prefs.setString('md5index', md5index);
+    bool savedLot = await prefs.setInt('sharePerLot', sharePerLot);
+    bool savedBrokerUpdate = await prefs.setString('md5brokerUpdate', md5brokerUpdate);
+    bool savedStockUpdate = await prefs.setString('md5stockUpdate', md5stockUpdate);
+    bool savedIndexUpdate = await prefs.setString('md5indexUpdate', md5indexUpdate);
+    print('safe MD5 to SharedPreferences');
+    bool saved = savedBroker && savedStock && savedIndex && savedLot && savedBrokerUpdate && savedStockUpdate && savedIndexUpdate;
+    return saved;
+  }
+
+  void copyValueFrom(MD5StockBrokerIndex newValue) {
+    if (newValue != null) {
+      this.md5broker = newValue.md5broker;
+      this.md5stock = newValue.md5stock;
+      this.md5index = newValue.md5index;
+      this.sharePerLot = newValue.sharePerLot;
+      this.md5brokerUpdate = newValue.md5brokerUpdate;
+      this.md5stockUpdate = newValue.md5stockUpdate;
+      this.md5indexUpdate = newValue.md5indexUpdate;
+    }
+  }
+
+  // String toXmlString() {
+  //   return '<a md5broker="'+md5broker+'" md5stock="'+md5stock+'" md5index="'+md5index+'" md5brokerUpdate="'+md5brokerUpdate+'" md5stockUpdate="'+md5stockUpdate+'" md5indexUpdate="'+md5indexUpdate+'" sharePerLot="'+sharePerLot.toString()+'"/>';
+  // }
+  @override
+  String toString() {
+    return '[MD5StockBrokerIndex --> $md5broker, $md5stock, $md5index, $sharePerLot, $md5brokerUpdate, $md5stockUpdate, $md5indexUpdate]';
+  }
+}
+
+class IndexSummary {
+  /*
+  <a start="1" end="37"
+  time="14:50:00" indexCode="COMPOSITE"
+  prev="5993.242" last="5992.502" open="6004.794" hi="6024.938" low="5980.455"
+  change="-0.739" percentChange="-0.01" freq="870388"
+  volume="14351321704" value="7843907889158"
+  up="195" down="289" unchange="169" untrade="83"
+  date="2021-04-22" hi52W="6504.99" low52W="4441.09" return52W="33.1"
+
+  domesticBuyerValue="6216303468771" domesticSellerValue="6035425275771"
+  foreignBuyerValue="1627604420387" foreignSellerValue="1808482613387"
+  hiYTD="6504.99" lowYTD="5735.47" returnYTD="0.22"
+  grouping="INDEX" hiMTD="6115.62" lowMTD="5883.52" returnMTD="0.11"/>
+  */
+
+  String time;
+  String code;
+  double prev;
+  double last;
+  double open;
+  double hi;
+  double low;
+  double change;
+  double percentChange;
+  int freq;
+  int volume;
+  int value;
+
+  int up;
+  int down;
+  int unchange;
+  int untrade;
+  String date;
+  double hi52W;
+  double low52W;
+  double return52W;
+
+  int domesticBuyerValue;
+  int domesticSellerValue;
+  int foreignBuyerValue;
+  int foreignSellerValue;
+
+  double hiYTD;
+  double lowYTD;
+  double returnYTD;
+
+  String grouping;
+
+  double hiMTD;
+  double lowMTD;
+  double returnMTD;
+
+  IndexSummary(
+      this.time,
+      this.code,
+      this.prev,
+      this.last,
+      this.open,
+      this.hi,
+      this.low,
+      this.change,
+      this.percentChange,
+      this.freq,
+      this.volume,
+      this.value,
+      this.up,
+      this.down,
+      this.unchange,
+      this.untrade,
+      this.date,
+      this.hi52W,
+      this.low52W,
+      this.return52W,
+      this.domesticBuyerValue,
+      this.domesticSellerValue,
+      this.foreignBuyerValue,
+      this.foreignSellerValue,
+      this.hiYTD,
+      this.lowYTD,
+      this.returnYTD,
+      this.grouping,
+      this.hiMTD,
+      this.lowMTD,
+      this.returnMTD);
+
+  factory IndexSummary.fromXml(XmlElement element) {
+    String time = StringUtils.noNullString(element.getAttribute('time'));
+    String code = StringUtils.noNullString(element.getAttribute('indexCode'));
+    double prev = Utils.safeDouble(element.getAttribute('prev'));
+    double last = Utils.safeDouble(element.getAttribute('last'));
+    double open = Utils.safeDouble(element.getAttribute('open'));
+    double hi = Utils.safeDouble(element.getAttribute('hi'));
+    double low = Utils.safeDouble(element.getAttribute('low'));
+    double change = Utils.safeDouble(element.getAttribute('change'));
+    double percentChange = Utils.safeDouble(element.getAttribute('percentChange'));
+    int freq = Utils.safeInt(element.getAttribute('freq'));
+    int volume = Utils.safeInt(element.getAttribute('volume'));
+    int value = Utils.safeInt(element.getAttribute('value'));
+
+    int up = Utils.safeInt(element.getAttribute('up'));
+    int down = Utils.safeInt(element.getAttribute('down'));
+    int unchange = Utils.safeInt(element.getAttribute('unchange'));
+    int untrade = Utils.safeInt(element.getAttribute('untrade'));
+    String date = StringUtils.noNullString(element.getAttribute('date'));
+    double hi52W = Utils.safeDouble(element.getAttribute('hi52W'));
+    double low52W = Utils.safeDouble(element.getAttribute('low52W'));
+    double return52W = Utils.safeDouble(element.getAttribute('return52W'));
+
+    int domesticBuyerValue = Utils.safeInt(element.getAttribute('domesticBuyerValue'));
+    int domesticSellerValue = Utils.safeInt(element.getAttribute('domesticSellerValue'));
+    int foreignBuyerValue = Utils.safeInt(element.getAttribute('foreignBuyerValue'));
+    int foreignSellerValue = Utils.safeInt(element.getAttribute('foreignSellerValue'));
+
+    double hiYTD = Utils.safeDouble(element.getAttribute('hiYTD'));
+    double lowYTD = Utils.safeDouble(element.getAttribute('lowYTD'));
+    double returnYTD = Utils.safeDouble(element.getAttribute('returnYTD'));
+
+    String grouping = StringUtils.noNullString(element.getAttribute('grouping'));
+
+    double hiMTD = Utils.safeDouble(element.getAttribute('hiMTD'));
+    double lowMTD = Utils.safeDouble(element.getAttribute('lowMTD'));
+    double returnMTD = Utils.safeDouble(element.getAttribute('returnMTD'));
+
+    return IndexSummary(
+        time,
+        code,
+        prev,
+        last,
+        open,
+        hi,
+        low,
+        change,
+        percentChange,
+        freq,
+        volume,
+        value,
+        up,
+        down,
+        unchange,
+        untrade,
+        date,
+        hi52W,
+        low52W,
+        return52W,
+        domesticBuyerValue,
+        domesticSellerValue,
+        foreignBuyerValue,
+        foreignSellerValue,
+        hiYTD,
+        lowYTD,
+        returnYTD,
+        grouping,
+        hiMTD,
+        lowMTD,
+        returnMTD);
+  }
+
+  @override
+  String toString() {
+    // TODO: implement toString
+    return '[Index Summary --> $time, $code, $prev, $last, $open, $hi, $low, $change, $percentChange, $freq, $volume, $value, $up, $down, $unchange, $untrade, $date, $hi52W, $low52W, $return52W, $domesticBuyerValue, $domesticSellerValue, $foreignBuyerValue, $foreignSellerValue, $hiYTD, $lowYTD, $returnYTD, $grouping, $hiMTD, $lowMTD, $returnMTD]';
+  }
+
+  void copyValueFrom(IndexSummary newValue) {
+    if (newValue != null) {
+      this.time = newValue.time;
+      this.code = newValue.code;
+      this.prev = newValue.prev;
+      this.last = newValue.last;
+      this.open = newValue.open;
+      this.hi = newValue.hi;
+      this.low = newValue.low;
+      this.change = newValue.change;
+      this.percentChange = newValue.percentChange;
+      this.freq = newValue.freq;
+      this.volume = newValue.volume;
+      this.value = newValue.value;
+      this.up = newValue.up;
+      this.down = newValue.down;
+      this.unchange = newValue.unchange;
+      this.untrade = newValue.untrade;
+      this.date = newValue.date;
+      this.hi52W = newValue.hi52W;
+      this.low52W = newValue.low52W;
+      this.return52W = newValue.return52W;
+      this.domesticBuyerValue = newValue.domesticBuyerValue;
+      this.domesticSellerValue = newValue.domesticSellerValue;
+      this.foreignBuyerValue = newValue.foreignBuyerValue;
+      this.foreignSellerValue = newValue.foreignSellerValue;
+      this.hiYTD = newValue.hiYTD;
+      this.lowYTD = newValue.lowYTD;
+      this.returnYTD = newValue.returnYTD;
+      this.grouping = newValue.grouping;
+      this.hiMTD = newValue.hiMTD;
+      this.lowMTD = newValue.lowMTD;
+      this.returnMTD = newValue.returnMTD;
+    }
+  }
+}
+
+class TradeBook {
+  /*
+  <TRADEBOOK>
+    <a start="1" end="1"
+    time="10:05:47" stockCode="ASII" boardCode="RG"
+    tradeBookString="5600_182_10577840000_1888900_0_0_182_1888900_0_10577840000*5575_1286_47789457500_8572100_676_4899900_610_3672200_27316942500_20472515000*5550_1075_20444535000_3683700_474_1534800_601_2148900_8518140000_11926395000*5525_874_37198167500_6732700_56_803300_818_5929400_4438232500_32759935000*5500_1396_49687550000_9034100_815_4487300_581_4546800_24680150000_25007400000*5475_174_9441090000_1724400_174_1724400_0_0_9441090000_0"
+    totalBuyerValue="74394555000" totalBuyerFreq="2195" totalBuyerVol="13449700"
+    totalSellerValue="100744085000" totalSellerFreq="2792" totalSellerVol="18186200"/>
+  </TRADEBOOK>
+  */
+  String time;
+  String code;
+  String board;
+  String tradeBookString;
+  int totalBuyerValue;
+  int totalBuyerFreq;
+  int totalBuyerVol;
+  int totalSellerValue;
+  int totalSellerFreq;
+  int totalSellerVol;
+  List<TradeBookRow> listTradeBookRows = List<TradeBookRow>.empty(growable: true);
+
+  TradeBook(this.time, this.code, this.board, this.tradeBookString, this.totalBuyerValue, this.totalBuyerFreq, this.totalBuyerVol,
+      this.totalSellerValue, this.totalSellerFreq, this.totalSellerVol, this.listTradeBookRows);
+
+  factory TradeBook.fromXml(XmlElement element) {
+    String time = StringUtils.noNullString(element.getAttribute('time'));
+    String code = StringUtils.noNullString(element.getAttribute('stockCode'));
+    String board = StringUtils.noNullString(element.getAttribute('boardCode'));
+    String tradeBookString = StringUtils.noNullString(element.getAttribute('tradeBookString'));
+    int totalBuyerValue = Utils.safeInt(element.getAttribute('totalBuyerValue'));
+    int totalBuyerFreq = Utils.safeInt(element.getAttribute('totalBuyerFreq'));
+    int totalBuyerVol = Utils.safeInt(element.getAttribute('totalBuyerVol'));
+    int totalSellerValue = Utils.safeInt(element.getAttribute('totalSellerValue'));
+    int totalSellerFreq = Utils.safeInt(element.getAttribute('totalSellerFreq'));
+    int totalSellerVol = Utils.safeInt(element.getAttribute('totalSellerVol'));
+    //                     0             1           2         3                 4
+    //tradeBookString = tb.price+"_"+tb.freq+"_"+tb.val+"_"+tb.volume+"_"+tb.getBuyerFreq()
+    //               5                     6                       7                     8                       9
+    // +"_"+tb.getBuyerVol()+"_"+tb.getSellerFreq()+"_"+tb.getSellerVol()+"_"+tb.getBuyerValue()+"_"+tb.getSellerValue();
+
+    List<TradeBookRow> listTradeBookRows = List<TradeBookRow>.empty(growable: true);
+    if (!StringUtils.isEmtpy(tradeBookString)) {
+      List<String> rows = tradeBookString.split('*');
+      if (rows != null && rows.isNotEmpty) {
+        rows.forEach((row) {
+          List<String> data = row.split('_');
+          if (data != null && data.isNotEmpty && data.length >= 10) {
+            int price = Utils.safeInt(data.elementAt(0));
+            int volume = Utils.safeInt(data.elementAt(1));
+            int val = Utils.safeInt(data.elementAt(2));
+            int freq = Utils.safeInt(data.elementAt(3));
+            int buyerVolume = Utils.safeInt(data.elementAt(4));
+            int buyerValue = Utils.safeInt(data.elementAt(5));
+            int buyerFreq = Utils.safeInt(data.elementAt(6));
+            int sellerVolume = Utils.safeInt(data.elementAt(7));
+            int sellerValue = Utils.safeInt(data.elementAt(8));
+            int sellerFreq = Utils.safeInt(data.elementAt(9));
+            TradeBookRow tb = TradeBookRow(price, volume, val, freq, buyerVolume, buyerValue, buyerFreq, sellerVolume, sellerValue, sellerFreq);
+            print(tb);
+            listTradeBookRows.add(tb);
+          }
+        });
+      }
+    }
+    return TradeBook(time, code, board, tradeBookString, totalBuyerValue, totalBuyerFreq, totalBuyerVol, totalSellerValue, totalSellerFreq,
+        totalSellerVol, listTradeBookRows);
+  }
+
+  @override
+  String toString() {
+    return '[TradeBook --> $time, $code, $board, $totalBuyerValue, $totalBuyerFreq, $totalBuyerVol, $totalSellerValue, $totalSellerFreq, $totalSellerVol, $tradeBookString]';
+  }
+}
+
+class TradeBookRow {
+  int price;
+  int volume;
+  int val;
+  int freq;
+  int buyerVolume;
+  int buyerValue;
+  int buyerFreq;
+  int sellerVolume;
+  int sellerValue;
+  int sellerFreq;
+
+  TradeBookRow(this.price, this.volume, this.val, this.freq, this.buyerVolume, this.buyerValue, this.buyerFreq, this.sellerVolume,
+      this.sellerValue, this.sellerFreq);
+
+  @override
+  String toString() {
+    return '[TradeBookRow --> $price, $volume, $val, $freq, $buyerVolume, $buyerValue, $buyerFreq, $sellerVolume, $sellerValue, $sellerFreq]';
+  }
+}
+
+class OrderBook {
+  /*
+  <ORDERBOOK>
+    <a start="1" end="1"
+    time="10:44:47" stockCode="ASII" boardCode="RG" totalBid="10154300" totalOffer="20676800"
+    bid_0="5575" bidLot_0="2335000" offer_0="5600" offerLot_0="5880400" bid_1="5550" bidLot_1="2518500"
+    offer_1="5625" offerLot_1="1739000" bid_2="5525" bidLot_2="1410200" offer_2="5650" offerLot_2="2840000"
+    bid_3="5500" bidLot_3="842600" offer_3="5675" offerLot_3="1113400" bid_4="5475" bidLot_4="874700"
+    offer_4="5700" offerLot_4="3214300" bid_5="5450" bidLot_5="909100" offer_5="5725" offerLot_5="838200"
+    bid_6="5425" bidLot_6="450200" offer_6="5750" offerLot_6="1666000" bid_7="5400" bidLot_7="409200" offer_7="5775"
+    offerLot_7="999500" bid_8="5375" bidLot_8="132300" offer_8="5800" offerLot_8="2065300" bid_9="5350" bidLot_9="272500"
+    offer_9="5825" offerLot_9="320700" bidQueue_0="34" bidQueue_1="187" bidQueue_2="118" bidQueue_3="233" bidQueue_4="134"
+    bidQueue_5="212" bidQueue_6="65" bidQueue_7="123" bidQueue_8="45" bidQueue_9="83" offerQueue_0="1286" offerQueue_1="352"
+    offerQueue_2="503" offerQueue_3="241" offerQueue_4="625" offerQueue_5="154" offerQueue_6="287" offerQueue_7="138"
+    offerQueue_8="398" offerQueue_9="77"/>
+</ORDERBOOK>
+  */
+  String time;
+  String code;
+  String board;
+
+  int totalBid;
+  int totalOffer;
+
+  var bids = List.empty(growable: true);
+  var bidsLot = List.empty(growable: true);
+  var offers = List.empty(growable: true);
+  var offersLot = List.empty(growable: true);
+
+  OrderBook(this.time, this.code, this.board, this.totalBid, this.totalOffer, this.bids, this.bidsLot, this.offers, this.offersLot);
+
+  factory OrderBook.fromXml(XmlElement element) {
+    String time = StringUtils.noNullString(element.getAttribute('time'));
+    String code = StringUtils.noNullString(element.getAttribute('stockCode'));
+    String board = StringUtils.noNullString(element.getAttribute('boardCode'));
+
+    int totalBid = Utils.safeInt(element.getAttribute('totalBid'));
+    int totalOffer = Utils.safeInt(element.getAttribute('totalOffer'));
+
+    var bids = List.empty(growable: true);
+    var bidsLot = List.empty(growable: true);
+    var offers = List.empty(growable: true);
+    var offersLot = List.empty(growable: true);
+    // int countBid = 0;
+    // int countOffer = 0;
+    for (int i = 0; i < 10; i++) {
+      int bid = Utils.safeInt(element.getAttribute('bid_' + i.toString()));
+      int bidLot = Utils.safeInt(element.getAttribute('bidLot_' + i.toString()));
+      int offer = Utils.safeInt(element.getAttribute('offer_' + i.toString()));
+      int offerLot = Utils.safeInt(element.getAttribute('offerLot_' + i.toString()));
+      // if(bid > 0 && bidLot > 0){
+      //   countBid++;
+      // }
+      // if(offer > 0 && offerLot > 0){
+      //   countOffer++;
+      // }
+      bids.add(bid);
+      bidsLot.add(bidLot);
+      offers.add(offer);
+      offersLot.add(offerLot);
+    }
+
+    return OrderBook(time, code, board, totalBid, totalOffer, bids, bidsLot, offers, offersLot);
+  }
+
+  @override
+  String toString() {
+    return '[OrderBook --> $time, $code, $board, $totalBid, $totalOffer, ' +
+        bids.length.toString() +
+        ', ' +
+        bidsLot.length.toString() +
+        ', ' +
+        offers.length.toString() +
+        ', ' +
+        offersLot.length.toString() +
+        ']';
+  }
+}
+
+class People extends SerializeableIII {
+  String name;
+  String username;
+  String urlTumbnail;
+
+  People(this.name, this.username, this.urlTumbnail);
+
+  factory People.fromPlain(String data) {
+    List<String> datas = data.split('|');
+    if (datas != null && datas.isNotEmpty && datas.length >= 3) {
+      String name = StringUtils.noNullString(datas.elementAt(0));
+      String username = StringUtils.noNullString(datas.elementAt(1));
+      String urlTumbnail = StringUtils.noNullString(datas.elementAt(2));
+
+      return People(name, username, urlTumbnail);
+    }
+
+    return null;
+  }
+
+  @override
+  String asPlain() {
+    String plain = name;
+    plain += '|' + username;
+    plain += '|' + urlTumbnail;
+    return plain;
+  }
+
+  @override
+  String identity() {
+    return 'People';
+  }
+}

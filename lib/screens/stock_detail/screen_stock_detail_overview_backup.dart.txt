@@ -1,0 +1,2766 @@
+import 'dart:async';
+
+import 'package:Investrend/component/avatar.dart';
+import 'package:Investrend/component/cards/card_rating.dart';
+import 'package:Investrend/component/component_creator.dart';
+import 'package:Investrend/component/rating_slider.dart';
+import 'package:Investrend/component/widget_orderbook.dart';
+import 'package:Investrend/component/widget_price.dart';
+import 'package:Investrend/objects/class_value_notifier.dart';
+import 'package:Investrend/objects/data_object.dart';
+import 'package:Investrend/objects/home_objects.dart';
+import 'package:Investrend/objects/riverpod_change_notifier.dart';
+import 'package:Investrend/objects/ssi_objects.dart';
+import 'package:Investrend/screens/base/screen_aware.dart';
+import 'package:Investrend/utils/connection_services.dart';
+
+import 'package:Investrend/utils/string_utils.dart';
+import 'package:auto_size_text/auto_size_text.dart';
+
+import 'package:flutter/material.dart';
+
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:Investrend/utils/investrend_theme.dart';
+
+class ScreenStockDetailOverview extends StatefulWidget {
+  final int index;
+
+  const ScreenStockDetailOverview(this.index, {Key key}) : super(key: key);
+
+  @override
+  _ScreenStockDetailOverviewState createState() => _ScreenStockDetailOverviewState();
+}
+
+//final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
+//class _ScreenStockDetailOverviewState extends State<ScreenStockDetailOverview>
+class _ScreenStockDetailOverviewState extends State<ScreenStockDetailOverview>
+    //with AutomaticKeepAliveClientMixin<ScreenStockDetailOverview> //    with RouteAware
+{
+  ValueNotifier<int> thinksNotifier = ValueNotifier<int>(1);
+  ValueNotifier<double> thinksSliderNotifier = ValueNotifier<double>(1.0);
+
+  //StockSummaryNotifier _summaryNotifier = StockSummaryNotifier(null, null);
+  //OrderBookNotifier _orderbookNotifier = OrderBookNotifier(null, null);
+  Future<List<HomeNews>> news;
+  static const Duration durationUpdate = Duration(milliseconds: 1000);
+  int _selectedChart = 0;
+  int _selectedDomesticForeign = 0;
+  List<String> _listChipRange = <String>['1D', '1W', '1M', '3M', '6M', '1Y', '5Y', 'All'];
+
+  @override
+  bool get wantKeepAlive => true;
+  bool active = false;
+
+  void onActive() {
+    print('ScreenStockDetailOverview.onActive');
+    active = true;
+    if (timer.isActive) {
+      return;
+    }
+
+    // timer = Timer.periodic(durationUpdate, (timer) {
+    //   if(active) {
+    //     doUpdate();
+    //   }
+    // });
+    if (timer == null || !timer.isActive) {
+      timer = Timer.periodic(durationUpdate, (timer) {
+        if (active) {
+          doUpdate();
+        }
+      });
+    }
+  }
+
+  void onInactive() {
+    active = false;
+    print('ScreenStockDetailOverview.onInactive');
+    timer.cancel();
+  }
+
+  //Future<List<IndexSummary>> indexSummarys;
+  Timer timer;
+
+  // bool active = true;
+  @override
+  void initState() {
+    super.initState();
+    print('ScreenStockDetailOverview.initState');
+    //_rebuildSectors();
+    news = HttpSSI.fetchNews();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    print('ScreenStockDetailOverview.didChangeDependencies');
+    //Stock stock = InvestrendTheme.of(context).stock;
+    //Stock stock = InvestrendTheme.of(context).stockNotifier.value;
+
+    if (timer == null || !timer.isActive) {
+      timer = Timer.periodic(durationUpdate, (timer) {
+        if (active) {
+          doUpdate();
+        }
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    print('ScreenStockDetailOverview.dispose');
+    //_summaryNotifier.dispose();
+    //_orderbookNotifier.dispose();
+    timer.cancel();
+    super.dispose();
+  }
+
+  Widget specialNotationLabel(BuildContext context) {
+    return Consumer(builder: (context, watch, child) {
+      final notifier = watch(primaryStockChangeNotifier);
+      if (notifier.invalid()) {
+        return Center(child: CircularProgressIndicator());
+      }
+      if (notifier.stock.isAccelerationBoard()) {
+        return Container(
+          padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 8.0, bottom: 8.0),
+          width: double.maxFinite,
+          color: InvestrendTheme.of(context).tileBackground,
+          child: Text(
+            'stock_detail_overview_card_detail_special_notation'.tr(),
+            style: Theme.of(context).textTheme.caption.copyWith(color: InvestrendTheme.of(context).investrendPurple),
+          ),
+        );
+      } else {
+        return SizedBox(
+          width: 1.0,
+          height: 1.0,
+        );
+      }
+    });
+    /*
+    return ValueListenableBuilder(
+      valueListenable: InvestrendTheme.of(context).stockNotifier,
+      builder: (context, Stock value, child) {
+        if (InvestrendTheme.of(context).stockNotifier.invalid()) {
+          return Center(child: CircularProgressIndicator());
+        }
+        if (value.isAccelerationBoard()) {
+          return Container(
+            padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 8.0, bottom: 8.0),
+            width: double.maxFinite,
+            color: InvestrendTheme.of(context).tileBackground,
+            child: Text(
+              'stock_detail_overview_card_detail_special_notation'.tr(),
+              style: Theme.of(context).textTheme.caption.copyWith(color: InvestrendTheme.of(context).investrendPurple),
+            ),
+          );
+        } else {
+          return SizedBox(
+            width: 1.0,
+            height: 1.0,
+          );
+        }
+      },
+    );
+     */
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ScreenAware(
+      routeName: '/stock_detail_overview',
+      onActive: onActive,
+      onInactive: onInactive,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            createCardDetailStock(context),
+            specialNotationLabel(context),
+            //ComponentCreator.divider(context),
+            //getTableData(context),
+            createCardOverview(context),
+            ComponentCreator.divider(context),
+            createCardPosition(context),
+            ComponentCreator.divider(context),
+            createCardOrderbook(context),
+            ComponentCreator.divider(context),
+            createCardComunity(context),
+            ComponentCreator.divider(context),
+            // ValueListenableBuilder(
+            //   valueListenable: thinksNotifier,
+            //   builder: (context, int value, child) {
+            //     return createCardThinks(context, value);
+            //   },
+            // ),
+            //createCardThinks(context),
+            CardRating(1.3),
+            ComponentCreator.divider(context),
+            createCardNews(context),
+
+            SizedBox(
+              height: 80.0,
+            )
+          ],
+        ),
+      ),
+    );
+    // return SingleChildScrollView(
+    //   child: Column(
+    //     mainAxisAlignment: MainAxisAlignment.start,
+    //     crossAxisAlignment: CrossAxisAlignment.start,
+    //     children: [
+    //       createCardDetailIhsg(context),
+    //       ComponentCreator.divider(context),
+    //       ComponentCreator.divider(context),
+    //       createCardPerformance(context),
+    //       ComponentCreator.divider(context),
+    //       createCardSector(context),
+    //       ComponentCreator.divider(context),
+    //       createCardLocalForeign(context),
+    //     ],
+    //   ),
+    // );
+  }
+
+  Widget createCardOverview(BuildContext context) {
+    return Card(
+      // color: Colors.blue,
+      margin: const EdgeInsets.all(InvestrendTheme.cardMargin),
+      child: Padding(
+        padding: const EdgeInsets.all(InvestrendTheme.cardPadding),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ComponentCreator.subtitle(
+              context,
+              'stock_detail_overview_card_overview_title'.tr(),
+            ),
+            SizedBox(
+              height: 10.0,
+            ),
+            getTableDataOverview(context),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget createCardPosition(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.all(InvestrendTheme.cardMargin),
+      child: Padding(
+        padding: const EdgeInsets.all(InvestrendTheme.cardPadding),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                ComponentCreator.subtitle(
+                  context,
+                  'stock_detail_overview_card_position_title'.tr(),
+                ),
+                Icon(Icons.info_outline),
+              ],
+            ),
+            SizedBox(
+              height: 10.0,
+            ),
+            getTableDataPosition1(context),
+            getTableDataPosition2(context),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget createCardComunity(BuildContext context) {
+    const List<String> owners_avatar = <String>[
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmJaEK71AwtaHZvhvBQioHWW2MGi4ukH1_9w&usqp=CAU',
+      'https://cdn130.picsart.com/309744679150201.jpg?to=crop&r=256&q=70',
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQhMUJGKzrxVoM2r8dLjVenLwcP-idh11n5Fw&usqp=CAU',
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHWL4kom23RBdd0GP-xLOsFu-7t-bRAtSGEA&usqp=CAU',
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStgx25x3vrWgwCRz0buSYNf7lII-0TWtcFXg&usqp=CAU',
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSiJinli8IBVIpd5Un3l2uUuMb9iIXihrGobg&usqp=CAU',
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmJaEK71AwtaHZvhvBQioHWW2MGi4ukH1_9w&usqp=CAU',
+      'https://cdn130.picsart.com/309744679150201.jpg?to=crop&r=256&q=70',
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQhMUJGKzrxVoM2r8dLjVenLwcP-idh11n5Fw&usqp=CAU',
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHWL4kom23RBdd0GP-xLOsFu-7t-bRAtSGEA&usqp=CAU',
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStgx25x3vrWgwCRz0buSYNf7lII-0TWtcFXg&usqp=CAU',
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSiJinli8IBVIpd5Un3l2uUuMb9iIXihrGobg&usqp=CAU',
+    ];
+    const List<String> owners_name = <String>[
+      'Putri',
+      'Philmon',
+      'Richy',
+      'Stella',
+      'Watson',
+      'Auri',
+      'Putri',
+      'Philmon',
+      'Richy',
+      'Stella',
+      'Watson',
+      'Auri',
+    ];
+    if (owners_name.isEmpty) {
+      return Text(
+        'stock_detail_overview_card_community_text_none'.tr(),
+        style: InvestrendTheme.of(context).textLabelStyle,
+      );
+    }
+    String twoName = owners_name.sublist(0, 2).join(',');
+    int leftSize = owners_name.length - 2;
+    String and = 'stock_detail_overview_card_community_text_and'.tr();
+    String owned = 'stock_detail_overview_card_community_text_owned'.tr();
+    String text = twoName + ' $and ' + leftSize.toString() + ' $owned';
+    return Card(
+      margin: const EdgeInsets.all(InvestrendTheme.cardMargin),
+      child: Padding(
+        padding: const EdgeInsets.all(InvestrendTheme.cardPadding),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ComponentCreator.subtitle(
+              context,
+              'stock_detail_overview_card_community_title'.tr(),
+            ),
+            SizedBox(
+              height: 10.0,
+            ),
+            Row(
+              children: [
+                SizedBox(
+                  width: 10.0,
+                ),
+                AvatarListCompetition(
+                  size: 25,
+                  participants_avatar: owners_avatar,
+                  total_participant: owners_avatar.length,
+                  showCountingNumber: false,
+                ),
+                SizedBox(
+                  width: 10.0,
+                ),
+                Container(
+                  height: 40.0,
+                  width: 1.0,
+                  color: Theme.of(context).dividerColor,
+                ),
+                SizedBox(
+                  width: 10.0,
+                ),
+                Flexible(
+                  child: Container(
+                    width: double.maxFinite,
+                    child: Text(text, style: InvestrendTheme.of(context).textLabelStyle, maxLines: 2, softWrap: true),
+                  ),
+                ),
+              ],
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget createCardOrderbook(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.all(InvestrendTheme.cardMargin),
+      child: Padding(
+        padding: const EdgeInsets.all(InvestrendTheme.cardPadding),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ComponentCreator.subtitle(
+              context,
+              'stock_detail_overview_card_orderbook_title'.tr(),
+            ),
+            SizedBox(
+              height: 10.0,
+            ),
+            // getTableDataOrderbookSimple(context),
+            // SizedBox(
+            //   height: 20.0,
+            // ),
+            //getTableDataOrderbook(context),
+            //WidgetOrderbook(InvestrendTheme.of(context).orderbookNotifier, 6),
+            WidgetOrderbook(
+              6,
+              owner: 'StockDetailOverview',
+            ),
+
+            SizedBox(
+              height: 10.0,
+            ),
+            //WidgetOrderbook(InvestrendTheme.orderbookNotifier, 6),
+
+            // CustomPaint(
+            //   size: Size(300, 100),
+            //   painter: RichyPainter('Test'),
+            // ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  static final Color grayPointColor = Color(0xFFD0D0D0);
+
+  Widget createCardThinks(BuildContext context) {
+    //int currentProgress = 4;
+
+    return Card(
+      margin: const EdgeInsets.all(InvestrendTheme.cardMargin),
+      child: Padding(
+        padding: const EdgeInsets.all(InvestrendTheme.cardPadding),
+        //padding: const EdgeInsets.only(top: InvestrendTheme.cardPadding, bottom: InvestrendTheme.cardPadding),
+        child: LayoutBuilder(builder: (context, constrains) {
+          print('createCardThinks constrains ' + constrains.maxWidth.toString());
+          const int gridCount = 5;
+          double availableWidth = constrains.maxWidth;
+          print('createCardThinksavailableWidth $availableWidth');
+          double tileWidth = availableWidth / gridCount;
+          print('createCardThinks tileWidth $tileWidth');
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              InkWell(
+                onTap: () {
+                  int newValue = thinksNotifier.value + 1;
+                  if (newValue > 5) {
+                    newValue = 1;
+                  }
+                  thinksNotifier.value = newValue;
+                },
+                child: ComponentCreator.subtitle(
+                  context,
+                  'stock_detail_overview_card_expert_title'.tr(),
+                ),
+              ),
+              SizedBox(
+                height: 10.0,
+              ),
+              //getTableDataOrderbook(context),
+              ComponentCreator.roundedContainer(
+                context,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(
+                          left: InvestrendTheme.of(context).tileSmallRoundedRadius * 2,
+                          right: InvestrendTheme.of(context).tileSmallRoundedRadius * 2),
+                      child: Text(
+                        'Rating',
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyText2
+                            .copyWith(color: InvestrendTheme.of(context).blackAndWhiteText, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 8.0,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(
+                          left: InvestrendTheme.of(context).tileSmallRoundedRadius * 2,
+                          right: InvestrendTheme.of(context).tileSmallRoundedRadius * 2),
+                      child: Text(
+                        'What Wall St. analysts suggest for this stock',
+                        style: Theme.of(context).textTheme.bodyText2.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    RatingSlider(1.3),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    /*
+                    Stack(
+                      alignment: Alignment.bottomCenter,
+                      children: [
+                        // Padding(
+                        //   padding: EdgeInsets.only(
+                        //       left: InvestrendTheme.of(context).tileSmallRoundedRadius,
+                        //       right: InvestrendTheme.of(context).tileSmallRoundedRadius),
+                        //   child: Divider(
+                        //     thickness: 2.0,
+                        //   ),
+                        // ),
+                        Container(
+                          margin: EdgeInsets.only(left: 20.0, right: 20.0, top: 4.0, bottom: 4.0),
+                          width: double.maxFinite,
+                          height: 2.0,
+                          //color: Theme.of(context).dividerColor,
+                          color: grayPointColor,
+                        ),
+                        // Row(
+                        //   crossAxisAlignment: CrossAxisAlignment.end,
+                        //   children: [
+                        //     point(context, 1, 5, currentProgress == 1, tileWidth),
+                        //     point(context, 2, 5, currentProgress == 2, tileWidth),
+                        //     point(context, 3, 5, currentProgress == 3, tileWidth),
+                        //     point(context, 4, 5, currentProgress == 4, tileWidth),
+                        //     point(context, 5, 5, currentProgress == 5, tileWidth),
+                        //   ],
+                        // ),
+                        ValueListenableBuilder(
+                          valueListenable: thinksNotifier,
+                          builder: (context, int currentProgress, child) {
+                            return Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                point(context, 1, 5, currentProgress == 1, tileWidth),
+                                point(context, 2, 5, currentProgress == 2, tileWidth),
+                                point(context, 3, 5, currentProgress == 3, tileWidth),
+                                point(context, 4, 5, currentProgress == 4, tileWidth),
+                                point(context, 5, 5, currentProgress == 5, tileWidth),
+                              ],
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+
+
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        pointText(context, 1, 5, 'Strong\nBuy', tileWidth),
+                        pointText(context, 2, 5, 'Buy', tileWidth),
+                        pointText(context, 3, 5, 'Hold', tileWidth),
+                        pointText(context, 4, 5, 'Sell', tileWidth),
+                        pointText(context, 5, 5, 'Strong\nSell', tileWidth),
+                      ],
+                    ),
+
+                     */
+                  ],
+                ),
+                noPadding: true,
+              ),
+            ],
+          );
+        }),
+      ),
+    );
+  }
+
+  Widget pointText(BuildContext context, int progress, int length, String text, double tileWidth) {
+    bool first = progress == 1;
+    bool last = progress == length;
+    print('point  $progress / $length  first : ' + first.toString() + "  last : " + last.toString());
+    if (first) {
+      return Container(
+        padding: EdgeInsets.only(left: 20.0),
+        // color: Colors.red,
+        width: tileWidth,
+        //height: 20.0,
+        child: AutoSizeText(
+          text,
+          maxLines: 2,
+          textAlign: TextAlign.left,
+          style: InvestrendTheme.of(context).small_w400.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor),
+        ),
+      );
+    } else if (last) {
+      return Container(
+        padding: EdgeInsets.only(right: 20.0),
+        // color: Colors.green,
+        width: tileWidth,
+        //height: 20.0,
+        child: AutoSizeText(
+          text,
+          maxLines: 2,
+          textAlign: TextAlign.right,
+          style: InvestrendTheme.of(context).small_w400.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor),
+        ),
+      );
+    } else {
+      return Container(
+        // color: Colors.orange,
+        width: tileWidth,
+        //height: 20.0,
+        child: Text(
+          text,
+          textAlign: TextAlign.center,
+          style: InvestrendTheme.of(context).small_w400.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor),
+        ),
+      );
+    }
+  }
+
+  Widget point(BuildContext context, int progress, int length, bool active, double tileWidth) {
+    bool first = progress == 1;
+    bool last = progress == length;
+    print('point  $progress / $length  first : ' + first.toString() + "  last : " + last.toString());
+    if (first) {
+      if (active) {
+        return Container(
+          alignment: Alignment.centerLeft,
+          padding: EdgeInsets.only(left: 10.0),
+          // color: Colors.red,
+          width: tileWidth,
+          //height: 20.0,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Stack(alignment: Alignment.center, children: [
+                Image.asset(
+                  'images/icons/point_purple.png',
+                  width: 30.0,
+                  height: 30.0,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 3.0),
+                  child: Text(
+                    progress.toString(),
+                    style: Theme.of(context).textTheme.caption.copyWith(color: Colors.white),
+                  ),
+                )
+              ]),
+              SizedBox(
+                height: 2.0,
+              ),
+              Image.asset(
+                'images/icons/dot_purple.png',
+                width: 10.0,
+                height: 10.0,
+              ),
+            ],
+          ),
+        );
+      } else {
+        return Container(
+          alignment: Alignment.centerLeft,
+          padding: EdgeInsets.only(left: 20.0),
+          // color: Colors.red,
+          width: tileWidth,
+          //height: 20.0,
+          child: Image.asset(
+            'images/icons/dot_gray.png',
+            width: 10.0,
+            height: 10.0,
+            //color: Theme.of(context).dividerColor,
+            color: grayPointColor,
+          ),
+        );
+      }
+    } else if (last) {
+      if (active) {
+        return Container(
+          alignment: Alignment.centerRight,
+          padding: EdgeInsets.only(right: 10.0),
+          // color: Colors.green,
+          width: tileWidth,
+          //height: 20.0,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Stack(alignment: Alignment.center, children: [
+                Image.asset(
+                  'images/icons/point_purple.png',
+                  width: 30.0,
+                  height: 30.0,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 3.0),
+                  child: Text(
+                    progress.toString(),
+                    style: Theme.of(context).textTheme.caption.copyWith(color: Colors.white),
+                  ),
+                )
+              ]),
+              SizedBox(
+                height: 2.0,
+              ),
+              Image.asset(
+                'images/icons/dot_purple.png',
+                width: 10.0,
+                height: 10.0,
+              ),
+            ],
+          ),
+        );
+      } else {
+        return Container(
+          alignment: Alignment.centerRight,
+          padding: EdgeInsets.only(right: 20.0),
+          // color: Colors.green,
+          width: tileWidth,
+          //height: 20.0,
+          child: Image.asset(
+            'images/icons/dot_gray.png',
+            width: 10.0,
+            height: 10.0,
+            //color: Theme.of(context).dividerColor,
+            color: grayPointColor,
+          ),
+        );
+      }
+    } else {
+      if (active) {
+        return Container(
+          alignment: Alignment.center,
+          // color: Colors.blue,
+          width: tileWidth,
+          //height: 20.0,
+          child: Column(
+            children: [
+              Stack(alignment: Alignment.center, children: [
+                Image.asset(
+                  'images/icons/point_purple.png',
+                  width: 30.0,
+                  height: 30.0,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 3.0),
+                  child: Text(
+                    progress.toString(),
+                    style: Theme.of(context).textTheme.caption.copyWith(color: Colors.white),
+                  ),
+                )
+              ]),
+              SizedBox(
+                height: 2.0,
+              ),
+              Image.asset(
+                'images/icons/dot_purple.png',
+                width: 10.0,
+                height: 10.0,
+              ),
+            ],
+          ),
+        );
+      } else {
+        return Container(
+          alignment: Alignment.center,
+          // color: Colors.blue,
+          width: tileWidth,
+          //height: 20.0,
+          child: Image.asset(
+            'images/icons/dot_gray.png',
+            width: 10.0,
+            height: 10.0,
+            //color: Theme.of(context).dividerColor,
+            color: grayPointColor,
+          ),
+        );
+      }
+    }
+  }
+
+  Widget createCardDetailStock(BuildContext context) {
+    return Card(
+      // color: Colors.red,
+      margin: const EdgeInsets.all(InvestrendTheme.cardMargin),
+      child: Padding(
+        padding: const EdgeInsets.all(InvestrendTheme.cardPadding),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Consumer(builder: (context, watch, child) {
+              final notifier = watch(stockSummaryChangeNotifier);
+              if (notifier.invalid()) {
+                return Center(child: CircularProgressIndicator());
+              }
+              return WidgetPrice(notifier.stock.code, notifier.stock.name, notifier.summary.close.toDouble(), notifier.summary.change.toDouble(),
+                  notifier.summary.percentChange);
+            }),
+            /*
+            ValueListenableBuilder( valueListenable: InvestrendTheme.of(context).summaryNotifier, builder: (context,StockSummary value, child) {
+              if (InvestrendTheme.of(context).summaryNotifier.invalid()) {
+                return Center(child: CircularProgressIndicator());
+              }
+              return WidgetPrice(InvestrendTheme.of(context).summaryNotifier.stock.code, InvestrendTheme.of(context).summaryNotifier.stock.name, value.close.toDouble(), value.change.toDouble(), value.percentChange);
+            }),
+            */
+            /*
+            ValueListenableBuilder(
+                //valueListenable: _summaryNotifier,
+                valueListenable: InvestrendTheme.of(context).summaryNotifier,
+                builder: (context, StockSummary value, child) {
+                  if (InvestrendTheme.of(context).summaryNotifier.invalid()
+                      //_summaryNotifier.invalid()
+                      ) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  return Container(
+                    color: Colors.purple,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            ValueListenableBuilder(
+                              valueListenable: InvestrendTheme.of(context).stockNotifier,
+                              builder: (context, Stock value, child) {
+                                if (InvestrendTheme.of(context).stockNotifier.invalid()) {
+                                  return Center(child: CircularProgressIndicator());
+                                }
+                                return Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      value.code,
+                                      style: InvestrendTheme.of(context).headline3,
+                                    ),
+                                    InkWell(
+                                      child: SizedBox(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(7.5),
+                                          child: Image.asset(
+                                            'images/icons/special_notation.png',
+                                            width: 15.0,
+                                            height: 15.0,
+                                          ),
+                                        ),
+                                        width: 30.0,
+                                        height: 30.0,
+                                      ),
+                                      onTap: () {},
+                                    ),
+                                  ],
+                                );
+                              },
+                            ),
+
+                            // Text(
+                            //   (InvestrendTheme.of(context).stock != null ? InvestrendTheme.of(context).stock.code : '-'),
+                            //   style: Theme.of(context).textTheme.headline4.copyWith(fontWeight: FontWeight.bold),
+                            // ),
+                            SizedBox(
+                              height: 4.0,
+                            ),
+                            Text(
+                              //_summaryNotifier.stock.name,
+                              InvestrendTheme.of(context).summaryNotifier.stock.name,
+                              style: InvestrendTheme.of(context).support_w400.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor),
+                            ),
+                          ],
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Row(
+                              children: [
+                                //InvestrendTheme.getChangeIcon(_summaryNotifier.value.change),
+                                InvestrendTheme.getChangeImage(value.change),
+                                SizedBox(
+                                  width: 5.0,
+                                ),
+                                // Icon(
+                                //   Icons.arrow_drop_up,
+                                //   color: InvestrendTheme.greenText,
+                                // ),
+                                Text(
+                                  //InvestrendTheme.formatPrice(_summaryNotifier.value.close),
+                                  InvestrendTheme.formatPrice(value.close),
+                                  style: InvestrendTheme.of(context)
+                                      .headline3
+                                      .copyWith(color: InvestrendTheme.changeTextColor(value.change)),
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 4.0,
+                            ),
+                            Text(
+                              InvestrendTheme.formatChange(value.change) + ' (' + InvestrendTheme.formatPercentChange(value.percentChange) + ')',
+                              style: InvestrendTheme.of(context).regular_w400
+                                  .copyWith(color: InvestrendTheme.changeTextColor(value.change)),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
+                }),
+            */
+
+            SizedBox(
+              height: 10.0,
+            ),
+            Consumer(builder: (context, watch, child) {
+              final notifier = watch(primaryStockChangeNotifier);
+              if (notifier.invalid()) {
+                return Center(child: CircularProgressIndicator());
+              }
+              return Wrap(
+                spacing: 10.0,
+                children: [
+                  ComponentCreator.chip(context, notifier.stock.sectorName),
+                  ComponentCreator.chip(context, notifier.stock.subSectorDescription),
+                  //ComponentCreator.chip(context, value.typeText),
+                ],
+              );
+            }),
+            /*
+            ValueListenableBuilder(
+              valueListenable: InvestrendTheme.of(context).stockNotifier,
+              builder: (context, Stock value, child) {
+                if (InvestrendTheme.of(context).stockNotifier.invalid()) {
+                  return Center(child: CircularProgressIndicator());
+                }
+                return Wrap(
+                  spacing: 10.0,
+                  children: [
+                    ComponentCreator.chip(context, value.sectorName),
+                    ComponentCreator.chip(context, value.subSectorDescription),
+                    //ComponentCreator.chip(context, value.typeText),
+                  ],
+                );
+              },
+            ),
+
+             */
+            SizedBox(
+              height: 10.0,
+            ),
+            chartRangeChips(context),
+            SizedBox(
+              height: InvestrendTheme.cardMargin,
+            ),
+            // chart
+            Placeholder(
+              fallbackWidth: double.maxFinite,
+              fallbackHeight: 220.0,
+            ),
+            SizedBox(
+              height: 20.0,
+            ),
+            // ComponentCreator.divider(context),
+            // SizedBox(
+            //   height: 20.0,
+            // ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  //final NumberFormat formatterNumber = NumberFormat("#,##0.##", "id");
+  /*
+  Widget progressPerformance(BuildContext context, String label, double change, double percentChange) {
+    double progressValue = percentChange.abs() / 100;
+    return Padding(
+      padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
+      child: Row(
+        children: [
+          SizedBox(
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerLeft,
+              child: Text(
+                label,
+                style: Theme.of(context).textTheme.bodyText1,
+
+                //textAlign: TextAlign.start,
+              ),
+            ),
+            width: 65.0,
+          ),
+          SizedBox(
+            width: 5.0,
+          ),
+          Expanded(
+            flex: 8,
+            child: ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+              child: LinearProgressIndicator(
+                minHeight: 12.0,
+                value: progressValue,
+                valueColor: new AlwaysStoppedAnimation<Color>(InvestrendTheme.priceTextColor(change)),
+                backgroundColor: InvestrendTheme.of(context).tileBackground,
+              ),
+            ),
+          ),
+          SizedBox(
+            width: 5.0,
+          ),
+          SizedBox(
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerRight,
+              child: Text(
+                //formatterNumber.format(value) + '%',
+                InvestrendTheme.formatPercentChange(percentChange),
+                style: Theme.of(context).textTheme.bodyText1.copyWith(color: InvestrendTheme.priceTextColor(change)),
+                textAlign: TextAlign.end,
+              ),
+            ),
+            width: 65,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget createCardPerformance(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.all(InvestrendTheme.cardMargin),
+      child: Padding(
+        padding: const EdgeInsets.all(InvestrendTheme.cardPadding),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ComponentCreator.subtitle(
+              context,
+              'search_market_card_performance_title'.tr(),
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ValueListenableBuilder(
+                  valueListenable: _summaryNotifier,
+                  builder: (context, value, child) {
+                    if (_summaryNotifier.invalid()) {
+                      return Center(child: CircularProgressIndicator());
+                    }
+                    return progressPerformance(context, '1 Day', _summaryNotifier.value.change, _summaryNotifier.value.percentChange);
+                  },
+                ),
+                progressPerformance(context, '1 Week', 0, 0),
+                progressPerformance(context, '1 Mo', 0, 0),
+                progressPerformance(context, '3 Mo', 0, 0),
+                progressPerformance(context, '6 Mo', 0, 0),
+                //progressPerformance(context, '1 Year',10, -1.09),
+                ValueListenableBuilder(
+                  valueListenable: _summaryNotifier,
+                  builder: (context, value, child) {
+                    if (_summaryNotifier.invalid()) {
+                      return Center(child: CircularProgressIndicator());
+                    }
+                    return progressPerformance(context, '1 Year', _summaryNotifier.value.return52W, _summaryNotifier.value.return52W);
+                  },
+                ),
+                progressPerformance(context, '5 Year', 0, 0),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+  */
+
+  Widget chartRangeChips(BuildContext context) {
+    return Container(
+      //color: Colors.green,
+      width: double.maxFinite,
+      //margin: EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0),
+      //margin: EdgeInsets.all(10.0),
+      //padding: EdgeInsets.only(left: 10.0, right: 10.0),
+      height: 30.0,
+
+      decoration: BoxDecoration(
+        //color: Colors.green,
+        color: InvestrendTheme.of(context).tileBackground,
+        border: Border.all(
+          color: InvestrendTheme.of(context).chipBorder,
+          width: 1.0,
+        ),
+        borderRadius: BorderRadius.circular(2.0),
+
+        //color: Colors.green,
+      ),
+
+      child: Row(
+        children: List<Widget>.generate(
+          _listChipRange.length,
+          (int index) {
+            //print(_listChipRange[index]);
+            bool selected = _selectedChart == index;
+            return Expanded(
+              flex: 1,
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () {
+                    setState(() {
+                      _selectedChart = index;
+                    });
+                  },
+                  child: Container(
+                    color: selected ? Theme.of(context).accentColor : Colors.transparent,
+                    child: Center(
+                        child: Text(
+                      _listChipRange[index],
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText2
+                          .copyWith(fontSize: 12.0, color: selected ? Colors.white : InvestrendTheme.of(context).blackAndWhiteText),
+                    )),
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  /*
+  Widget domesticForeignRangeChips(BuildContext context) {
+    return Container(
+      //color: Colors.green,
+      width: double.maxFinite,
+      //margin: EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0),
+      //margin: EdgeInsets.all(10.0),
+      //padding: EdgeInsets.only(left: 10.0, right: 10.0),
+      height: 30.0,
+
+      decoration: BoxDecoration(
+        //color: Colors.green,
+        color: InvestrendTheme.of(context).tileBackground,
+        border: Border.all(
+          color: InvestrendTheme.of(context).chipBorder,
+          width: 1.0,
+        ),
+        borderRadius: BorderRadius.circular(2.0),
+
+        //color: Colors.green,
+      ),
+
+      child: Row(
+        children: List<Widget>.generate(
+          _listChipRange.length,
+          (int index) {
+            //print(_listChipRange[index]);
+            bool selected = _selectedDomesticForeign == index;
+            return Expanded(
+              flex: 1,
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () {
+                    setState(() {
+                      _selectedDomesticForeign = index;
+                    });
+                  },
+                  child: Container(
+                    color: selected ? Theme.of(context).accentColor : Colors.transparent,
+                    child: Center(
+                        child: Text(
+                      _listChipRange[index],
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText2
+                          .copyWith(fontSize: 12.0, color: selected ? Colors.white : InvestrendTheme.of(context).blackAndWhiteText),
+                    )),
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+  */
+  /*
+  Widget tileSector(BuildContext context, SectorObject sector, bool first, double width) {
+    double left = first ? 0 : 8.0;
+    //double right = end ? 0 : 0.0;
+    String percentText;
+    Color percentChangeTextColor;
+    Color percentChangeBackgroundColor;
+
+    percentText = InvestrendTheme.formatPercentChange(sector.percentChange);
+    percentChangeTextColor = InvestrendTheme.priceTextColor(sector.percentChange);
+    percentChangeBackgroundColor = InvestrendTheme.priceBackgroundColor(sector.percentChange);
+
+    return SizedBox(
+      width: width,
+      child: MaterialButton(
+        elevation: 0.0,
+        minWidth: 50.0,
+        splashColor: InvestrendTheme.of(context).tileSplashColor,
+        padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0, bottom: 10.0),
+        color: InvestrendTheme.of(context).tileBackground,
+        shape: RoundedRectangleBorder(
+          borderRadius: new BorderRadius.circular(10.0),
+          side: BorderSide(
+            color: InvestrendTheme.of(context).tileBackground,
+            width: 0.0,
+          ),
+        ),
+        child: Column(
+          children: [
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                sector.code,
+                style: Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.bold),
+              ),
+            ),
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                sector.member_count.toString() + ' Emiten',
+                style: Theme.of(context).textTheme.bodyText2.copyWith(fontWeight: FontWeight.w300),
+              ),
+            ),
+            Icon(
+              Icons.extension,
+              color: Theme.of(context).accentColor,
+            ),
+            SizedBox(
+              height: 5.0,
+            ),
+            Container(
+              padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 5.0, bottom: 5.0),
+              decoration: BoxDecoration(
+                color: percentChangeBackgroundColor,
+                shape: BoxShape.rectangle,
+                borderRadius: BorderRadius.all(Radius.circular(15.0)),
+              ),
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  percentText,
+                  style: TextStyle(color: percentChangeTextColor),
+                ),
+              ),
+            ),
+          ],
+        ),
+        onPressed: () {},
+      ),
+    );
+  }
+  */
+
+  // @override
+  // void didPush() {
+  //   // Route was pushed onto navigator and is now topmost route.
+  //   print('didPush' );
+  // }
+
+  // @override
+  // void didPopNext() {
+  //   // Covering route was popped off the navigator.
+  //   print('didPopNext');
+  // }
+  /*
+  void _rebuildSectors() {
+    listSectors.clear();
+    if (InvestrendTheme.storedData.listIndex.isNotEmpty) {
+      InvestrendTheme.storedData.listIndex.forEach((index) {
+        if (index != null && index.isSector) {
+          listSectors.add(SectorObject(index.code, index.listMembers.length, '/images/icons/action_bell.png', 0.0));
+        }
+      });
+    }
+  }
+  */
+  void doUpdate() async {
+    print('ScreenStockDetailOverview.doUpdate : ' + DateTime.now().toString());
+
+    //Stock stock = InvestrendTheme.of(context).stock;
+
+    //Stock stock = InvestrendTheme.of(context).stockNotifier.value;
+    Stock stock = context.read(primaryStockChangeNotifier).stock;
+    if (stock == null || !stock.isValid()) {
+      Stock stockDefault = InvestrendTheme.storedData.listStock.isEmpty ? null : InvestrendTheme.storedData.listStock.first;
+      //InvestrendTheme.of(context).stockNotifier.setStock(stock);
+      context.read(primaryStockChangeNotifier).setStock(stockDefault);
+      stock = context.read(primaryStockChangeNotifier).stock;
+    }
+
+    context.read(stockSummaryChangeNotifier).setStock(stock);
+    context.read(orderBookChangeNotifier).setStock(stock);
+    context.read(tradeBookChangeNotifier).setStock(stock);
+
+    /*
+    StockSummaryNotifier _summaryNotifier = InvestrendTheme.of(context).summaryNotifier;
+    bool stockChanged = stock != null && stock != _summaryNotifier.stock;
+    if (stockChanged) {
+      print('ScreenStockDetailOverview.stockChanged : ' + stockChanged.toString());
+      _summaryNotifier.setStock(stock);
+      _summaryNotifier.setData(null);
+      InvestrendTheme.of(context).orderbookNotifier.setStock(stock);
+      InvestrendTheme.of(context).orderbookNotifier.setData(null);
+    }
+    */
+
+    final stockSummary = await HttpSSI.fetchStockSummary(stock.code, stock.defaultBoard);
+    if (stockSummary != null) {
+      print('Future Summary DATA : ' + stockSummary.toString());
+      //_summaryNotifier.setData(stockSummary);
+      context.read(stockSummaryChangeNotifier).setData(stockSummary);
+    } else {
+      print('Future Summary NO DATA');
+    }
+    final orderbook = await HttpSSI.fetchOrderBook(stock.code, stock.defaultBoard);
+    if (orderbook != null) {
+      print('Future Orderbook DATA : ' + orderbook.toString());
+      //InvestrendTheme.of(context).orderbookNotifier.setData(orderbook);
+
+      orderbook.generateDataForUI(10, context: context);
+
+      context.read(orderBookChangeNotifier).setData(orderbook);
+    } else {
+      print('Future Orderbook NO DATA');
+    }
+  }
+
+/*
+  List<SectorObject> listSectors = List<SectorObject>.empty(growable: true);
+
+  // List<SectorObject> listSectors = <SectorObject>[
+  //   SectorObject('Agriculture', 25, '/images/icons/action_bell.png', 0.14),
+  //   SectorObject('Mining', 21, '/images/icons/action_bell.png', 10.14),
+  //   SectorObject('Consumer', 25, '/images/icons/action_bell.png', -0.14),
+  //   SectorObject('Property', 18, '/images/icons/action_bell.png', -10.14),
+  //   SectorObject('Finance', 7, '/images/icons/action_bell.png', 0.14),
+  //   SectorObject('Infrastructure', 663, '/images/icons/action_bell.png', -8.14),
+  //   SectorObject('Constructor', 11, '/images/icons/action_bell.png', 0.14),
+  //   SectorObject('Market', 398, '/images/icons/action_bell.png', 28.14),
+  // ];
+
+  Widget gridWorldIndices(BuildContext context, List<SectorObject> list) {
+    List<Widget> widgets = List<Widget>.empty(growable: true);
+
+    int countData = list.length;
+    for (int i = 0; i < countData; i++) {
+      int iPlus = i + 1;
+      if (iPlus < countData) {
+        widgets.add(Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            //tileWorlIndices(context, list[i], true),
+            SizedBox(
+              width: InvestrendTheme.cardMargin,
+            ),
+            //tileWorlIndices(context, list[iPlus], false)
+          ],
+        ));
+        i = iPlus;
+      } else {
+        widgets.add(Row(
+          children: [
+            //tileWorlIndices(context, list[i], true),
+            SizedBox(
+              width: InvestrendTheme.cardMargin,
+            ),
+            Expanded(
+              flex: 1,
+              child: Center(child: Text(' ')),
+            ),
+          ],
+        ));
+      }
+      widgets.add(SizedBox(
+        height: InvestrendTheme.cardMargin,
+      ));
+    }
+    print('richy widgets size : ' + widgets.length.toString());
+
+    return Column(
+      children: widgets,
+    );
+  }
+  */
+/*
+  Widget gridSectors(BuildContext context) {
+    return LayoutBuilder(builder: (context, constrains) {
+      print('constrains ' + constrains.maxWidth.toString());
+      const int gridCount = 3;
+      double availableWidth = constrains.maxWidth - (InvestrendTheme.cardMargin * 2);
+      print('availableWidth $availableWidth');
+      double tileWidth = availableWidth / gridCount;
+      print('tileWidth $tileWidth');
+      List<Widget> columns = List<Widget>.empty(growable: true);
+
+      int countData = listSectors.length;
+      for (int i = 0; i < countData; i++) {
+        int iPlus2 = i + 2;
+        int iPlus1 = i + 1;
+
+        List<Widget> rows = List<Widget>.empty(growable: true);
+        for (int x = 0; x < 3; x++) {
+          int index = x + i;
+          if (x > 0) {
+            rows.add(SizedBox(
+              width: InvestrendTheme.cardMargin,
+            ));
+          }
+          if (index < countData) {
+            rows.add(tileSector(
+              context,
+              listSectors[index],
+              true,
+              tileWidth,
+            ));
+          } else {
+            rows.add(Expanded(
+              flex: 1,
+              child: Center(child: Text(' ')),
+            ));
+          }
+        }
+        columns.add(Row(
+          children: rows,
+        ));
+        columns.add(SizedBox(
+          height: InvestrendTheme.cardMargin,
+        ));
+        i += 2;
+      }
+
+      return Column(
+        children: columns,
+      );
+    });
+  }
+  */
+/*
+  Widget createCardSector(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.all(InvestrendTheme.cardMargin),
+      child: Padding(
+        padding: const EdgeInsets.all(InvestrendTheme.cardPadding),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ComponentCreator.subtitle(
+              context,
+              'search_market_card_sector_title'.tr(),
+            ),
+            SizedBox(
+              height: InvestrendTheme.cardMargin,
+            ),
+            /*
+            FutureBuilder<List<IndexSummary>>(
+              future: indexSummarys,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  print('snapshot.data.length = '+snapshot.data.length.toString());
+                  //return Text(snapshot.data.length.toString(), style: Theme.of(context).textTheme.bodyText2,);
+                  if (snapshot.data.length > 0) {
+
+                    snapshot.data.forEach((indexSummary) {
+                      if(indexSummary != null){
+                        print(indexSummary.toString());
+                        int countSector = listSectors.length;
+                        for(int i = 0; i <countSector; i++){
+                          SectorObject sector = listSectors.elementAt(i);
+                          if(StringUtils.equalsIgnoreCase(indexSummary.code, sector.code)){
+                            sector.percentChange = indexSummary.percentChange;
+                            break;
+                          }
+                        }
+                      }
+
+                    });
+
+                    return gridSectors(context);
+
+
+                    //return gridWorldIndices(context, snapshot.data);
+                  } else {
+                    return Center(
+                        child: Text(
+                          'No Data',
+                          style: Theme.of(context).textTheme.bodyText2,
+                        ));
+                  }
+                } else if (snapshot.hasError) {
+                  return Center(
+                      child: Text("${snapshot.error}",
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyText2
+                              .copyWith(color: Theme.of(context).errorColor)));
+                }
+
+                // By default, show a loading spinner.
+                return Center(child: CircularProgressIndicator());
+                //return listSectors.length > 0 ? gridSectors(context) : Center(child: CircularProgressIndicator());
+              },
+            ),
+            */
+            listSectors.length > 0 ? gridSectors(context) : Center(child: CircularProgressIndicator()),
+          ],
+        ),
+      ),
+    );
+  }
+  */
+/*
+  Widget createCardLocalForeign(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.all(InvestrendTheme.cardMargin),
+      child: Padding(
+        padding: const EdgeInsets.all(InvestrendTheme.cardPadding),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: ComponentCreator.subtitle(
+                    context,
+                    'search_market_card_domestic_foreign_title'.tr(),
+                  ),
+                ),
+                MaterialButton(
+                    elevation: 0.0,
+                    visualDensity: VisualDensity.compact,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                    color: InvestrendTheme.of(context).tileBackground,
+                    child: Row(
+                      children: [
+                        Text(
+                          'All Market',
+                          style: Theme.of(context).textTheme.bodyText2,
+                        ),
+                        Icon(
+                          Icons.arrow_drop_down,
+                          color: Colors.grey,
+                        ),
+                      ],
+                    ),
+                    onPressed: () {
+                      InvestrendTheme.of(context).showSnackBar(context, 'Action choose Market');
+                    }),
+              ],
+            ),
+            SizedBox(
+              height: InvestrendTheme.cardMargin,
+            ),
+            domesticForeignRangeChips(context),
+            SizedBox(
+              height: 20.0,
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: InvestrendTheme.cardMargin,
+                  ),
+                  Expanded(
+                      flex: 1,
+                      child: Text(
+                        '',
+                        style: Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.start,
+                      )),
+                  SizedBox(
+                    width: InvestrendTheme.cardMargin,
+                  ),
+                  Expanded(
+                      flex: 1,
+                      child: Text(
+                        'Local',
+                        style: Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.end,
+                      )),
+                  SizedBox(
+                    width: InvestrendTheme.cardMargin,
+                  ),
+                  Expanded(
+                      flex: 1,
+                      child: Text(
+                        'Foreign',
+                        style: Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.end,
+                      )),
+                  SizedBox(
+                    width: InvestrendTheme.cardMargin,
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: InvestrendTheme.cardMargin,
+                  ),
+                  Expanded(
+                      flex: 1,
+                      child: Text(
+                        'Buy',
+                        style: Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.start,
+                      )),
+                  SizedBox(
+                    width: InvestrendTheme.cardMargin,
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: ValueListenableBuilder(
+                      valueListenable: _summaryNotifier,
+                      builder: (context, value, child) {
+                        if (_summaryNotifier.invalid()) {
+                          return Center(child: CircularProgressIndicator());
+                        }
+                        return ComponentCreator.textFit(
+                          context,
+                          InvestrendTheme.formatValue(_summaryNotifier.value.domesticBuyerValue),
+                          style: Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.normal),
+                          alignment: Alignment.centerRight,
+                        );
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    width: InvestrendTheme.cardMargin,
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: ValueListenableBuilder(
+                      valueListenable: _summaryNotifier,
+                      builder: (context, value, child) {
+                        if (_summaryNotifier.invalid()) {
+                          return Center(child: CircularProgressIndicator());
+                        }
+                        return ComponentCreator.textFit(
+                          context,
+                          InvestrendTheme.formatValue(_summaryNotifier.value.foreignBuyerValue),
+                          style: Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.normal),
+                          alignment: Alignment.centerRight,
+                        );
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    width: InvestrendTheme.cardMargin,
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
+              color: InvestrendTheme.of(context).tileBackground,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: InvestrendTheme.cardMargin,
+                  ),
+                  Expanded(
+                      flex: 1,
+                      child: Text(
+                        'Sell',
+                        style: Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.start,
+                      )),
+                  SizedBox(
+                    width: InvestrendTheme.cardMargin,
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: ValueListenableBuilder(
+                      valueListenable: _summaryNotifier,
+                      builder: (context, value, child) {
+                        if (_summaryNotifier.invalid()) {
+                          return Center(child: CircularProgressIndicator());
+                        }
+                        return ComponentCreator.textFit(
+                          context,
+                          InvestrendTheme.formatValue(_summaryNotifier.value.domesticSellerValue),
+                          style: Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.normal),
+                          alignment: Alignment.centerRight,
+                        );
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    width: InvestrendTheme.cardMargin,
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: ValueListenableBuilder(
+                      valueListenable: _summaryNotifier,
+                      builder: (context, value, child) {
+                        if (_summaryNotifier.invalid()) {
+                          return Center(child: CircularProgressIndicator());
+                        }
+                        return ComponentCreator.textFit(
+                          context,
+                          InvestrendTheme.formatValue(_summaryNotifier.value.foreignSellerValue),
+                          style: Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.normal),
+                          alignment: Alignment.centerRight,
+                        );
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    width: InvestrendTheme.cardMargin,
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: InvestrendTheme.cardMargin,
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: Text(
+                      'Net',
+                      style: Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.start,
+                    ),
+                  ),
+                  SizedBox(
+                    width: InvestrendTheme.cardMargin,
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: ValueListenableBuilder(
+                      valueListenable: _summaryNotifier,
+                      builder: (context, value, child) {
+                        if (_summaryNotifier.invalid()) {
+                          return Center(child: CircularProgressIndicator());
+                        }
+                        int netDomestic = _summaryNotifier.value.domesticBuyerValue - _summaryNotifier.value.domesticSellerValue;
+                        return ComponentCreator.textFit(
+                          context,
+                          InvestrendTheme.formatValue(netDomestic),
+                          style: Theme.of(context).textTheme.bodyText1.copyWith(
+                                fontWeight: FontWeight.normal,
+                                color: InvestrendTheme.priceTextColor(netDomestic.toDouble()),
+                              ),
+                          alignment: Alignment.centerRight,
+                        );
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    width: InvestrendTheme.cardMargin,
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: ValueListenableBuilder(
+                      valueListenable: _summaryNotifier,
+                      builder: (context, value, child) {
+                        if (_summaryNotifier.invalid()) {
+                          return Center(child: CircularProgressIndicator());
+                        }
+                        int netForeign = _summaryNotifier.value.foreignBuyerValue - _summaryNotifier.value.foreignSellerValue;
+                        return ComponentCreator.textFit(
+                          context,
+                          InvestrendTheme.formatValue(netForeign),
+                          style: Theme.of(context).textTheme.bodyText1.copyWith(
+                                fontWeight: FontWeight.normal,
+                                color: InvestrendTheme.priceTextColor(netForeign.toDouble()),
+                              ),
+                          alignment: Alignment.centerRight,
+                        );
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    width: InvestrendTheme.cardMargin,
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
+              color: InvestrendTheme.of(context).tileBackground,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: InvestrendTheme.cardMargin,
+                  ),
+                  Expanded(
+                      flex: 1,
+                      child: Text(
+                        '% Turnover',
+                        style: Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.start,
+                      )),
+                  SizedBox(
+                    width: InvestrendTheme.cardMargin,
+                  ),
+                  Expanded(
+                      flex: 1,
+                      child: ComponentCreator.textFit(
+                        context,
+                        '83%',
+                        style: Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.bold),
+                        alignment: Alignment.centerRight,
+                      )),
+                  SizedBox(
+                    width: InvestrendTheme.cardMargin,
+                  ),
+                  Expanded(
+                      flex: 1,
+                      child: ComponentCreator.textFit(
+                        context,
+                        '17%',
+                        style: Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.bold),
+                        alignment: Alignment.centerRight,
+                      )),
+                  SizedBox(
+                    width: InvestrendTheme.cardMargin,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+   */
+  Widget getTableDataPosition1(BuildContext context) {
+    int jumlahLot = 275;
+    double averagePrice = 1000.0;
+    int marketValue = 48224000;
+    double percentPortfolio = 11.23;
+
+    TableRow row0 = TableRow(children: [
+      ComponentCreator.tableCellLabel(context, 'stock_detail_overview_card_position_lot_quantity'.tr()),
+      ComponentCreator.tableCellLabel(
+        context,
+        'stock_detail_overview_card_position_average_price'.tr(),
+      ),
+    ]);
+    TableRow row1 = TableRow(children: [
+      ComponentCreator.tableCellValueBold(context, InvestrendTheme.formatComma(jumlahLot)),
+      ComponentCreator.tableCellValueBold(
+        context,
+        InvestrendTheme.formatMoneyDouble(averagePrice, prefixRp: true),
+      ),
+    ]);
+    TableRow row2 = TableRow(children: [
+      ComponentCreator.tableCellLabel(context, 'stock_detail_overview_card_position_market_value'.tr()),
+      ComponentCreator.tableCellLabel(
+        context,
+        'stock_detail_overview_card_position_percent_portfolio'.tr(),
+      ),
+    ]);
+    TableRow row3 = TableRow(children: [
+      ComponentCreator.tableCellValueBold(context, InvestrendTheme.formatComma(marketValue)),
+      ComponentCreator.tableCellValueBold(
+        context,
+        InvestrendTheme.formatPriceDouble(percentPortfolio),
+      ),
+    ]);
+    return Table(
+      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+      //border: TableBorder.all(color: Colors.black),
+      columnWidths: {0: FractionColumnWidth(.5)},
+      children: [
+        row0,
+        row1,
+        row2,
+        row3,
+      ],
+    );
+  }
+
+  Widget getTableDataPosition2(BuildContext context) {
+    int todayReturnValue = 3288000;
+    double todayReturnPercentage = 12.0;
+
+    int totalReturnValue = 20824000;
+    double totalReturnPercentage = 76.11;
+
+    String todayValue = InvestrendTheme.formatMoney(todayReturnValue, prefixPlus: true, prefixRp: true);
+    String totalValue = InvestrendTheme.formatMoney(totalReturnValue, prefixPlus: true, prefixRp: true);
+    String todayPercentage = ' (' + InvestrendTheme.formatPercentChange(todayReturnPercentage, sufixPercent: true) + ')';
+    String totalPercentage = ' (' + InvestrendTheme.formatPercentChange(totalReturnPercentage, sufixPercent: true) + ')';
+    Color colorToday = InvestrendTheme.priceTextColor(todayReturnValue);
+    Color colorTotal = InvestrendTheme.priceTextColor(totalReturnValue);
+
+    TableRow row0 = TableRow(children: [
+      ComponentCreator.tableCellLabel(context, 'stock_detail_overview_card_position_todays_return'.tr()),
+      FittedBox(
+        alignment: Alignment.centerLeft,
+        fit: BoxFit.scaleDown,
+        child: Row(
+          children: [
+            ComponentCreator.tableCellValueBold(context, todayValue, color: colorToday),
+            ComponentCreator.tableCellLabel(context, todayPercentage),
+          ],
+          crossAxisAlignment: CrossAxisAlignment.center,
+        ),
+      ),
+    ]);
+    TableRow row1 = TableRow(children: [
+      ComponentCreator.tableCellLabel(
+        context,
+        'stock_detail_overview_card_position_total_return'.tr(),
+      ),
+      FittedBox(
+        alignment: Alignment.centerLeft,
+        fit: BoxFit.scaleDown,
+        child: Row(
+          children: [
+            ComponentCreator.tableCellValueBold(context, totalValue, color: colorTotal),
+            ComponentCreator.tableCellLabel(context, totalPercentage),
+          ],
+          crossAxisAlignment: CrossAxisAlignment.center,
+        ),
+      ),
+    ]);
+    return Table(
+      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+      //border: TableBorder.all(color: Colors.black),
+      columnWidths: {0: FractionColumnWidth(.4)},
+      children: [
+        row0,
+        row1,
+      ],
+    );
+  }
+
+  Widget getTableDataOverview(BuildContext context) {
+    return Consumer(builder: (context, watch, child) {
+      final notifier = watch(stockSummaryChangeNotifier);
+      if (notifier.invalid()) {
+        return Center(child: CircularProgressIndicator());
+      }
+      const padding = 15.0;
+      TableRow row0 = TableRow(children: [
+        ComponentCreator.tableCellLeft(context, 'Previous'),
+        ComponentCreator.tableCellRight(context, InvestrendTheme.formatPrice(notifier.summary.prev),
+            color: InvestrendTheme.yellowText, padding: padding),
+        ComponentCreator.tableCellLeft(context, 'Turnover', padding: padding),
+        ComponentCreator.tableCellRight(
+          context,
+          '????',
+        ),
+      ]);
+
+      TableRow row1 = TableRow(children: [
+        ComponentCreator.tableCellLeft(context, 'Open'),
+        ComponentCreator.tableCellRight(context, InvestrendTheme.formatPrice(notifier.summary.open),
+            color: InvestrendTheme.priceTextColor(notifier.summary.open, prev: notifier.summary.prev), padding: padding),
+        ComponentCreator.tableCellLeft(context, 'Vol (Shares)', padding: padding),
+        ComponentCreator.tableCellRight(
+          context,
+          InvestrendTheme.formatValue(context, notifier.summary.volume),
+        ),
+      ]);
+      TableRow row2 = TableRow(children: [
+        ComponentCreator.tableCellLeft(context, 'Low'),
+        ComponentCreator.tableCellRight(context, InvestrendTheme.formatPrice(notifier.summary.low),
+            color: InvestrendTheme.priceTextColor(notifier.summary.low, prev: notifier.summary.prev), padding: padding),
+        ComponentCreator.tableCellLeft(context, 'Market Cap', padding: padding),
+        ComponentCreator.tableCellRight(
+          context,
+          InvestrendTheme.formatValue(context, notifier.summary.marketCap),
+        ),
+      ]);
+
+      TableRow row3 = TableRow(children: [
+        ComponentCreator.tableCellLeft(context, 'High'),
+        ComponentCreator.tableCellRight(context, InvestrendTheme.formatPrice(notifier.summary.hi),
+            color: InvestrendTheme.priceTextColor(notifier.summary.hi, prev: notifier.summary.prev), padding: padding),
+        ComponentCreator.tableCellLeft(context, 'PER', padding: padding),
+        ComponentCreator.tableCellRight(
+          context,
+          '????',
+        ),
+      ]);
+      TableRow row4 = TableRow(children: [
+        ComponentCreator.tableCellLeft(context, 'Avg. Price'),
+        ComponentCreator.tableCellRight(context, InvestrendTheme.formatPrice(notifier.summary.averagePrice.toInt()),
+            color: InvestrendTheme.priceTextColor(notifier.summary.averagePrice.toInt(), prev: notifier.summary.prev), padding: padding),
+        ComponentCreator.tableCellLeft(context, 'YTD (%)', padding: padding),
+        ComponentCreator.tableCellRight(context, InvestrendTheme.formatPercentChange(notifier.summary.returnYTD),
+            color: InvestrendTheme.changeTextColor(notifier.summary.returnYTD)),
+      ]);
+      return Table(
+        defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+        //border: TableBorder.all(color: Colors.black),
+        columnWidths: {0: FractionColumnWidth(.2)},
+        children: [
+          row0,
+          row1,
+          row2,
+          row3,
+          row4,
+        ],
+      );
+    });
+
+    /*
+    StockSummaryNotifier _summaryNotifier = InvestrendTheme.of(context).summaryNotifier;
+    return ValueListenableBuilder(
+      valueListenable: _summaryNotifier,
+      builder: (context, StockSummary value, child) {
+        if (_summaryNotifier.invalid()) {
+          return Center(child: CircularProgressIndicator());
+        }
+        const padding = 15.0;
+        TableRow row0 = TableRow(children: [
+          ComponentCreator.tableCellLeft(context, 'Previous'),
+          ComponentCreator.tableCellRight(context, InvestrendTheme.formatPrice(value.prev), color: InvestrendTheme.yellowText, padding: padding),
+          ComponentCreator.tableCellLeft(context, 'Turnover', padding: padding),
+          ComponentCreator.tableCellRight(
+            context,
+            '????',
+          ),
+        ]);
+
+        TableRow row1 = TableRow(children: [
+          ComponentCreator.tableCellLeft(context, 'Open'),
+          ComponentCreator.tableCellRight(context, InvestrendTheme.formatPrice(value.open),
+              color: InvestrendTheme.priceTextColor(value.open, prev: value.prev), padding: padding),
+          ComponentCreator.tableCellLeft(context, 'Vol (Shares)', padding: padding),
+          ComponentCreator.tableCellRight(
+            context,
+            InvestrendTheme.formatValue(value.volume),
+          ),
+        ]);
+        TableRow row2 = TableRow(children: [
+          ComponentCreator.tableCellLeft(context, 'Low'),
+          ComponentCreator.tableCellRight(context, InvestrendTheme.formatPrice(value.low),
+              color: InvestrendTheme.priceTextColor(value.low, prev: value.prev), padding: padding),
+          ComponentCreator.tableCellLeft(context, 'Market Cap', padding: padding),
+          ComponentCreator.tableCellRight(
+            context,
+            InvestrendTheme.formatValue(value.marketCap),
+          ),
+        ]);
+
+        TableRow row3 = TableRow(children: [
+          ComponentCreator.tableCellLeft(context, 'High'),
+          ComponentCreator.tableCellRight(context, InvestrendTheme.formatPrice(value.hi),
+              color: InvestrendTheme.priceTextColor(value.hi, prev: value.prev), padding: padding),
+          ComponentCreator.tableCellLeft(context, 'PER', padding: padding),
+          ComponentCreator.tableCellRight(
+            context,
+            '????',
+          ),
+        ]);
+        TableRow row4 = TableRow(children: [
+          ComponentCreator.tableCellLeft(context, 'Avg. Price'),
+          ComponentCreator.tableCellRight(context, InvestrendTheme.formatPrice(value.averagePrice.toInt()),
+              color: InvestrendTheme.priceTextColor(value.averagePrice.toInt(), prev: value.prev), padding: padding),
+          ComponentCreator.tableCellLeft(context, 'YTD (%)', padding: padding),
+          ComponentCreator.tableCellRight(context, InvestrendTheme.formatPercentChange(value.returnYTD),
+              color: InvestrendTheme.changeTextColor(value.returnYTD)),
+        ]);
+        return Table(
+          defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+          //border: TableBorder.all(color: Colors.black),
+          columnWidths: {0: FractionColumnWidth(.2)},
+          children: [
+            row0,
+            row1,
+            row2,
+            row3,
+            row4,
+          ],
+        );
+      },
+    );
+    */
+  }
+
+  Widget getTableDataOrderbook(BuildContext context) {
+    return Consumer(builder: (context, watch, child) {
+      final notifier = watch(orderBookChangeNotifier);
+      if (notifier.invalid()) {
+        return Center(child: CircularProgressIndicator());
+      }
+      const padding = 10.0;
+      List<TableRow> list = List.empty(growable: true);
+
+      TableRow header = TableRow(children: [
+        ComponentCreator.tableCellLeftHeader(context, '#'),
+        ComponentCreator.tableCellLeftHeader(context, 'Lot'),
+        ComponentCreator.tableCellRightHeader(context, 'Bids', padding: padding),
+        ComponentCreator.tableCellLeftHeader(context, 'Offers', padding: padding),
+        ComponentCreator.tableCellRightHeader(context, 'Lot'),
+        ComponentCreator.tableCellRightHeader(context, '#'),
+      ]);
+      list.add(header);
+
+      StockSummary stockSummary = context.read(stockSummaryChangeNotifier).summary;
+      int prev = stockSummary != null && stockSummary.prev != null ? stockSummary.prev : 0;
+
+      // StockSummaryNotifier _summaryNotifier = InvestrendTheme.of(context).summaryNotifier;
+      // int prev = _summaryNotifier != null && _summaryNotifier.value != null ? _summaryNotifier.value.prev : 0;
+
+      int maxShowLevel = 6;
+      int totalVolumeShowedBid = 0;
+      int totalVolumeShowedOffer = 0;
+      for (int index = 0; index < maxShowLevel; index++) {
+        totalVolumeShowedBid += notifier.orderbook.bidVol(index);
+        totalVolumeShowedOffer += notifier.orderbook.offerVol(index);
+      }
+      for (int index = 0; index < maxShowLevel; index++) {
+        double fractionBid = notifier.orderbook.bidVol(index) / totalVolumeShowedBid;
+        double fractionOffer = notifier.orderbook.offerVol(index) / totalVolumeShowedOffer;
+
+        bool showBid = notifier.orderbook.bids.elementAt(index) > 0;
+        bool showOffer = notifier.orderbook.offers.elementAt(index) > 0;
+
+        print('orderbook[$index] --> fractionBid : $fractionBid  fractionOffer --> $fractionOffer');
+        print('orderbook[$index] --> totalBid : ' +
+            notifier.orderbook.totalBid.toString() +
+            '  bidVol --> ' +
+            notifier.orderbook.bidVol(index).toString());
+        print('orderbook[$index] --> totalOffer : ' +
+            notifier.orderbook.totalOffer.toString() +
+            '  offerVol --> ' +
+            notifier.orderbook.offerVol(index).toString());
+        TableRow row = TableRow(children: [
+          cellBidQueue(context, notifier.orderbook.bidsQueue.elementAt(index), () {
+            InvestrendTheme.of(context)
+                .showSnackBar(context, 'Action show queue for : ' + notifier.orderbook.bidsQueue.elementAt(index).toString());
+          }),
+          cellBidLot(context, notifier.orderbook.bidLot(index), () {
+            // show nothing
+          }),
+          cellBidPrice(context, notifier.orderbook.bids.elementAt(index), prev, fractionBid, padding, () {
+            InvestrendTheme.of(context).showSnackBar(context, 'Action show Bid for : ' + notifier.orderbook.bids.elementAt(index).toString());
+          }),
+          cellOfferPrice(context, notifier.orderbook.offers.elementAt(index), prev, fractionOffer, padding, () {
+            InvestrendTheme.of(context)
+                .showSnackBar(context, 'Action show Offer for : ' + notifier.orderbook.offers.elementAt(index).toString());
+          }),
+          cellOfferLot(context, notifier.orderbook.offerLot(index), () {
+            // show nothing
+          }),
+          cellOfferQueue(context, notifier.orderbook.offersQueue.elementAt(index), () {
+            InvestrendTheme.of(context)
+                .showSnackBar(context, 'Action show queue for : ' + notifier.orderbook.offersQueue.elementAt(index).toString());
+          }),
+        ]);
+        list.add(row);
+      }
+
+      TableRow total = TableRow(children: [
+        SizedBox(width: 1),
+        ComponentCreator.tableCellLeftHeader(context, InvestrendTheme.formatComma(totalVolumeShowedBid)),
+        ComponentCreator.tableCellRightHeader(context, 'Total', padding: padding),
+        ComponentCreator.tableCellLeftHeader(context, 'Total', padding: padding),
+        ComponentCreator.tableCellRightHeader(context, InvestrendTheme.formatComma(totalVolumeShowedOffer)),
+        SizedBox(width: 1),
+      ]);
+      list.add(total);
+
+      return Table(
+        defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+        //border: TableBorder.all(color: Colors.black),
+        columnWidths: {
+          0: FractionColumnWidth(.15),
+          1: FractionColumnWidth(.16),
+          2: FractionColumnWidth(.19),
+          3: FractionColumnWidth(.19),
+          4: FractionColumnWidth(.16),
+          5: FractionColumnWidth(.15),
+        },
+        children: list,
+      );
+    });
+    /*
+    return ValueListenableBuilder(
+      valueListenable: InvestrendTheme.of(context).orderbookNotifier,
+      builder: (context, OrderBook value, child) {
+        if (InvestrendTheme.of(context).orderbookNotifier.invalid()) {
+          return Center(child: CircularProgressIndicator());
+        }
+        const padding = 10.0;
+        List<TableRow> list = List.empty(growable: true);
+
+        TableRow header = TableRow(children: [
+          ComponentCreator.tableCellLeftHeader(context, '#'),
+          ComponentCreator.tableCellLeftHeader(context, 'Lot'),
+          ComponentCreator.tableCellRightHeader(context, 'Bids', padding: padding),
+          ComponentCreator.tableCellLeftHeader(context, 'Offers', padding: padding),
+          ComponentCreator.tableCellRightHeader(context, 'Lot'),
+          ComponentCreator.tableCellRightHeader(context, '#'),
+        ]);
+        list.add(header);
+
+        StockSummaryNotifier _summaryNotifier = InvestrendTheme.of(context).summaryNotifier;
+        int prev = _summaryNotifier != null && _summaryNotifier.value != null ? _summaryNotifier.value.prev : 0;
+
+        int maxShowLevel = 6;
+        int totalVolumeShowedBid = 0;
+        int totalVolumeShowedOffer = 0;
+        for (int index = 0; index < maxShowLevel; index++) {
+          totalVolumeShowedBid += value.bidVol(index);
+          totalVolumeShowedOffer += value.offerVol(index);
+        }
+        for (int index = 0; index < maxShowLevel; index++) {
+          double fractionBid = value.bidVol(index) / totalVolumeShowedBid;
+          double fractionOffer = value.offerVol(index) / totalVolumeShowedOffer;
+
+          bool showBid = value.bids.elementAt(index) > 0;
+          bool showOffer = value.offers.elementAt(index) > 0;
+
+          print('orderbook[$index] --> fractionBid : $fractionBid  fractionOffer --> $fractionOffer');
+          print('orderbook[$index] --> totalBid : ' + value.totalBid.toString() + '  bidVol --> ' + value.bidVol(index).toString());
+          print('orderbook[$index] --> totalOffer : ' + value.totalOffer.toString() + '  offerVol --> ' + value.offerVol(index).toString());
+          TableRow row = TableRow(children: [
+            cellBidQueue(context, value.bidsQueue.elementAt(index), () {
+              InvestrendTheme.of(context).showSnackBar(context, 'Action show queue for : ' + value.bidsQueue.elementAt(index).toString());
+            }),
+            cellBidLot(context, value.bidLot(index), () {
+              // show nothing
+            }),
+            cellBidPrice(context, value.bids.elementAt(index), prev, fractionBid, padding, () {
+              InvestrendTheme.of(context).showSnackBar(context, 'Action show Bid for : ' + value.bids.elementAt(index).toString());
+            }),
+            cellOfferPrice(context, value.offers.elementAt(index), prev, fractionOffer, padding, () {
+              InvestrendTheme.of(context).showSnackBar(context, 'Action show Offer for : ' + value.offers.elementAt(index).toString());
+            }),
+            cellOfferLot(context, value.offerLot(index), () {
+              // show nothing
+            }),
+            cellOfferQueue(context, value.offersQueue.elementAt(index), () {
+              InvestrendTheme.of(context).showSnackBar(context, 'Action show queue for : ' + value.offersQueue.elementAt(index).toString());
+            }),
+          ]);
+          list.add(row);
+        }
+
+        TableRow total = TableRow(children: [
+          SizedBox(width: 1),
+          ComponentCreator.tableCellLeftHeader(context, InvestrendTheme.formatComma(totalVolumeShowedBid)),
+          ComponentCreator.tableCellRightHeader(context, 'Total', padding: padding),
+          ComponentCreator.tableCellLeftHeader(context, 'Total', padding: padding),
+          ComponentCreator.tableCellRightHeader(context, InvestrendTheme.formatComma(totalVolumeShowedOffer)),
+          SizedBox(width: 1),
+        ]);
+        list.add(total);
+
+        return Table(
+          defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+          //border: TableBorder.all(color: Colors.black),
+          columnWidths: {
+            0: FractionColumnWidth(.15),
+            1: FractionColumnWidth(.16),
+            2: FractionColumnWidth(.19),
+            3: FractionColumnWidth(.19),
+            4: FractionColumnWidth(.16),
+            5: FractionColumnWidth(.15),
+          },
+          children: list,
+        );
+      },
+    );
+    */
+  }
+
+  Widget cellOfferPrice(BuildContext context, int offerPrice, int prev, double fractionOffer, double padding, VoidCallback onTap) {
+    Color textColor = InvestrendTheme.priceTextColor(offerPrice, prev: prev);
+    Color backgroundColor = InvestrendTheme.priceBackgroundColor(offerPrice, prev: prev);
+    if (offerPrice > 0) {
+      return TableRowInkWell(
+        onTap: onTap,
+        child: ComponentCreator.tableCellLeftValue(
+          context,
+          InvestrendTheme.formatPrice(offerPrice),
+          padding: padding,
+          color: textColor,
+          height: 2.0,
+        ),
+      );
+
+      return TableRowInkWell(
+        onTap: onTap,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return Stack(
+              alignment: Alignment.centerLeft,
+              children: [
+                Container(
+                  margin: EdgeInsets.only(
+                    left: padding,
+                    top: 8.0,
+                  ),
+                  width: constraints.maxWidth * fractionOffer,
+                  height: 20,
+                  color: backgroundColor,
+                ),
+                ComponentCreator.tableCellLeftValue(
+                  context,
+                  InvestrendTheme.formatPrice(offerPrice),
+                  padding: padding,
+                  color: textColor,
+                  height: 2.0,
+                ),
+              ],
+            );
+          },
+        ),
+      );
+    } else {
+      return SizedBox(
+        width: 1,
+        height: 1,
+      );
+    }
+  }
+
+  Widget cellOfferLot(BuildContext context, int offerLot, VoidCallback onTap) {
+    if (offerLot > 0) {
+      return TableRowInkWell(
+        onTap: () {},
+        child: ComponentCreator.tableCellRightValue(
+          context,
+          InvestrendTheme.formatComma(offerLot),
+          fontWeight: FontWeight.w300,
+          height: 2.0,
+        ),
+      );
+    } else {
+      return SizedBox(
+        width: 1,
+        height: 1,
+      );
+    }
+  }
+
+  Widget cellOfferQueue(BuildContext context, int offerQueue, VoidCallback onTap) {
+    if (offerQueue > 0) {
+      return TableRowInkWell(
+        onTap: onTap,
+        child: ComponentCreator.tableCellRightValue(
+          context,
+          InvestrendTheme.formatComma(offerQueue),
+          fontWeight: FontWeight.w300,
+          height: 2.0,
+        ),
+      );
+    } else {
+      return SizedBox(
+        width: 1,
+        height: 1,
+      );
+    }
+  }
+
+  Widget cellBidPrice(BuildContext context, int bidPrice, int prev, double fractionBid, double padding, VoidCallback onTap) {
+    Color textColor = InvestrendTheme.priceTextColor(bidPrice, prev: prev);
+    Color backgroundColor = InvestrendTheme.priceBackgroundColor(bidPrice, prev: prev);
+
+    if (bidPrice > 0) {
+      return TableRowInkWell(
+        onTap: onTap,
+        child: ComponentCreator.tableCellRightValue(
+          context,
+          InvestrendTheme.formatPrice(bidPrice),
+          padding: padding,
+          color: textColor,
+          height: 2.0,
+        ),
+      );
+
+      return TableRowInkWell(
+        onTap: onTap,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return Stack(
+              alignment: Alignment.centerRight,
+              children: [
+                Container(
+                  margin: EdgeInsets.only(
+                    right: padding,
+                    top: 8.0,
+                  ),
+                  width: constraints.maxWidth * fractionBid,
+                  height: 20,
+                  color: backgroundColor,
+                ),
+                ComponentCreator.tableCellRightValue(
+                  context,
+                  InvestrendTheme.formatPrice(bidPrice),
+                  padding: padding,
+                  color: textColor,
+                  height: 2.0,
+                ),
+              ],
+            );
+          },
+        ),
+      );
+    } else {
+      return SizedBox(
+        width: 1,
+        height: 1,
+      );
+    }
+  }
+
+  Widget cellBidLot(BuildContext context, int bidLot, VoidCallback onTap) {
+    if (bidLot > 0) {
+      return TableRowInkWell(
+        onTap: onTap,
+        child: ComponentCreator.tableCellLeftValue(
+          context,
+          InvestrendTheme.formatComma(bidLot),
+          fontWeight: FontWeight.w300,
+          height: 2.0,
+        ),
+      );
+    } else {
+      return SizedBox(
+        width: 1,
+        height: 1,
+      );
+    }
+  }
+
+  Widget cellBidQueue(BuildContext context, int bidQueue, VoidCallback onTap) {
+    if (bidQueue > 0) {
+      return TableRowInkWell(
+        onTap: onTap,
+        child: ComponentCreator.tableCellLeftValue(context, InvestrendTheme.formatComma(bidQueue), fontWeight: FontWeight.w300, height: 2.0),
+      );
+    } else {
+      return SizedBox(
+        width: 1,
+        height: 1,
+      );
+    }
+  }
+
+  Widget getTableDataOrderbookSimple(BuildContext context) {
+    return Consumer(builder: (context, watch, child) {
+      final notifier = watch(orderBookChangeNotifier);
+      if (notifier.invalid()) {
+        return Center(child: CircularProgressIndicator());
+      }
+      const padding = 10.0;
+      List<TableRow> list = List.empty(growable: true);
+
+      TableRow header = TableRow(children: [
+        //ComponentCreator.tableCellLeftHeader(context, '#Q'),
+        ComponentCreator.tableCellLeftHeader(context, 'Lot'),
+        ComponentCreator.tableCellRightHeader(context, 'Bids', padding: padding),
+        ComponentCreator.tableCellLeftHeader(context, 'Offers', padding: padding),
+        ComponentCreator.tableCellRightHeader(context, 'Lot'),
+        //ComponentCreator.tableCellRightHeader(context, '#Q'),
+      ]);
+      list.add(header);
+
+      StockSummary stockSummary = context.read(stockSummaryChangeNotifier).summary;
+      int prev = stockSummary != null && stockSummary.prev != null ? stockSummary.prev : 0;
+
+      // StockSummaryNotifier _summaryNotifier = InvestrendTheme.of(context).summaryNotifier;
+      // int prev = _summaryNotifier != null && _summaryNotifier.value != null ? _summaryNotifier.value.prev : 0;
+
+      int maxShowLevel = 6;
+      int totalVolumeShowedBid = 0;
+      int totalVolumeShowedOffer = 0;
+      for (int index = 0; index < maxShowLevel; index++) {
+        totalVolumeShowedBid += notifier.orderbook.bidVol(index);
+        totalVolumeShowedOffer += notifier.orderbook.offerVol(index);
+      }
+      for (int index = 0; index < maxShowLevel; index++) {
+        // double fractionBid = value.bidVol(index) / value.totalBid;
+        // double fractionOffer = value.offerVol(index) / value.totalOffer;
+
+        double fractionBid = notifier.orderbook.bidVol(index) / totalVolumeShowedBid;
+        double fractionOffer = notifier.orderbook.offerVol(index) / totalVolumeShowedOffer;
+
+        print('orderbook[$index] --> fractionBid : $fractionBid  fractionOffer --> $fractionOffer');
+        print('orderbook[$index] --> totalBid : ' +
+            notifier.orderbook.totalBid.toString() +
+            '  bidVol --> ' +
+            notifier.orderbook.bidVol(index).toString());
+        print('orderbook[$index] --> totalOffer : ' +
+            notifier.orderbook.totalOffer.toString() +
+            '  offerVol --> ' +
+            notifier.orderbook.offerVol(index).toString());
+        TableRow row = TableRow(children: [
+          // cellBidQueue(context, value.bidsQueue.elementAt(index), () {
+          //   InvestrendTheme.of(context).showSnackBar(context, 'Action show queue for : ' + value.bidsQueue.elementAt(index).toString());
+          // }),
+          cellBidLot(context, notifier.orderbook.bidLot(index), () {
+            // show nothing
+          }),
+          cellBidPrice(context, notifier.orderbook.bids.elementAt(index), prev, fractionBid, padding, () {
+            InvestrendTheme.of(context).showSnackBar(context, 'Action show Bid for : ' + notifier.orderbook.bids.elementAt(index).toString());
+          }),
+          cellOfferPrice(context, notifier.orderbook.offers.elementAt(index), prev, fractionOffer, padding, () {
+            InvestrendTheme.of(context)
+                .showSnackBar(context, 'Action show Offer for : ' + notifier.orderbook.offers.elementAt(index).toString());
+          }),
+          cellOfferLot(context, notifier.orderbook.offerLot(index), () {
+            // show nothing
+          }),
+          // cellOfferQueue(context, value.offersQueue.elementAt(index), () {
+          //   InvestrendTheme.of(context).showSnackBar(context, 'Action show queue for : ' + value.offersQueue.elementAt(index).toString());
+          // }),
+        ]);
+        list.add(row);
+      }
+
+      return Table(
+          defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+          //border: TableBorder.all(color: Colors.black),
+          columnWidths: {
+            0: FractionColumnWidth(.22),
+            1: FractionColumnWidth(.28),
+            2: FractionColumnWidth(.28),
+            3: FractionColumnWidth(.22),
+            // 4: FractionColumnWidth(.16),
+            // 5: FractionColumnWidth(.15),
+          },
+          children: list);
+    });
+    /*
+    return ValueListenableBuilder(
+      valueListenable: InvestrendTheme.of(context).orderbookNotifier,
+      builder: (context, OrderBook value, child) {
+        if (InvestrendTheme.of(context).orderbookNotifier.invalid()) {
+          return Center(child: CircularProgressIndicator());
+        }
+        const padding = 10.0;
+        List<TableRow> list = List.empty(growable: true);
+
+        TableRow header = TableRow(children: [
+          //ComponentCreator.tableCellLeftHeader(context, '#Q'),
+          ComponentCreator.tableCellLeftHeader(context, 'Lot'),
+          ComponentCreator.tableCellRightHeader(context, 'Bids', padding: padding),
+          ComponentCreator.tableCellLeftHeader(context, 'Offers', padding: padding),
+          ComponentCreator.tableCellRightHeader(context, 'Lot'),
+          //ComponentCreator.tableCellRightHeader(context, '#Q'),
+        ]);
+        list.add(header);
+        StockSummaryNotifier _summaryNotifier = InvestrendTheme.of(context).summaryNotifier;
+        int prev = _summaryNotifier != null && _summaryNotifier.value != null ? _summaryNotifier.value.prev : 0;
+
+        int maxShowLevel = 6;
+        int totalVolumeShowedBid = 0;
+        int totalVolumeShowedOffer = 0;
+        for (int index = 0; index < maxShowLevel; index++) {
+          totalVolumeShowedBid += value.bidVol(index);
+          totalVolumeShowedOffer += value.offerVol(index);
+        }
+        for (int index = 0; index < maxShowLevel; index++) {
+          // double fractionBid = value.bidVol(index) / value.totalBid;
+          // double fractionOffer = value.offerVol(index) / value.totalOffer;
+
+          double fractionBid = value.bidVol(index) / totalVolumeShowedBid;
+          double fractionOffer = value.offerVol(index) / totalVolumeShowedOffer;
+
+          print('orderbook[$index] --> fractionBid : $fractionBid  fractionOffer --> $fractionOffer');
+          print('orderbook[$index] --> totalBid : ' + value.totalBid.toString() + '  bidVol --> ' + value.bidVol(index).toString());
+          print('orderbook[$index] --> totalOffer : ' + value.totalOffer.toString() + '  offerVol --> ' + value.offerVol(index).toString());
+          TableRow row = TableRow(children: [
+            // cellBidQueue(context, value.bidsQueue.elementAt(index), () {
+            //   InvestrendTheme.of(context).showSnackBar(context, 'Action show queue for : ' + value.bidsQueue.elementAt(index).toString());
+            // }),
+            cellBidLot(context, value.bidLot(index), () {
+              // show nothing
+            }),
+            cellBidPrice(context, value.bids.elementAt(index), prev, fractionBid, padding, () {
+              InvestrendTheme.of(context).showSnackBar(context, 'Action show Bid for : ' + value.bids.elementAt(index).toString());
+            }),
+            cellOfferPrice(context, value.offers.elementAt(index), prev, fractionOffer, padding, () {
+              InvestrendTheme.of(context).showSnackBar(context, 'Action show Offer for : ' + value.offers.elementAt(index).toString());
+            }),
+            cellOfferLot(context, value.offerLot(index), () {
+              // show nothing
+            }),
+            // cellOfferQueue(context, value.offersQueue.elementAt(index), () {
+            //   InvestrendTheme.of(context).showSnackBar(context, 'Action show queue for : ' + value.offersQueue.elementAt(index).toString());
+            // }),
+          ]);
+          list.add(row);
+        }
+
+        return Table(
+            defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+            //border: TableBorder.all(color: Colors.black),
+            columnWidths: {
+              0: FractionColumnWidth(.22),
+              1: FractionColumnWidth(.28),
+              2: FractionColumnWidth(.28),
+              3: FractionColumnWidth(.22),
+              // 4: FractionColumnWidth(.16),
+              // 5: FractionColumnWidth(.15),
+            },
+            children: list);
+      },
+    );
+    */
+  }
+
+  Widget bidPrice(BuildContext context, int price, int prev, double padding, double fraction) {
+    Color textColor = InvestrendTheme.priceTextColor(price, prev: prev);
+    Color backgroundColor = InvestrendTheme.priceBackgroundColor(price, prev: prev);
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Stack(
+          alignment: Alignment.centerRight,
+          children: [
+            Container(
+              margin: EdgeInsets.only(right: padding),
+              width: constraints.maxWidth * fraction,
+              height: 20,
+              color: backgroundColor,
+            ),
+            ComponentCreator.tableCellRightValue(context, InvestrendTheme.formatPrice(price), padding: padding, color: textColor),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget offerPrice(BuildContext context, int price, int prev, double padding, double fraction) {
+    Color textColor = InvestrendTheme.priceTextColor(price, prev: prev);
+    Color backgroundColor = InvestrendTheme.priceBackgroundColor(price, prev: prev);
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Stack(
+          alignment: Alignment.centerLeft,
+          children: [
+            Container(
+              margin: EdgeInsets.only(left: padding),
+              width: constraints.maxWidth * fraction,
+              height: 20,
+              color: backgroundColor,
+            ),
+            ComponentCreator.tableCellLeftValue(context, InvestrendTheme.formatPrice(price), padding: padding, color: textColor),
+          ],
+        );
+      },
+    );
+    /*
+    return Stack(
+      alignment: Alignment.centerLeft,
+      children: [
+        FractionallySizedBox(
+          child: Container(
+            height: 20.0,
+            color: backgroundColor,
+          ),
+          widthFactor: fraction,
+        ),
+
+        ComponentCreator.tableCellLeftValue(context, InvestrendTheme.formatPrice(price), padding: padding, color: textColor),
+      ],
+    );
+
+     */
+  }
+
+  Widget createCardNews(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.all(InvestrendTheme.cardMargin),
+      child: Padding(
+        padding: const EdgeInsets.all(InvestrendTheme.cardPadding),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ComponentCreator.subtitleButtonMore(
+              context,
+              'stock_detail_overview_card_news_title'.tr(),
+              () {
+                InvestrendTheme.of(context).showSnackBar(context, "Action Related News More");
+              },
+            ),
+            // tileNews(context, listNews[0]),
+            // tileNews(context, listNews[1]),
+            // tileNews(context, listNews[2]),
+
+            FutureBuilder<List<HomeNews>>(
+              future: news,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  //return Text(snapshot.data.length.toString(), style: Theme.of(context).textTheme.bodyText2,);
+                  if (snapshot.data.length > 0) {
+                    List<Widget> list = List.empty(growable: true);
+                    int maxCount = snapshot.data.length > 3 ? 3 : snapshot.data.length;
+                    for (int i = 0; i < maxCount; i++) {
+                      //list.add(tileNews(context, snapshot.data[i]));
+                      list.add(ComponentCreator.tileNews(
+                        context,
+                        snapshot.data[i],
+                        commentClick: () {
+                          InvestrendTheme.of(context).showSnackBar(context, 'commentClick');
+                        },
+                        likeClick: () {
+                          InvestrendTheme.of(context).showSnackBar(context, 'likeClick');
+                        },
+                        shareClick: () {
+                          InvestrendTheme.of(context).showSnackBar(context, 'shareClick');
+                        },
+                      ));
+                    }
+
+                    return Column(
+                      children: list,
+                    );
+                    //return gridWorldIndices(context, snapshot.data);
+                  } else {
+                    return Center(
+                        child: Text(
+                      'No Data',
+                      style: Theme.of(context).textTheme.bodyText2,
+                    ));
+                  }
+                } else if (snapshot.hasError) {
+                  return Center(
+                      child: Column(
+                    children: [
+                      Text("${snapshot.error}",
+                          maxLines: 10, style: Theme.of(context).textTheme.bodyText2.copyWith(color: Theme.of(context).errorColor)),
+                      OutlinedButton(
+                          onPressed: () {
+                            news = HttpSSI.fetchNews();
+                          },
+                          child: Text('button_retry'.tr())),
+                    ],
+                  ));
+                }
+
+                // By default, show a loading spinner.
+                return Center(child: CircularProgressIndicator());
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class RichyPainter extends CustomPainter {
+  String text;
+
+  RichyPainter(this.text) : super();
+
+  @override
+  void paint(Canvas canvas, Size size) {}
+
+  @override
+  bool shouldRepaint(RichyPainter oldDelegate) {
+    return text != null && oldDelegate != null && oldDelegate.text != null && !StringUtils.equalsIgnoreCase(text, oldDelegate.text);
+  }
+}

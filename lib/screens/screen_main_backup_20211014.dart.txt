@@ -1,0 +1,1262 @@
+import 'package:Investrend/component/animation_creator.dart';
+import 'package:Investrend/component/avatar.dart';
+import 'package:Investrend/component/component_creator.dart';
+import 'package:Investrend/component/component_app_bar.dart';
+import 'package:Investrend/component/spinnies.dart';
+import 'package:Investrend/main_application.dart';
+import 'package:Investrend/objects/data_object.dart';
+import 'package:Investrend/objects/riverpod_change_notifier.dart';
+import 'package:Investrend/objects/ssi_objects.dart';
+import 'package:Investrend/screens/profiles/screen_profile.dart';
+import 'package:Investrend/screens/tab_community/screen_community.dart';
+import 'package:Investrend/screens/screen_finder.dart';
+import 'package:Investrend/screens/tab_home/screen_home.dart';
+import 'package:Investrend/screens/tab_home/screen_notification.dart';
+import 'package:Investrend/screens/tab_portfolio/screen_portfolio.dart';
+import 'package:Investrend/screens/tab_search/screen_search.dart';
+import 'package:Investrend/screens/stock_detail/screen_stock_detail.dart';
+import 'package:Investrend/screens/tab_transaction/screen_transaction.dart';
+import 'package:Investrend/screens/trade/component/bottom_sheet_account.dart';
+import 'package:Investrend/utils/connection_services.dart';
+import 'package:Investrend/utils/investrend_theme.dart';
+import 'package:Investrend/utils/string_utils.dart';
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+class ScreenMain extends StatefulWidget {
+  @override
+  _ScreenMainState createState() => _ScreenMainState();
+}
+
+/* colors dari nugi
+
+Primary: 5414DB
+Redbg: F1CACC
+Red: E50449
+Greenbg: BFF5EB
+Green: 25B792
+Body: 394B55
+Subtle: 8C979F
+Dark: 010000
+Light: FAFAFA
+Accent: F4F2F9
+*/
+enum Languages { Indonesia, English }
+enum Tabs { Home, Search, Portfolio, Transaction, Community }
+
+class _ScreenMainState extends State<ScreenMain> with AutomaticKeepAliveClientMixin<ScreenMain> {
+  @override
+  bool get wantKeepAlive => true;
+  final Key homeKey = UniqueKey();
+  final Key searchKey = UniqueKey();
+  final Key portfolioKey = UniqueKey();
+  final Key transactionKey = UniqueKey();
+  final Key communityKey = UniqueKey();
+
+  Widget screenSearch = new ScreenSearch(
+    key: UniqueKey(),
+  );
+  Widget screenHome = new ScreenHome(key: UniqueKey());
+  Widget screenPortfolio = new ScreenPortfolio(
+    key: UniqueKey(),
+  );
+  Widget screenTransaction = new ScreenTransaction(
+    key: UniqueKey(),
+  );
+  Widget screenCommunity = new ScreenCommunity(
+    key: UniqueKey(),
+  );
+
+  TextEditingController _searchFilterController;
+
+  Future<Map> futureStockBrokerIndex;
+
+  //Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  /*
+  Future<Map> loadMd5() async {
+    final pref = await SharedPreferences.getInstance();
+    // _prefs.then((SharedPreferences pref) {
+    String md5broker = pref.getString('md5broker') ?? '';
+    String md5stock = pref.getString('md5stock') ?? '';
+    String md5index = pref.getString('md5index') ?? '';
+    int sharePerLot = pref.getInt('sharePerLot') ?? 1;
+
+    String md5brokerUpdate = pref.getString('md5brokerUpdate') ?? '';
+    String md5stockUpdate = pref.getString('md5stockUpdate') ?? '';
+    String md5indexUpdate = pref.getString('md5indexUpdate') ?? '';
+    print('init from SharedPrefferences-----------');
+    print('init md5broker $md5broker');
+    print('init md5stock $md5stock');
+    print('init md5index $md5index');
+    print('init sharePerLot $sharePerLot');
+    print('init md5brokerUpdate $md5brokerUpdate');
+    print('init md5stockUpdate $md5stockUpdate');
+    print('init md5indexUpdate $md5indexUpdate');
+
+    MD5StockBrokerIndex savedMD5stockBrokerIndex =
+        MD5StockBrokerIndex(md5broker, md5stock, md5index, sharePerLot, md5brokerUpdate, md5stockUpdate, md5indexUpdate);
+    InvestrendTheme.md5stockBrokerIndex.copyValueFrom(savedMD5stockBrokerIndex);
+
+    return updateStockBrokerIndex();
+    // }).whenComplete(() => updateStockBrokerIndex());
+  }
+  */
+  @override
+  void initState() {
+    super.initState();
+    _searchFilterController = new TextEditingController();
+
+    /*
+    Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+    _prefs.then((SharedPreferences pref) {
+      String md5broker=pref.getString('md5broker') ?? '';
+      String md5stock=pref.getString('md5stock') ?? '';
+      String md5index=pref.getString('md5index') ?? '';
+      int sharePerLot = pref.getInt('sharePerLot') ?? 1;
+
+      String md5brokerUpdate=pref.getString('md5brokerUpdate') ?? '';
+      String md5stockUpdate=pref.getString('md5stockUpdate') ?? '';
+      String md5indexUpdate=pref.getString('md5indexUpdate') ?? '';
+      print('init from SharedPrefferences-----------');
+      print('init md5broker $md5broker');
+      print('init md5stock $md5stock');
+      print('init md5index $md5index');
+      print('init sharePerLot $sharePerLot');
+      print('init md5brokerUpdate $md5brokerUpdate');
+      print('init md5stockUpdate $md5stockUpdate');
+      print('init md5indexUpdate $md5indexUpdate');
+
+      MD5StockBrokerIndex savedMD5stockBrokerIndex = MD5StockBrokerIndex(md5broker, md5stock, md5index, sharePerLot, md5brokerUpdate, md5stockUpdate, md5indexUpdate);
+      InvestrendTheme.md5stockBrokerIndex.copyValueFrom(savedMD5stockBrokerIndex);
+
+
+    }).whenComplete(() => updateStockBrokerIndex());
+    */
+    //final md5 = loadMd5();
+    //md5.then((value) => updateStockBrokerIndex());
+
+    //futureStockBrokerIndex = loadMd5();
+    futureStockBrokerIndex = updateStockBrokerIndex();
+
+    /*
+    // orientation -------
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft,
+    ]);
+    // -------------------
+
+     */
+  }
+
+  VoidCallback menuChangeListener;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    print('ScreenMain.didChangeDependencies ');
+
+    //print('ScreenMain.didChangeDependencies '+InvestrendTheme.of(context).user.toString());
+
+    print('ScreenMain.didChangeDependencies ' + context.read(dataHolderChangeNotifier).user.toString());
+
+    if (menuChangeListener == null) {
+      menuChangeListener = () {
+        if (!mounted) {
+          print('ScreenMain.menuChangeListener aborted, caused by widget mounted : ' + mounted.toString());
+          return;
+        }
+        Tabs mainTab = context.read(mainMenuChangeNotifier).mainTab;
+        //int subTab = context.read(mainMenuChangeNotifier).subTab;
+        if (mainTab != _selectedTab) {
+          _onBottomTabClicked(mainTab.index);
+        }
+      };
+    }
+    context.read(mainMenuChangeNotifier).addListener(menuChangeListener);
+    //context.read(amendChangeNotifier).getData(orderType).setStock(stock.code, stock.name);
+  }
+
+  @override
+  void dispose() {
+    print('ScreenMain.dispose ');
+    _searchFilterController.dispose();
+    final container = ProviderContainer();
+    container.read(mainMenuChangeNotifier).removeListener(menuChangeListener);
+    menuChangeListener = null;
+    /*
+    // orientation -------
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+    // -------------------
+    */
+    super.dispose();
+  }
+
+  //int _selectedIndex = 0;
+  Tabs _selectedTab = Tabs.Home;
+
+  void _onBottomTabClicked(int index) {
+    context?.read(mainTabNotifier).setIndex(index);
+
+    setState(() {
+      //_selectedIndex = index;
+      _selectedTab = Tabs.values[index];
+    });
+  }
+
+  // void safe()async{
+  //   SharedPreferences prefs = await _prefs;
+  //final int counter = (prefs.getInt('counter') ?? 0) + 1;
+  // prefs.setString('key', 'value');
+  // prefs.setString('key', 'value');
+  // prefs.setString('key', 'value');
+  // prefs.setString('key', 'value');
+  // InvestrendTheme.md5stockBrokerIndex.safe(prefs);
+  // }
+
+  // List<String> tabsSearch = [
+  //   'Market',
+  //   'Global',
+  //   'Watchlist',
+  //   'Movers',
+  //   'Themes',
+  //   'Commodities',
+  //   'Bond Yield',
+  // ];
+  // List<String> tabsPortfolio = [
+  //   'Saham',
+  //   'Cash',
+  //   'Return',
+  //   'Realized',
+  //   'Summary'
+  // ];
+  // List<String> tabsTransaction = ['Order hari ini', 'Riwayat'];
+  // List<String> tabsCommunity = ['Feeds', 'Competition'];
+
+  @override
+  Widget build(BuildContext context) {
+    //print(EasyLocalization.of(context).toString());
+    return FutureBuilder<Map>(
+      future: futureStockBrokerIndex,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          bool validBrokerChanged = snapshot.data['validBrokerChanged'] ?? false;
+          bool validStockChanged = snapshot.data['validStockChanged'] ?? false;
+          bool validIndexChanged = snapshot.data['validIndexChanged'] ?? false;
+
+          // maps['brokers'] = validBrokerChanged ? listBroker : null;
+          // maps['stocks'] = validStockChanged ? listStock : null;
+          // maps['indexs'] = validIndexChanged ? listIndex : null;
+
+          //String md5broker = snapshot.data['md5broker'];
+          //String md5stock = snapshot.data['md5stock'];
+          //String md5index = snapshot.data['md5index'];
+
+          MD5StockBrokerIndex md5 = snapshot.data['md5'];
+
+          print('future validBrokerChanged : ' + validBrokerChanged.toString());
+          print('future validStockChanged : ' + validStockChanged.toString());
+          print('future validIndexChanged : ' + validIndexChanged.toString());
+
+          bool isValid = md5 != null && md5.isValid();
+          print('future md5 isValid : $isValid');
+
+          if (isValid) {
+            InvestrendTheme.storedData.md5.sharePerLot = md5.sharePerLot;
+          }
+
+          if (validStockChanged && isValid) {
+            InvestrendTheme.storedData.md5.md5stock = md5.md5stock;
+            InvestrendTheme.storedData.md5.md5stockUpdate = md5.md5stockUpdate;
+            InvestrendTheme.storedData.listStock.clear();
+            InvestrendTheme.storedData.listStock.addAll(snapshot.data['stocks']);
+          }
+
+          if (validBrokerChanged && isValid) {
+            InvestrendTheme.storedData.md5.md5broker = md5.md5broker;
+            InvestrendTheme.storedData.md5.md5brokerUpdate = md5.md5brokerUpdate;
+            InvestrendTheme.storedData.listBroker.clear();
+            InvestrendTheme.storedData.listBroker.addAll(snapshot.data['brokers']);
+          }
+
+          if (validIndexChanged && isValid) {
+            InvestrendTheme.storedData.md5.md5index = md5.md5index;
+            InvestrendTheme.storedData.md5.md5indexUpdate = md5.md5indexUpdate;
+            InvestrendTheme.storedData.listIndex.clear();
+            InvestrendTheme.storedData.listIndex.addAll(snapshot.data['indexs']);
+          }
+
+          //safe();
+
+          // InvestrendTheme.of(context).showSnackBar(context,
+          //     'stocks : '+InvestrendTheme.listStock.length.toString()
+          //     +'\nbrokers : '+InvestrendTheme.listBroker.length.toString()
+          //     +'\nindexs : '+InvestrendTheme.listIndex.length.toString()
+          // );
+          //int countStocks = InvestrendTheme.listStock.length;
+          int countIndex = InvestrendTheme.storedData.listIndex.length;
+          InvestrendTheme.storedData.listStock.forEach((stock) {
+            for (int i = 0; i < countIndex; i++) {
+              Index index = InvestrendTheme.storedData.listIndex.elementAt(i);
+              if (index.isSector) {
+                index.checkAndAddMembers(stock);
+              }
+            }
+          });
+          //InvestrendTheme.listIndex.forEach((index) { print(index.toString()); });
+          print('future stocks : ' + InvestrendTheme.storedData.listStock.length.toString());
+          print('future brokers : ' + InvestrendTheme.storedData.listBroker.length.toString());
+          print('future indexs : ' + InvestrendTheme.storedData.listIndex.length.toString());
+
+          // final pref = SharedPreferences.getInstance();
+          // pref.then((pref) => {
+          //   InvestrendTheme.md5stockBrokerIndex.safe(pref)
+          // });
+
+          //Future<bool> savedFuture = InvestrendTheme.storedData.md5.safe();
+          Future<bool> savedFuture = InvestrendTheme.storedData.save();
+          // savedFuture
+          //     .then((value) => InvestrendTheme.of(context).showSnackBar(context, 'MD5 Saved '+value.toString()))
+          //     .onError((error, stackTrace) => InvestrendTheme.of(context).showSnackBar(context, 'MD5 Saving error : '+error.toString()))
+          //     .whenComplete(() => InvestrendTheme.of(context).showSnackBar(context, 'MD5 Completed'));
+
+          // savedFuture
+          //     .then((value) => print('MD5 Saved '+value.toString())
+          //     .onError((error, stackTrace) => print('MD5 Saving error : '+error.toString())
+          //     .whenComplete(() => print('MD5 Completed'));
+
+          return Scaffold(
+            backgroundColor: Theme.of(context).backgroundColor,
+            appBar: appBar(context),
+            body: createBody(context),
+            bottomNavigationBar: bottomNavigationBar(context),
+          );
+        } else if (snapshot.hasError) {
+          return Scaffold(
+            backgroundColor: Theme.of(context).backgroundColor,
+            body: Container(
+              width: double.maxFinite,
+              height: double.maxFinite,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    'Test Screen',
+                    style: Theme.of(context).textTheme.headline2.copyWith(color: Theme.of(context).accentColor),
+                  ),
+                  SizedBox(
+                    height: 50.0,
+                  ),
+                  //Text("${snapshot.error} at " + DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.now())),
+                  Text("Connection error at " + DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.now())),
+                  SizedBox(
+                    height: 10.0,
+                  ),
+                  OutlinedButton(
+                    onPressed: () {
+                      setState(() {
+                        //futureStockBrokerIndex = HttpSSI.fetchStockBrokerIndex();
+                        updateStockBrokerIndex();
+                      });
+                    },
+                    child: Text('button_retry'.tr()),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+
+        // By default, show a loading spinner.
+        return Scaffold(
+          body: Container(
+            width: double.maxFinite,
+            height: double.maxFinite,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Center(
+                      child: SizedBox(
+                        width: 250,
+                        height: 250,
+                        child: Spinnies(
+                          duration: Duration(seconds: 6),
+                          blendMode: BlendMode.screen,
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Text(
+                        'Test Screen',
+                        style: Theme.of(context).textTheme.headline3.copyWith(color: Theme.of(context).accentColor),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 50.0,
+                ),
+                Text('Loading data'),
+                SizedBox(
+                  height: 10.0,
+                ),
+                //CircularProgressIndicator(),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+    //
+    // return Scaffold(
+    //   backgroundColor: Theme.of(context).backgroundColor,
+    //   appBar: appBar(context),
+    //   body: createBody(context),
+    //   bottomNavigationBar: bottomNavigationBar(context),
+    // );
+  }
+
+  Languages _selectionLanguage;
+
+  Widget bottomNavigationBar(BuildContext context) {
+    return BottomNavigationBar(
+      items: <BottomNavigationBarItem>[
+        BottomNavigationBarItem(
+          icon: Image.asset(
+            'images/tabs_bottom/tab_beranda.png',
+            color: Theme.of(context).bottomNavigationBarTheme.unselectedItemColor,
+          ),
+          activeIcon: Image.asset(
+            'images/tabs_bottom/tab_beranda_active.png',
+            color: Theme.of(context).bottomNavigationBarTheme.selectedItemColor,
+          ),
+          label: 'tab_bottom_home_title'.tr(),
+        ),
+        BottomNavigationBarItem(
+          icon: Image.asset(
+            'images/tabs_bottom/tab_pencarian.png',
+            color: Theme.of(context).bottomNavigationBarTheme.unselectedItemColor,
+          ),
+          activeIcon: Image.asset(
+            'images/tabs_bottom/tab_pencarian_active.png',
+            color: Theme.of(context).bottomNavigationBarTheme.selectedItemColor,
+          ),
+          label: 'tab_bottom_search_title'.tr(),
+        ),
+        BottomNavigationBarItem(
+          icon: Image.asset(
+            'images/tabs_bottom/tab_portfolio.png',
+            color: Theme.of(context).bottomNavigationBarTheme.unselectedItemColor,
+          ),
+          activeIcon: Image.asset(
+            'images/tabs_bottom/tab_portfolio_active.png',
+            color: Theme.of(context).bottomNavigationBarTheme.selectedItemColor,
+          ),
+          label: 'tab_bottom_portfolio_title'.tr(),
+        ),
+        BottomNavigationBarItem(
+          icon: Image.asset(
+            'images/tabs_bottom/tab_transaksi.png',
+            color: Theme.of(context).bottomNavigationBarTheme.unselectedItemColor,
+          ),
+          activeIcon: Image.asset(
+            'images/tabs_bottom/tab_transaksi_active.png',
+            color: Theme.of(context).bottomNavigationBarTheme.selectedItemColor,
+          ),
+          label: 'tab_bottom_transaction_title'.tr(),
+        ),
+        BottomNavigationBarItem(
+          icon: Image.asset(
+            'images/tabs_bottom/tab_komunitas.png',
+            color: Theme.of(context).bottomNavigationBarTheme.unselectedItemColor,
+          ),
+          activeIcon: Image.asset(
+            'images/tabs_bottom/tab_komunitas_active.png',
+            color: Theme.of(context).bottomNavigationBarTheme.selectedItemColor,
+          ),
+          label: 'tab_bottom_community_title'.tr(),
+        ),
+      ],
+      type: BottomNavigationBarType.fixed,
+      currentIndex: _selectedTab.index,
+      //backgroundColor: ThemeData.,
+      // selectedItemColor: Color(0xFF5414DB),
+      // unselectedItemColor: Color(0xFFCFCFCF),
+      showSelectedLabels: true,
+      showUnselectedLabels: true,
+      onTap: _onBottomTabClicked,
+    );
+  }
+
+  Widget appBar(BuildContext context) {
+    switch (_selectedTab) {
+      case Tabs.Home:
+        {
+          return _appBarHome(context);
+        }
+      case Tabs.Search:
+        {
+          return _appBarSearch(context);
+        }
+      case Tabs.Portfolio:
+        {
+          return _appBarPortfolio(context);
+        }
+      case Tabs.Transaction:
+        {
+          return _appBarTransaction(context);
+        }
+      case Tabs.Community:
+        {
+          return _appBarCommunity(context);
+        }
+    }
+    return Container(
+      color: Colors.blue,
+      child: Text('No Appbar based on Tabs'),
+    );
+
+    return AppBar(
+      backgroundColor: Theme.of(context).backgroundColor,
+      elevation: 2.0,
+      shadowColor: Theme.of(context).shadowColor,
+      centerTitle: true,
+      leading: IconButton(
+        icon: Image.asset('images/icons/action_bell.png', color: Theme.of(context).accentIconTheme.color),
+        //onPressed: () => Navigator.of(context).pop(),
+        onPressed: () {
+          final snackBar = SnackBar(content: Text('Action Bell clicked. tab : ' + _selectedTab.index.toString()));
+
+          // Find the ScaffoldMessenger in the widget tree
+          // and use it to show a SnackBar.
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        },
+      ),
+      title: Image.asset(
+        InvestrendTheme.of(context).ic_launcher,
+        color: Theme.of(context).accentColor,
+      ),
+      actions: [
+        PopupMenuButton<Languages>(
+          icon: Icon(
+            Icons.flag,
+            color: Theme.of(context).accentColor,
+            semanticLabel: 'Text to announce in accessibility modes',
+          ),
+          onSelected: (Languages result) {
+            setState(() {
+              _selectionLanguage = result;
+              if (_selectionLanguage == Languages.Indonesia) {
+                EasyLocalization.of(context).setLocale(Locale('id'));
+                print('Set Indonesia');
+              } else {
+                EasyLocalization.of(context).setLocale(Locale('en'));
+                print('Set Inggris');
+              }
+            });
+          },
+          itemBuilder: (BuildContext context) => <PopupMenuEntry<Languages>>[
+            const PopupMenuItem<Languages>(
+              value: Languages.Indonesia,
+              child: Text('Indonesia'),
+            ),
+            const PopupMenuItem<Languages>(
+              value: Languages.English,
+              child: Text('English'),
+            ),
+          ],
+        ),
+        IconButton(
+          icon: Image.asset('images/icons/action_search.png', color: Theme.of(context).accentIconTheme.color),
+          //onPressed: () => Navigator.of(context).pop(),
+          onPressed: () {
+            final snackBar = SnackBar(content: Text('Action Search clicked. tab : ' + _selectedTab.index.toString()));
+
+            // Find the ScaffoldMessenger in the widget tree
+            // and use it to show a SnackBar.
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          },
+        ),
+        AvatarButton(
+          imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStgx25x3vrWgwCRz0buSYNf7lII-0TWtcFXg&usqp=CAU',
+          onPressed: () {
+            final snackBar = SnackBar(content: Text('Action Profile clicked. tab : ' + _selectedTab.index.toString()));
+
+            // Find the ScaffoldMessenger in the widget tree
+            // and use it to show a SnackBar.
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _appBarHome(BuildContext context) {
+    return AppBar(
+      //backgroundColor: Theme.of(context).backgroundColor,
+      elevation: 2.0,
+      shadowColor: Theme.of(context).shadowColor,
+      centerTitle: true,
+      leading: AppBarActionIcon(
+        'images/icons/action_bell.png',
+        () {
+          // final snackBar = SnackBar(content: Text('Action Bell clicked. tab : ' + _selectedTab.index.toString()));
+          // ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          //InvestrendTheme.push(context, ScreenNotification(), ScreenTransition.SlideRight, '/notification');
+
+          Navigator.push(
+              context,
+              CupertinoPageRoute(
+                builder: (_) => ScreenNotification(),
+                settings: RouteSettings(name: '/notification'),
+              ));
+        },
+      ),
+      /*
+      leading: IconButton(
+        //icon: Image.asset('images/icons/action_bell.png', color: Theme.of(context).accentIconTheme.color),
+        icon: ComponentCreator.appBarImageAsset(context, 'images/icons/action_bell.png'),
+        //onPressed: () => Navigator.of(context).pop(),
+        onPressed: () {
+          final snackBar = SnackBar(content: Text('Action Bell clicked. tab : ' + _selectedTab.index.toString()));
+
+          // Find the ScaffoldMessenger in the widget tree
+          // and use it to show a SnackBar.
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        },
+      ),
+      */
+      title: Image.asset(
+        InvestrendTheme.of(context).ic_launcher,
+        color: Theme.of(context).appBarTheme.foregroundColor,
+      ),
+      actions: [
+        PopupMenuButton<Languages>(
+          icon: Icon(
+            Icons.flag,
+            color: Theme.of(context).appBarTheme.foregroundColor,
+            semanticLabel: 'Text to announce in accessibility modes',
+          ),
+          onSelected: (Languages result) {
+            setState(() {
+              _selectionLanguage = result;
+              if (_selectionLanguage == Languages.Indonesia) {
+                EasyLocalization.of(context).setLocale(Locale('id'));
+                print('Set Indonesia');
+              } else {
+                EasyLocalization.of(context).setLocale(Locale('en'));
+                print('Set Inggris');
+              }
+            });
+          },
+          itemBuilder: (BuildContext context) => <PopupMenuEntry<Languages>>[
+            const PopupMenuItem<Languages>(
+              value: Languages.Indonesia,
+              child: Text('Indonesia'),
+            ),
+            const PopupMenuItem<Languages>(
+              value: Languages.English,
+              child: Text('English'),
+            ),
+          ],
+        ),
+        AppBarActionIcon('images/icons/action_search.png', () {
+          FocusScope.of(context).requestFocus(new FocusNode());
+          final result = InvestrendTheme.showFinderScreen(context);
+          result.then((value) {
+            if (value == null) {
+              print('result finder = null');
+            } else if (value is Stock) {
+              print('result finder = ' + value.code);
+              //InvestrendTheme.of(context).stockNotifier.setStock(value);
+
+              context.read(primaryStockChangeNotifier).setStock(value);
+
+              InvestrendTheme.of(context).showStockDetail(context);
+            } else if (value is People) {
+              print('result finder = ' + value.name);
+            }
+          });
+        }),
+        /*
+        IconButton(
+          //icon: Image.asset('images/icons/action_search.png', color: Theme.of(context).accentIconTheme.color),
+          icon: ComponentCreator.appBarImageAsset(context, 'images/icons/action_search.png'),
+          //onPressed: () => Navigator.of(context).pop(),
+          onPressed: () {
+            FocusScope.of(context).requestFocus(new FocusNode());
+            final result = InvestrendTheme.showFinderScreen(context);
+            result.then((value) {
+
+              if(value == null){
+                print('result finder = null');
+              }else if(value is Stock){
+                print('result finder = '+value.code);
+                InvestrendTheme.of(context).stockNotifier.setStock(value);
+                showStockDetail(context);
+
+              }else if(value is People){
+                print('result finder = '+value.name);
+              }
+            });
+          },
+        ),
+        */
+        /*
+        AvatarButton(
+          imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStgx25x3vrWgwCRz0buSYNf7lII-0TWtcFXg&usqp=CAU',
+          onPressed: () {
+            //final snackBar = SnackBar(content: Text('Action Profile clicked. tab : ' + _selectedTab.index.toString()));
+
+            // Find the ScaffoldMessenger in the widget tree
+            // and use it to show a SnackBar.
+            //ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+            Navigator.push(context, CupertinoPageRoute(
+              builder: (_) => ScreenProfile(), settings: RouteSettings(name: '/profile'),));
+
+          },
+        ),
+        */
+        AvatarProfileButton(
+          url: 'http://' +InvestrendTheme.tradingHttp.tradingBaseUrl +'/getpic?username=' +context.read(dataHolderChangeNotifier).user.username +'&url=',
+          fullname: context.read(dataHolderChangeNotifier).user.realname,
+          onPressed: () {
+            Navigator.push(context, CupertinoPageRoute(
+              builder: (_) => ScreenProfile(), settings: RouteSettings(name: '/profile'),));
+          },
+        ),
+        /*
+        AvatarIconProfile(
+          //imageUrl: 'http://103.109.155.226:8888/getpic?username='+context.read(dataHolderChangeNotifier).user.username+'&url=',
+          imageUrl:
+              InvestrendTheme.tradingHttp.tradingBaseUrl + '/getpic?username=' + context.read(dataHolderChangeNotifier).user.username + '&url=',
+          label: StringUtils.getFirstDigitNameTwo(context.read(dataHolderChangeNotifier).user.realname).toUpperCase(),
+          onPressed: () {
+            showModalBottomSheet(
+                isScrollControlled: true,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(topLeft: Radius.circular(24.0), topRight: Radius.circular(24.0)),
+                ),
+                //backgroundColor: Colors.transparent,
+                context: context,
+                builder: (context) {
+                  return AccountBottomSheet();
+                });
+          },
+        ),
+        */
+      ],
+    );
+  }
+
+  Widget _appBarPortfolio(BuildContext context) {
+    // Map<String, String> headersMap = {
+    //   'accesstoken' : context.read(dataHolderChangeNotifier).user.token.access_token;
+    // };
+    return AppBar(
+      backgroundColor: Theme.of(context).backgroundColor,
+      elevation: 2.0,
+      shadowColor: Theme.of(context).shadowColor,
+      centerTitle: true,
+      automaticallyImplyLeading: false,
+      title: Text(
+        'title_portfolio'.tr(),
+        style: Theme.of(context).appBarTheme.titleTextStyle,
+      ),
+      actions: [
+        AppBarActionIcon('images/icons/action_search.png', () {
+          FocusScope.of(context).requestFocus(new FocusNode());
+          final result = InvestrendTheme.showFinderScreen(context);
+          result.then((value) {
+            if (value == null) {
+              print('result finder = null');
+            } else if (value is Stock) {
+              print('result finder = ' + value.code);
+              //InvestrendTheme.of(context).stockNotifier.setStock(value);
+
+              context.read(primaryStockChangeNotifier).setStock(value);
+
+              InvestrendTheme.of(context).showStockDetail(context);
+            } else if (value is People) {
+              print('result finder = ' + value.name);
+            }
+          });
+        }),
+        /*
+        IconButton(
+          //icon: Image.asset('images/icons/action_search.png', color: Theme.of(context).accentIconTheme.color),
+        icon: ComponentCreator.appBarImageAsset(context, 'images/icons/action_search.png'),
+        //onPressed: () => Navigator.of(context).pop(),
+          onPressed: () {
+            final snackBar = SnackBar(content: Text('Action Search clicked. tab : ' + _selectedTab.index.toString()));
+
+            // Find the ScaffoldMessenger in the widget tree
+            // and use it to show a SnackBar.
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          },
+        ),
+        */
+        Center(
+            child: Text(
+          'Reg',
+          style: InvestrendTheme.of(context).support_w400.copyWith(color: Theme.of(context).appBarTheme.foregroundColor),
+        )),
+        AvatarProfileButton(
+          url: 'http://' +InvestrendTheme.tradingHttp.tradingBaseUrl +'/getpic?username=' +context.read(dataHolderChangeNotifier).user.username +'&url=',
+          fullname: context.read(dataHolderChangeNotifier).user.realname,
+          onPressed: () {
+            showModalBottomSheet(
+                isScrollControlled: true,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(topLeft: Radius.circular(24.0), topRight: Radius.circular(24.0)),
+                ),
+                //backgroundColor: Colors.transparent,
+                context: context,
+                builder: (context) {
+                  return  AccountBottomSheet();
+                });
+          },
+        ),
+        /*
+        AvatarIconProfile(
+          //imageUrl: 'http://103.109.155.226:8888/getpic?username='+context.read(dataHolderChangeNotifier).user.username+'&url=',
+          imageUrl:
+              InvestrendTheme.tradingHttp.tradingBaseUrl + '/getpic?username=' + context.read(dataHolderChangeNotifier).user.username + '&url=',
+          label: StringUtils.getFirstDigitNameTwo(context.read(dataHolderChangeNotifier).user.realname).toUpperCase(),
+          onPressed: () {
+            showModalBottomSheet(
+                isScrollControlled: true,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(topLeft: Radius.circular(24.0), topRight: Radius.circular(24.0)),
+                ),
+                //backgroundColor: Colors.transparent,
+                context: context,
+                builder: (context) {
+                  return AccountBottomSheet();
+                });
+          },
+        ),
+
+         */
+      ],
+    );
+  }
+
+  Widget _appBarTransaction(BuildContext context) {
+    return AppBar(
+      backgroundColor: Theme.of(context).backgroundColor,
+      elevation: 2.0,
+      shadowColor: Theme.of(context).shadowColor,
+      centerTitle: true,
+      automaticallyImplyLeading: false,
+      title: AppBarTitleText('title_transaction'.tr()),
+      // title: Text(
+      //   'title_transaction'.tr(),
+      //   style: Theme.of(context).appBarTheme.titleTextStyle,
+      // ),
+      actions: [
+        AppBarActionIcon(
+          'images/icons/action_search.png',
+          () {
+            FocusScope.of(context).requestFocus(new FocusNode());
+            final result = InvestrendTheme.showFinderScreen(context);
+            result.then((value) {
+              if (value == null) {
+                print('result finder = null');
+              } else if (value is Stock) {
+                print('result finder = ' + value.code);
+                //InvestrendTheme.of(context).stockNotifier.setStock(value);
+
+                context.read(primaryStockChangeNotifier).setStock(value);
+
+                InvestrendTheme.of(context).showStockDetail(context);
+              } else if (value is People) {
+                print('result finder = ' + value.name);
+              }
+            });
+          },
+        ),
+        // IconButton(
+        //   icon: Image.asset('images/icons/action_search.png', color: Theme.of(context).accentIconTheme.color),
+        //   //onPressed: () => Navigator.of(context).pop(),
+        //   onPressed: () {
+        //     final snackBar = SnackBar(content: Text('Action Search clicked. tab : ' + _selectedTab.index.toString()));
+        //
+        //     // Find the ScaffoldMessenger in the widget tree
+        //     // and use it to show a SnackBar.
+        //     ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        //   },
+        // ),
+        /*
+        AvatarButton(
+          imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStgx25x3vrWgwCRz0buSYNf7lII-0TWtcFXg&usqp=CAU',
+          onPressed: () {
+            showModalBottomSheet(
+                isScrollControlled: true,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(topLeft: Radius.circular(24.0), topRight: Radius.circular(24.0)),
+                ),
+                //backgroundColor: Colors.transparent,
+                context: context,
+                builder: (context) {
+                  return AccountBottomSheet();
+                });
+          },
+        ),
+        */
+        AvatarProfileButton(
+          url: 'http://' +InvestrendTheme.tradingHttp.tradingBaseUrl +'/getpic?username=' +context.read(dataHolderChangeNotifier).user.username +'&url=',
+          fullname: context.read(dataHolderChangeNotifier).user.realname,
+          onPressed: () {
+            showModalBottomSheet(
+                isScrollControlled: true,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(topLeft: Radius.circular(24.0), topRight: Radius.circular(24.0)),
+                ),
+                //backgroundColor: Colors.transparent,
+                context: context,
+                builder: (context) {
+                  return AccountBottomSheet();
+                });
+          },
+        ),
+        // IconButton(
+        //   //visualDensity: VisualDensity.compact,
+        //   icon: CircleAvatar(
+        //     foregroundImage: NetworkImage('http://'+InvestrendTheme.tradingHttp.tradingBaseUrl+'/getpics?username='+context.read(dataHolderChangeNotifier).user.username+'&url=', scale: 1.0),
+        //     child: AutoSizeText(StringUtils.getFirstDigitNameTwo(context.read(dataHolderChangeNotifier).user.realname).toUpperCase(), style: Theme.of(context).textTheme.button.copyWith(color: Theme.of(context).primaryColor),maxLines: 1, minFontSize: 5.0,),
+        //     backgroundColor: Theme.of(context).accentColor,
+        //     //radius: 15.0,
+        //   ),
+        //   onPressed: (){
+        //     showModalBottomSheet(
+        //         isScrollControlled: true,
+        //         shape: RoundedRectangleBorder(
+        //           borderRadius: BorderRadius.only(topLeft: Radius.circular(24.0), topRight: Radius.circular(24.0)),
+        //         ),
+        //         //backgroundColor: Colors.transparent,
+        //         context: context,
+        //         builder: (context) {
+        //           return AccountBottomSheet();
+        //         });
+        //   },
+        // ),
+        // AvatarIconProfile(
+        //   //imageUrl: 'http://103.109.155.226:8888/getpic?username='+context.read(dataHolderChangeNotifier).user.username+'&url=',
+        //   imageUrl: 'http://'+InvestrendTheme.tradingHttp.tradingBaseUrl+'/getpic?username='+context.read(dataHolderChangeNotifier).user.username+'&url=',
+        //   label: StringUtils.getFirstDigitNameTwo(context.read(dataHolderChangeNotifier).user.realname).toUpperCase(),
+        //   onPressed: () {
+        //     showModalBottomSheet(
+        //         isScrollControlled: true,
+        //         shape: RoundedRectangleBorder(
+        //           borderRadius: BorderRadius.only(topLeft: Radius.circular(24.0), topRight: Radius.circular(24.0)),
+        //         ),
+        //         //backgroundColor: Colors.transparent,
+        //         context: context,
+        //         builder: (context) {
+        //           return AccountBottomSheet();
+        //         });
+        //   },
+        // ),
+      ],
+    );
+  }
+
+  Widget _appBarCommunity(BuildContext context) {
+    return AppBar(
+      backgroundColor: Theme.of(context).backgroundColor,
+      elevation: 2.0,
+      shadowColor: Theme.of(context).shadowColor,
+      centerTitle: true,
+      leading: AppBarActionIcon(
+        'images/icons/action_bell.png',
+        //onPressed: () => Navigator.of(context).pop(),
+        () {
+          //InvestrendTheme.push(context, ScreenNotification(), ScreenTransition.SlideRight, '/notification');
+
+          Navigator.push(
+              context,
+              CupertinoPageRoute(
+                builder: (_) => ScreenNotification(),
+                settings: RouteSettings(name: '/notification'),
+              ));
+        },
+      ),
+      title: Image.asset(
+        InvestrendTheme.of(context).ic_launcher,
+        color: Theme.of(context).accentColor,
+      ),
+      actions: [
+        AppBarActionIcon(
+          'images/icons/action_search.png',
+          //onPressed: () => Navigator.of(context).pop(),
+          () {
+            FocusScope.of(context).requestFocus(new FocusNode());
+            final result = InvestrendTheme.showFinderScreen(context);
+
+            result.then((value) {
+              if (value == null) {
+                print('result finder = null');
+              } else if (value is Stock) {
+                print('result finder = ' + value.code);
+                //InvestrendTheme.of(context).stockNotifier.setStock(value);
+
+                context.read(primaryStockChangeNotifier).setStock(value);
+
+                InvestrendTheme.of(context).showStockDetail(context);
+
+                InvestrendTheme.of(context).showStockDetail(context);
+              } else if (value is People) {
+                print('result finder = ' + value.name);
+              }
+            });
+          },
+        ),
+        /*
+        AvatarButton(
+          imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStgx25x3vrWgwCRz0buSYNf7lII-0TWtcFXg&usqp=CAU',
+          onPressed: () {
+            //final snackBar = SnackBar(content: Text('Action Profile clicked. tab : ' + _selectedTab.index.toString()));
+
+            // Find the ScaffoldMessenger in the widget tree
+            // and use it to show a SnackBar.
+            //ScaffoldMessenger.of(context).showSnackBar(snackBar);
+
+            Navigator.push(context, CupertinoPageRoute(
+              builder: (_) => ScreenProfile(), settings: RouteSettings(name: '/profile'),));
+          },
+        ),
+        */
+        AvatarProfileButton(
+          url: 'http://' +InvestrendTheme.tradingHttp.tradingBaseUrl +'/getpic?username=' +context.read(dataHolderChangeNotifier).user.username +'&url=',
+          fullname: context.read(dataHolderChangeNotifier).user.realname,
+          onPressed: () {
+            Navigator.push(context, CupertinoPageRoute(
+              builder: (_) => ScreenProfile(), settings: RouteSettings(name: '/profile'),));
+          },
+        ),
+        /*
+        AvatarIconProfile(
+          //imageUrl: 'http://103.109.155.226:8888/getpic?username='+context.read(dataHolderChangeNotifier).user.username+'&url=',
+          imageUrl:
+              InvestrendTheme.tradingHttp.tradingBaseUrl + '/getpic?username=' + context.read(dataHolderChangeNotifier).user.username + '&url=',
+          label: StringUtils.getFirstDigitNameTwo(context.read(dataHolderChangeNotifier).user.realname).toUpperCase(),
+          onPressed: () {
+            showModalBottomSheet(
+                isScrollControlled: true,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(topLeft: Radius.circular(24.0), topRight: Radius.circular(24.0)),
+                ),
+                //backgroundColor: Colors.transparent,
+                context: context,
+                builder: (context) {
+                  return AccountBottomSheet();
+                });
+          },
+        ),
+        */
+      ],
+    );
+  }
+
+  Widget _appBarSearch(BuildContext context) {
+    return AppBar(
+      backgroundColor: Theme.of(context).backgroundColor,
+      elevation: 2.0,
+      shadowColor: Theme.of(context).shadowColor,
+      centerTitle: true,
+      automaticallyImplyLeading: false,
+      title: Container(
+        alignment: Alignment.center,
+        height: InvestrendTheme.appBarHeight,
+        child: ComponentCreator.textFieldSearch(context),
+        /*
+        child: TextField(
+          style: Theme.of(context).textTheme.bodyText1,
+          onTap: () {
+            FocusScope.of(context).requestFocus(new FocusNode());
+            final result = InvestrendTheme.showFinderScreen(context);
+            result.then((value) {
+              if (value == null) {
+                print('result finder = null');
+              } else if (value is Stock) {
+                //InvestrendTheme.of(context).stockNotifier.setStock(value);
+
+                context.read(primaryStockChangeNotifier).setStock(value);
+                InvestrendTheme.of(context).showStockDetail(context);
+                print('result finder = ' + value.code);
+              } else if (value is People) {
+                print('result finder = ' + value.name);
+              }
+            });
+          },
+          decoration: new InputDecoration(
+            isDense: true,
+            contentPadding: EdgeInsets.only(left: 10.0, right: 10.0, top: 0.0, bottom: 0.0),
+            border: new OutlineInputBorder(
+              //gapPadding: 0.0,
+              borderRadius: const BorderRadius.all(
+                const Radius.circular(8.0),
+              ),
+              borderSide: BorderSide(width: 0.0, color: Colors.transparent),
+            ),
+            enabledBorder: new OutlineInputBorder(
+              //gapPadding: 0.0,
+              borderRadius: const BorderRadius.all(
+                const Radius.circular(8.0),
+              ),
+              borderSide: BorderSide(width: 0.0, color: Colors.transparent),
+            ),
+            focusedBorder: new OutlineInputBorder(
+              //gapPadding: 0.0,
+              borderRadius: const BorderRadius.all(
+                const Radius.circular(8.0),
+              ),
+              borderSide: BorderSide(width: 0.0, color: Colors.transparent),
+            ),
+            filled: true,
+            prefixIcon: new Icon(
+              Icons.search,
+              //color: InvestrendTheme.of(context).textGrey,
+              color: InvestrendTheme.of(context).appBarActionTextColor,
+              size: 25.0,
+            ),
+            hintText: 'title_search_hint'.tr(),
+            fillColor: InvestrendTheme.of(context).tileBackground,
+          ),
+        ),
+        */
+      ),
+    );
+  }
+
+  Widget createBody(BuildContext context) {
+    switch (_selectedTab) {
+      case Tabs.Home:
+        {
+          //return ScreenHome(key:homeKey);
+          return screenHome;
+        }
+      case Tabs.Search:
+        {
+          //return ScreenSearch(key: searchKey,);
+          return screenSearch;
+        }
+      case Tabs.Portfolio:
+        {
+          //return ScreenPortfolio(key: portfolioKey,);
+          return screenPortfolio;
+        }
+      case Tabs.Transaction:
+        {
+          //return ScreenTransaction(key: transactionKey,);
+          return screenTransaction;
+        }
+      case Tabs.Community:
+        {
+          //return ScreenCommunity(key: communityKey,);
+          return screenCommunity;
+        }
+    }
+    return Container(
+      color: Colors.blue,
+      child: Text('No Screen based on Tabs'),
+    );
+  }
+
+  /*
+  Future <Object> showFinderScreen() {
+    return Navigator.push(
+      context,
+      PageRouteBuilder(
+        transitionDuration: Duration(milliseconds: 1000),
+
+        pageBuilder: (context, animation1, animation2) => ScreenFinder(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return AnimationCreator.transitionSlideUp(context, animation, secondaryAnimation, child);
+        },
+      ),
+    );
+  }
+  */
+  /*
+  Future <Object> showFinderScreen() async{
+    final result = await Navigator.push(
+      context,
+      PageRouteBuilder(
+        transitionDuration: Duration(milliseconds: 1000),
+
+        pageBuilder: (context, animation1, animation2) => ScreenFinder(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return AnimationCreator.transitionSlideUp(context, animation, secondaryAnimation, child);
+        },
+      ),
+    );
+    if(result != null){
+      if(result is People){
+        print('result People : '+result.name+' selected by user');
+      }else if(result is Stock){
+        print('result Stock : '+result.code+' selected by user');
+      }else{
+        print('result Unknown '+result.toString());
+      }
+    }else{
+      print('result NULL maybe canceled by user');
+    }
+    return result;
+  }
+  */
+  // void showStockDetail(BuildContext context) {
+  //   //InvestrendTheme.push(context, ScreenStockDetail(), ScreenTransition.SlideLeft, '/stock_detail');
+  //
+  //
+  //   Navigator.push(context, CupertinoPageRoute(
+  //     builder: (_) => ScreenStockDetail(), settings: RouteSettings(name: '/stock_detail'),));
+  //
+  //   /*
+  //   Navigator.push(
+  //     context,
+  //     PageRouteBuilder(
+  //         transitionDuration: Duration(milliseconds: 1000),
+  //         pageBuilder: (context, animation1, animation2) => ScreenStockDetail(),
+  //         transitionsBuilder: (context, animation, secondaryAnimation, child) {
+  //           return AnimationCreator.transitionSlideLeft(
+  //               context, animation, secondaryAnimation, child);
+  //         }),
+  //   );
+  //
+  //    */
+  // }
+
+  Future<Map> updateStockBrokerIndex() {
+    //final _prefs = await SharedPreferences.getInstance();
+    // Try reading data from the key. If it doesn't exist, return empty string.
+
+    print('updateStockBrokerIndex');
+
+    MD5StockBrokerIndex md5 = InvestrendTheme.storedData.md5;
+    if (md5 != null) {
+      //futureStockBrokerIndex = HttpSSI.fetchStockBrokerIndex(md5.md5broker, md5.md5stock, md5.md5index);
+      return HttpSSI.fetchStockBrokerIndex(md5.md5broker, md5.md5stock, md5.md5index);
+    } else {
+      print('error md5 is null');
+    }
+  }
+}

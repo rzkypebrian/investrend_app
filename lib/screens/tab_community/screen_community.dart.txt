@@ -1,0 +1,66 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
+
+class ScreenCommunity extends StatefulWidget {
+  const ScreenCommunity({Key key}) : super(key: key);
+  @override
+  _ScreenCommunityState createState() => _ScreenCommunityState();
+}
+
+class _ScreenCommunityState extends State<ScreenCommunity> {
+  String timeCreation = '-';
+  List<String> tabsCommunity = ['Feeds', 'Competition'];
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    timeCreation = DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.now());
+  }
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+      length: tabsCommunity.length,
+      child: Scaffold(
+        appBar: AppBar(
+          elevation: 0.0,
+          automaticallyImplyLeading: false,
+          flexibleSpace: Container(
+
+            child: new TabBar(
+              isScrollable: true,
+              tabs: List<Widget>.generate(
+                tabsCommunity.length,
+                    (int index) {
+                  print(tabsCommunity[index]);
+                  return new Tab(text: tabsCommunity[index]);
+                },
+              ),
+            ),
+          ),
+        ),
+        body: TabBarView(
+          children: List<Widget>.generate(
+            tabsCommunity.length,
+                (int index) {
+              print(tabsCommunity[index]);
+              return Container(
+                child: Center(
+                  child: Text(tabsCommunity[index]),
+                ),
+              );
+            },
+          ),
+        ),
+      ),
+    );
+    /*
+    return Container(
+      color: Colors.green,
+      width: double.maxFinite,
+      height: double.maxFinite,
+      child: Center(child: Text('ScreenCommunity \n'+timeCreation, style: Theme.of(context).textTheme.headline4,),),
+    );
+
+     */
+  }
+}

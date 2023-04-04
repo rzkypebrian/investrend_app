@@ -1,0 +1,84 @@
+TO DO
+- Portfolio cash kalau belum punya akun munculin banner opening account
+- Home - portfolio highest Lowest untuk price gedein font
+- Watchlist save sort
+- app bar icon kanan, terlalu kekanan
+- click and close ga usa dikasi delay
+- Search Market IHSG overview rata kiri
+- Profile bio jangan di set cuma huruf
+
+
+
+
+version number 1.0.0+32 :
+- Screen Trade
+    RDN Balance --> Cash Balance
+    auto update Buying Power and Cash Balance
+    remove extra bottom padding when keyboard showed
+    Disable Buy/Sell button when price/lot empty or invalid parameter
+- Screen Portfolio Stock
+    change from StockValue to Market Value
+    Option Filter one click to close
+    Remove cancel slide button
+- Screen Home
+    World Indeks ratio 50% for code & change and add missing % symbol
+    Themes Card left align text
+    Mata uang --> Mata Uang
+- Widget Buying Power
+    clicked to Screen Potfolio Cash
+- Chart
+    label bottom left and right align
+    start point from Prev in intraday chart
+- Screen Search Market
+    Turnover --> Value
+- Screen Stock Detail Overview
+    Turnover --> Value
+    hide button dropdown for stock who don't have related to another stocks
+    label PE --> P/E
+
+- Screen Global
+    remove "Indeks" from all names
+    DAX, CAC changes names
+    STOXXX60 add names
+- Screen Watchlist
+    Option Filter one click to close
+    Switch position between button Filter and button Watchlist
+    Stock names only 1 line with elypsis at the end
+    Remove cancel slide button
+- Screen Finder
+    animation change from 1 second to 500 milisecond
+    TextField from left
+- Screen Conpany Profile
+    auto new line
+- Screen Corporate Action
+    Click and close on choose corporate action type
+- Screen Order Detail
+    remove animation
+- Screen Profile
+    Edit bio with done button in keyboard
+    adjusting divider
+    change icon for settings
+- Remove Screen Topup info
+- Adjusting all padding between cards and divider
+
+
+
+
+
+
+
+
+version number 1.0.0+31 :
+- try to fix duplication in Finder recent view
+- enable fast order
+- add close price in trade
+- order status 1 line
+
+
+version number 1.0.0+30 :
+- disable fast order
+- disable loop split order
+- bug fix lihat order after buy/sell or amend
+- bug fix amend showing info account from order
+- adding fees in total value BUY / Amend Buy
+- adding focus in Register Pin page

@@ -1,0 +1,105 @@
+import 'package:Investrend/utils/investrend_theme.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
+
+class ScreenPortfolio extends StatefulWidget {
+  const ScreenPortfolio({Key key}) : super(key: key);
+
+  @override
+  _ScreenPortfolioState createState() => _ScreenPortfolioState();
+}
+
+class _ScreenPortfolioState extends State<ScreenPortfolio>
+    /* keep alive tabs
+    with AutomaticKeepAliveClientMixin<ScreenPortfolio>
+    */
+{
+  String timeCreation = '-';
+  List<String> tabs = [
+    'portfolio_tabs_stocks_title'.tr(),
+    'portfolio_tabs_cash_title'.tr(),
+    'portfolio_tabs_return_title'.tr(),
+    'portfolio_tabs_Realized_title'.tr(),
+    'portfolio_tabs_summary_title'.tr()
+  ];
+
+  /** keep alive tabs
+  @override
+  bool get wantKeepAlive => true;
+  */
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    timeCreation = DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.now());
+  }
+
+  Widget createAppBar(){
+    return PreferredSize(
+      preferredSize:
+      Size.fromHeight(InvestrendTheme.appBarTabHeight),
+      child: new TabBar(
+        isScrollable: true,
+        tabs: List<Widget>.generate(
+          tabs.length,
+              (int index) {
+            print(tabs[index]);
+            return new Tab(text: tabs[index]);
+          },
+        ),
+      ),
+    );
+  }
+  /*
+  Widget createAppBar2(){
+    return PreferredSize(
+      preferredSize: Size.fromHeight(InvestrendTheme.of(context)
+          .appBarTabHeight), // here the desired height
+      child: AppBar(
+        backgroundColor: Theme.of(context).backgroundColor,
+        elevation: 0.0,
+        automaticallyImplyLeading: false,
+        flexibleSpace: Container(
+          child: new TabBar(
+            isScrollable: true,
+            tabs: List<Widget>.generate(
+              tabs.length,
+                  (int index) {
+                print(tabs[index]);
+                return new Tab(text: tabs[index]);
+              },
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+   */
+  Widget createBody(){
+    return TabBarView(
+      children: List<Widget>.generate(
+        tabs.length,
+            (int index) {
+          print(tabs[index]);
+          return Container(
+            child: Center(
+              child: Text(tabs[index]),
+            ),
+          );
+        },
+      ),
+    );
+  }
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+      length: tabs.length,
+      child: Scaffold(
+        backgroundColor: Theme.of(context).backgroundColor,
+        appBar: createAppBar(),
+        body: createBody(),
+      ),
+    );
+
+  }
+}

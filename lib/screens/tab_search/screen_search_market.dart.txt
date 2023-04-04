@@ -1,0 +1,1615 @@
+import 'dart:async';
+
+import 'package:Investrend/component/cards/card_chart.dart';
+import 'package:Investrend/component/cards/card_local_foreign.dart';
+import 'package:Investrend/component/cards/card_performance.dart';
+import 'package:Investrend/component/component_creator.dart';
+import 'package:Investrend/component/widget_price.dart';
+import 'package:Investrend/objects/class_value_notifier.dart';
+import 'package:Investrend/objects/data_object.dart';
+import 'package:Investrend/objects/ssi_objects.dart';
+import 'package:Investrend/screens/base/screen_aware.dart';
+import 'package:Investrend/utils/connection_services.dart';
+import 'package:Investrend/utils/investrend_theme.dart';
+import 'package:Investrend/utils/string_utils.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
+
+class ScreenSearchMarket extends StatefulWidget {
+  @override
+  _ScreenSearchMarketState createState() => _ScreenSearchMarketState();
+}
+
+//final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
+class _ScreenSearchMarketState extends State<ScreenSearchMarket> with AutomaticKeepAliveClientMixin<ScreenSearchMarket> //    with RouteAware
+{
+  static const Duration durationUpdate = Duration(milliseconds: 60000);
+  IndexSummaryNotifier _compositeNotifier;
+  LocalForeignNotifier _localForeignNotifier;
+  PerformanceNotifier _performanceNotifier;
+  ChartNotifier _chartNotifier = ChartNotifier(ChartData());
+
+  bool active = false;
+  int _selectedChart = 0;
+  int _selectedDomesticForeign = 0;
+  List<String> _listChipRange = <String>['1D', '1W', '1M', '3M', '6M', '1Y', '5Y', 'All'];
+
+  @override
+  bool get wantKeepAlive => true;
+
+  void onActive() {
+    active = true;
+    print('202104-27 onActive');
+    if (timer == null || !timer.isActive) {
+      timer = Timer.periodic(durationUpdate, (timer) {
+        doUpdate();
+      });
+    }
+    // if(timer.isActive){
+    //   return;
+    // }
+    // timer = Timer.periodic(durationUpdate, (timer) {
+    //   doUpdate();
+    // });
+  }
+
+  void onInactive() {
+    active = false;
+    print('202104-27 onInactive');
+    timer.cancel();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ScreenAware(
+      routeName: '/search_market',
+      onActive: onActive,
+      onInactive: onInactive,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            //createCardDetailIhsg2(context),
+            createCardDetailIhsg(context),
+            ComponentCreator.divider(context),
+            ComponentCreator.divider(context),
+            //createCardPerformance(context),
+            CardPerformance(_performanceNotifier),
+            ComponentCreator.divider(context),
+
+            //createCardLocalForeign(context),
+            CardLocalForeign(_localForeignNotifier),
+            SizedBox(height: 10.0,),
+            ComponentCreator.divider(context),
+            createCardSector(context),
+
+          ],
+        ),
+      ),
+    );
+
+  }
+
+  Widget createCardDetailIhsgOld(BuildContext context) {
+    return Card(
+      color: Colors.red,
+      margin: const EdgeInsets.all(InvestrendTheme.cardMargin),
+      child: Padding(
+        padding: const EdgeInsets.all(InvestrendTheme.cardPadding),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ValueListenableBuilder( valueListenable: _compositeNotifier, builder: (context, value, child) {
+                  if (_compositeNotifier.invalid()) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  return Container(
+                    color: Colors.purple,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          color: Colors.blue,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                color:Colors.yellow,
+                                child: Text(
+                                  'IHSG',
+                                  style: InvestrendTheme.of(context).headline3,
+                                ),
+                              ),
+                              // SizedBox(
+                              //   height: 4.0,
+                              // ),
+                              Container(
+                                color: Colors.yellow,
+                                child: Text(
+                                  _compositeNotifier.index.name,
+                                  maxLines: 2,
+                                  style: InvestrendTheme.of(context).support_w400.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          color: Colors.blue,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  //InvestrendTheme.getChangeIcon(_compositeNotifier.value.change),
+                                  InvestrendTheme.getChangeImage(_compositeNotifier.value.change),
+                                  SizedBox(
+                                    width: 5.0,
+                                  ),
+                                  // Icon(
+                                  //   Icons.arrow_drop_up,
+                                  //   color: InvestrendTheme.greenText,
+                                  // ),
+                                  Text(
+                                    InvestrendTheme.formatPriceDouble(_compositeNotifier.value.last),
+                                    style: InvestrendTheme.of(context)
+                                        .headline3
+                                        .copyWith(color: InvestrendTheme.changeTextColor(_compositeNotifier.value.change)),
+                                  ),
+                                ],
+                              ),
+                              // SizedBox(
+                              //   height: 4.0,
+                              // ),
+                              Text(
+                                InvestrendTheme.formatChange(_compositeNotifier.value.change) +
+                                    ' (' +
+                                    InvestrendTheme.formatPercentChange(_compositeNotifier.value.percentChange) +
+                                    ')',
+                                style: InvestrendTheme.of(context).regular_w400.copyWith(
+                                    color: InvestrendTheme.changeTextColor(_compositeNotifier.value.change)),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }),
+
+            SizedBox(
+              height: 20.0,
+            ),
+            chartRangeChips(context),
+            SizedBox(
+              height: InvestrendTheme.cardMargin,
+            ),
+            // chart
+            Placeholder(
+              fallbackWidth: double.maxFinite,
+              fallbackHeight: 220.0,
+            ),
+            SizedBox(
+              height: 20.0,
+            ),
+
+            getTableData(context),
+            /*
+            ComponentCreator.divider(context),
+            SizedBox(
+              height: 20.0,
+            ),
+            ValueListenableBuilder(
+              valueListenable: _compositeNotifier,
+              builder: (context, value, child) {
+                if (_compositeNotifier.invalid()) {
+                  return Center(child: CircularProgressIndicator());
+                }
+                return getTableData(context);
+
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Open',
+                          style: InvestrendTheme.of(context).textLabelStyle,
+                        ),
+                        SizedBox(
+                          height: 10.0,
+                        ),
+                        Text(
+                          'Low',
+                          style: InvestrendTheme.of(context).textLabelStyle,
+                        ),
+                        SizedBox(
+                          height: 10.0,
+                        ),
+                        Text(
+                          'High',
+                          style: InvestrendTheme.of(context).textLabelStyle,
+                        ),
+                        SizedBox(
+                          height: 10.0,
+                        ),
+                        Text(
+                          'Vol (Shares)',
+                          style: InvestrendTheme.of(context).textLabelStyle,
+                        ),
+                      ],
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        ComponentCreator.textFit(
+                          context,
+                          InvestrendTheme.formatPriceDouble(_compositeNotifier.value.open, showDecimal: false),
+                          style: InvestrendTheme.of(context).textValueStyle,
+                          alignment: Alignment.centerRight,
+                        ),
+                        SizedBox(
+                          height: 10.0,
+                        ),
+                        ComponentCreator.textFit(
+                          context,
+                          InvestrendTheme.formatPriceDouble(_compositeNotifier.value.low, showDecimal: false),
+                          style: InvestrendTheme.of(context).textValueStyle,
+                          alignment: Alignment.centerRight,
+                        ),
+                        SizedBox(
+                          height: 10.0,
+                        ),
+                        ComponentCreator.textFit(
+                          context,
+                          InvestrendTheme.formatPriceDouble(_compositeNotifier.value.hi, showDecimal: false),
+                          style: InvestrendTheme.of(context).textValueStyle,
+                          alignment: Alignment.centerRight,
+                        ),
+                        SizedBox(
+                          height: 10.0,
+                        ),
+                        ComponentCreator.textFit(
+                          context,
+                          InvestrendTheme.formatValue(_compositeNotifier.value.volume),
+                          style: InvestrendTheme.of(context).textValueStyle,
+                          alignment: Alignment.centerRight,
+                        ),
+                      ],
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Turnover (IDR)',
+                          style: InvestrendTheme.of(context).textLabelStyle,
+                        ),
+                        SizedBox(
+                          height: 10.0,
+                        ),
+                        Text(
+                          'Frequency (x)',
+                          style: InvestrendTheme.of(context).textLabelStyle,
+                        ),
+                        SizedBox(
+                          height: 10.0,
+                        ),
+                        Text(
+                          'Value',
+                          style: InvestrendTheme.of(context).textLabelStyle,
+                        ),
+                        SizedBox(
+                          height: 10.0,
+                        ),
+                        Text(
+                          'Time',
+                          style: InvestrendTheme.of(context).textLabelStyle,
+                        ),
+                      ],
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        ComponentCreator.textFit(
+                          context,
+                          '???',
+                          style: InvestrendTheme.of(context).textValueStyle,
+                          alignment: Alignment.centerRight,
+                        ),
+                        SizedBox(
+                          height: 10.0,
+                        ),
+                        ComponentCreator.textFit(
+                          context,
+                          InvestrendTheme.formatComma(_compositeNotifier.value.freq),
+                          style: InvestrendTheme.of(context).textValueStyle,
+                          alignment: Alignment.centerRight,
+                        ),
+                        SizedBox(
+                          height: 10.0,
+                        ),
+                        //ComponentCreator.textFit(context, _compositeNotifier.value.time),
+                        ComponentCreator.textFit(
+                          context,
+                          InvestrendTheme.formatValue(_compositeNotifier.value.value),
+                          style: InvestrendTheme.of(context).textValueStyle,
+                          alignment: Alignment.centerRight,
+                        ),
+                        SizedBox(
+                          height: 10.0,
+                        ),
+                        ComponentCreator.textFit(
+                          context,
+                          _compositeNotifier.value.time,
+                          style: InvestrendTheme.of(context).textValueStyle,
+                          alignment: Alignment.centerRight,
+                        ),
+                      ],
+                    ),
+                  ],
+                );
+
+              },
+            ),
+
+             */
+          ],
+        ),
+      ),
+    );
+  }
+  Widget createCardDetailIhsg(BuildContext context) {
+    return Card(
+      // color: Colors.red,
+      margin: const EdgeInsets.all(InvestrendTheme.cardMargin),
+      child: Padding(
+        padding: const EdgeInsets.all(InvestrendTheme.cardPadding),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ValueListenableBuilder( valueListenable: _compositeNotifier, builder: (context, value, child) {
+              if (_compositeNotifier.invalid()) {
+                return Center(child: CircularProgressIndicator());
+              }
+              return WidgetPrice('IHSG', _compositeNotifier.index.name, _compositeNotifier.value.last, _compositeNotifier.value.change, _compositeNotifier.value.percentChange);
+            }),
+            SizedBox(
+              height: 20.0,
+            ),
+            CardChart(_chartNotifier, callbackRange: (value){
+              print('detail Ihsg chart callbackRange : $value');
+            },),
+            /*
+
+            chartRangeChips(context),
+            SizedBox(
+              height: InvestrendTheme.cardMargin,
+            ),
+            // chart
+            Placeholder(
+              fallbackWidth: double.maxFinite,
+              fallbackHeight: 220.0,
+            ),
+
+            */
+
+            SizedBox(
+              height: 20.0,
+            ),
+            // ComponentCreator.divider(context),
+            Padding(
+              padding: const EdgeInsets.only(left: 12.0, right: 12.0),
+              child: ComponentCreator.subtitle(context, 'search_market_card_overview_title'.tr()),
+            ),
+            SizedBox(
+              height: 8.0,
+            ),
+            //getTableData(context),
+
+            Padding(
+              padding: const EdgeInsets.only(left: 12.0, right: 12.0),
+              child: getTableData(context),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  //final NumberFormat formatterNumber = NumberFormat("#,##0.##", "id");
+
+  Widget tableCellLeft(BuildContext context, String text, {double padding = 0.0}) {
+    return Padding(
+      padding: EdgeInsets.only(left: padding, top: 10.0, bottom: 10.0),
+      child: Text(
+        text,
+        maxLines: 1,
+        style: InvestrendTheme.of(context).textLabelStyle,
+        textAlign: TextAlign.left,
+      ),
+    );
+  }
+
+  Widget tableCellRightExpanded(BuildContext context, String text, {double padding = 0.0, Color color}) {
+    TextStyle textStyle;
+    if (color == null) {
+      textStyle = InvestrendTheme.of(context).small_w400_compact;
+    } else {
+      textStyle = InvestrendTheme.of(context).small_w400_compact.copyWith(color: color);
+    }
+    return Expanded(
+      flex: 1,
+      child: Padding(
+        padding: EdgeInsets.only(right: padding, top: 10.0, bottom: 10.0),
+        child: Text(
+          text,
+          maxLines: 1,
+          style: textStyle,
+          textAlign: TextAlign.right,
+        ),
+      ),
+    );
+  }
+
+  Widget getTableData(BuildContext context) {
+    return ValueListenableBuilder(
+      valueListenable: _compositeNotifier,
+      builder: (context, value, child) {
+        if (_compositeNotifier.invalid()) {
+          return Center(child: CircularProgressIndicator());
+        }
+        const padding = 15.0;
+
+
+
+
+        TableRow row0 = TableRow(children: [
+          Row(
+            children: [
+              tableCellLeft(context, 'Open'),
+              tableCellRightExpanded(context, InvestrendTheme.formatPriceDouble(_compositeNotifier.value.open, showDecimal: false),
+                  color: InvestrendTheme.changeTextColor(_compositeNotifier.value.open, prev: _compositeNotifier.value.prev), padding: padding),
+            ],
+          ),
+          Row(
+            children: [
+              tableCellLeft(context, 'Turnover (IDR)', padding: padding),
+              tableCellRightExpanded(
+                context,
+                '????',
+              ),
+            ],
+          ),
+
+
+        ]);
+
+        TableRow row1 = TableRow(children: [
+
+          Row(
+            children: [
+              tableCellLeft(context, 'Low'),
+              tableCellRightExpanded(context, InvestrendTheme.formatPriceDouble(_compositeNotifier.value.low, showDecimal: false),
+                  color: InvestrendTheme.changeTextColor(_compositeNotifier.value.low, prev: _compositeNotifier.value.prev), padding: padding),
+            ],
+          ),
+          Row(
+            children: [
+              tableCellLeft(context, 'Vol (Shares)', padding: padding),
+              tableCellRightExpanded(
+                context,
+                InvestrendTheme.formatValue(_compositeNotifier.value.volume),
+              ),
+            ],
+          ),
+
+
+
+
+        ]);
+        TableRow row2 = TableRow(children: [
+
+          Row(
+            children: [
+              tableCellLeft(context, 'High'),
+              tableCellRightExpanded(context, InvestrendTheme.formatPriceDouble(_compositeNotifier.value.hi, showDecimal: false),
+                  color: InvestrendTheme.changeTextColor(_compositeNotifier.value.hi, prev: _compositeNotifier.value.prev), padding: padding),
+            ],
+          ),
+          Row(
+            children: [
+              tableCellLeft(context, 'Frequency (x)', padding: padding),
+              tableCellRightExpanded(
+                context,
+                InvestrendTheme.formatComma(_compositeNotifier.value.freq),
+              ),
+            ],
+          ),
+
+
+
+        ]);
+
+        // TableRow row3 = TableRow(children: [
+        //   ComponentCreator.tableCellLeft(context, 'High'),
+        //   ComponentCreator.tableCellRight(context, InvestrendTheme.formatPrice(_summaryNotifier.value.hi), color: InvestrendTheme.priceTextColor(_summaryNotifier.value.hi, prev: _summaryNotifier.value.prev), padding: padding),
+        //   ComponentCreator.tableCellLeft(context, 'PER', padding: padding),
+        //   ComponentCreator.tableCellRight(context, '????', ),
+        // ]);
+        // TableRow row4 = TableRow(children: [
+        //   ComponentCreator.tableCellLeft(context, 'Avg. Price'),
+        //   ComponentCreator.tableCellRight(context, InvestrendTheme.formatPrice(_summaryNotifier.value.averagePrice.toInt()), color: InvestrendTheme.priceTextColor(_summaryNotifier.value.averagePrice.toInt(), prev: _summaryNotifier.value.prev), padding: padding),
+        //   ComponentCreator.tableCellLeft(context, 'YTD (%)', padding: padding),
+        //   ComponentCreator.tableCellRight(context, InvestrendTheme.formatPercentChange(_summaryNotifier.value.returnYTD), color: InvestrendTheme.changeTextColor(_summaryNotifier.value.returnYTD) ),
+        // ]);
+        return Table(
+          defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+          //border: TableBorder.all(color: Colors.black),
+          columnWidths: {
+            0: FractionColumnWidth(.4),
+            1: FractionColumnWidth(.6),
+          },
+          children: [
+            row0,
+            row1,
+            row2,
+            // row3,
+            // row4,
+          ],
+        );
+      },
+    );
+  }
+
+  /*
+  Widget getTableDataOld(BuildContext context) {
+    return ValueListenableBuilder(
+      valueListenable: _compositeNotifier,
+      builder: (context, value, child) {
+        if (_compositeNotifier.invalid()) {
+          return Center(child: CircularProgressIndicator());
+        }
+        const padding = 15.0;
+        TableRow row0 = TableRow(children: [
+          ComponentCreator.tableCellLeft(context, 'Open'),
+          ComponentCreator.tableCellRight(context, InvestrendTheme.formatPriceDouble(_compositeNotifier.value.open, showDecimal: false),
+              color: InvestrendTheme.changeTextColor(_compositeNotifier.value.open, prev: _compositeNotifier.value.prev), padding: padding),
+          ComponentCreator.tableCellLeft(context, 'Turnover (IDR)', padding: padding),
+          ComponentCreator.tableCellRight(
+            context,
+            '????',
+          ),
+        ]);
+
+        TableRow row1 = TableRow(children: [
+          ComponentCreator.tableCellLeft(context, 'Low'),
+          ComponentCreator.tableCellRight(context, InvestrendTheme.formatPriceDouble(_compositeNotifier.value.low, showDecimal: false),
+              color: InvestrendTheme.changeTextColor(_compositeNotifier.value.low, prev: _compositeNotifier.value.prev), padding: padding),
+          ComponentCreator.tableCellLeft(context, 'Vol (Shares)', padding: padding),
+          ComponentCreator.tableCellRight(
+            context,
+            InvestrendTheme.formatValue(_compositeNotifier.value.volume),
+          ),
+        ]);
+        TableRow row2 = TableRow(children: [
+          ComponentCreator.tableCellLeft(context, 'High'),
+          ComponentCreator.tableCellRight(context, InvestrendTheme.formatPriceDouble(_compositeNotifier.value.hi, showDecimal: false),
+              color: InvestrendTheme.changeTextColor(_compositeNotifier.value.hi, prev: _compositeNotifier.value.prev), padding: padding),
+          ComponentCreator.tableCellLeft(context, 'Frequency (x)', padding: padding),
+          ComponentCreator.tableCellRight(
+            context,
+            InvestrendTheme.formatComma(_compositeNotifier.value.freq),
+          ),
+        ]);
+
+        // TableRow row3 = TableRow(children: [
+        //   ComponentCreator.tableCellLeft(context, 'High'),
+        //   ComponentCreator.tableCellRight(context, InvestrendTheme.formatPrice(_summaryNotifier.value.hi), color: InvestrendTheme.priceTextColor(_summaryNotifier.value.hi, prev: _summaryNotifier.value.prev), padding: padding),
+        //   ComponentCreator.tableCellLeft(context, 'PER', padding: padding),
+        //   ComponentCreator.tableCellRight(context, '????', ),
+        // ]);
+        // TableRow row4 = TableRow(children: [
+        //   ComponentCreator.tableCellLeft(context, 'Avg. Price'),
+        //   ComponentCreator.tableCellRight(context, InvestrendTheme.formatPrice(_summaryNotifier.value.averagePrice.toInt()), color: InvestrendTheme.priceTextColor(_summaryNotifier.value.averagePrice.toInt(), prev: _summaryNotifier.value.prev), padding: padding),
+        //   ComponentCreator.tableCellLeft(context, 'YTD (%)', padding: padding),
+        //   ComponentCreator.tableCellRight(context, InvestrendTheme.formatPercentChange(_summaryNotifier.value.returnYTD), color: InvestrendTheme.changeTextColor(_summaryNotifier.value.returnYTD) ),
+        // ]);
+        return Table(
+          defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+          //border: TableBorder.all(color: Colors.black),
+          columnWidths: {0: FractionColumnWidth(.2)},
+          children: [
+            row0,
+            row1,
+            row2,
+            // row3,
+            // row4,
+          ],
+        );
+      },
+    );
+  }
+  */
+
+  Widget progressPerformance(BuildContext context, String label, double change, double percentChange) {
+    double progressValue = percentChange.abs() / 100;
+    return Padding(
+      padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
+      child: Row(
+        children: [
+          SizedBox(
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerLeft,
+              child: Text(
+                label,
+                style: Theme.of(context).textTheme.bodyText1,
+
+                //textAlign: TextAlign.start,
+              ),
+            ),
+            width: 65.0,
+          ),
+          SizedBox(
+            width: 5.0,
+          ),
+          Expanded(
+            flex: 8,
+            child: ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+              child: LinearProgressIndicator(
+                minHeight: 12.0,
+                value: progressValue,
+                valueColor: new AlwaysStoppedAnimation<Color>(InvestrendTheme.changeTextColor(change)),
+                backgroundColor: InvestrendTheme.of(context).tileBackground,
+              ),
+            ),
+          ),
+          SizedBox(
+            width: 5.0,
+          ),
+          SizedBox(
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerRight,
+              child: Text(
+                //formatterNumber.format(value) + '%',
+                InvestrendTheme.formatPercentChange(percentChange),
+                style: Theme.of(context).textTheme.bodyText1.copyWith(color: InvestrendTheme.changeTextColor(change)),
+                textAlign: TextAlign.end,
+              ),
+            ),
+            width: 65,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget createCardPerformance(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.all(InvestrendTheme.cardMargin),
+      child: Padding(
+        padding: const EdgeInsets.all(InvestrendTheme.cardPadding),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ComponentCreator.subtitle(
+              context,
+              'search_market_card_performance_title'.tr(),
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ValueListenableBuilder(
+                  valueListenable: _compositeNotifier,
+                  builder: (context, value, child) {
+                    if (_compositeNotifier.invalid()) {
+                      return Center(child: CircularProgressIndicator());
+                    }
+                    return progressPerformance(context, '1 Day', _compositeNotifier.value.change, _compositeNotifier.value.percentChange);
+                  },
+                ),
+                progressPerformance(context, '1 Week', 0, 0),
+                progressPerformance(context, '1 Mo', 0, 0),
+                progressPerformance(context, '3 Mo', 0, 0),
+                progressPerformance(context, '6 Mo', 0, 0),
+                //progressPerformance(context, '1 Year',10, -1.09),
+                ValueListenableBuilder(
+                  valueListenable: _compositeNotifier,
+                  builder: (context, value, child) {
+                    if (_compositeNotifier.invalid()) {
+                      return Center(child: CircularProgressIndicator());
+                    }
+                    return progressPerformance(context, '1 Year', _compositeNotifier.value.return52W, _compositeNotifier.value.return52W);
+                  },
+                ),
+                progressPerformance(context, '5 Year', 0, 0),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget chartRangeChips(BuildContext context) {
+    return Container(
+      //color: Colors.green,
+      width: double.maxFinite,
+      //margin: EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0),
+      //margin: EdgeInsets.all(10.0),
+      //padding: EdgeInsets.only(left: 10.0, right: 10.0),
+      height: 30.0,
+
+      decoration: BoxDecoration(
+        //color: Colors.green,
+        color: InvestrendTheme.of(context).tileBackground,
+        border: Border.all(
+          color: InvestrendTheme.of(context).chipBorder,
+          width: 1.0,
+        ),
+        borderRadius: BorderRadius.circular(2.0),
+
+        //color: Colors.green,
+      ),
+
+      child: Row(
+        children: List<Widget>.generate(
+          _listChipRange.length,
+          (int index) {
+            //print(_listChipRange[index]);
+            bool selected = _selectedChart == index;
+            return Expanded(
+              flex: 1,
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () {
+                    setState(() {
+                      _selectedChart = index;
+                    });
+                  },
+                  child: Container(
+                    color: selected ? Theme.of(context).accentColor : Colors.transparent,
+                    child: Center(
+                        child: Text(
+                      _listChipRange[index],
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText2
+                          .copyWith(fontSize: 12.0, color: selected ? Colors.white : InvestrendTheme.of(context).blackAndWhiteText),
+                    )),
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget domesticForeignRangeChips(BuildContext context) {
+    return Container(
+      //color: Colors.green,
+      width: double.maxFinite,
+      //margin: EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0),
+      //margin: EdgeInsets.all(10.0),
+      //padding: EdgeInsets.only(left: 10.0, right: 10.0),
+      height: 30.0,
+
+      decoration: BoxDecoration(
+        //color: Colors.green,
+        color: InvestrendTheme.of(context).tileBackground,
+        border: Border.all(
+          color: InvestrendTheme.of(context).chipBorder,
+          width: 1.0,
+        ),
+        borderRadius: BorderRadius.circular(2.0),
+
+        //color: Colors.green,
+      ),
+
+      child: Row(
+        children: List<Widget>.generate(
+          _listChipRange.length,
+          (int index) {
+            //print(_listChipRange[index]);
+            bool selected = _selectedDomesticForeign == index;
+            return Expanded(
+              flex: 1,
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () {
+                    setState(() {
+                      _selectedDomesticForeign = index;
+                    });
+                  },
+                  child: Container(
+                    color: selected ? Theme.of(context).accentColor : Colors.transparent,
+                    child: Center(
+                        child: Text(
+                      _listChipRange[index],
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyText2
+                          .copyWith(fontSize: 12.0, color: selected ? Colors.white : InvestrendTheme.of(context).blackAndWhiteText),
+                    )),
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget tileSector(BuildContext context, SectorObject sector, bool first, double width) {
+    double left = first ? 0 : 8.0;
+    //double right = end ? 0 : 0.0;
+    String percentText;
+    Color percentChangeTextColor;
+    Color percentChangeBackgroundColor;
+
+    percentText = InvestrendTheme.formatPercentChange(sector.percentChange);
+    percentChangeTextColor = InvestrendTheme.changeTextColor(sector.percentChange);
+    percentChangeBackgroundColor = InvestrendTheme.priceBackgroundColorDouble(sector.percentChange);
+    /*
+    if (sector.percentChange > 0) {
+      percentText = '+' + formatterNumber.format(sector.percentChange) + '%';
+      percentChangeTextColor = InvestrendTheme.greenText;
+      percentChangeBackgroundColor = InvestrendTheme.of(context).greenBackground;
+    } else if (sector.percentChange < 0) {
+      percentText = formatterNumber.format(sector.percentChange) + '%';
+      percentChangeTextColor = InvestrendTheme.redText;
+      percentChangeBackgroundColor = InvestrendTheme.of(context).redBackground;
+    } else {
+      percentText = formatterNumber.format(sector.percentChange) + '%';
+      percentChangeTextColor = InvestrendTheme.of(context).yellowText;
+      percentChangeBackgroundColor =
+          InvestrendTheme.of(context).yellowBackground;
+    }
+     */
+    return SizedBox(
+      width: width,
+      child: MaterialButton(
+        elevation: 0.0,
+        minWidth: 50.0,
+        splashColor: InvestrendTheme.of(context).tileSplashColor,
+        padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0, bottom: 10.0),
+        color: InvestrendTheme.of(context).tileBackground,
+        shape: RoundedRectangleBorder(
+          borderRadius: new BorderRadius.circular(10.0),
+          side: BorderSide(
+            color: InvestrendTheme.of(context).tileBackground,
+            width: 0.0,
+          ),
+        ),
+        child: Column(
+          children: [
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                sector.code,
+                //style: Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.bold),
+                style: InvestrendTheme.of(context).small_w700,
+              ),
+            ),
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                sector.member_count.toString() + ' Emiten',
+                //style: Theme.of(context).textTheme.bodyText2.copyWith(fontWeight: FontWeight.w300),
+                style: InvestrendTheme.of(context).support_w400.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor),
+              ),
+            ),
+            Icon(
+              Icons.extension,
+              color: Theme.of(context).accentColor,
+            ),
+            SizedBox(
+              height: 5.0,
+            ),
+            Container(
+              padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 5.0, bottom: 5.0),
+              decoration: BoxDecoration(
+                color: percentChangeBackgroundColor,
+                shape: BoxShape.rectangle,
+                borderRadius: BorderRadius.all(Radius.circular(15.0)),
+              ),
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  percentText,
+                  //style: TextStyle(color: percentChangeTextColor),
+                  style: InvestrendTheme.of(context).support_w700.copyWith(color: percentChangeTextColor),
+                ),
+              ),
+            ),
+          ],
+        ),
+        onPressed: () {},
+      ),
+    );
+  }
+
+  Future<List<IndexSummary>> indexSummarys;
+  Timer timer;
+
+  // bool active = true;
+  @override
+  void initState() {
+    super.initState();
+    print('202104-27 initState');
+    _localForeignNotifier = LocalForeignNotifier(new LocalForeignData());
+    _performanceNotifier = PerformanceNotifier(new PerformanceData());
+    _rebuildSectors();
+    Index composite;
+    for (final index in InvestrendTheme.storedData.listIndex) {
+      if (index != null && index.isComposite) {
+        composite = index;
+        break;
+      }
+    }
+    _compositeNotifier = IndexSummaryNotifier(null, composite);
+    if (timer == null || !timer.isActive) {
+      timer = Timer.periodic(durationUpdate, (timer) {
+        doUpdate();
+      });
+    }
+
+    //doUpdate();
+  }
+
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+  //   routeObserver.subscribe(this, ModalRoute.of(context));
+  // }
+  @override
+  void dispose() {
+    _compositeNotifier.dispose();
+    _localForeignNotifier.dispose();
+    _performanceNotifier.dispose();
+    _chartNotifier.dispose();
+    //routeObserver.unsubscribe(this);
+    timer.cancel();
+    super.dispose();
+  }
+
+  // @override
+  // void didPush() {
+  //   // Route was pushed onto navigator and is now topmost route.
+  //   print('didPush' );
+  // }
+
+  // @override
+  // void didPopNext() {
+  //   // Covering route was popped off the navigator.
+  //   print('didPopNext');
+  // }
+
+  void _rebuildSectors() {
+    listSectors.clear();
+    if (InvestrendTheme.storedData.listIndex.isNotEmpty) {
+      InvestrendTheme.storedData.listIndex.forEach((index) {
+        if (index != null && index.isSector) {
+          listSectors.add(SectorObject(index.code, index.listMembers.length, '/images/icons/action_bell.png', 0.0));
+          //listSectors.add(SectorObject(index.name, index.listMembers.length, '/images/icons/action_bell.png', 0.0));
+        }
+      });
+    }
+  }
+
+  void doUpdate() async {
+    print('ScreenSearchMarket.doUpdate : ' + DateTime.now().toString());
+    List<String> listCode = List<String>.empty(growable: true);
+
+    //listSectors.clear();
+    if (InvestrendTheme.storedData.listIndex.isNotEmpty) {
+      InvestrendTheme.storedData.listIndex.forEach((index) {
+        if (index != null && (index.isSector || index.isComposite)) {
+          //listSectors.add(SectorObject(index.code, index.listMembers.length, '/images/icons/action_bell.png', 0.0));
+          listCode.add(index.code);
+        }
+      });
+    }
+    print('doUpdate listCode.size : ' + listCode.length.toString());
+    //indexSummarys = HttpSSI.fetchIndices(listCode);
+
+    final indexSummarys = await HttpSSI.fetchIndices(listCode);
+    if (indexSummarys.length > 0) {
+      print('Future DATA : ' + indexSummarys.length.toString());
+      indexSummarys.forEach((indexSummary) {
+        if (indexSummary != null) {
+          //print(indexSummary.toString());
+          int countSector = listSectors.length;
+          for (int i = 0; i < countSector; i++) {
+            SectorObject sector = listSectors.elementAt(i);
+            if (StringUtils.equalsIgnoreCase(indexSummary.code, sector.code)) {
+              sector.percentChange = indexSummary.percentChange;
+              break;
+            }
+          }
+
+          if (StringUtils.equalsIgnoreCase(indexSummary.code, 'COMPOSITE')) {
+            _compositeNotifier.setData(indexSummary);
+
+            PerformanceData newPD = PerformanceData();
+            newPD.intraday_change = indexSummary.change;
+            newPD.intraday_percent_change = indexSummary.percentChange;
+            newPD.year_1_percent_change = indexSummary.return52W;
+            newPD.year_1_percent_change = indexSummary.return52W;
+
+            _performanceNotifier.setValue(newPD);
+
+            LocalForeignData newLFD = LocalForeignData();
+            newLFD.domesticBuy = indexSummary.domesticBuyerValue;
+            newLFD.foreignBuy = indexSummary.foreignBuyerValue;
+
+            newLFD.domesticSell = indexSummary.domesticSellerValue;
+            newLFD.foreignSell = indexSummary.foreignSellerValue;
+
+            newLFD.domescticNet = indexSummary.domesticBuyerValue - indexSummary.domesticSellerValue;
+            newLFD.foreignNet = indexSummary.foreignBuyerValue - indexSummary.foreignSellerValue;
+
+            newLFD.domesticTurnover = 0;
+            newLFD.foreignTurnover = 0;
+
+            //yyyy-MM-dd hh:mm:ss
+            //String infoTime = 'Data terakhir diupdate Senin, 03/05/2021 pada pukul 18:00';
+
+            if( !StringUtils.isEmtpy(indexSummary.time) && !StringUtils.isEmtpy(indexSummary.date)){
+              String infoTime = 'card_local_foreign_time_info'.tr();
+
+              DateFormat dateFormatter = DateFormat('EEEE, dd/MM/yyyy');
+              DateFormat timeFormatter = DateFormat('hh:mm');
+              DateFormat dateParser = DateFormat('yyyy-MM-dd hh:mm:ss');
+              DateTime dateTime = dateParser.parse(indexSummary.date+' '+indexSummary.time);
+              String formatedDate = dateFormatter.format(dateTime);
+              String formatedTime = timeFormatter.format(dateTime);
+              infoTime = infoTime.replaceAll('#DATE#', formatedDate);
+              infoTime = infoTime.replaceAll('#TIME#', formatedTime);
+              newLFD.time = infoTime;
+            }else{
+              newLFD.time = '';
+            }
+
+
+            //newLFD.time = 'Data terakhir diupdate Senin, 03/05/2021 pada pukul 18:00';
+            _localForeignNotifier.setValue(newLFD);
+          }
+        }
+      });
+      // setState(() {
+      //   InvestrendTheme.of(context).showSnackBar(context, 'Updated data at ' + DateFormat('hh:MM:ss').format(DateTime.now()));
+      // });
+    } else {
+      print('Future NO DATA');
+    }
+  }
+
+  List<SectorObject> listSectors = List<SectorObject>.empty(growable: true);
+
+  // List<SectorObject> listSectors = <SectorObject>[
+  //   SectorObject('Agriculture', 25, '/images/icons/action_bell.png', 0.14),
+  //   SectorObject('Mining', 21, '/images/icons/action_bell.png', 10.14),
+  //   SectorObject('Consumer', 25, '/images/icons/action_bell.png', -0.14),
+  //   SectorObject('Property', 18, '/images/icons/action_bell.png', -10.14),
+  //   SectorObject('Finance', 7, '/images/icons/action_bell.png', 0.14),
+  //   SectorObject('Infrastructure', 663, '/images/icons/action_bell.png', -8.14),
+  //   SectorObject('Constructor', 11, '/images/icons/action_bell.png', 0.14),
+  //   SectorObject('Market', 398, '/images/icons/action_bell.png', 28.14),
+  // ];
+
+  Widget gridWorldIndices(BuildContext context, List<SectorObject> list) {
+    List<Widget> widgets = List<Widget>.empty(growable: true);
+
+    int countData = list.length;
+    for (int i = 0; i < countData; i++) {
+      int iPlus = i + 1;
+      if (iPlus < countData) {
+        widgets.add(Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            //tileWorlIndices(context, list[i], true),
+            SizedBox(
+              width: InvestrendTheme.cardMargin,
+            ),
+            //tileWorlIndices(context, list[iPlus], false)
+          ],
+        ));
+        i = iPlus;
+      } else {
+        widgets.add(Row(
+          children: [
+            //tileWorlIndices(context, list[i], true),
+            SizedBox(
+              width: InvestrendTheme.cardMargin,
+            ),
+            Expanded(
+              flex: 1,
+              child: Center(child: Text(' ')),
+            ),
+          ],
+        ));
+      }
+      widgets.add(SizedBox(
+        height: InvestrendTheme.cardMargin,
+      ));
+    }
+    print('richy widgets size : ' + widgets.length.toString());
+
+    return Column(
+      children: widgets,
+    );
+  }
+
+  Widget gridSectors(BuildContext context) {
+    return LayoutBuilder(builder: (context, constrains) {
+      print('constrains ' + constrains.maxWidth.toString());
+      const int gridCount = 3;
+      double availableWidth = constrains.maxWidth - (InvestrendTheme.cardMargin * 2);
+      print('availableWidth $availableWidth');
+      double tileWidth = availableWidth / gridCount;
+      print('tileWidth $tileWidth');
+      List<Widget> columns = List<Widget>.empty(growable: true);
+
+      int countData = listSectors.length;
+      for (int i = 0; i < countData; i++) {
+        int iPlus2 = i + 2;
+        int iPlus1 = i + 1;
+
+        List<Widget> rows = List<Widget>.empty(growable: true);
+        for (int x = 0; x < 3; x++) {
+          int index = x + i;
+          if (x > 0) {
+            rows.add(SizedBox(
+              width: InvestrendTheme.cardMargin,
+            ));
+          }
+          if (index < countData) {
+            rows.add(tileSector(
+              context,
+              listSectors[index],
+              true,
+              tileWidth,
+            ));
+          } else {
+            rows.add(Expanded(
+              flex: 1,
+              child: Center(child: Text(' ')),
+            ));
+          }
+        }
+        columns.add(Row(
+          children: rows,
+        ));
+        columns.add(SizedBox(
+          height: InvestrendTheme.cardMargin,
+        ));
+        i += 2;
+      }
+
+      return Column(
+        children: columns,
+      );
+    });
+  }
+
+  Widget createCardSector(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.all(InvestrendTheme.cardMargin),
+      child: Padding(
+        padding: const EdgeInsets.all(InvestrendTheme.cardPadding),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              height: InvestrendTheme.cardPaddingPlusMargin,
+            ),
+            ComponentCreator.subtitle(
+              context,
+              'search_market_card_sector_title'.tr(),
+            ),
+            SizedBox(
+              height: InvestrendTheme.cardPaddingPlusMargin,
+            ),
+            /*
+            FutureBuilder<List<IndexSummary>>(
+              future: indexSummarys,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  print('snapshot.data.length = '+snapshot.data.length.toString());
+                  //return Text(snapshot.data.length.toString(), style: Theme.of(context).textTheme.bodyText2,);
+                  if (snapshot.data.length > 0) {
+
+                    snapshot.data.forEach((indexSummary) {
+                      if(indexSummary != null){
+                        print(indexSummary.toString());
+                        int countSector = listSectors.length;
+                        for(int i = 0; i <countSector; i++){
+                          SectorObject sector = listSectors.elementAt(i);
+                          if(StringUtils.equalsIgnoreCase(indexSummary.code, sector.code)){
+                            sector.percentChange = indexSummary.percentChange;
+                            break;
+                          }
+                        }
+                      }
+
+                    });
+
+                    return gridSectors(context);
+
+
+                    //return gridWorldIndices(context, snapshot.data);
+                  } else {
+                    return Center(
+                        child: Text(
+                          'No Data',
+                          style: Theme.of(context).textTheme.bodyText2,
+                        ));
+                  }
+                } else if (snapshot.hasError) {
+                  return Center(
+                      child: Text("${snapshot.error}",
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyText2
+                              .copyWith(color: Theme.of(context).errorColor)));
+                }
+
+                // By default, show a loading spinner.
+                return Center(child: CircularProgressIndicator());
+                //return listSectors.length > 0 ? gridSectors(context) : Center(child: CircularProgressIndicator());
+              },
+            ),
+            */
+            listSectors.length > 0 ? gridSectors(context) : Center(child: CircularProgressIndicator()),
+          ],
+        ),
+      ),
+    );
+  }
+  /*
+  Widget createCardLocalForeign(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.all(InvestrendTheme.cardMargin),
+      child: Padding(
+        padding: const EdgeInsets.all(InvestrendTheme.cardPadding),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: ComponentCreator.subtitle(
+                    context,
+                    'search_market_card_domestic_foreign_title'.tr(),
+                  ),
+                ),
+                MaterialButton(
+                    elevation: 0.0,
+                    visualDensity: VisualDensity.compact,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                    color: InvestrendTheme.of(context).tileBackground,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          'All Market',
+                          style: InvestrendTheme.of(context).support_w400_compact,
+                        ),
+                        Icon(
+                          Icons.arrow_drop_down,
+                          color: Colors.grey,
+                        ),
+                      ],
+                    ),
+                    onPressed: () {
+                      InvestrendTheme.of(context).showSnackBar(context, 'Action choose Market');
+                    }),
+              ],
+            ),
+            SizedBox(
+              height: InvestrendTheme.cardMargin,
+            ),
+            domesticForeignRangeChips(context),
+            SizedBox(
+              height: 20.0,
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: InvestrendTheme.cardMargin,
+                  ),
+                  Expanded(
+                      flex: 1,
+                      child: Text(
+                        '',
+                        style: Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.start,
+                      )),
+                  SizedBox(
+                    width: InvestrendTheme.cardMargin,
+                  ),
+                  Expanded(
+                      flex: 1,
+                      child: Text(
+                        'Local',
+                        style: Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.end,
+                      )),
+                  SizedBox(
+                    width: InvestrendTheme.cardMargin,
+                  ),
+                  Expanded(
+                      flex: 1,
+                      child: Text(
+                        'Foreign',
+                        style: Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.end,
+                      )),
+                  SizedBox(
+                    width: InvestrendTheme.cardMargin,
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: InvestrendTheme.cardMargin,
+                  ),
+                  Expanded(
+                      flex: 1,
+                      child: Text(
+                        'Buy',
+                        style: Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.start,
+                      )),
+                  SizedBox(
+                    width: InvestrendTheme.cardMargin,
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: ValueListenableBuilder(
+                      valueListenable: _compositeNotifier,
+                      builder: (context, value, child) {
+                        if (_compositeNotifier.invalid()) {
+                          return Center(child: CircularProgressIndicator());
+                        }
+                        return ComponentCreator.textFit(
+                          context,
+                          InvestrendTheme.formatValue(_compositeNotifier.value.domesticBuyerValue),
+                          style: Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.normal),
+                          alignment: Alignment.centerRight,
+                        );
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    width: InvestrendTheme.cardMargin,
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: ValueListenableBuilder(
+                      valueListenable: _compositeNotifier,
+                      builder: (context, value, child) {
+                        if (_compositeNotifier.invalid()) {
+                          return Center(child: CircularProgressIndicator());
+                        }
+                        return ComponentCreator.textFit(
+                          context,
+                          InvestrendTheme.formatValue(_compositeNotifier.value.foreignBuyerValue),
+                          style: Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.normal),
+                          alignment: Alignment.centerRight,
+                        );
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    width: InvestrendTheme.cardMargin,
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
+              color: InvestrendTheme.of(context).tileBackground,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: InvestrendTheme.cardMargin,
+                  ),
+                  Expanded(
+                      flex: 1,
+                      child: Text(
+                        'Sell',
+                        style: Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.start,
+                      )),
+                  SizedBox(
+                    width: InvestrendTheme.cardMargin,
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: ValueListenableBuilder(
+                      valueListenable: _compositeNotifier,
+                      builder: (context, value, child) {
+                        if (_compositeNotifier.invalid()) {
+                          return Center(child: CircularProgressIndicator());
+                        }
+                        return ComponentCreator.textFit(
+                          context,
+                          InvestrendTheme.formatValue(_compositeNotifier.value.domesticSellerValue),
+                          style: Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.normal),
+                          alignment: Alignment.centerRight,
+                        );
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    width: InvestrendTheme.cardMargin,
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: ValueListenableBuilder(
+                      valueListenable: _compositeNotifier,
+                      builder: (context, value, child) {
+                        if (_compositeNotifier.invalid()) {
+                          return Center(child: CircularProgressIndicator());
+                        }
+                        return ComponentCreator.textFit(
+                          context,
+                          InvestrendTheme.formatValue(_compositeNotifier.value.foreignSellerValue),
+                          style: Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.normal),
+                          alignment: Alignment.centerRight,
+                        );
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    width: InvestrendTheme.cardMargin,
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: InvestrendTheme.cardMargin,
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: Text(
+                      'Net',
+                      style: Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.bold),
+                      textAlign: TextAlign.start,
+                    ),
+                  ),
+                  SizedBox(
+                    width: InvestrendTheme.cardMargin,
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: ValueListenableBuilder(
+                      valueListenable: _compositeNotifier,
+                      builder: (context, value, child) {
+                        if (_compositeNotifier.invalid()) {
+                          return Center(child: CircularProgressIndicator());
+                        }
+                        int netDomestic = _compositeNotifier.value.domesticBuyerValue - _compositeNotifier.value.domesticSellerValue;
+                        return ComponentCreator.textFit(
+                          context,
+                          InvestrendTheme.formatValue(netDomestic),
+                          style: Theme.of(context).textTheme.bodyText1.copyWith(
+                                fontWeight: FontWeight.normal,
+                                color: InvestrendTheme.changeTextColor(netDomestic.toDouble()),
+                              ),
+                          alignment: Alignment.centerRight,
+                        );
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    width: InvestrendTheme.cardMargin,
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: ValueListenableBuilder(
+                      valueListenable: _compositeNotifier,
+                      builder: (context, value, child) {
+                        if (_compositeNotifier.invalid()) {
+                          return Center(child: CircularProgressIndicator());
+                        }
+                        int netForeign = _compositeNotifier.value.foreignBuyerValue - _compositeNotifier.value.foreignSellerValue;
+                        return ComponentCreator.textFit(
+                          context,
+                          InvestrendTheme.formatValue(netForeign),
+                          style: Theme.of(context).textTheme.bodyText1.copyWith(
+                                fontWeight: FontWeight.normal,
+                                color: InvestrendTheme.changeTextColor(netForeign.toDouble()),
+                              ),
+                          alignment: Alignment.centerRight,
+                        );
+                      },
+                    ),
+                  ),
+                  SizedBox(
+                    width: InvestrendTheme.cardMargin,
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
+              color: InvestrendTheme.of(context).tileBackground,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: InvestrendTheme.cardMargin,
+                  ),
+                  Expanded(
+                      flex: 1,
+                      child: Text(
+                        '% Turnover',
+                        style: Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.start,
+                      )),
+                  SizedBox(
+                    width: InvestrendTheme.cardMargin,
+                  ),
+                  Expanded(
+                      flex: 1,
+                      child: ComponentCreator.textFit(
+                        context,
+                        '83%',
+                        style: Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.bold),
+                        alignment: Alignment.centerRight,
+                      )),
+                  SizedBox(
+                    width: InvestrendTheme.cardMargin,
+                  ),
+                  Expanded(
+                      flex: 1,
+                      child: ComponentCreator.textFit(
+                        context,
+                        '17%',
+                        style: Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.bold),
+                        alignment: Alignment.centerRight,
+                      )),
+                  SizedBox(
+                    width: InvestrendTheme.cardMargin,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+  */
+}

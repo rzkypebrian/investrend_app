@@ -1,0 +1,294 @@
+import 'package:Investrend/component/component_creator.dart';
+import 'package:Investrend/objects/data_object.dart';
+import 'package:Investrend/screens/tab_search/screen_search_global.dart';
+import 'package:Investrend/screens/tab_search/screen_search_market.dart';
+import 'package:Investrend/utils/investrend_theme.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
+import 'dart:math';
+
+class ScreenSearch extends StatefulWidget {
+  const ScreenSearch({Key key}) : super(key: key);
+
+  @override
+  _ScreenSearchState createState() => _ScreenSearchState();
+}
+
+class _ScreenSearchState extends State<ScreenSearch> {
+  String timeCreation = '-';
+
+  //Key testKey = UniqueKey();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    timeCreation = DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.now());
+  }
+
+  List<String> tabs = [
+    'search_tabs_market_title'.tr(),
+    'search_tabs_global_title'.tr(),
+    'search_tabs_watchlist_title'.tr(),
+    'search_tabs_movers_title'.tr(),
+    'search_tabs_themes_title'.tr(),
+    'search_tabs_commodities_title'.tr(),
+    'search_tabs_bond_title'.tr(),
+  ];
+
+  Widget createAppBar(){
+
+    return new TabBar(
+      isScrollable: true,
+      tabs: List<Widget>.generate(
+        tabs.length,
+            (int index) {
+          print(tabs[index]);
+          return new Tab(text: tabs[index]);
+        },
+      ),
+    );
+
+    // return PreferredSize(
+    //   preferredSize:
+    //   Size.fromHeight(InvestrendTheme.appBarTabHeight),
+    //   child: new TabBar(
+    //     isScrollable: true,
+    //     tabs: List<Widget>.generate(
+    //       tabs.length,
+    //           (int index) {
+    //         print(tabs[index]);
+    //         return new Tab(text: tabs[index]);
+    //       },
+    //     ),
+    //   ),
+    // );
+  }
+  /*
+  Widget createAppBar2(){
+    return PreferredSize(
+      preferredSize: Size.fromHeight(InvestrendTheme.of(context).appBarTabHeight), // here the desired height
+
+      child: AppBar(
+        elevation: 0.0,
+        //backgroundColor: Colors.red,
+        backgroundColor: Theme.of(context).backgroundColor,
+        automaticallyImplyLeading: false,
+        flexibleSpace: Container(
+          child: new TabBar(
+            //indicatorSize: TabBarIndicatorSize.label,
+            isScrollable: true,
+            tabs: List<Widget>.generate(
+              tabs.length,
+                  (int index) {
+                print(tabs[index]);
+                return new Tab(text: tabs[index]);
+              },
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+  */
+  Widget createBody(){
+    return TabBarView(
+      children: List<Widget>.generate(
+        tabs.length,
+            (int index) {
+          print(tabs[index]);
+          if (index == 0) {
+            return ScreenSearchMarket();
+          }
+          // else if (index == 1) {
+          //   return ScreenSearchGlobal(tabIndex, tabController);
+          // }
+          return Container(
+            child: Center(
+              child: Text(tabs[index]),
+            ),
+          );
+        },
+      ),
+    );
+  }
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+      length: tabs.length,
+      child: Scaffold(
+        backgroundColor: Theme.of(context).backgroundColor,
+        appBar: createAppBar(),
+        body: createBody(),
+      ),
+    );
+
+    /*
+    return Container(
+      //key: testKey,
+      color: Colors.orange,
+      width: double.maxFinite,
+      height: double.maxFinite,
+      child: Center(
+        child: Text(
+          'ScreenSearch\n' + timeCreation,
+          style: Theme.of(context).textTheme.headline4,
+        ),
+      ),
+    );
+
+     */
+  }
+
+  // int _selectedChart = 0;
+  // int _selectedDomesticForeign = 0;
+
+  // Widget marketTab(BuildContext context) {
+  //   return SingleChildScrollView(
+  //     child: Column(
+  //       mainAxisAlignment: MainAxisAlignment.start,
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: [
+  //         createCardDetailIhsg(context),
+  //         ComponentCreator.divider(context),
+  //         ComponentCreator.divider(context),
+  //         createCardPerformance(context),
+  //         ComponentCreator.divider(context),
+  //         createCardSector(context),
+  //         ComponentCreator.divider(context),
+  //         createCardLocalForeign(context),
+  //       ],
+  //     ),
+  //   );
+  // }
+
+
+
+
+
+
+
+  // static const double cardPadding = 8.0;
+  // static const double cardMargin = 8.0;
+
+
+
+
+
+
+  Widget getChip(BuildContext context, String text, bool selected,
+      ValueChanged<bool> onSelected) {
+    return ChoiceChip(
+      label: Text(
+        text,
+        style: Theme.of(context).textTheme.bodyText2.copyWith(
+            fontSize: 12.0,
+            color: selected
+                ? Colors.white
+                : InvestrendTheme.of(context).blackAndWhiteText),
+      ),
+      //padding: EdgeInsets.zero,
+      visualDensity: VisualDensity.comfortable,
+      selected: selected,
+      backgroundColor: InvestrendTheme.of(context).tileBackground,
+      selectedColor: Theme.of(context).accentColor,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(0.0),
+        //side: BorderSide(color: Theme.of(context).accentColor),
+      ),
+      onSelected: onSelected,
+    );
+  }
+
+
+}
+
+// SizedBox(
+//   width: double.maxFinite,
+//   height: 30.0,
+//   child: Center(
+//     child: ListView.builder(
+//       physics: ClampingScrollPhysics(),
+//       shrinkWrap: true,
+//       scrollDirection: Axis.horizontal,
+//       itemCount: _listChartRange.length,
+//       itemBuilder: (BuildContext context, int index) {
+//         double left = index == 0 ? 0 : 10.0;
+//         return getChip(context, _listChartRange[index], _selectedChart == index,  (value) {
+//           setState(() {
+//             _selectedChart = index;
+//           });
+//         });
+//       },
+//     ),
+//   ),
+// ),
+
+// LayoutBuilder(builder: (context, constrains) {
+//   print('constrains ' + constrains.maxWidth.toString());
+//   double chipWidth = constrains.maxWidth / _listChartRange.length;
+//   double chipHeight = 30.0;
+//
+//   return SizedBox(
+//     width: constrains.maxWidth,
+//     height: chipHeight,
+//     child: ListView.builder(
+//       physics: ClampingScrollPhysics(),
+//       shrinkWrap: true,
+//       scrollDirection: Axis.horizontal,
+//       itemCount: _listChartRange.length,
+//       itemBuilder: (BuildContext context, int index) {
+//         double left = index == 0 ? 0 : 10.0;
+//         return getChip(context, _listChartRange[index], _selectedChart == index, chipWidth, (value) {
+//           setState(() {
+//             _selectedChart = index;
+//           });
+//         });
+//       },
+//     ),
+//   );
+// }),
+// Row(
+//   children: [
+//     getChip(context,'1D',_selectedChart == 0,(value){
+//       setState(() {
+//         _selectedChart = 0;
+//       });
+//     }),
+//     getChip(context,'1W',_selectedChart == 1,(value){
+//       setState(() {
+//         _selectedChart = 1;
+//       });
+//     }),
+//     getChip(context,'1M',_selectedChart == 2,(value){
+//       setState(() {
+//         _selectedChart = 2;
+//       });
+//     }),
+//     getChip(context,'3M',_selectedChart == 3,(value){
+//       setState(() {
+//         _selectedChart = 3;
+//       });
+//     }),
+//     getChip(context,'6M',_selectedChart == 4,(value){
+//       setState(() {
+//         _selectedChart = 4;
+//       });
+//     }),
+//     getChip(context,'1Y',_selectedChart == 5,(value){
+//       setState(() {
+//         _selectedChart = 5;
+//       });
+//     }),
+//     getChip(context,'5Y',_selectedChart == 6,(value){
+//       setState(() {
+//         _selectedChart = 6;
+//       });
+//     }),
+//     getChip(context,'ALL',_selectedChart == 7,(value){
+//       setState(() {
+//         _selectedChart = 7;
+//       });
+//     }),
+//
+//   ],
+// )

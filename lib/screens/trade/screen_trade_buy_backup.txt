@@ -1,0 +1,849 @@
+import 'dart:async';
+
+import 'package:Investrend/component/button_order.dart';
+import 'package:Investrend/component/component_creator.dart';
+import 'package:Investrend/component/widget_fast_orderbook.dart';
+import 'package:Investrend/component/widget_orderbook.dart';
+import 'package:Investrend/component/widget_tradebook.dart';
+import 'package:Investrend/objects/class_input_formatter.dart';
+import 'package:Investrend/objects/class_value_notifier.dart';
+import 'package:Investrend/objects/data_object.dart';
+import 'package:Investrend/objects/riverpod_change_notifier.dart';
+import 'package:Investrend/objects/ssi_objects.dart';
+import 'package:Investrend/screens/base/screen_aware.dart';
+import 'package:Investrend/screens/trade/screen_trade_form.dart';
+import 'package:Investrend/utils/connection_services.dart';
+import 'package:Investrend/utils/investrend_theme.dart';
+import 'package:Investrend/utils/string_utils.dart';
+import 'package:Investrend/utils/utils.dart';
+import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'dart:math';
+//import 'package:flip_card/flip_card.dart';
+
+
+
+class ScreenTradeBuy extends StatefulWidget {
+  //final OrderDataNotifier _orderDataNotifier;
+  final ValueNotifier<bool> _fastModeNotifier;
+  final TabController _tabController;
+
+  const ScreenTradeBuy(this._fastModeNotifier, this._tabController, {Key key}) : super(key: key);
+
+  @override
+  _ScreenTradeBuyState createState() => _ScreenTradeBuyState();
+}
+class _ScreenTradeBuyState extends State<ScreenTradeBuy> with AutomaticKeepAliveClientMixin<ScreenTradeBuy> {
+  final OrderType orderType = OrderType.Buy;
+  final fieldPriceController = TextEditingController();
+  final fieldLotController = TextEditingController();
+  final ValueNotifier<int> valueOrderNotifier = ValueNotifier<int>(0);
+  static const Duration durationUpdate = Duration(milliseconds: 5000);
+
+  //GlobalKey<FlipCardState> cardKey = GlobalKey<FlipCardState>();
+
+  final TradeCalculateNotifier calculateNotifier = TradeCalculateNotifier(OrderType.Buy);
+
+  //ChangeNotifier recalculateNotifier = ChangeNotifier();
+
+  //ValueNotifier valueOrderNotifier = ValueNotifier<int>(0);
+  Timer timer;
+  bool active = false;
+
+  @override
+  bool get wantKeepAlive => true;
+
+  void onActive() {
+    print('202104-27 onActive ScreenTradeBuy fastMode : ' + widget._fastModeNotifier.value.toString());
+    active = true;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      calculateNotifier.updateActive(active);
+
+      // if(isFastMode()){
+      //   recalculateNotifier.notifyListeners();
+      // }else{
+      //   calculateOrder();
+      // }
+    });
+    if (timer != null && timer.isActive) {
+      return;
+    }
+    if (isFastMode()) {
+      // tidak perlu actifin timer
+      _stopTimer();
+      return;
+    }
+    _startTimer();
+    // if (timer == null || !timer.isActive) {
+    //   timer = Timer.periodic(durationUpdate, (timer) {
+    //     if (active) {
+    //       doUpdate();
+    //     }
+    //   });
+    // }
+  }
+
+  void onInactive() {
+    active = false;
+    calculateNotifier.updateActive(active);
+    print('202104-27 onInactive ScreenTradeBuy');
+    //timer.cancel();
+    _stopTimer();
+  }
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    timer.cancel();
+    calculateNotifier.dispose();
+    //recalculateNotifier.dispose();
+    valueOrderNotifier.dispose();
+    fieldPriceController.dispose();
+    fieldLotController.dispose();
+    //valueOrderNotifier.dispose();
+    super.dispose();
+  }
+
+  Widget _content;
+
+  @override
+  void initState() {
+    super.initState();
+    print('ScreenTradeBuy.initState');
+
+    final container = ProviderContainer();
+    container.read(primaryStockChangeNotifier).addListener(() {
+      final container = ProviderContainer();
+      Stock stock = container.read(primaryStockChangeNotifier).stock;
+      OrderBook orderBook = container.read(orderBookChangeNotifier).orderbook;
+      bool changed = stock == null || orderBook == null || StringUtils.equalsIgnoreCase(stock.code, orderBook.code);
+      if(changed){
+        if(isFastMode()){
+          context.read(orderDataChangeNotifier).clearPriceLot();
+        }else{
+          // fieldPriceController.text = '';
+          // fieldLotController.text = '';
+        }
+
+
+        doUpdate();
+      }
+    });
+
+    // codeChangeListener = (){
+    //   final container = ProviderContainer();
+    //   Stock stock = container.read(primaryStockChangeNotifier).stock;
+    //   OrderBook orderBook = container.read(orderBookChangeNotifier).orderbook;
+    //   bool changed = stock == null || orderBook == null || StringUtils.equalsIgnoreCase(stock.code, orderBook.code);
+    //   if(changed){
+    //     if(isFastMode()){
+    //       context.read(orderDataChangeNotifier).clearPriceLot();
+    //     }else{
+    //       // fieldPriceController.text = '';
+    //       // fieldLotController.text = '';
+    //     }
+    //
+    //
+    //     doUpdate();
+    //   }
+    // };
+    widget._tabController.addListener(() {
+      bool _active = widget._tabController.index == orderType.index;
+      if (active) {
+        if (_active) {
+        } else {
+          onInactive();
+        }
+      } else {
+        if (_active) {
+          onActive();
+        } else {}
+      }
+    });
+    widget._fastModeNotifier.addListener(() {
+      calculateNotifier.updateMode(widget._fastModeNotifier.value);
+      context.read(orderDataChangeNotifier).update(fastMode: isFastMode());
+      if (isFastMode()) {
+        //recalculateNotifier.notifyListeners();
+        _stopTimer();
+      } else {
+        //calculateOrder();
+        _startTimer();
+      }
+      setState(() {
+        // if(widget._fastModeNotifier.value){
+        //   _content = _fastMode();
+        // }else {
+        //   _content = _normalMode();
+        // }
+      });
+    });
+    fieldPriceController.addListener(calculateOrder);
+    fieldLotController.addListener(calculateOrder);
+    calculateNotifier.addListener(() {
+      //if(calculateNotifier.canNormalModeCalculate(orderType)){
+      calculateOrder();
+      //}
+    });
+  }
+
+  bool isFastMode() {
+    return widget._fastModeNotifier.value;
+  }
+
+  void _startTimer() {
+    print('ScreenTradeBuy._startTimer');
+    if (timer == null || !timer.isActive) {
+      timer = Timer.periodic(durationUpdate, (timer) {
+        if (active) {
+          doUpdate();
+        }
+      });
+    }
+  }
+
+  void _stopTimer() {
+    print('ScreenTradeBuy._stopTimer');
+    if (timer != null && timer.isActive) {
+      timer.cancel();
+    }
+  }
+
+  void calculateOrder() {
+    // if(!active){
+    //   print('calculateOrder BUY  aborted, caused screen active : $active');
+    //   return;
+    // }
+    // if(isFastMode()){
+    //   print('calculateOrder BUY  aborted, caused screen FastMode');
+    //   return;
+    // }
+    String scrappedPrice = fieldPriceController.text.replaceAll(',', '');
+    int price = Utils.safeInt(scrappedPrice);
+
+    String scrappedLot = fieldLotController.text.replaceAll(',', '');
+    int lot = Utils.safeInt(scrappedLot);
+
+    int value = price * lot * 100;
+
+    //String valueText = InvestrendTheme.formatComma(value);
+    print('calculateOrder BUY Price : ' + fieldPriceController.text + '   Lot : ' + fieldLotController.text + '  value : $value');
+    //valueOrderNotifier.value = value;
+    valueOrderNotifier.value = value;
+    // widget._orderDataNotifier.update(orderType: 'trade_tabs_buy_title'.tr(),
+    //     lot: lot, price: price, value: value
+    // );
+
+    bool notifyParent = calculateNotifier.canNormalModeCalculate(orderType);
+    print('calculateOrder BUY notifyParent : $notifyParent  ' + calculateNotifier.toString());
+    if (notifyParent) {
+      context.read(orderDataChangeNotifier).update(orderType: orderType, lot: lot, price: price, value: value);
+    }
+
+    // widget._orderDataNotifier.value.orderType = 'trade_tabs_buy_title'.tr();
+    // widget._orderDataNotifier.value.lot = lot;
+    // widget._orderDataNotifier.value.price = price;
+    // widget._orderDataNotifier.notifyListeners();
+  }
+
+  // VoidCallback codeChangeListener;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    print('ScreenTradeBuy didChangeDependencies  fastMode : '+widget._fastModeNotifier.value.toString());
+    //Stock stock = InvestrendTheme.of(context).stock;
+    //Stock stock = InvestrendTheme.of(context).stockNotifier.value;
+    // context.read(primaryStockChangeNotifier).addListener(codeChangeListener);
+
+
+    if (widget._fastModeNotifier.value) {
+
+      return;
+    } else {
+      _startTimer();
+    }
+    // if (timer == null || !timer.isActive) {
+    //   timer = Timer.periodic(durationUpdate, (timer) {
+    //     if (active) {
+    //       doUpdate();
+    //     }
+    //   });
+    // }
+  }
+
+  Future doUpdate({bool pullToRefresh = false}) async {
+    print('ScreenTradeBuy.doUpdate : ' + DateTime.now().toString());
+
+    if (!active) {
+      return;
+    }
+
+    Stock stock = context.read(primaryStockChangeNotifier).stock;
+    //Stock stock = InvestrendTheme.of(context).stockNotifier.value;
+
+    if (stock == null || !stock.isValid()) {
+      // stock = InvestrendTheme.storedData.listStock.isEmpty ? null : InvestrendTheme.storedData.listStock.first;
+      // InvestrendTheme.of(context).stockNotifier.setStock(stock);
+      //
+      // context.read(primaryStockChangeNotifier).setStock(stock);
+
+      Stock stockDefault = InvestrendTheme.storedData.listStock.isEmpty ? null : InvestrendTheme.storedData.listStock.first;
+      //InvestrendTheme.of(context).stockNotifier.setStock(stock);
+      context.read(primaryStockChangeNotifier).setStock(stockDefault);
+      stock = context.read(primaryStockChangeNotifier).stock;
+    }
+
+
+
+    // widget._orderDataNotifier.value.stock_code = stock.code;
+    // widget._orderDataNotifier.value.stock_name = stock.name;
+    // widget._orderDataNotifier.update(
+    //     stock_code: stock.code, stock_name: stock.name
+    // );
+
+    //WidgetsBinding.instance.addPostFrameCallback((_){
+    // if( !pullToRefresh ){
+    context.read(orderDataChangeNotifier).update(
+        stock_code: stock.code,
+        stock_name: stock.name,
+        accountType: 'Reguler',
+        accountName: 'Ackerman',
+        orderType: orderType,
+        tradingLimitUsage: 0,
+        fastMode: isFastMode());
+    context.read(stockSummaryChangeNotifier).setStock(stock);
+    context.read(orderBookChangeNotifier).setStock(stock);
+    context.read(tradeBookChangeNotifier).setStock(stock);
+    // }
+
+    //});
+
+    /*
+    StockSummaryNotifier _summaryNotifier = InvestrendTheme.of(context).summaryNotifier;
+    bool stockChanged = stock != null && stock != _summaryNotifier.stock;
+    if (stockChanged) {
+      print('ScreenTradeBuy.stockChanged : ' + stockChanged.toString());
+      _summaryNotifier.setStock(stock);
+      _summaryNotifier.setData(null);
+    }
+
+    OrderBookNotifier _orderbookNotifier = InvestrendTheme.of(context).orderbookNotifier;
+    stockChanged = stock != null && stock != _orderbookNotifier.stock;
+    if (stockChanged) {
+      _orderbookNotifier.setStock(stock);
+      _orderbookNotifier.setData(null);
+    }
+
+    TradeBookNotifier _tradebookNotifier = InvestrendTheme.of(context).tradebookNotifier;
+    stockChanged = stock != null && stock != _tradebookNotifier.stock;
+    if (stockChanged) {
+      _tradebookNotifier.setStock(stock);
+      _tradebookNotifier.setData(null);
+    }
+    */
+    final stockSummary = await HttpSSI.fetchStockSummary(stock.code, stock.defaultBoard);
+    if (stockSummary != null) {
+      print('ScreenTradeBuy Future Summary DATA : ' + stockSummary.toString());
+      //_summaryNotifier.setData(stockSummary);
+      context.read(stockSummaryChangeNotifier).setData(stockSummary);
+    } else {
+      print('ScreenTradeBuy Future Summary NO DATA');
+    }
+    final orderbook = await HttpSSI.fetchOrderBook(stock.code, stock.defaultBoard);
+    if (orderbook != null) {
+      print('ScreenTradeBuy Future Orderbook DATA : ' + orderbook.toString());
+      //InvestrendTheme.of(context).orderbookNotifier.setData(orderbook);
+      context.read(orderBookChangeNotifier).setData(orderbook);
+    } else {
+      print('ScreenTradeBuy Future Orderbook NO DATA');
+    }
+
+    final tradebook = await HttpSSI.fetchTradeBook(stock.code, stock.defaultBoard);
+    if (tradebook != null) {
+      print('ScreenTradeBuy Future Tradebook DATA : ' + tradebook.toString());
+      //InvestrendTheme.of(context).tradebookNotifier.setData(tradebook);
+      context.read(tradeBookChangeNotifier).setData(tradebook);
+    } else {
+      print('ScreenTradeBuy Future Tradebook NO DATA');
+    }
+  }
+
+  Widget _normalMode() {
+    return SingleChildScrollView(
+      child: Container(
+        key: normalKey,
+        color: Theme.of(context).backgroundColor,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              height: 5.0,
+            ),
+            createMoneyInfo(context),
+            createFormBuy(context),
+            SizedBox(
+              height: InvestrendTheme.cardMargin,
+            ),
+            ComponentCreator.divider(context),
+            SizedBox(
+              height: InvestrendTheme.cardMargin,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                  left: InvestrendTheme.cardPaddingPlusMargin,
+                  right: InvestrendTheme.cardPaddingPlusMargin,
+                  top: InvestrendTheme.cardPadding,
+                  bottom: InvestrendTheme.cardPadding),
+              child: ComponentCreator.subtitle(context, 'Order Book'),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                  left: InvestrendTheme.cardPaddingPlusMargin,
+                  right: InvestrendTheme.cardPaddingPlusMargin,
+                  top: InvestrendTheme.cardPadding,
+                  bottom: InvestrendTheme.cardPadding),
+              //color: Colors.yellow,
+              //child: WidgetOrderbook(InvestrendTheme.of(context).orderbookNotifier, 10),
+              child: WidgetOrderbook(
+                10,
+                owner: 'ScreenTradeBuy',
+              ),
+            ),
+            ComponentCreator.divider(context),
+            SizedBox(
+              height: InvestrendTheme.cardMargin,
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                  left: InvestrendTheme.cardPaddingPlusMargin,
+                  right: InvestrendTheme.cardPaddingPlusMargin,
+                  top: InvestrendTheme.cardPadding,
+                  bottom: InvestrendTheme.cardPadding),
+              child: ComponentCreator.subtitle(context, 'Transactions'),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                  left: InvestrendTheme.cardPaddingPlusMargin,
+                  right: InvestrendTheme.cardPaddingPlusMargin,
+                  top: InvestrendTheme.cardPadding,
+                  bottom: InvestrendTheme.cardPadding),
+              //child: WidgetTradebook(InvestrendTheme.of(context).tradebookNotifier),
+              child: WidgetTradebook(),
+            ),
+            SizedBox(
+              height: 90.0,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future onRefresh() async {
+    //context.read(orderDataChangeNotifier).update(stock_code: stock.code,stock_name: stock.name);
+    // Stock stock = context
+    //     .read(primaryStockChangeNotifier)
+    //     .stock;
+    // final orderbook = await HttpSSI.fetchOrderBook(stock.code, stock.defaultBoard);
+    // if (orderbook != null) {
+    //   print('ScreenTradeBuy Future Orderbook DATA : ' + orderbook.toString());
+    //   //InvestrendTheme.of(context).orderbookNotifier.setData(orderbook);
+    //   context.read(orderBookChangeNotifier).setData(orderbook);
+    // } else {
+    //   print('ScreenTradeBuy Future Orderbook NO DATA');
+    // }
+    // return orderbook;
+    return 0;
+    //return doUpdate(pullToRefresh: true);
+  }
+
+  Widget _fastMode() {
+    return RefreshIndicator(
+      // color: Colors.red,
+      // backgroundColor: Colors.purple,
+      onRefresh: doUpdate,
+      child: ListView(
+        scrollDirection: Axis.vertical,
+        shrinkWrap: true,
+        //crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            height: 5.0,
+          ),
+          createMoneyInfo(context),
+          ComponentCreator.divider(context),
+          createFastBuy(context),
+          SizedBox(
+            height: 90.0,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget __transitionBuilder(Widget widget, Animation<double> animation) {
+    final rotateAnim = Tween(begin: pi, end: 0.0).animate(animation);
+    return AnimatedBuilder(
+      animation: rotateAnim,
+      child: widget,
+      builder: (context, widget) {
+        final isUnder = (ValueKey(isFastMode()) != widget.key);
+        var tilt = ((animation.value - 0.5).abs() - 0.5) * 0.003;
+        tilt *= isUnder ? -1.0 : 1.0;
+        final value = isUnder ? min(rotateAnim.value, pi / 2) : rotateAnim.value;
+
+        return Transform(
+          transform: Matrix4.rotationY(value)..setEntry(3, 0, tilt),
+          child: widget,
+          alignment: Alignment.center,
+        );
+      },
+    );
+  }
+
+  Key fastKey = UniqueKey();
+  Key normalKey = UniqueKey();
+
+  @override
+  Widget build(BuildContext context) {
+    // if(_content == null){
+    //   if(widget._fastModeNotifier.value){
+    //     _content = _fastMode();
+    //   }else{
+    //     _content = _normalMode();
+    //   }
+    // }
+    return ScreenAware(
+      routeName: '/trade_buy',
+      onActive: onActive,
+      onInactive: onInactive,
+      child: AnimatedCrossFade(
+        duration: const Duration(milliseconds: 800),
+        firstChild: _normalMode(),
+        secondChild: _fastMode(),
+        crossFadeState: widget._fastModeNotifier.value ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+        firstCurve: Curves.easeOut,
+        secondCurve: Curves.easeIn,
+      ),
+    );
+  }
+
+  Widget createFormBuy(BuildContext context) {
+    double iconSize = 20.0;
+
+    return Container(
+      margin: EdgeInsets.all(InvestrendTheme.cardPaddingPlusMargin),
+      padding: EdgeInsets.only(top: InvestrendTheme.cardPadding, bottom: InvestrendTheme.cardPadding),
+      //height: 225,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: InvestrendTheme.buyColor,
+          width: 1,
+        ),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Column(
+        children: [
+          Padding(
+            //color: Colors.blue,
+            padding: const EdgeInsets.only(left: InvestrendTheme.cardPadding, right: InvestrendTheme.cardPadding),
+            child: Table(
+              columnWidths: {
+                0: FractionColumnWidth(.5),
+                1: FractionColumnWidth(.1),
+                2: FractionColumnWidth(.3),
+                3: FractionColumnWidth(.1),
+              },
+              defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+              children: [
+                TableRow(
+                  children: [
+                    Text('Tipe Order Beli', style: InvestrendTheme.of(context).small_w500.copyWith(fontWeight: FontWeight.w700)),
+                    SizedBox(
+                      width: 2,
+                      height: 2,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: InvestrendTheme.cardPadding, right: InvestrendTheme.cardPadding),
+                      child: Text(
+                        'Normal',
+                        style: InvestrendTheme.of(context).small_w400,
+                        textAlign: TextAlign.end,
+                      ),
+                    ),
+                    IconButton(
+                      color: Colors.transparent,
+                        icon: Image.asset(
+                          'images/icons/arrow_down.png',
+                          height: iconSize,
+                          width: iconSize,
+                        ),
+                        onPressed: () {
+                          print('onPressed arrow down');
+                        }),
+                  ],
+                ),
+                TableRow(
+                  children: [
+                    Text('Harga', style: InvestrendTheme.of(context).small_w500.copyWith(fontWeight: FontWeight.w700)),
+                    IconButton(
+                        icon: Image.asset(
+                          'images/icons/minus.png',
+                          height: iconSize,
+                          width: iconSize,
+                        ),
+                        onPressed: () {
+                          print('onPressed harga minus');
+                        }),
+                    Padding(
+                      padding: const EdgeInsets.only(left: InvestrendTheme.cardPadding, right: InvestrendTheme.cardPadding),
+                      child: TextField(
+                        controller: fieldPriceController,
+                        inputFormatters: [
+                          PriceFormatter(),
+                        ],
+                        maxLines: 1,
+                        style: InvestrendTheme.of(context).regular_w700.copyWith(height: null),
+                        textInputAction: TextInputAction.next,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          border: UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey, width: 1.0)),
+                          focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Theme.of(context).accentColor, width: 1.0)),
+                          focusColor: Theme.of(context).accentColor,
+                          prefixStyle: InvestrendTheme.of(context).inputPrefixStyle,
+                          hintStyle: InvestrendTheme.of(context).inputHintStyle,
+                          helperStyle: InvestrendTheme.of(context).inputHelperStyle,
+                          errorStyle: InvestrendTheme.of(context).inputErrorStyle,
+                          fillColor: Colors.grey,
+                          contentPadding: EdgeInsets.all(0.0),
+                        ),
+                        textAlign: TextAlign.end,
+                      ),
+                    ),
+                    IconButton(
+                        icon: Image.asset(
+                          'images/icons/plus.png',
+                          height: iconSize,
+                          width: iconSize,
+                        ),
+                        onPressed: () {
+                          print('onPressed harga plus');
+                        }),
+                  ],
+                ),
+                TableRow(
+                  children: [
+                    Text('Lot', style: InvestrendTheme.of(context).small_w500.copyWith(fontWeight: FontWeight.w700)),
+                    IconButton(
+                        icon: Image.asset(
+                          'images/icons/minus.png',
+                          height: iconSize,
+                          width: iconSize,
+                        ),
+                        onPressed: () {
+                          print('onPressed lot minus');
+                        }),
+                    Padding(
+                      padding: const EdgeInsets.only(left: InvestrendTheme.cardPadding, right: InvestrendTheme.cardPadding),
+                      child: TextField(
+                        controller: fieldLotController,
+                        inputFormatters: [
+                          PriceFormatter(),
+                        ],
+                        maxLines: 1,
+                        style: InvestrendTheme.of(context).regular_w700.copyWith(height: null),
+                        textInputAction: TextInputAction.done,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          border: UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey, width: 1.0)),
+                          focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Theme.of(context).accentColor, width: 1.0)),
+                          focusColor: Theme.of(context).accentColor,
+                          prefixStyle: InvestrendTheme.of(context).inputPrefixStyle,
+                          hintStyle: InvestrendTheme.of(context).inputHintStyle,
+                          helperStyle: InvestrendTheme.of(context).inputHelperStyle,
+                          errorStyle: InvestrendTheme.of(context).inputErrorStyle,
+                          fillColor: Colors.grey,
+                          contentPadding: EdgeInsets.all(0.0),
+                        ),
+                        textAlign: TextAlign.end,
+                      ),
+                    ),
+                    IconButton(
+                        icon: Image.asset(
+                          'images/icons/plus.png',
+                          height: iconSize,
+                          width: iconSize,
+                        ),
+                        onPressed: () {
+                          print('onPressed lot plus');
+                        }),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: InvestrendTheme.cardPadding, right: InvestrendTheme.cardPadding),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(
+                    style: ButtonStyle(visualDensity: VisualDensity.compact),
+                    onPressed: () {},
+                    child: Text(
+                      '25%',
+                      style: InvestrendTheme.of(context).support_w400,
+                    )),
+                TextButton(
+                    style: ButtonStyle(visualDensity: VisualDensity.compact),
+                    onPressed: () {},
+                    child: Text(
+                      '50%',
+                      style: InvestrendTheme.of(context).support_w400,
+                    )),
+                TextButton(
+                    style: ButtonStyle(visualDensity: VisualDensity.compact),
+                    onPressed: () {},
+                    child: Text(
+                      '75%',
+                      style: InvestrendTheme.of(context).support_w400,
+                    )),
+                TextButton(
+                    style: ButtonStyle(visualDensity: VisualDensity.compact),
+                    onPressed: () {},
+                    child: Text(
+                      '100%',
+                      style: InvestrendTheme.of(context).support_w400,
+                    )),
+              ],
+            ),
+          ),
+          ComponentCreator.divider(context),
+          Padding(
+            padding: const EdgeInsets.only(left: InvestrendTheme.cardPadding, right: InvestrendTheme.cardPadding),
+            child: Row(
+              children: [
+                Text(
+                  'Total',
+                  style: InvestrendTheme.of(context).small_w700,
+                ),
+                Expanded(
+                  flex: 1,
+                  child: ValueListenableBuilder(
+                    valueListenable: valueOrderNotifier,
+                    builder: (context, int value, child) {
+                      String totalValueText = InvestrendTheme.formatMoney(value, prefixRp: true);
+                      return Text(
+                        totalValueText,
+                        style: InvestrendTheme.of(context).regular_w700,
+                        textAlign: TextAlign.end,
+                      );
+                    },
+                  ),
+                ),
+                SizedBox(
+                  width: InvestrendTheme.cardMargin,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget createMoneyInfo(BuildContext context) {
+    int buyingPower = 250000000;
+    int rdnBalance = 200000000;
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Table(
+        children: [
+          TableRow(children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  'trade_buy_label_buying_power'.tr(),
+                  style: InvestrendTheme.of(context).support_w400.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor),
+                ),
+                Image.asset(
+                  'images/icons/information.png',
+                  height: 12.0,
+                  width: 12.0,
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  'trade_buy_label_rdn_balance'.tr(),
+                  style: InvestrendTheme.of(context).support_w400.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor),
+                ),
+                Image.asset(
+                  'images/icons/information.png',
+                  height: 12.0,
+                  width: 12.0,
+                ),
+              ],
+            ),
+          ]),
+          TableRow(children: [
+            Text(
+                InvestrendTheme.formatMoney(
+                  buyingPower,
+                  prefixRp: true,
+                ),
+                style: InvestrendTheme.of(context).regular_w700),
+            Text(
+              InvestrendTheme.formatMoney(
+                rdnBalance,
+                prefixRp: true,
+              ),
+              style: InvestrendTheme.of(context).regular_w700,
+              textAlign: TextAlign.end,
+            ),
+          ])
+        ],
+      ),
+    );
+  }
+
+  Widget createFastBuy(BuildContext context) {
+    return Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  color: InvestrendTheme.buyColor,
+                  height: 2.0,
+                  width: 60,
+                ),
+                Container(
+                  color: Color(0xFFE0E0E0),
+                  height: 2.0,
+                  width: 60,
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 10.0,
+            ),
+            WidgetFastOrderBook(
+              OrderType.Buy,
+              10,
+              owner: 'ScreenTradeBuy',
+              calculateNotifier: calculateNotifier,
+            ),
+          ],
+        ));
+  }
+}

@@ -1,0 +1,52 @@
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <script src="./scripts/app/main.js"></script>
+  <!-- TradingView Widget BEGIN -->
+  <div class="tradingview-widget-container">
+    <div id="tradingview_2bdc3"></div>
+    <div class="tradingview-widget-copyright"><a href="https://www.tradingview.com/symbols/IDX-ANTM/" rel="noopener"
+        target="_blank"><span class="blue-text">ANTM Chart</span></a> by TradingView</div>
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <script type="text/javascript">
+      new TradingView.widget(
+        {
+          "autosize": true,
+          "symbol": "IDX:ANTM",
+          "timezone": "Asia/Bangkok",
+          "theme": "light",
+          "style": "1",
+          "locale": "en",
+          "timeframe": '1M',
+          "toolbar_bg": "#f1f3f6",
+          "enable_publishing": true,
+          "withdateranges": true,
+          "range": "YTD",
+          "hide_side_toolbar": false,
+          "allow_symbol_change": true,
+          "details": false,
+          "hotlist": false,
+          "calendar": false,
+          "studies": [
+            "BB@tv-basicstudies",
+            "MACD@tv-basicstudies",
+            "Stochastic@tv-basicstudies"
+          ],
+          "show_popup_button": true,
+          "popup_width": "1000",
+          "popup_height": "650",
+          "container_id": "tradingview_2bdc3"
+        }
+      );
+    </script>
+  </div>
+  <!-- TradingView Widget END -->
+  <meta name="viewport" content="width=device-width,height=1024,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0">
+</head>
+
+<body style="margin: 0; padding: 0;">
+
+</body>
+
+</html>

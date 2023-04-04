@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "630655867698",
+    "project_id": "investrend-a3525",
+    "storage_bucket": "investrend-a3525.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:630655867698:android:2101785ec252ca181c152b",
+        "android_client_info": {
+          "package_name": "com.investrend.afs.investrend_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "630655867698-fk6j2dh8cvdii2rqf2kmmgrcotrt7jl3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBIAZwOirKDedzDYcxEYr7kJqmiz1kfB-8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "630655867698-fk6j2dh8cvdii2rqf2kmmgrcotrt7jl3.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "630655867698-nkd53lfnuirb9ejr0fv1p4k8rvo41qh5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.iii.afs.investrend.mobile"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

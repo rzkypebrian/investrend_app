@@ -1,0 +1,298 @@
+import 'dart:math';
+
+import 'package:Investrend/utils/investrend_theme.dart';
+import 'package:Investrend/utils/string_utils.dart';
+import 'package:Investrend/utils/utils.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
+class DynamicUI{
+  String _ui;
+  String _id;
+
+  DynamicUI(this._ui, this._id);
+
+  String get id => _id;
+
+  String get ui => _ui;
+
+  factory DynamicUI.fromJson(Map<String, dynamic> parsedJson) {
+    if (parsedJson == null) {
+      return null;
+    }
+    String ui = StringUtils.noNullString(parsedJson['ui']);
+    String id = StringUtils.noNullString(parsedJson['id']);
+    if(StringUtils.equalsIgnoreCase(ui, 'TEXT')){
+      return TextUI.fromJson(parsedJson);
+    }else if(StringUtils.equalsIgnoreCase(ui, 'TEXTFIELD')){
+      return TextFieldUI.fromJson(parsedJson);
+    }else if(StringUtils.equalsIgnoreCase(ui, 'CHECKBOX')){
+      return CheckBoxUI.fromJson(parsedJson);
+    }else if(StringUtils.equalsIgnoreCase(ui, 'DATEPICKER')){
+      return DatePickerUI.fromJson(parsedJson);
+    }else if(StringUtils.equalsIgnoreCase(ui, 'DROPDOWN')){
+      return DropDownUI.fromJson(parsedJson);
+    }else if(StringUtils.equalsIgnoreCase(ui, 'SIZEBOX')){
+      return SizeBoxUI.fromJson(parsedJson);
+    }
+    return null;
+  }
+
+}
+
+class CheckBoxUI extends DynamicUI{
+  //"ui": "CHECKBOX",
+  //"id": "tnc",
+  bool checked;//": false,
+  bool mandatory; //": true,
+  String label; //": "Dengan ini saya menyatakan menteujui",
+  String error; //": "Anda harus menyetujui apapun yang ada disini"
+
+  CheckBoxUI(String ui, String id,this.checked, this.mandatory, this.label, this.error):super(ui,id);
+
+
+  factory CheckBoxUI.fromJson(Map<String, dynamic> parsedJson) {
+    if (parsedJson == null) {
+      return null;
+    }
+    String ui = StringUtils.noNullString(parsedJson['ui']);
+    String id = StringUtils.noNullString(parsedJson['id']);
+    String checkedText = StringUtils.noNullString(parsedJson['checked']);
+    bool checked = StringUtils.equalsIgnoreCase(checkedText, 'true');
+
+    String mandatoryText = StringUtils.noNullString(parsedJson['mandatory']);
+    bool mandatory = StringUtils.equalsIgnoreCase(mandatoryText, 'true');
+
+    String label = StringUtils.noNullString(parsedJson['label']);
+    String error = StringUtils.noNullString(parsedJson['error']);
+
+    return CheckBoxUI(ui, id, checked, mandatory, label, error);
+  }
+
+  void initState(ValueNotifier<bool> notifier){
+    notifier.value = this.checked;
+  }
+  Widget createWidget(BuildContext context, ValueNotifier<bool> notifier){
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        ValueListenableBuilder<bool>(
+            valueListenable: notifier,
+            builder: (context, value, child) {
+              return Checkbox(
+                  activeColor: Theme.of(context).accentColor,
+                  value: notifier.value,
+                  onChanged: (value) {
+                    notifier.value = !notifier.value;
+                    this.checked = checked;
+                    //print('remember '+_rememeberMeNotifier.value+' $value');
+                  });
+            }),
+        Flexible(
+          flex: 1,
+          child: Text(
+            this.label,
+            softWrap: true,
+            textAlign: TextAlign.left,
+            style: InvestrendTheme.of(context).small_w400_compact_greyDarker,
+          ),
+        ),
+        // SizedBox(
+        //   width: 16,
+        // )
+      ],
+    );
+  }
+}
+
+
+class DropDownUI extends DynamicUI{
+
+  //"ui": "DROPDOWN",
+  //"id": "city",
+  String content;
+  bool mandatory;
+  String label;//": "Tanggal Lahir",
+  String hint;//": "Masukan tanggal lahir sesuai KTP",
+  String error; //": "Harap isi tanggal lahir sesuai KTP"
+  List<String> options_id;
+  List<String> options_label;
+  /*
+  "options_id": [
+    "jkt",
+    "sby",
+    "smg",
+    "bgr"
+  ],
+  "options_label": [
+    "DKI Jakarta",
+    "Surabaya",
+    "Semarang",
+    "Bogor"
+  ]
+  */
+
+  DropDownUI(String ui, String id, this.content, this.mandatory, this.label, this.hint, this.error, this.options_id, this.options_label):super(ui,id);
+
+
+  factory DropDownUI.fromJson(Map<String, dynamic> parsedJson) {
+    if (parsedJson == null) {
+      return null;
+    }
+    String ui = StringUtils.noNullString(parsedJson['ui']);
+    String id = StringUtils.noNullString(parsedJson['id']);
+    String content = StringUtils.noNullString(parsedJson['content']);
+
+    String mandatoryText = StringUtils.noNullString(parsedJson['mandatory']);
+    bool mandatory = StringUtils.equalsIgnoreCase(mandatoryText, 'true');
+
+    String label = StringUtils.noNullString(parsedJson['label']);
+
+    String hint = StringUtils.noNullString(parsedJson['hint']);
+    String error = StringUtils.noNullString(parsedJson['error']);
+
+
+    List<String> options_id = List.empty(growable: true);
+    List<String> options_label = List.empty(growable: true);
+
+    var oids = parsedJson['options_id'] as List;
+    var olabels = parsedJson['options_label'] as List;
+
+    int count_oids = oids != null ? oids.length : 0;
+    for (int i = 0; i < count_oids; i++) {
+      String id = oids.elementAt(i).toString();
+      options_id.add(id);
+    }
+
+    int count_olabels = olabels != null ? olabels.length : 0;
+    for (int i = 0; i < count_olabels; i++) {
+      String label = olabels.elementAt(i).toString();
+      options_label.add(label);
+    }
+
+
+      return DropDownUI(ui, id, content, mandatory, label, hint, error, options_id, options_label);
+  }
+}
+
+
+
+class DatePickerUI extends DynamicUI{
+
+  //"ui": "DATEPICKER",
+  //"id": "birthday_date",
+  String content;
+  bool mandatory;
+  String label;//": "Tanggal Lahir",
+  String hint;//": "Masukan tanggal lahir sesuai KTP",
+  String error; //": "Harap isi tanggal lahir sesuai KTP"
+
+  DatePickerUI(String ui, String id, this.content, this.mandatory, this.label, this.hint, this.error):super(ui,id);
+
+  factory DatePickerUI.fromJson(Map<String, dynamic> parsedJson) {
+    if (parsedJson == null) {
+      return null;
+    }
+    String ui = StringUtils.noNullString(parsedJson['ui']);
+    String id = StringUtils.noNullString(parsedJson['id']);
+    String content = StringUtils.noNullString(parsedJson['content']);
+
+    String mandatoryText = StringUtils.noNullString(parsedJson['mandatory']);
+    bool mandatory = StringUtils.equalsIgnoreCase(mandatoryText, 'true');
+
+    String label = StringUtils.noNullString(parsedJson['label']);
+
+    String hint = StringUtils.noNullString(parsedJson['hint']);
+    String error = StringUtils.noNullString(parsedJson['error']);
+
+    return DatePickerUI(ui, id, content, mandatory, label, hint, error);
+  }
+}
+
+
+class TextFieldUI extends DynamicUI{
+  //"ui": "TEXTFIELD",
+  //"id": "nik",
+  String content;
+  bool mandatory;
+  String label;//": "NIK",
+  String hint;//": "Masukan nomor NIK KTP",
+  String error;//": "Harap isi NIK sesuai KTP anda",
+  String keyboard;//": "number",
+  String action; //": "next"
+
+  TextFieldUI(String ui, String id, this.content, this.mandatory, this.label, this.hint, this.error, this.keyboard, this.action):super(ui,id);
+
+  //TextFieldUI(String ui, String id, this.content, this.style):super(ui,id);
+
+
+  factory TextFieldUI.fromJson(Map<String, dynamic> parsedJson) {
+    if (parsedJson == null) {
+      return null;
+    }
+    String ui = StringUtils.noNullString(parsedJson['ui']);
+    String id = StringUtils.noNullString(parsedJson['id']);
+    String content = StringUtils.noNullString(parsedJson['content']);
+
+    String mandatoryText = StringUtils.noNullString(parsedJson['mandatory']);
+    bool mandatory = StringUtils.equalsIgnoreCase(mandatoryText, 'true');
+
+    String label = StringUtils.noNullString(parsedJson['label']);
+    String hint = StringUtils.noNullString(parsedJson['hint']);
+    String error = StringUtils.noNullString(parsedJson['error']);
+    String keyboard = StringUtils.noNullString(parsedJson['keyboard']);
+    String action = StringUtils.noNullString(parsedJson['action']);
+
+    return TextFieldUI(ui, id, content, mandatory, label, hint, error, keyboard, action);
+  }
+}
+
+
+class TextUI extends DynamicUI{
+  // "ui": "TEXT",
+  // "id": "label_1",
+  String content;
+  String style;
+
+  TextUI(String ui, String id, this.content, this.style):super(ui,id);
+
+  factory TextUI.fromJson(Map<String, dynamic> parsedJson) {
+    if (parsedJson == null) {
+      return null;
+    }
+    String ui = StringUtils.noNullString(parsedJson['ui']);
+    String id = StringUtils.noNullString(parsedJson['id']);
+    String content = StringUtils.noNullString(parsedJson['content']);
+    String style = StringUtils.noNullString(parsedJson['style']);
+    if(StringUtils.isEmtpy(style)){
+      style = "normal";
+    }
+    return TextUI(ui, id, content, style);
+  }
+}
+
+class SizeBoxUI extends DynamicUI{
+  //"ui": "SIZEBOX",
+  // "id": "padding_1",
+  double width;
+  double height;
+
+  SizeBoxUI(String ui, String id, this.width, this.height):super(ui,id);
+
+  factory SizeBoxUI.fromJson(Map<String, dynamic> parsedJson) {
+    if (parsedJson == null) {
+      return null;
+    }
+    String ui = StringUtils.noNullString(parsedJson['ui']);
+    String id = StringUtils.noNullString(parsedJson['id']);
+    double width = Utils.safeDouble(parsedJson['width']);
+    double height = Utils.safeDouble(parsedJson['height']);
+
+    width = max(width, 0.0);
+    height = max(height, 0.0);
+
+    return SizeBoxUI(ui, id, width, height);
+  }
+}

@@ -1,0 +1,2121 @@
+import 'dart:io';
+import 'dart:math';
+
+import 'package:Investrend/component/avatar.dart';
+import 'package:Investrend/component/button_account.dart';
+import 'package:Investrend/component/cards/card_news.dart';
+import 'package:Investrend/component/component_creator.dart';
+import 'package:Investrend/component/text_colapsed.dart';
+import 'package:Investrend/component/widget_buying_power.dart';
+import 'package:Investrend/objects/home_objects.dart';
+import 'package:Investrend/objects/riverpod_change_notifier.dart';
+import 'package:Investrend/utils/connection_services.dart';
+import 'package:Investrend/utils/investrend_theme.dart';
+import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:http/http.dart' as http;
+import 'package:xml/xml.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+class ScreenHome extends StatefulWidget {
+  const ScreenHome({Key key}) : super(key: key);
+
+  @override
+  _ScreenHomeState createState() => _ScreenHomeState();
+}
+
+class _ScreenHomeState extends State<ScreenHome> {
+  bool _selectedHighest = true;
+  ValueNotifier<String> _accountNotifier = ValueNotifier('Ackerman - Reguler');
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      //padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 6.0),
+      child: Column(
+        children: [
+          
+          createCardPortfolio(context),
+          ComponentCreator.divider(context),
+
+          createCardBriefing(context),
+          ComponentCreator.divider(context),
+
+          createCardCompetition(context),
+
+          ComponentCreator.divider(context),
+          createCardThemes(context),
+
+          ComponentCreator.divider(context),
+          createCardProfiles(context),
+
+          ComponentCreator.divider(context),
+
+          CardNews('home_card_news_title'.tr(),),
+
+
+          ComponentCreator.divider(context),
+        ],
+      ),
+    );
+  }
+
+  Future<List<HomeWorldIndices>> worldIndices;
+  Future<List<HomeNews>> news;
+
+  @override
+  void initState() {
+    super.initState();
+    worldIndices = HttpSSI.fetchWorldIndices();
+    news = HttpSSI.fetchNews();
+  }
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    print('ScreenHome.didChangeDependencies ');
+
+    // print('ScreenHome.didChangeDependencies ' + InvestrendTheme
+    //     .of(context)
+    //     .user
+    //     .toString());
+    print('ScreenHome.didChangeDependencies '+context.read(dataHolderChangeNotifier).user.toString());
+  }
+  @override
+  void dispose() {
+    _accountNotifier.dispose();
+
+    super.dispose();
+  }
+
+  /*
+  Future<List<HomeWorldIndices>> fetchWorldIndices() async {
+    final response =
+        await http.get(Uri.http('trialr1.e-samuel.com', 'm_world_indices.php'));
+    if (response.statusCode == 200) {
+      // If the server did return a 200 OK response,
+      // then parse the JSON.
+      //listWorldIndices.clear();
+      print(response.body);
+      final document = XmlDocument.parse(response.body);
+
+      List<HomeWorldIndices> list =
+          List<HomeWorldIndices>.empty(growable: true);
+      if (document != null) {
+        document.findAllElements('a').forEach((element) {
+          list.add(HomeWorldIndices.fromXml(element));
+        });
+      }
+      return list;
+
+      // return document.findAllElements('a')
+      //     .map((element) => new HomeWorldIndices.fromXml(element)).toList();
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      //throw HttpException('Error : '+response.statusCode.toString()+'  '+response.reasonPhrase);
+      throw Exception('Error : ' +
+          response.statusCode.toString() +
+          '  ' +
+          response.reasonPhrase);
+    }
+  }
+*/
+  /*
+  Future<HomeWorldIndices> fetchWorldIndices() async {
+    final response = await http.get(Uri.http('trialr1.e-samuel.com', 'm_world_indices.php'));
+
+    if (response.statusCode == 200) {
+      // If the server did return a 200 OK response,
+      // then parse the JSON.
+      listWorldIndices.clear();
+      print(response.body);
+      final document = XmlDocument.parse(response.body);
+      //document.findElements(name)
+
+      final x = document.findAllElements('a');
+      x.forEach((element) {
+        print('code : '+element.getAttribute('code'));
+        HomeWorldIndices data = HomeWorldIndices(element.getAttribute('last'), element.getAttribute('code'), double.parse(element.getAttribute('change')), double.parse(element.getAttribute('percentChange')));
+        listWorldIndices.add(data);
+      });
+
+      setState(() {
+
+      });
+      //return Album.fromJson(jsonDecode(response.body));
+      return null;
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load album');
+    }
+  }
+  */
+  // @override
+  // void dispose() {
+  //
+  //   super.dispose();
+  // }
+
+  //
+  // @override
+  // Widget build2(BuildContext context) {
+  //   return CustomScrollView(
+  //       slivers: [
+  //         createCardPortfolio(context),
+  //         createCardBriefing(context),
+  //       ],
+  //
+  //   );
+  // }
+
+  static const double cardPadding = 8.0;
+  static const double cardMargin = 8.0;
+  List listHighest = <HomePortfolio>[
+    HomePortfolio('BBCA', 10.4),
+    HomePortfolio('ELSA', 8.4),
+    HomePortfolio('ARTO', 3.4),
+  ];
+
+  List listLowest = <HomePortfolio>[
+    HomePortfolio('BBRI', 0.0),
+    HomePortfolio('BNBR', -4.18),
+    HomePortfolio('BUMI', -9.44),
+  ];
+
+  List<HomeWorldIndices> listWorldIndices = <HomeWorldIndices>[
+    HomeWorldIndices('DJIA', 'Dow Jones', -200, -0.33, 100),
+    HomeWorldIndices('DJIF', 'Dow Fut', 200, 0.33, 900),
+    HomeWorldIndices('N225', 'NIKKEI', 200, 0.33,800),
+    HomeWorldIndices('HSI', 'Hang Seng', -200, -0.33,500),
+    HomeWorldIndices('IHSG', 'Composite', -200, -0.33,700),
+  ];
+  List<HomeCommodities> listCommodities = <HomeCommodities>[
+    HomeCommodities('Oil', 63.44, -0.33),
+    HomeCommodities('Coal', 78.70, 0.33),
+    HomeCommodities('Nat Gas', 2.95, -0.33),
+    HomeCommodities('CPO', 3540, -0.33),
+    HomeCommodities('Gold', 1807, -0.33),
+    HomeCommodities('Silver', 28.30, 0.33),
+    HomeCommodities('Copper', 412.90, -0.33),
+    HomeCommodities('Platinum', 0, 0.0),
+    HomeCommodities('Tin', 26840, 0.33),
+    HomeCommodities('Nickel', 1274, -0.33),
+    HomeCommodities('Zinc', 2890, 0.33),
+    HomeCommodities('Alumunium', 2174, -0.33),
+  ];
+  List<HomeCurrencies> listCurrencies = <HomeCurrencies>[
+    HomeCurrencies('USD/IDR', 14013, 3.33),
+    HomeCurrencies('Dollar Index', 63.70, -0.14),
+    HomeCurrencies('BTC/IDR', 775032102, 12.33),
+  ];
+
+  List<HomeNews> listNews = <HomeNews>[
+    HomeNews(
+        'Apple akan hadirkan kembali platform media sosial Parler ke App Store',
+        'Apple Inc akan kembali menghadirkan aplikasi media sosial Parler, yang disukai oleh kaum konservatif di Amerika Serikat, di&nbsp;App Store setelah sempat ditarik menyusul kerusuhan Capitol yang mematikan pada 6 Januari ...',
+        'https://www.antaranews.com/berita/2110802/apple-akan-hadirkan-kembali-platform-media-sosial-parler-ke-app-store',
+        'https://img.antaranews.com/cache/800x533/2021/02/17/2021-01-14T000000Z_1937767962_MT1SIPA0006PHF5M_RTRMADP_3_SIPA-USA.jpg',
+        'Tue, 20 Apr 2021 13:37:35 +0700',
+        'Techno',
+        4,
+        10),
+    HomeNews(
+        'Jokic pimpin Nuggets libas Grizzlies lewat dua kali overtime',
+        'Nikola Jokic mencetak 47 poin termasuk sebuah lemparan tiga poin yang menentukan pada overtime kedua yang membawa Denver Nuggets menghempaskan Memphis Grizzlies 139-137 di Ball Arena, Denver, Colorado, Senin (Selasa ...',
+        'https://www.antaranews.com/berita/2110798/jokic-pimpin-nuggets-libas-grizzlies-lewat-dua-kali-overtime',
+        'https://img.antaranews.com/cache/800x533/2021/04/20/Screenshot_3.jpg',
+        'Tue, 20 Apr 2021 13:37:02 +0700',
+        'Sports',
+        10,
+        2),
+    HomeNews(
+        'Pameran Auto Shanghai 2021',
+        'A staff member cleans a Volvo S90 sedan displayed during a media day for the Auto Shanghai show in Shanghai, China April 20, 2021. REUTERS/Aly Song',
+        'https://otomotif.antaranews.com/foto/2110790/pameran-auto-shanghai-2021',
+        'https://img.antaranews.com/cache/800x533/2021/04/20/2021-04-20T051706Z_1324204388_RC2HZM9XL9HD_RTRMADP_3_AUTOSHOW-SHANGHAI-VOLVO.jpg',
+        'Tue, 20 Apr 2021 13:29:01 +0700',
+        'Auto',
+        11,
+        22),
+  ];
+
+  //String name;
+  //int rank;
+  //int participant_size;
+  //List participants_avatar;
+  List<HomeProfiles> listProfiles = <HomeProfiles>[
+    HomeProfiles('Belvin Tannadi', 'Owner @belvinvvip, komunitas saham retail terbesar di indonesia',
+        'https://www.investrend.co.id/mobile/assets/profiles/profile_1.png'),
+    HomeProfiles('Lo Kheng Hong', 'Lo Kheng Hong sebagai investor saham disebut sebut sebagai Warren Buffet-nya Indonesia.',
+        'https://www.investrend.co.id/mobile/assets/profiles/profile_2.png'),
+  ];
+  List<HomeThemes> listThemes = <HomeThemes>[
+    HomeThemes('Digital Bank', 'Disrupting the financial sector at crazy valuations',
+        'https://www.investrend.co.id/mobile/assets/themes/background_1.png'),
+    HomeThemes('Creative Economy', 'Companies recognaized for their creative contributions to indonesia',
+        'https://www.investrend.co.id/mobile/assets/themes/background_2.png'),
+    HomeThemes('Work from Home', 'Companies that are making social distancing possible',
+        'https://www.investrend.co.id/mobile/assets/themes/background_3.png'),
+    HomeThemes('Focus on Diversity', 'Companies with the most diverse and inclusive composition',
+        'https://www.investrend.co.id/mobile/assets/themes/background_4.png'),
+    HomeThemes(
+        'Sports and Beyond', 'Companies in the bussiness of sports', 'https://www.investrend.co.id/mobile/assets/themes/background_5.png'),
+    HomeThemes('Digital Bank', 'Disrupting the financial sector at crazy valuations',
+        'https://www.investrend.co.id/mobile/assets/themes/background_1.png'),
+    HomeThemes('Creative Economy', 'Companies recognaized for their creative contributions to indonesia',
+        'https://www.investrend.co.id/mobile/assets/themes/background_2.png'),
+    HomeThemes('Work from Home', 'Companies that are making social distancing possible',
+        'https://www.investrend.co.id/mobile/assets/themes/background_3.png'),
+  ];
+  List<HomeCompetition> listCompetition = <HomeCompetition>[
+    HomeCompetition('Kompetisi Keren', 4, 12, 'https://www.investrend.co.id/mobile/assets/competition/background_1.png', <String>[
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmJaEK71AwtaHZvhvBQioHWW2MGi4ukH1_9w&usqp=CAU',
+      'https://cdn130.picsart.com/309744679150201.jpg?to=crop&r=256&q=70',
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQhMUJGKzrxVoM2r8dLjVenLwcP-idh11n5Fw&usqp=CAU',
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHWL4kom23RBdd0GP-xLOsFu-7t-bRAtSGEA&usqp=CAU',
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStgx25x3vrWgwCRz0buSYNf7lII-0TWtcFXg&usqp=CAU',
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSiJinli8IBVIpd5Un3l2uUuMb9iIXihrGobg&usqp=CAU',
+    ]),
+    HomeCompetition('Best of the Best', 3, 15, 'https://www.investrend.co.id/mobile/assets/competition/background_2.png', <String>[
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStgx25x3vrWgwCRz0buSYNf7lII-0TWtcFXg&usqp=CAU',
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStgx25x3vrWgwCRz0buSYNf7lII-0TWtcFXg&usqp=CAU',
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHWL4kom23RBdd0GP-xLOsFu-7t-bRAtSGEA&usqp=CAU',
+      'https://cdn130.picsart.com/309744679150201.jpg?to=crop&r=256&q=70',
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmJaEK71AwtaHZvhvBQioHWW2MGi4ukH1_9w&usqp=CAU',
+      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQhMUJGKzrxVoM2r8dLjVenLwcP-idh11n5Fw&usqp=CAU',
+    ]),
+  ];
+
+  // void showSnackBar(BuildContext context, String text) {
+  //   final snackBar = SnackBar(content: Text(text), duration: Duration(seconds: 1),);
+  //
+  //   // Find the ScaffoldMessenger in the widget tree
+  //   // and use it to show a SnackBar.
+  //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  // }
+
+  Widget createCardThemes(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.all(cardMargin),
+      child: Padding(
+        padding: const EdgeInsets.all(cardPadding),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ComponentCreator.subtitleButtonMore(
+              context,
+              'home_card_themes_title'.tr(),
+              () {
+                InvestrendTheme.of(context).showSnackBar(context, "Action Themes More");
+              },
+            ),
+            gridThemes(context),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /*
+  Widget tileNews(BuildContext context, HomeNews news) {
+
+    return Padding(
+      padding: const EdgeInsets.only(top: cardPadding),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(InvestrendTheme.of(context).tileRoundedRadius),
+        child: Container(
+          // decoration: BoxDecoration(
+          //   color: InvestrendTheme.of(context).tileBackground,
+          //   // borderRadius: BorderRadius.circular(
+          //   //     InvestrendTheme.of(context).tileRoundedRadius),
+          // ),
+          color: InvestrendTheme.of(context).tileBackground,
+          //margin: const EdgeInsets.only(top: cardMargin),
+          //padding: const EdgeInsets.only( left: 20.0, right: 20.0, top: 10.0, bottom: 10.0),
+          //color: InvestrendTheme.of(context).tileBackground,
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () {
+                InvestrendTheme.of(context).showSnackBar(context, 'Action news');
+              },
+              child: Padding(
+                padding: EdgeInsets.only(
+                    left: InvestrendTheme.of(context).tileRoundedRadius,
+                    right: InvestrendTheme.of(context).tileRoundedRadius,
+                    top: InvestrendTheme.of(context).tileSmallRoundedRadius,
+                    bottom: InvestrendTheme.of(context).tileSmallRoundedRadius),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        ClipRRect(
+                            borderRadius: BorderRadius.circular(InvestrendTheme.of(context).tileSmallRoundedRadius),
+                            child: ComponentCreator.imageNetwork(news.url_tumbnail, width: 60, height: 60, fit: BoxFit.fill)),
+                        SizedBox(
+                          width: cardMargin,
+                        ),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                news.title,
+                                maxLines: 2,
+                                style: Theme.of(context).textTheme.headline6.copyWith(fontSize: 18.0),
+                              ),
+                              SizedBox(
+                                height: 4.0,
+                              ),
+                              Text(
+                                news.time + '  |  ' + news.category,
+                                maxLines: 1,
+                                style: Theme.of(context).textTheme.overline.copyWith(letterSpacing: 0.1),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          width: cardMargin,
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 4.0,
+                    ),
+                    Text(
+                      news.description,
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(color: InvestrendTheme.of(context).textGrey, height: 1.5),
+                      maxLines: 2,
+                    ),
+                    Row(
+                      children: [
+                        IconButton(
+                            icon: Image.asset('images/icons/comment.png'),
+                            onPressed: () {
+                              InvestrendTheme.of(context).showSnackBar(context, 'Action Comment ');
+                            }),
+                        Text(news.commentCount.toString()),
+                        IconButton(
+                            icon: Image.asset('images/icons/like.png'),
+                            onPressed: () {
+                              InvestrendTheme.of(context).showSnackBar(context, 'Action Like ');
+                            }),
+                        Text(news.likedCount.toString()),
+                        Spacer(
+                          flex: 1,
+                        ),
+                        IconButton(
+                            icon: Image.asset('images/icons/share.png'),
+                            onPressed: () {
+                              InvestrendTheme.of(context).showSnackBar(context, 'Action Share ');
+                            }),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+  */
+  Widget createCardNews(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.all(cardMargin),
+      child: Padding(
+        padding: const EdgeInsets.all(cardPadding),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ComponentCreator.subtitleButtonMore(
+              context,
+              'home_card_news_title'.tr(),
+              () {
+                InvestrendTheme.of(context).showSnackBar(context, "Action News More");
+              },
+            ),
+            // tileNews(context, listNews[0]),
+            // tileNews(context, listNews[1]),
+            // tileNews(context, listNews[2]),
+
+            FutureBuilder<List<HomeNews>>(
+              future: news,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  //return Text(snapshot.data.length.toString(), style: Theme.of(context).textTheme.bodyText2,);
+                  if (snapshot.data.length > 0) {
+                    List<Widget> list = List.empty(growable: true);
+                    int maxCount = snapshot.data.length > 3 ? 3 : snapshot.data.length;
+                    for (int i = 0; i < maxCount; i++) {
+                      //list.add(tileNews(context, snapshot.data[i]));
+                      list.add(ComponentCreator.tileNews(
+                        context,
+                        snapshot.data[i],
+                        commentClick: () {
+                          InvestrendTheme.of(context).showSnackBar(context, 'commentClick');
+                        },
+                        likeClick: () {
+                          InvestrendTheme.of(context).showSnackBar(context, 'likeClick');
+                        },
+                        shareClick: () {
+                          InvestrendTheme.of(context).showSnackBar(context, 'shareClick');
+                        },
+                      ));
+                    }
+
+                    return Column(
+                      children: list,
+                    );
+                    //return gridWorldIndices(context, snapshot.data);
+                  } else {
+                    return Center(
+                        child: Text(
+                      'No Data',
+                      style: Theme.of(context).textTheme.bodyText2,
+                    ));
+                  }
+                } else if (snapshot.hasError) {
+                  return Center(
+                      child: Column(
+                        children: [
+                          Text("${snapshot.error}",
+                              maxLines: 10, style: Theme.of(context).textTheme.bodyText2.copyWith(color: Theme.of(context).errorColor)),
+                          OutlinedButton(
+                              onPressed: () {
+                                news = HttpSSI.fetchNews();
+                              },
+                              child: Text('button_retry'.tr())),
+                        ],
+                      ));
+                  // return Center(
+                  //     child:
+                  //         Text("${snapshot.error}", style: Theme.of(context).textTheme.bodyText2.copyWith(color: Theme.of(context).errorColor)));
+                }
+
+                // By default, show a loading spinner.
+                return Center(child: CircularProgressIndicator());
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget createCardProfiles(BuildContext context) {
+    //double width = MediaQuery.of(context).size.width;
+    //double tileWidth = width * 0.8;
+    return Card(
+      margin: const EdgeInsets.all(cardMargin),
+      child: Padding(
+          padding: const EdgeInsets.all(cardPadding),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ComponentCreator.subtitle(
+                context,
+                'home_card_profiles_title'.tr(),
+              ),
+              SizedBox(
+                height: cardMargin,
+              ),
+              LayoutBuilder(builder: (context, constrains) {
+                print('constrains ' + constrains.maxWidth.toString());
+                double tileWidth = constrains.maxWidth * 0.8;
+                //double height = 200.0;
+                double height = tileWidth * 0.687;
+                return SizedBox(
+                  height: height,
+                  child: ListView.builder(
+                    physics: ClampingScrollPhysics(),
+                    shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
+                    itemCount: listProfiles.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      double left = index == 0 ? 0 : 10.0;
+                      return tileProfile(listProfiles[index], left, tileWidth, height);
+                    },
+                  ),
+                );
+              }),
+            ],
+          )),
+    );
+  }
+
+  Widget tileProfile(HomeProfiles profile, double leftPadding, double widthTile, double heightTile) {
+    return Padding(
+      padding: EdgeInsets.only(left: leftPadding),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(InvestrendTheme.of(context).tileRoundedRadius),
+        child: SizedBox(
+          width: widthTile,
+          height: heightTile,
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              ComponentCreator.imageNetwork(
+                profile.url_background,
+                fit: BoxFit.fill,
+                width: widthTile,
+                height: heightTile,
+              ),
+              Container(
+                decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                  begin: Alignment.centerLeft,
+                  end: Alignment.center,
+                  colors: [
+                    Colors.black87,
+                    Colors.black12,
+                  ],
+                )),
+              ),
+              Positioned.fill(
+                child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                        splashColor: Theme.of(context).accentColor,
+                        onTap: () {
+                          InvestrendTheme.of(context).showSnackBar(context, 'Action Profile detail');
+                        })),
+              ),
+              IgnorePointer(
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SizedBox(
+                        width: widthTile / 2,
+                        child: Text(
+                          profile.name,
+                          style: Theme.of(context).textTheme.headline5.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                      SizedBox(
+                        height: cardPadding,
+                      ),
+                      SizedBox(
+                        width: widthTile / 2,
+                        child: Text(
+                          profile.description,
+                          maxLines: 5,
+                          //overflow: TextOverflow.ellipsis,
+                          //style: Theme.of(context).textTheme.bodyText2.copyWith(color: Colors.white),
+                          style: InvestrendTheme.of(context).support_w400.copyWith(color: Colors.white),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    /*
+    return Padding(
+      padding: EdgeInsets.only(left: leftPadding),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20.0),
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Stack(
+            children: [
+              Image.network(
+                profile.url_background,
+                fit: BoxFit.fill,
+                width: widthTile,
+                height: heightTile,
+              ),
+              Positioned.fill(
+                child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                        splashColor: Theme.of(context).accentColor,
+                        onTap: () {
+                          showSnackBar(context, 'Action Competition detail');
+                        })),
+              ),
+              IgnorePointer(
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      FittedBox(
+                        child: Text(
+                          profile.name,
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline6
+                              .copyWith(color: Colors.white),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 4.0,
+                      ),
+                      FittedBox(
+                        child: Text(
+                          profile.description,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyText2
+                              .copyWith(color: Colors.white),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+     */
+  }
+
+  Widget createCardCompetition(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double tileWidth = width * 0.7;
+    return Card(
+      margin: const EdgeInsets.all(cardMargin),
+      child: Padding(
+          padding: const EdgeInsets.all(cardPadding),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ComponentCreator.subtitleButtonMore(context, 'home_card_competition_title'.tr(), () {
+                InvestrendTheme.of(context).showSnackBar(context, "Action Competition More");
+              }),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //   children: [
+              //     ComponentCreator.subtitle(context, 'home_card_competition_title'.tr()),
+              //     getButtonIconHorizontal(
+              //         context,
+              //         'images/icons/arrow_forward.png',
+              //         'button_more'.tr(),
+              //         Theme.of(context).accentColor,
+              //         () {}),
+              //   ],
+              // ),
+
+              LayoutBuilder(builder: (context, constrains) {
+                print('constrains ' + constrains.maxWidth.toString());
+                double tileWidth = constrains.maxWidth * 0.8;
+                //double height = 180.0;
+                double height = tileWidth * 0.6;
+                return SizedBox(
+                  height: height,
+                  child: ListView.builder(
+                    physics: ClampingScrollPhysics(),
+                    shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
+                    itemCount: listCompetition.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      double left = index == 0 ? 0 : 10.0;
+                      return tileCompetition(listCompetition[index], left, tileWidth, height);
+                    },
+                  ),
+                );
+              }),
+
+              // SizedBox(
+              //   height: 180.0,
+              //   child: ListView.builder(
+              //     physics: ClampingScrollPhysics(),
+              //     shrinkWrap: true,
+              //     scrollDirection: Axis.horizontal,
+              //     itemCount: listCompetition.length,
+              //     itemBuilder: (BuildContext context, int index) {
+              //       double left = index == 0 ? 0 : 10.0;
+              //       return tileCompetition(listCompetition[index], left);
+              //     },
+              //   ),
+              // ),
+            ],
+          )),
+    );
+  }
+
+  Widget tileCompetition(HomeCompetition competition, double leftPadding, double widthTile, double heightTile) {
+    return Padding(
+      padding: EdgeInsets.only(left: leftPadding),
+      child: ClipRRect(
+        //borderRadius: BorderRadius.circular(InvestrendTheme.of(context).tileRoundedRadius),
+        borderRadius: BorderRadius.circular(14.0),
+        child: SizedBox(
+          width: widthTile,
+          height: heightTile,
+          child: Stack(
+            children: [
+              ComponentCreator.imageNetwork(
+                competition.url_background,
+                fit: BoxFit.fill,
+                width: widthTile,
+                height: heightTile,
+              ),
+              /*
+              Image.network(
+                competition.url_background,
+                fit: BoxFit.fill,
+                width: widthTile,
+                height: heightTile,
+                // loadingBuilder: (context, child, loadingProgress) {
+                //   if (loadingProgress == null) return child;
+                //
+                //   return Center(child: CircularProgressIndicator());
+                //   // You can use LinearProgressIndicator or CircularProgressIndicator instead
+                // },
+                // errorBuilder: (context, error, stackTrace) =>
+                //     Text('Some errors occurred!'),
+
+              ),
+
+               */
+              Positioned.fill(
+                child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                        splashColor: Theme.of(context).accentColor,
+                        onTap: () {
+                          InvestrendTheme.of(context).showSnackBar(context, 'Action Competition detail');
+                        })),
+              ),
+              IgnorePointer(
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        competition.name,
+                        style: Theme.of(context).textTheme.headline6.copyWith(color: Colors.white),
+                      ),
+                      SizedBox(
+                        height: 4.0,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Image.asset('images/icons/trophy.png'),
+                          Text(
+                            'Rank #' + competition.rank.toString(),
+                            style: Theme.of(context).textTheme.bodyText2.copyWith(color: Colors.white),
+                          ),
+                        ],
+                      ),
+                      Spacer(
+                        flex: 1,
+                      ),
+                      Text(
+                        competition.participant_size.toString() + ' Partisipan',
+                        style: Theme.of(context).textTheme.bodyText2.copyWith(color: Colors.white),
+                      ),
+                      SizedBox(
+                        height: 4.0,
+                      ),
+                      AvatarListCompetition(
+                        size: 25,
+                        participants_avatar: competition.participants_avatar,
+                        total_participant: competition.participant_size,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    /*
+    return Padding(
+      padding: EdgeInsets.only(left: leftPadding),
+      child: Stack(
+        children: [
+          Image.network(
+            competition.url_background,
+            fit: BoxFit.fitWidth,
+          ),
+          Positioned.fill(
+            child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                    splashColor: Theme.of(context).accentColor,
+                    onTap: () {
+                      InvestrendTheme.of(context).showSnackBar(context, 'Action Competition detail');
+                    })),
+          ),
+          IgnorePointer(
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    competition.name,
+                    style: Theme.of(context)
+                        .textTheme
+                        .headline6
+                        .copyWith(color: Colors.white),
+                  ),
+                  SizedBox(
+                    height: 4.0,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Image.asset('images/icons/trophy.png'),
+                      Text(
+                        'Rank #' + competition.rank.toString(),
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyText2
+                            .copyWith(color: Colors.white),
+                      ),
+                    ],
+                  ),
+                  Spacer(
+                    flex: 1,
+                  ),
+                  Text(
+                    competition.participant_size.toString() + ' Partisipan',
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyText2
+                        .copyWith(color: Colors.white),
+                  ),
+                  SizedBox(
+                    height: 4.0,
+                  ),
+                  AvatarListCompetition(
+                    size: 25,
+                    participants_avatar: competition.participants_avatar,
+                    total_participant: competition.participant_size,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+
+     */
+  }
+
+  Widget createCardPortfolio(BuildContext context) {
+    double moneyAccount = 200005956;
+    double gainLossMoneyAccount = 30000000;
+    double gainLossPercentageAccount = 14.58;
+    double buyingPower = 200200000780;
+
+    return Card(
+      // color: Theme.of(context).backgroundColor,
+      // elevation: 0.0,
+      // borderOnForeground: false,
+      // shape: null,
+      margin: const EdgeInsets.all(cardMargin),
+      child: Padding(
+        padding: const EdgeInsets.all(cardPadding),
+        child: Column(
+          //mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ComponentCreator.subtitle(context, 'Portfolio'),
+            ButtonAccount(_accountNotifier,(){
+              InvestrendTheme.of(context).showSnackBar(context, 'Choose Account clicked');
+            }),
+            /*
+            MaterialButton(
+                padding: EdgeInsets.zero,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      'Ackerman - regular',
+                      style: Theme.of(context)
+                          .textTheme
+                          .subtitle1
+                          .copyWith(fontWeight: FontWeight.normal, color: InvestrendTheme.of(context).blackAndWhiteTextLite),
+                    ),
+                    SizedBox(
+                      width: 5.0,
+                    ),
+                    Icon(
+                      Icons.keyboard_arrow_down,
+                      color: Colors.grey,
+                    ),
+                  ],
+                ),
+                onPressed: () {
+                  final snackBar = SnackBar(content: Text('Action show client type'));
+                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                }),
+            */
+            Text(
+              InvestrendTheme.formatMoneyDouble(moneyAccount),
+              style: Theme.of(context).textTheme.headline5.copyWith(fontWeight: FontWeight.bold),
+            ),
+            Text(
+              InvestrendTheme.formatMoneyDouble(gainLossMoneyAccount, prefixPlus: true) +
+                  ' (' +
+                  InvestrendTheme.formatPercentChange(gainLossPercentageAccount) +
+                  ')',
+              style: Theme.of(context).textTheme.subtitle1.copyWith(color: InvestrendTheme.changeTextColor(gainLossPercentageAccount)),
+            ),
+            SizedBox(
+              height: 20.0,
+            ),
+            WidgetBuyingPower(200000000000),
+            /*
+            Container(
+              width: double.maxFinite,
+              //height: 50,
+              padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0, bottom: 8.0),
+              decoration: BoxDecoration(
+                color: Theme.of(context).accentColor,
+                shape: BoxShape.rectangle,
+                borderRadius: BorderRadius.all(Radius.circular(10.0)),
+              ),
+
+
+              child: Row(
+                //mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Text(
+                          'buying_power_label'.tr(),
+                          style: InvestrendTheme.of(context).more_support_w400_compact.copyWith(color: Colors.white),
+                        ),
+                        SizedBox(
+                          height: 10.0,
+                        ),
+
+                        FittedBox(
+                          fit: BoxFit.fitWidth,
+                          child: Text(
+                            'Rp 200.200.000.780',
+                            style: InvestrendTheme.of(context).regular_w700_compact.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // Spacer(
+                  //   flex: 1,
+                  // ),
+                  SizedBox(
+                    width: 10.0,
+                  ),
+                  getButtonIconVertical(context, 'images/icons/plus_circle.png', 'buying_power_top_up_label'.tr(), Colors.white, () {
+                    final snackBar = SnackBar(content: Text('Action Top-Up'));
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  }),
+                  SizedBox(
+                    width: 10.0,
+                  ),
+                  getButtonIconVertical(context, 'images/icons/arrow_circle.png', 'buying_power_transfer_label'.tr(), Colors.white, () {
+                    final snackBar = SnackBar(content: Text('Action Transfer'));
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  }),
+                ],
+              ),
+            ),
+            */
+            SizedBox(
+              height: 10.0,
+            ),
+            Row(
+              //mainAxisAlignment: MainAxisAlignment.start,
+              //crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                MaterialButton(
+                  padding: EdgeInsets.zero,
+                  onPressed: () {
+                    // presssed
+                    setState(() {
+                      _selectedHighest = true;
+                    });
+                  },
+
+                  // visualDensity: VisualDensity.compact,
+                  child: Text(
+                    'home_card_portfolio_button_highest'.tr(),
+                    textAlign: TextAlign.start,
+                    style: Theme.of(context).textTheme.subtitle1.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: _selectedHighest
+                            ? InvestrendTheme.of(context).blackAndWhiteText
+                            : InvestrendTheme.of(context).blackAndWhiteTextInactive),
+                  ),
+                ),
+                MaterialButton(
+                  padding: EdgeInsets.zero,
+                  onPressed: () {
+                    // presssed
+                    setState(() {
+                      _selectedHighest = false;
+                    });
+                  },
+                  // visualDensity: VisualDensity.compact,
+                  child: Text(
+                    'home_card_portfolio_button_lowest'.tr(),
+                    textAlign: TextAlign.start,
+                    style: Theme.of(context).textTheme.subtitle1.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: !_selectedHighest
+                            ? InvestrendTheme.of(context).blackAndWhiteText
+                            : InvestrendTheme.of(context).blackAndWhiteTextInactive),
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: tilePortfolio(context, _selectedHighest ? listHighest[0] : listLowest[0], true),
+                  flex: 1,
+                ),
+                SizedBox(
+                  width: cardMargin,
+                ),
+                Expanded(
+                  child: tilePortfolio(context, _selectedHighest ? listHighest[1] : listLowest[1], false),
+                  flex: 1,
+                ),
+                SizedBox(
+                  width: cardMargin,
+                ),
+                Expanded(
+                  child: tilePortfolio(context, _selectedHighest ? listHighest[2] : listLowest[2], false),
+                  flex: 1,
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget tilePortfolio(BuildContext context, HomePortfolio data, bool first) {
+    double left = first ? 0 : 8.0;
+    //double right = end ? 0 : 0.0;
+    String percentText;
+    Color percentChangeTextColor;
+    Color percentChangeBackgroundColor;
+
+    percentText = InvestrendTheme.formatPercentChange(data.percentChange);
+    percentChangeTextColor = InvestrendTheme.changeTextColor(data.percentChange);
+    percentChangeBackgroundColor = InvestrendTheme.priceBackgroundColorDouble(data.percentChange);
+    /*
+    if (data.percentChange > 0) {
+      percentText = '+' + formatterNumber.format(data.percentChange) + '%';
+      percentChangeTextColor = InvestrendTheme.of(context).greenText;
+      percentChangeBackgroundColor =
+          InvestrendTheme.of(context).greenBackground;
+    } else if (data.percentChange < 0) {
+      percentText = formatterNumber.format(data.percentChange) + '%';
+      percentChangeTextColor = InvestrendTheme.of(context).redText;
+      percentChangeBackgroundColor = InvestrendTheme.of(context).redBackground;
+    } else {
+      percentText = formatterNumber.format(data.percentChange) + '%';
+      percentChangeTextColor = InvestrendTheme.of(context).yellowText;
+      percentChangeBackgroundColor =
+          InvestrendTheme.of(context).yellowBackground;
+    }
+    */
+    return MaterialButton(
+      elevation: 0.0,
+      splashColor: InvestrendTheme.of(context).tileSplashColor,
+      padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0, bottom: 10.0),
+      color: InvestrendTheme.of(context).tileBackground,
+      shape: RoundedRectangleBorder(
+        borderRadius: new BorderRadius.circular(10.0),
+        side: BorderSide(
+          color: InvestrendTheme.of(context).tileBackground,
+          width: 0.0,
+        ),
+      ),
+      child: Column(
+        children: [
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              data.code,
+              style: Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.bold),
+            ),
+          ),
+          SizedBox(
+            height: 5.0,
+          ),
+          Container(
+            padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 5.0, bottom: 5.0),
+            decoration: BoxDecoration(
+              color: percentChangeBackgroundColor,
+              shape: BoxShape.rectangle,
+              borderRadius: BorderRadius.all(Radius.circular(15.0)),
+            ),
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                percentText,
+                style: TextStyle(color: percentChangeTextColor),
+              ),
+            ),
+          ),
+        ],
+      ),
+      onPressed: () {},
+    );
+    /*
+    return Container(
+      margin: EdgeInsets.only(left: left, right: 0.0, top: 8.0, bottom: 0.0),
+      padding: EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
+        color: InvestrendTheme.of(context).tileBackground,
+        shape: BoxShape.rectangle,
+        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+      ),
+      //color: Theme.of(context).disabledColor,
+      child: Column(
+        children: [
+          Text(
+            data.code,
+            style: Theme.of(context)
+                .textTheme
+                .bodyText1
+                .copyWith(fontWeight: FontWeight.bold),
+          ),
+          SizedBox(
+            height: 5.0,
+          ),
+          Container(
+            padding:
+                EdgeInsets.only(left: 10.0, right: 10.0, top: 5.0, bottom: 5.0),
+            decoration: BoxDecoration(
+              color: percentChangeBackgroundColor,
+              shape: BoxShape.rectangle,
+              borderRadius: BorderRadius.all(Radius.circular(15.0)),
+            ),
+            child: Text(
+              percentText,
+              style: TextStyle(color: percentChangeTextColor),
+            ),
+          ),
+        ],
+      ),
+    );
+
+     */
+  }
+
+  Widget getButtonIconVertical(BuildContext context, String image, String text, Color textColor, VoidCallback onPressed) {
+    return SizedBox(
+      width: 55,
+      height: 55,
+      child: Material(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.zero,
+          child: InkWell(
+            child: MaterialButton(
+              padding: EdgeInsets.all(2.0),
+              elevation: 0,
+              highlightElevation: 0,
+              focusElevation: 0,
+
+              //visualDensity: VisualDensity.compact,
+              //color: Theme.of(context).accentColor,
+              //color: color,
+              //textColor: Theme.of(context).primaryColor,
+              textColor: textColor,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Image.asset(
+                    image,
+                    width: 20,
+                    height: 20,
+                  ),
+                  // SizedBox(
+                  //   height: 5.0,
+                  // ),
+                  FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: Text(
+                      text,
+                      style: InvestrendTheme.of(context).more_support_w400_compact.copyWith(color: textColor),
+                      //style: TextStyle(fontSize: 13.0, color: textColor, fontWeight: FontWeight.normal),
+                    ),
+                  ),
+                ],
+              ),
+              onPressed: onPressed,
+            ),
+          )),
+    );
+  }
+
+  Widget createCardBriefing(BuildContext context) {
+    return Card(
+      margin: EdgeInsets.only(left: cardMargin, right: cardMargin, bottom: cardMargin),
+      child: Padding(
+        padding: const EdgeInsets.all(cardPadding),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            SizedBox(
+              height: cardMargin,
+            ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                ComponentCreator.subtitle(context, 'home_card_briefing_title'.tr()),
+                SizedBox(
+                  width: 4,
+                ),
+                Image.asset(
+                  'images/icons/coffee_cups.png',
+                  width: 30,
+                  height: 30,
+                ),
+              ],
+            ),
+            ColapsedText(
+              text:
+                  'Good Morning, Ackerman\nAmerika Serikat mencatat inflasi dengan laju tertinggi sejak 2012 pada bulan Maret 2021. Kondisi ini memicu kekhawatiran naiknya yield obligasi AS sehingga kurs rupiah melemah dan berakhir flat pada penutupan Sesi I siang ini.\nMengutip data Bloomberg, Senin (19/4) pukul 12.00 WIB, kurs rupiah tengah diperdagangkan pada level Rp14.565 per dolar AS. Posisi tersebut sama persis dengan penutupan pasar spot pada akhir pekan Jumat sore kemarin (16/4). Kurs rupiah bergerak melemah dibanding tadi pagi yang masih mencatatakan penguatan terhadap dolar AS.\nHead of Economic Research Pefindo, Fikri C Permana, mengatakan bahwa kurs rupiah melemah karena perkembangan inflasi AS yang begitu kuat. Inflasi AS pada bulan lalu meningkat begitu tinggi karena aktivitas ekonomi dibuka kembali dan naiknya permintaan. "Ini memicu ekspektasi kenaikan yield obligasi AS dan indeks dolar AS. Akibatnya rupiah melemah tipis siang ini," kata Irvan saat dihubungi Ipotnews, Senin siang.\nBerdasarkan data Bloomberg pada Selasa (13/4), Departemen Tenaga Kerja AS mencatat indeks harga konsumen (consumer price index/CPI) naik 0,6 persen pada Maret dari bulan sebelumnya setelah kenaikan 0,4 persen. Ini merupakan laju tertinggi sejak Agustus 2012. Dibandingkan dengan bulan yang sama tahun 2020, CPI bulan Maret naik 2,6 persen. Adapun CPI inti naik 1,6 persen secara year-on-year (yoy).\nDari dalam negeri, kedatangan vaksin Sinovac tahap kedelapan di Indonesia pada Minggu (18/4) belum bisa menjadi sentimen positif yang menggerakkan kurs rupiah pada hari ini. Pelaku pasar melihat distribusi vaksin di Tanah Air harus dipercepat lagi. "Jadi bukan hanya sekedar pasokan vaksinnya untuk mempercepat proses vaksinasi di Indonesia," tutup Fikri.\nVaksin Covid-19 tahap delapan sudah tiba di Indonesia kemarin di Terminal Kargo, Bandara Soetta. Jenis vaksin ini sama dengan yang terakhir tiba di Indonesia yakni Sinovac. Sebanyak enam juta bahan baku vaksin covid-19 Sinovac asal Tiongkok tiba di Indonesia. Pengiriman ini merupakan kedatangan dosis vaksin tahap kedelapan.\nTotal 59,5 juta bahan baku vaksin Sinovac telah diterima Indonesia. Ketika sudah diproses, bahan baku itu bisa menjadi 46-47 juta dosis vaskin siap pakai.',
+              maxLines: 10,
+            ),
+            // Text(
+            //   'Good Morning, Ackerman\nAmerika Serikat mencatat inflasi dengan laju tertinggi sejak 2012 pada bulan Maret 2021. Kondisi ini memicu kekhawatiran naiknya yield obligasi AS sehingga kurs rupiah melemah dan berakhir flat pada penutupan Sesi I siang ini.\nMengutip data Bloomberg, Senin (19/4) pukul 12.00 WIB, kurs rupiah tengah diperdagangkan pada level Rp14.565 per dolar AS. Posisi tersebut sama persis dengan penutupan pasar spot pada akhir pekan Jumat sore kemarin (16/4). Kurs rupiah bergerak melemah dibanding tadi pagi yang masih mencatatakan penguatan terhadap dolar AS.\nHead of Economic Research Pefindo, Fikri C Permana, mengatakan bahwa kurs rupiah melemah karena perkembangan inflasi AS yang begitu kuat. Inflasi AS pada bulan lalu meningkat begitu tinggi karena aktivitas ekonomi dibuka kembali dan naiknya permintaan. "Ini memicu ekspektasi kenaikan yield obligasi AS dan indeks dolar AS. Akibatnya rupiah melemah tipis siang ini," kata Irvan saat dihubungi Ipotnews, Senin siang.\nBerdasarkan data Bloomberg pada Selasa (13/4), Departemen Tenaga Kerja AS mencatat indeks harga konsumen (consumer price index/CPI) naik 0,6 persen pada Maret dari bulan sebelumnya setelah kenaikan 0,4 persen. Ini merupakan laju tertinggi sejak Agustus 2012. Dibandingkan dengan bulan yang sama tahun 2020, CPI bulan Maret naik 2,6 persen. Adapun CPI inti naik 1,6 persen secara year-on-year (yoy).\nDari dalam negeri, kedatangan vaksin Sinovac tahap kedelapan di Indonesia pada Minggu (18/4) belum bisa menjadi sentimen positif yang menggerakkan kurs rupiah pada hari ini. Pelaku pasar melihat distribusi vaksin di Tanah Air harus dipercepat lagi. "Jadi bukan hanya sekedar pasokan vaksinnya untuk mempercepat proses vaksinasi di Indonesia," tutup Fikri.\nVaksin Covid-19 tahap delapan sudah tiba di Indonesia kemarin di Terminal Kargo, Bandara Soetta. Jenis vaksin ini sama dengan yang terakhir tiba di Indonesia yakni Sinovac. Sebanyak enam juta bahan baku vaksin covid-19 Sinovac asal Tiongkok tiba di Indonesia. Pengiriman ini merupakan kedatangan dosis vaksin tahap kedelapan.\nTotal 59,5 juta bahan baku vaksin Sinovac telah diterima Indonesia. Ketika sudah diproses, bahan baku itu bisa menjadi 46-47 juta dosis vaskin siap pakai.',
+            //   style:
+            //       Theme.of(context).textTheme.bodyText2.copyWith(height: 2.0),
+            //   maxLines: 10,
+            //
+            // ),
+            SizedBox(
+              height: 20.0,
+            ),
+            Text(
+              'home_card_briefing_world_indices'.tr(),
+              style: Theme.of(context).textTheme.headline6.copyWith(fontSize: 16.0),
+            ),
+            SizedBox(
+              height: 10.0,
+            ),
+
+            FutureBuilder<List<HomeWorldIndices>>(
+              future: worldIndices,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  //return Text(snapshot.data.length.toString(), style: Theme.of(context).textTheme.bodyText2,);
+                  if (snapshot.data.length > 0) {
+                    return gridWorldIndices(context, snapshot.data);
+                  } else {
+                    return Center(
+                        child: Text(
+                      'No Data',
+                      style: Theme.of(context).textTheme.bodyText2,
+                    ));
+                  }
+                } else if (snapshot.hasError) {
+                  return Center(
+                      child:
+                          Text("${snapshot.error}", style: Theme.of(context).textTheme.bodyText2.copyWith(color: Theme.of(context).errorColor)));
+                }
+
+                // By default, show a loading spinner.
+                return Center(child: CircularProgressIndicator());
+              },
+            ),
+
+            //gridWorldIndices(context, listWorldIndices),
+
+            SizedBox(
+              height: 10.0,
+            ),
+            Text(
+              'home_card_briefing_commodities'.tr(),
+              style: Theme.of(context).textTheme.headline6.copyWith(fontSize: 16.0),
+            ),
+            SizedBox(
+              height: 10.0,
+            ),
+            gridCommodities(context),
+            //gridCommodities(context),
+            SizedBox(
+              height: 10.0,
+            ),
+            Text(
+              'home_card_briefing_currencies'.tr(),
+              style: Theme.of(context).textTheme.headline6.copyWith(fontSize: 16.0),
+            ),
+            SizedBox(
+              height: 10.0,
+            ),
+            gridCurrencies(context),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget gridThemes(BuildContext context) {
+    return LayoutBuilder(builder: (context, constrains) {
+      print('constrains ' + constrains.maxWidth.toString());
+      const int gridCount = 2;
+      double availableWidth = constrains.maxWidth - cardMargin;
+      double tileWidth = availableWidth / gridCount;
+      double height1 = tileWidth * 1.28;
+      double height2 = tileWidth * 1.5;
+
+      if (listThemes == null || listThemes.length == 0) {
+        return Text('No Data');
+      }
+
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Column(
+            children: [
+              tileThemes(listThemes[0], tileWidth, height1, 0),
+              SizedBox(
+                height: cardMargin,
+              ),
+              tileThemes(listThemes[2], tileWidth, height2, 0),
+              SizedBox(
+                height: cardMargin,
+              ),
+              tileThemes(listThemes[4], tileWidth, height1, 0),
+            ],
+          ),
+          Column(
+            children: [
+              tileThemes(listThemes[1], tileWidth, height2, cardPadding),
+              SizedBox(
+                height: cardMargin,
+              ),
+              tileThemes(listThemes[3], tileWidth, height2, cardPadding),
+              SizedBox(
+                height: cardMargin,
+              ),
+              tileThemes(listThemes[5], tileWidth, height1, cardPadding),
+            ],
+          ),
+        ],
+      );
+    });
+  }
+
+  Widget tileThemes(HomeThemes themes, double tileWidth, double tileHeight, double leftPadding) {
+    return Padding(
+      padding: EdgeInsets.only(left: leftPadding),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(InvestrendTheme.of(context).tileRoundedRadius),
+        //clipper: ClipRect(clipper: ,),
+        child: SizedBox(
+          width: tileWidth,
+          height: tileHeight,
+          child: Stack(
+            //fit: StackFit.expand,
+            children: [
+              ComponentCreator.imageNetwork(
+                themes.url_background,
+                width: tileWidth,
+                height: tileHeight,
+                fit: BoxFit.fill,
+              ),
+              Container(
+                width: double.maxFinite,
+                height: double.maxFinite,
+                padding: EdgeInsets.all(InvestrendTheme.of(context).tileRoundedRadius),
+                decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.center,
+                  colors: [
+                    Colors.black54,
+                    Colors.black12,
+                  ],
+                )),
+              ),
+              Positioned.fill(
+                child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                        splashColor: Theme.of(context).accentColor,
+                        onTap: () {
+                          InvestrendTheme.of(context).showSnackBar(context, 'Action Theme detail');
+                        })),
+              ),
+              IgnorePointer(
+                child: Padding(
+                  padding: EdgeInsets.all(InvestrendTheme.of(context).tileRoundedRadius),
+                  child: Column(
+                    //crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Spacer(
+                        flex: 1,
+                      ),
+                      Text(
+                        themes.name,
+                        style: Theme.of(context).textTheme.headline6.copyWith(color: Colors.white),
+                      ),
+                      SizedBox(
+                        height: 4.0,
+                      ),
+                      Text(
+                        themes.description,
+                        style: Theme.of(context).textTheme.bodyText2.copyWith(color: Colors.white),
+                      ),
+                      SizedBox(
+                        height: cardPadding,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget gridCommodities(BuildContext context) {
+    return LayoutBuilder(builder: (context, constrains) {
+      print('constrains ' + constrains.maxWidth.toString());
+      const int gridCount = 4;
+      double availableWidth = constrains.maxWidth - (cardMargin * 3);
+      print('availableWidth $availableWidth');
+      double tileWidth = availableWidth / gridCount;
+      print('tileWidth $tileWidth');
+      List<Widget> columns = List<Widget>.empty(growable: true);
+
+      int countData = listCommodities.length;
+      for (int i = 0; i < countData; i++) {
+        int iPlus3 = i + 3;
+        int iPlus2 = i + 2;
+        int iPlus1 = i + 1;
+
+        List<Widget> rows = List<Widget>.empty(growable: true);
+        for (int x = 0; x < 4; x++) {
+          int index = x + i;
+          if (x > 0) {
+            rows.add(SizedBox(
+              width: cardMargin,
+            ));
+          }
+          if (index < countData) {
+            rows.add(tileCommodities(
+              context,
+              listCommodities[index],
+              true,
+              tileWidth,
+            ));
+          } else {
+            rows.add(Expanded(
+              flex: 1,
+              child: Center(child: Text(' ')),
+            ));
+          }
+        }
+        columns.add(Row(
+          children: rows,
+        ));
+        columns.add(SizedBox(
+          height: cardMargin,
+        ));
+        i += 3;
+      }
+
+      return Column(
+        children: columns,
+      );
+
+      // return Container(
+      //   color: Colors.red,
+      //   width: double.maxFinite,
+      //   height: 100,
+      // );
+    });
+  }
+
+  Widget gridCurrencies(BuildContext context) {
+    return LayoutBuilder(builder: (context, constrains) {
+      print('constrains ' + constrains.maxWidth.toString());
+      const int gridCount = 3;
+      double availableWidth = constrains.maxWidth - (cardMargin * 2);
+      print('availableWidth $availableWidth');
+      double tileWidth = availableWidth / gridCount;
+      print('tileWidth $tileWidth');
+      List<Widget> columns = List<Widget>.empty(growable: true);
+
+      int countData = listCurrencies.length;
+      for (int i = 0; i < countData; i++) {
+        int iPlus2 = i + 2;
+        int iPlus1 = i + 1;
+        if (iPlus2 < countData) {
+          columns.add(Row(
+            children: [
+              tileThreeLayers(
+                context,
+                listCurrencies[i].code,
+                listCurrencies[i].price,
+                listCurrencies[i].percentChange,
+                true,
+                tileWidth,
+              ),
+              SizedBox(
+                width: cardMargin,
+              ),
+              tileThreeLayers(
+                context,
+                listCurrencies[i + 1].code,
+                listCurrencies[i + 1].price,
+                listCurrencies[i + 1].percentChange,
+                true,
+                tileWidth,
+              ),
+              SizedBox(
+                width: cardMargin,
+              ),
+              tileThreeLayers(
+                context,
+                listCurrencies[i + 2].code,
+                listCurrencies[i + 2].price,
+                listCurrencies[i + 2].percentChange,
+                true,
+                tileWidth,
+              ),
+            ],
+          ));
+        } else if (iPlus1 < countData) {
+          columns.add(Row(
+            children: [
+              tileThreeLayers(
+                context,
+                listCurrencies[i].code,
+                listCurrencies[i].price,
+                listCurrencies[i].percentChange,
+                true,
+                tileWidth,
+              ),
+              SizedBox(
+                width: cardMargin,
+              ),
+              tileThreeLayers(
+                context,
+                listCurrencies[i + 1].code,
+                listCurrencies[i + 1].price,
+                listCurrencies[i + 1].percentChange,
+                true,
+                tileWidth,
+              ),
+              SizedBox(
+                width: cardMargin,
+              ),
+              Expanded(
+                flex: 1,
+                child: Center(child: Text(' ')),
+              ),
+            ],
+          ));
+        } else {
+          columns.add(Row(
+            children: [
+              tileThreeLayers(
+                context,
+                listCurrencies[i].code,
+                listCurrencies[i].price,
+                listCurrencies[i].percentChange,
+                true,
+                tileWidth,
+              ),
+              SizedBox(
+                width: cardMargin,
+              ),
+              Expanded(
+                flex: 1,
+                child: Center(child: Text(' ')),
+              ),
+              SizedBox(
+                width: cardMargin,
+              ),
+              Expanded(
+                flex: 1,
+                child: Center(child: Text(' ')),
+              ),
+            ],
+          ));
+        }
+        i = i + 3;
+        columns.add(SizedBox(
+          height: cardMargin,
+        ));
+      }
+
+      return Column(
+        children: columns,
+      );
+
+      // return Container(
+      //   color: Colors.red,
+      //   width: double.maxFinite,
+      //   height: 100,
+      // );
+    });
+  }
+
+  Widget tileWorlIndices(BuildContext context, HomeWorldIndices data, bool first) {
+    double left = first ? 0 : 8.0;
+    //double right = end ? 0 : 0.0;
+    String priceText;
+    String percentText;
+    String changeText;
+    Color percentChangeTextColor;
+    Color percentChangeBackgroundColor;
+
+    priceText = InvestrendTheme.formatPriceDouble(data.price);
+    percentText = InvestrendTheme.formatPercentChange(data.percentChange);
+    changeText = InvestrendTheme.formatChange(data.change);
+    percentChangeTextColor = InvestrendTheme.changeTextColor(data.change);
+    percentChangeBackgroundColor = InvestrendTheme.priceBackgroundColorDouble(data.change);
+    /*
+    if (data.percentChange > 0.0) {
+      percentText = '+' + formatterNumber.format(data.percentChange) + '%';
+      changeText = formatterNumber.format(data.change);
+
+      percentChangeTextColor = InvestrendTheme.of(context).greenText;
+      percentChangeBackgroundColor = InvestrendTheme.of(context).greenBackground;
+    } else if (data.percentChange < 0.0) {
+      percentText = formatterNumber.format(data.percentChange) + '%';
+      changeText = formatterNumber.format(data.change);
+      percentChangeTextColor = InvestrendTheme.of(context).redText;
+      percentChangeBackgroundColor = InvestrendTheme.of(context).redBackground;
+    } else {
+      percentText = formatterNumber.format(data.percentChange) + '%';
+      changeText = formatterNumber.format(data.change);
+      percentChangeTextColor = InvestrendTheme.of(context).yellowText;
+      percentChangeBackgroundColor = InvestrendTheme.of(context).yellowBackground;
+    }
+    */
+    return Expanded(
+      flex: 1,
+      child: MaterialButton(
+        elevation: 0.0,
+        splashColor: InvestrendTheme.of(context).tileSplashColor,
+        padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0, bottom: 10.0),
+        color: InvestrendTheme.of(context).tileBackground,
+        shape: RoundedRectangleBorder(
+          borderRadius: new BorderRadius.circular(10.0),
+          side: BorderSide(
+            color: InvestrendTheme.of(context).tileBackground,
+            width: 0.0,
+          ),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              flex: 3,
+              child: Padding(
+                padding: const EdgeInsets.only(right: cardPadding),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    FittedBox(
+                      child: Text(data.name, style: Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.bold)),
+                      //child: Text(priceText, style: Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.bold)),
+                    ),
+                    SizedBox(
+                      height: 5.0,
+                    ),
+                    FittedBox(
+                      child: Text(
+                        //data.code,
+                        priceText,
+                        style: Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.w300),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Expanded(
+              flex: 2,
+              child: Container(
+                //color: percentChangeBackgroundColor,
+                padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 5.0, bottom: 5.0),
+                decoration: BoxDecoration(
+                  color: percentChangeBackgroundColor,
+                  shape: BoxShape.rectangle,
+                  borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                ),
+                //constraints: BoxConstraints.expand(width: 100, height: 100),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    ComponentCreator.textFit(context, changeText,
+                        style: TextStyle(color: percentChangeTextColor), alignment: Alignment.centerRight),
+                    SizedBox(
+                      height: 5.0,
+                    ),
+                    ComponentCreator.textFit(context, percentText,
+                        style: TextStyle(color: percentChangeTextColor), alignment: Alignment.centerRight),
+                    /*
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        changeText,
+                        style: TextStyle(color: percentChangeTextColor),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 5.0,
+                    ),
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        percentText,
+                        style: TextStyle(color: percentChangeTextColor),
+                      ),
+                    ),
+                    */
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+        onPressed: () {},
+      ),
+    );
+  }
+
+  Widget tileCommodities(BuildContext context, HomeCommodities data, bool first, double width) {
+    double left = first ? 0 : 8.0;
+    //double right = end ? 0 : 0.0;
+    String percentText;
+    Color percentChangeTextColor;
+    Color percentChangeBackgroundColor;
+    percentText = InvestrendTheme.formatPercentChange(data.percentChange);
+    percentChangeTextColor = InvestrendTheme.changeTextColor(data.percentChange);
+    percentChangeBackgroundColor = InvestrendTheme.priceBackgroundColorDouble(data.percentChange);
+    /*
+    if (data.percentChange > 0) {
+      percentText = '+' + formatterNumber.format(data.percentChange) + '%';
+      percentChangeTextColor = InvestrendTheme.of(context).greenText;
+      percentChangeBackgroundColor = InvestrendTheme.of(context).greenBackground;
+    } else if (data.percentChange < 0) {
+      percentText = formatterNumber.format(data.percentChange) + '%';
+      percentChangeTextColor = InvestrendTheme.of(context).redText;
+      percentChangeBackgroundColor = InvestrendTheme.of(context).redBackground;
+    } else {
+      percentText = formatterNumber.format(data.percentChange) + '%';
+      percentChangeTextColor = InvestrendTheme.of(context).yellowText;
+      percentChangeBackgroundColor = InvestrendTheme.of(context).yellowBackground;
+    }
+    */
+    return SizedBox(
+      width: width,
+      child: MaterialButton(
+        elevation: 0.0,
+        minWidth: 50.0,
+        splashColor: InvestrendTheme.of(context).tileSplashColor,
+        padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0, bottom: 10.0),
+        color: InvestrendTheme.of(context).tileBackground,
+        shape: RoundedRectangleBorder(
+          borderRadius: new BorderRadius.circular(10.0),
+          side: BorderSide(
+            color: InvestrendTheme.of(context).tileBackground,
+            width: 0.0,
+          ),
+        ),
+        child: Column(
+          children: [
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                data.code,
+                style: Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.bold),
+              ),
+            ),
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                InvestrendTheme.formatPriceDouble(data.price, showDecimal: false),
+                //formatterNumber.format(data.price),
+                style: Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.w300),
+              ),
+            ),
+            SizedBox(
+              height: 5.0,
+            ),
+            Container(
+              padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 5.0, bottom: 5.0),
+              decoration: BoxDecoration(
+                color: percentChangeBackgroundColor,
+                shape: BoxShape.rectangle,
+                borderRadius: BorderRadius.all(Radius.circular(15.0)),
+              ),
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  percentText,
+                  style: TextStyle(color: percentChangeTextColor),
+                ),
+              ),
+            ),
+          ],
+        ),
+        onPressed: () {},
+      ),
+    );
+  }
+
+  Widget tileThreeLayers(BuildContext context, String code, double price, double percentChange, bool first, double width) {
+    double left = first ? 0 : 8.0;
+    //double right = end ? 0 : 0.0;
+    String percentText;
+    Color percentChangeTextColor;
+    Color percentChangeBackgroundColor;
+
+    percentText = InvestrendTheme.formatPercentChange(percentChange);
+    percentChangeTextColor = InvestrendTheme.changeTextColor(percentChange);
+    percentChangeBackgroundColor = InvestrendTheme.priceBackgroundColorDouble(percentChange);
+
+    /*
+    if (percentChange > 0) {
+      percentText = '+' + formatterNumber.format(percentChange) + '%';
+      percentChangeTextColor = InvestrendTheme.of(context).greenText;
+      percentChangeBackgroundColor = InvestrendTheme.of(context).greenBackground;
+    } else if (percentChange < 0) {
+      percentText = formatterNumber.format(percentChange) + '%';
+      percentChangeTextColor = InvestrendTheme.of(context).redText;
+      percentChangeBackgroundColor = InvestrendTheme.of(context).redBackground;
+    } else {
+      percentText = formatterNumber.format(percentChange) + '%';
+      percentChangeTextColor = InvestrendTheme.of(context).yellowText;
+      percentChangeBackgroundColor = InvestrendTheme.of(context).yellowBackground;
+    }
+    */
+    return SizedBox(
+      width: width,
+      child: MaterialButton(
+        elevation: 0.0,
+        minWidth: 50.0,
+        splashColor: InvestrendTheme.of(context).tileSplashColor,
+        padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0, bottom: 10.0),
+        color: InvestrendTheme.of(context).tileBackground,
+        shape: RoundedRectangleBorder(
+          borderRadius: new BorderRadius.circular(10.0),
+          side: BorderSide(
+            color: InvestrendTheme.of(context).tileBackground,
+            width: 0.0,
+          ),
+        ),
+        child: Column(
+          children: [
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                code,
+                style: Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.bold),
+              ),
+            ),
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                InvestrendTheme.formatPriceDouble(price, showDecimal: false),
+                //formatterNumber.format(price),
+                style: Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.w300),
+              ),
+            ),
+            SizedBox(
+              height: 5.0,
+            ),
+            Container(
+              padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 5.0, bottom: 5.0),
+              decoration: BoxDecoration(
+                color: percentChangeBackgroundColor,
+                shape: BoxShape.rectangle,
+                borderRadius: BorderRadius.all(Radius.circular(15.0)),
+              ),
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  percentText,
+                  style: TextStyle(color: percentChangeTextColor),
+                ),
+              ),
+            ),
+          ],
+        ),
+        onPressed: () {},
+      ),
+    );
+  }
+
+  Widget gridWorldIndices(BuildContext context, List<HomeWorldIndices> list) {
+    List<Widget> widgets = List<Widget>.empty(growable: true);
+
+    //int countData = list.length;
+    int countData = min(list.length, 4);
+    for (int i = 0; i < countData; i++) {
+      int iPlus = i + 1;
+      if (iPlus < countData) {
+        widgets.add(Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            tileWorlIndices(context, list[i], true),
+            SizedBox(
+              width: cardMargin,
+            ),
+            tileWorlIndices(context, list[iPlus], false)
+          ],
+        ));
+        i = iPlus;
+      } else {
+        widgets.add(Row(
+          children: [
+            tileWorlIndices(context, list[i], true),
+            SizedBox(
+              width: cardMargin,
+            ),
+            Expanded(
+              flex: 1,
+              child: Center(child: Text(' ')),
+            ),
+          ],
+        ));
+      }
+      widgets.add(SizedBox(
+        height: cardMargin,
+      ));
+    }
+    print('richy widgets size : ' + widgets.length.toString());
+
+    return Column(
+      children: widgets,
+    );
+
+    // return LayoutBuilder(builder: (context, constrains)
+    // {
+    //   print('constrains ' + constrains.maxWidth.toString());
+    //   const int gridCount = 2;
+    //   double availableWidth = constrains.maxWidth - cardMargin;
+    //   print('availableWidth $availableWidth');
+    //   double tileWidth = availableWidth / gridCount;
+    //   print('tileWidth $tileWidth');
+    //
+    //
+    //
+    // });
+  }
+/*
+  Widget gridCommodities(BuildContext context) {
+    List<Widget> columns = List<Widget>.empty(growable: true);
+
+    int countData = listCommodities.length;
+    for (int i = 0; i < countData; i++) {
+      if (i + 4 < countData) {
+        columns.add(Row(
+          children: [
+            tileCommodities(context, listCommodities[i], true),
+            SizedBox(width: cardMargin,),
+            tileCommodities(context, listCommodities[i + 1], true),
+            SizedBox(width: cardMargin,),
+            tileCommodities(context, listCommodities[i + 2], true),
+            SizedBox(width: cardMargin,),
+            tileCommodities(context, listCommodities[i + 3], true),
+          ],
+        ));
+      } else if (i + 3 < countData) {
+        columns.add(Row(
+          children: [
+            tileCommodities(context, listCommodities[i], true),
+            SizedBox(width: cardMargin,),
+            tileCommodities(context, listCommodities[i + 1], true),
+            SizedBox(width: cardMargin,),
+            tileCommodities(context, listCommodities[i + 2], true),
+            SizedBox(width: cardMargin,),
+            Expanded(
+              flex: 1,
+              child: Center(child: Text(' ')),
+            ),
+          ],
+        ));
+      } else if (i + 2 < countData) {
+        columns.add(Row(
+          children: [
+            tileCommodities(context, listCommodities[i], true),
+            SizedBox(width: cardMargin,),
+            tileCommodities(context, listCommodities[i + 1], true),
+            SizedBox(width: cardMargin,),
+            Expanded(
+              flex: 1,
+              child: Center(child: Text(' ')),
+            ),
+            SizedBox(width: cardMargin,),
+            Expanded(
+              flex: 1,
+              child: Center(child: Text(' ')),
+            ),
+          ],
+        ));
+      } else if (i + 2 < countData) {
+        columns.add(Row(
+          children: [
+            tileCommodities(context, listCommodities[i], true),
+            SizedBox(width: cardMargin,),
+            Expanded(
+              flex: 1,
+              child: Center(child: Text(' ')),
+            ),
+            SizedBox(width: cardMargin,),
+            Expanded(
+              flex: 1,
+              child: Center(child: Text(' ')),
+            ),
+            SizedBox(width: cardMargin,),
+            Expanded(
+              flex: 1,
+              child: Center(child: Text(' ')),
+            ),
+          ],
+        ));
+      }
+      i = i + 4;
+      columns.add(SizedBox(height: cardMargin,));
+    }
+    
+    return Column(
+      children: columns,
+    );
+  }
+
+   */
+}

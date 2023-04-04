@@ -31,42 +31,43 @@ class _FastOrderNewState extends State<FastOrderNew> {
   Widget body() {
     return SafeArea(
       child: Container(
-          margin: EdgeInsets.only(top: 20, bottom: 20),
-          height: 600,
-          child: ListView(
-            scrollDirection: Axis.horizontal,
-            children: <Widget>[
-              Container(
-                margin: EdgeInsets.only(left: 10, right: 20),
-                width: 70,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Lot'),
-                    InputComponent.inputTextWithUnderLine(
-                      underLineColor: Colors.grey,
-                    ),
-                  ],
-                ),
+        margin: EdgeInsets.only(top: 20, bottom: 20),
+        height: 600,
+        child: ListView(
+          scrollDirection: Axis.horizontal,
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.only(left: 10, right: 20),
+              width: 70,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Lot'),
+                  InputComponent.inputTextWithUnderLine(
+                    underLineColor: Colors.grey,
+                  ),
+                ],
               ),
-              Container(
-                width: 160.0,
-                color: Colors.blue,
-              ),
-              Container(
-                width: 160.0,
-                color: Colors.green,
-              ),
-              Container(
-                width: 160.0,
-                color: Colors.yellow,
-              ),
-              Container(
-                width: 160.0,
-                color: Colors.orange,
-              ),
-            ],
-          )),
+            ),
+            Container(
+              width: 160.0,
+              color: Colors.blue,
+            ),
+            Container(
+              width: 160.0,
+              color: Colors.green,
+            ),
+            Container(
+              width: 160.0,
+              color: Colors.yellow,
+            ),
+            Container(
+              width: 160.0,
+              color: Colors.orange,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

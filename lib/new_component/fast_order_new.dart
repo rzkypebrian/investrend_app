@@ -1,8 +1,4 @@
-import 'package:Investrend/component/component_creator.dart';
 import 'package:Investrend/input_component.dart';
-import 'package:Investrend/objects/class_input_formatter.dart';
-import 'package:Investrend/utils/investrend_theme.dart';
-import 'package:auto_size_text_field/auto_size_text_field.dart';
 import 'package:flutter/material.dart';
 
 class FastOrderNew extends StatefulWidget {

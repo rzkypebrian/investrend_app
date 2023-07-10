@@ -10,8 +10,6 @@ import 'package:Investrend/screens/base/base_state.dart';
 import 'package:Investrend/screens/tab_community/screen_create_post.dart';
 import 'package:Investrend/screens/screen_main.dart';
 import 'package:Investrend/screens/tab_community/screen_detail_post.dart';
-import 'package:Investrend/screens/trade/component/bottom_sheet_loading.dart';
-import 'package:Investrend/utils/connection_services.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:Investrend/utils/string_utils.dart';
 import 'package:flutter/cupertino.dart';
@@ -65,10 +63,10 @@ class _ScreenCommunityFeedState extends BaseStateNoTabsWithParentTab<ScreenCommu
     }
     print('reach the bottom');
 
-    String next_page_url = context.read(sosmedFeedChangeNotifier).next_page_url;
-    int current_page = context.read(sosmedFeedChangeNotifier).current_page;
-    int last_page = context.read(sosmedFeedChangeNotifier).last_page;
-    if(current_page == last_page){
+    String nextPageUrl = context.read(sosmedFeedChangeNotifier).next_page_url;
+    int currentPage = context.read(sosmedFeedChangeNotifier).current_page;
+    int lastPage = context.read(sosmedFeedChangeNotifier).last_page;
+    if(currentPage == lastPage){
       if(showedLastPageInfo){
         return;
       }
@@ -80,8 +78,8 @@ class _ScreenCommunityFeedState extends BaseStateNoTabsWithParentTab<ScreenCommu
       return;
     }
     context.read(sosmedFeedChangeNotifier).showLoadingBottom(true);
-    int next_page = current_page + 1;
-    final result = doUpdate(nextPage: next_page);
+    int nextPage = currentPage + 1;
+    final result = doUpdate(nextPage: nextPage);
   }
   bool showLoadingFirstTime = true;
   @override
@@ -127,7 +125,7 @@ class _ScreenCommunityFeedState extends BaseStateNoTabsWithParentTab<ScreenCommu
       },
       //child: const Icon(Icons.edit, color: Colors.white,),
         child:Image.asset('images/icons/pencil.png'),
-        backgroundColor: Theme.of(context).accentColor,
+        backgroundColor: Theme.of(context).colorScheme.secondary,
     );
   }
   @override
@@ -323,20 +321,20 @@ class _ScreenCommunityFeedState extends BaseStateNoTabsWithParentTab<ScreenCommu
 
   @override
   Widget createBody(BuildContext context, double paddingBottom) {
-    List<Widget> pre_childs = [
+    List<Widget> preChilds = [
       CardProfiles('card_featured_profile_title'.tr(), listProfiles),
       SizedBox(height: 20.0,),
       ComponentCreator.divider(context),
       SizedBox(height: 20.0,),
     ];
-    List<Widget> pre_childs_loading = List.from(pre_childs);
-    pre_childs_loading.add(Padding(
+    List<Widget> preChildsLoading = List.from(preChilds);
+    preChildsLoading.add(Padding(
       padding: const EdgeInsets.only(top: 16.0),
-      child: Center(child: CircularProgressIndicator(color: Theme.of(context).accentColor, backgroundColor: Theme.of(context).accentColor.withOpacity(0.2),)),
+      child: Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.secondary, backgroundColor: Theme.of(context).colorScheme.secondary.withOpacity(0.2),)),
     ));
     return RefreshIndicator(
       color: InvestrendTheme.of(context).textWhite,
-      backgroundColor: Theme.of(context).accentColor,
+      backgroundColor: Theme.of(context).colorScheme.secondary,
       onRefresh: onRefresh,
       child: Consumer(builder: (context, watch, child) {
         final notifier = watch(sosmedFeedChangeNotifier);
@@ -344,11 +342,11 @@ class _ScreenCommunityFeedState extends BaseStateNoTabsWithParentTab<ScreenCommu
           return ListView(
             //padding: const EdgeInsets.all(InvestrendTheme.cardMargin),
             //children: pre_childs,
-            children: showLoadingFirstTime ? pre_childs_loading : pre_childs,
+            children: showLoadingFirstTime ? preChildsLoading : preChilds,
           );
         }
 
-        int totalCount = notifier.countData() + pre_childs.length;
+        int totalCount = notifier.countData() + preChilds.length;
         if(notifier.loadingBottom || notifier.retryBottom){
           totalCount  = totalCount + 1;
         }
@@ -359,11 +357,11 @@ class _ScreenCommunityFeedState extends BaseStateNoTabsWithParentTab<ScreenCommu
             //itemCount: notifier.countPost() + pre_childs.length ,
             itemCount:totalCount,
             itemBuilder: (BuildContext context, int index) {
-              if(index < pre_childs.length){
-                return pre_childs.elementAt(index);
-              }else if(index < (pre_childs.length + notifier.countData())){
+              if(index < preChilds.length){
+                return preChilds.elementAt(index);
+              }else if(index < (preChilds.length + notifier.countData())){
 
-                int indexPost = index - pre_childs.length;
+                int indexPost = index - preChilds.length;
                 Post post = notifier.datas().elementAt(indexPost);
 
                 if(post != null){
@@ -415,9 +413,9 @@ class _ScreenCommunityFeedState extends BaseStateNoTabsWithParentTab<ScreenCommu
 
               }else{
                 if(notifier.loadingBottom){
-                  return Center(child: CircularProgressIndicator(color: Theme.of(context).accentColor, backgroundColor: Theme.of(context).accentColor.withOpacity(0.2),));
+                  return Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.secondary, backgroundColor: Theme.of(context).colorScheme.secondary.withOpacity(0.2),));
                 }else if(notifier.retryBottom){
-                  return Center(child: TextButton(child: Text('button_retry'.tr(), style: InvestrendTheme.of(context).small_w400_compact.copyWith(color: Theme.of(context).accentColor),), onPressed: (){
+                  return Center(child: TextButton(child: Text('button_retry'.tr(), style: InvestrendTheme.of(context).small_w400_compact.copyWith(color: Theme.of(context).colorScheme.secondary),), onPressed: (){
                     fetchNextPage();
                   },));
                 }else{

@@ -107,15 +107,20 @@ class ScreenOrderDetailNew extends StatelessWidget {
 */
 
 const String PIN_SUCCESS = 'pin_success';
+
 class ScreenOrderDetail extends StatefulWidget {
   final BuySell _data;
   final OrderStatus _orderStatus;
   final bool historicalMode;
 
-  const ScreenOrderDetail(this._data, this._orderStatus, {this.historicalMode = false, Key key}) : super(key: key);
+  const ScreenOrderDetail(this._data, this._orderStatus,
+      {this.historicalMode = false, Key key})
+      : super(key: key);
 
   @override
-  _ScreenOrderDetailState createState() => _ScreenOrderDetailState(_data, _orderStatus, historicalMode: historicalMode);
+  _ScreenOrderDetailState createState() =>
+      _ScreenOrderDetailState(_data, _orderStatus,
+          historicalMode: historicalMode);
 }
 
 class _ScreenOrderDetailState extends BaseStateNoTabs<ScreenOrderDetail> {
@@ -152,18 +157,16 @@ class _ScreenOrderDetailState extends BaseStateNoTabs<ScreenOrderDetail> {
   void initState() {
     super.initState();
 
-    if(InvestrendTheme.tradingHttp.is_production){
+    if (InvestrendTheme.tradingHttp.is_production) {
       _durationUpdate = Duration(seconds: 30);
-    }else{
+    } else {
       //_durationUpdate = Duration(milliseconds: 1000);
       _durationUpdate = Duration(seconds: 30);
     }
     if (historicalMode) {
-
     } else {
       _startTimer();
     }
-
   }
 
   @override
@@ -172,7 +175,9 @@ class _ScreenOrderDetailState extends BaseStateNoTabs<ScreenOrderDetail> {
 
     final container = ProviderContainer();
     if (onStatusRefreshEvent != null) {
-      container.read(statusRefreshNotifier).removeListener(onStatusRefreshEvent);
+      container
+          .read(statusRefreshNotifier)
+          .removeListener(onStatusRefreshEvent);
     }
     onStatusRefreshEvent = null;
 
@@ -184,10 +189,11 @@ class _ScreenOrderDetailState extends BaseStateNoTabs<ScreenOrderDetail> {
     if (_timer == null || !_timer.isActive) {
       _timer = Timer.periodic(_durationUpdate, (timer) {
         if (active) {
-
-          if(onProgress){
-            print(routeName + '._startTimer skipped, onProgress : $onProgress at '+DateTime.now().toString());
-          }else{
+          if (onProgress) {
+            print(routeName +
+                '._startTimer skipped, onProgress : $onProgress at ' +
+                DateTime.now().toString());
+          } else {
             doUpdate();
           }
         }
@@ -197,10 +203,9 @@ class _ScreenOrderDetailState extends BaseStateNoTabs<ScreenOrderDetail> {
 
   VoidCallback onStatusRefreshEvent;
 
-
   @override
   void didChangeDependencies() {
-    print(routeName+' didChangeDependencies');
+    print(routeName + ' didChangeDependencies');
     super.didChangeDependencies();
 
     final notifierRefreshStatus = context.read(statusRefreshNotifier);
@@ -209,10 +214,11 @@ class _ScreenOrderDetailState extends BaseStateNoTabs<ScreenOrderDetail> {
     } else {
       onStatusRefreshEvent = () {
         if (mounted) {
-          print('Triggered Refresh Order Status at : '+notifierRefreshStatus.time+'  historicalMode : $historicalMode');
-          if(historicalMode){
-
-          }else{
+          print('Triggered Refresh Order Status at : ' +
+              notifierRefreshStatus.time +
+              '  historicalMode : $historicalMode');
+          if (historicalMode) {
+          } else {
             doUpdate(pullToRefresh: true);
           }
         }
@@ -230,19 +236,29 @@ class _ScreenOrderDetailState extends BaseStateNoTabs<ScreenOrderDetail> {
 
   bool onProgress = false;
   Future doUpdate({bool pullToRefresh = false}) async {
-    print(routeName + '.doUpdate : ' + DateTime.now().toString() + "  _active : $active  pullToRefresh : $pullToRefresh");
+    print(routeName +
+        '.doUpdate : ' +
+        DateTime.now().toString() +
+        "  _active : $active  pullToRefresh : $pullToRefresh");
 
     if (!active) {
-      print(routeName + '.doUpdate Aborted : ' + DateTime.now().toString() + "  _active : $active  pullToRefresh : $pullToRefresh");
+      print(routeName +
+          '.doUpdate Aborted : ' +
+          DateTime.now().toString() +
+          "  _active : $active  pullToRefresh : $pullToRefresh");
       onProgress = false;
       return;
     }
 
     String username = context.read(dataHolderChangeNotifier).user.username;
     int selected = context.read(accountChangeNotifier).index;
-    Account account = context.read(dataHolderChangeNotifier).user.getAccount(selected);
+    Account account =
+        context.read(dataHolderChangeNotifier).user.getAccount(selected);
     if (account == null) {
-      print(routeName + '.doUpdate Aborted : ' + DateTime.now().toString() + "  account is NULL");
+      print(routeName +
+          '.doUpdate Aborted : ' +
+          DateTime.now().toString() +
+          "  account is NULL");
       onProgress = false;
       return;
     }
@@ -255,7 +271,8 @@ class _ScreenOrderDetailState extends BaseStateNoTabs<ScreenOrderDetail> {
     //   return;
     // }
 
-    String orderid = data != null ? data.orderid : (os != null ? os.orderid : '-');
+    String orderid =
+        data != null ? data.orderid : (os != null ? os.orderid : '-');
     bool reloadUI = false;
     try {
       print('try orderStatus orderid : ' + orderid);
@@ -274,9 +291,9 @@ class _ScreenOrderDetailState extends BaseStateNoTabs<ScreenOrderDetail> {
       int orderStatusCount = orderStatus != null ? orderStatus.length : 0;
       print('Got orderStatus : ' + orderStatusCount.toString());
       if (orderStatusCount > 0) {
-        for(int i=0 ; i < orderStatusCount ; i++){
+        for (int i = 0; i < orderStatusCount; i++) {
           OrderStatus newOS = orderStatus.elementAt(i);
-          if(StringUtils.equalsIgnoreCase(newOS.orderid, orderid)){
+          if (StringUtils.equalsIgnoreCase(newOS.orderid, orderid)) {
             os = newOS;
             print('Found orderStatus with orderid : $orderid');
             break;
@@ -284,7 +301,6 @@ class _ScreenOrderDetailState extends BaseStateNoTabs<ScreenOrderDetail> {
         }
         /** ASLI 2022-04-22 */
         //os = orderStatus.first;
-
 
         //setState(() {});
         reloadUI = true;
@@ -294,10 +310,17 @@ class _ScreenOrderDetailState extends BaseStateNoTabs<ScreenOrderDetail> {
     }
     try {
       print('try tradeStatusSummary orderid : ' + orderid);
-      final tradeStatusSummary = await InvestrendTheme.tradingHttp.tradeStatusSummary(account.brokercode, account.accountcode, username, orderid,
-          InvestrendTheme.of(context).applicationPlatform, InvestrendTheme.of(context).applicationVersion);
+      final tradeStatusSummary = await InvestrendTheme.tradingHttp
+          .tradeStatusSummary(
+              account.brokercode,
+              account.accountcode,
+              username,
+              orderid,
+              InvestrendTheme.of(context).applicationPlatform,
+              InvestrendTheme.of(context).applicationVersion);
 
-      int tradeStatusSummaryCount = tradeStatusSummary != null ? tradeStatusSummary.length : 0;
+      int tradeStatusSummaryCount =
+          tradeStatusSummary != null ? tradeStatusSummary.length : 0;
       print('Got tradeStatusSummary : ' + tradeStatusSummary.toString());
       /*
       tradeStatusSummary.add(TradeStatusSummary(1000, 500, '#1, #2, #3, #2, #3, #2, #3, #2, #3, #2, #3, #2, #3'));
@@ -380,7 +403,9 @@ class _ScreenOrderDetailState extends BaseStateNoTabs<ScreenOrderDetail> {
     return AppBar(
       elevation: elevation,
       shadowColor: shadowColor,
-      title: AppBarTitleText(historicalMode ? 'order_detail_hitorical_title'.tr() : 'order_detail_title'.tr()),
+      title: AppBarTitleText(historicalMode
+          ? 'order_detail_hitorical_title'.tr()
+          : 'order_detail_title'.tr()),
     );
   }
 
@@ -395,35 +420,36 @@ class _ScreenOrderDetailState extends BaseStateNoTabs<ScreenOrderDetail> {
     // int done_lot = 40; // hardcode
     // int balance_lot = order_lot - done_lot;
 
-    String idx_order_no = '-'; // hardcode
-    String order_status = '-'; // hardcode
-    String order_date = '-'; // hardcode
-    String order_time = '-'; // hardcode
-    int order_price = 0;
-    int order_lot = 0;
-    int done_lot = 0; // hardcode
-    int balance_lot = 0;
+    String idxOrderNo = '-'; // hardcode
+    String orderStatus = '-'; // hardcode
+    String orderDate = '-'; // hardcode
+    String orderTime = '-'; // hardcode
+    int orderPrice = 0;
+    int orderLot = 0;
+    int doneLot = 0; // hardcode
+    int balanceLot = 0;
     int value = 0;
 
-    String order_id = '-';
+    String orderId = '-';
 
     String accountInfo = '-';
     String stockCode = '-';
     String orderType = '-';
 
     if (os != null) {
-      accountInfo = data.accountName + ' - ' + os.accountcode + ' - ' + data.accountType;
-      order_id = os.orderid;
-      idx_order_no = os.idxOrderNumber; // hardcode
-      order_status = os.orderStatus; // hardcode
+      accountInfo =
+          data.accountName + ' - ' + os.accountcode + ' - ' + data.accountType;
+      orderId = os.orderid;
+      idxOrderNo = os.idxOrderNumber; // hardcode
+      orderStatus = os.orderStatus; // hardcode
       //order_date = os.orderDate; // hardcode
-      order_date = os.getDateFormatted();
+      orderDate = os.getDateFormatted();
       //order_time = os.getTime(); // hardcode
-      order_time = os.getTimeFormatted(); // hardcode
-      order_price = os.price;
-      order_lot = os.orderQty ~/ 100;
-      done_lot = os.matchQty ~/ 100; // hardcode
-      balance_lot = os.balanceQty ~/ 100;
+      orderTime = os.getTimeFormatted(); // hardcode
+      orderPrice = os.price;
+      orderLot = os.orderQty ~/ 100;
+      doneLot = os.matchQty ~/ 100; // hardcode
+      balanceLot = os.balanceQty ~/ 100;
       value = os.price * os.orderQty;
       stockCode = os.stockCode;
 
@@ -435,15 +461,19 @@ class _ScreenOrderDetailState extends BaseStateNoTabs<ScreenOrderDetail> {
         orderType = os.bs;
       }
     } else if (data != null) {
-      accountInfo = data.accountName + ' - ' + data.accountCode + ' - ' + data.accountType;
-      order_id = data.orderid;
+      accountInfo = data.accountName +
+          ' - ' +
+          data.accountCode +
+          ' - ' +
+          data.accountType;
+      orderId = data.orderid;
       //idx_order_no = os.idxOrderNumber; // hardcode
       //order_status = os.orderStatus; // hardcode
       //order_date = os.orderDate; // hardcode
       //order_time = os.getTime(); // hardcode
       if (!data.fastMode) {
-        order_price = data.normalPriceLot.price;
-        order_lot = data.normalPriceLot.lot;
+        orderPrice = data.normalPriceLot.price;
+        orderLot = data.normalPriceLot.lot;
       }
       //done_lot = 0; // hardcode
       //balance_lot = os.balanceQty;
@@ -454,28 +484,54 @@ class _ScreenOrderDetailState extends BaseStateNoTabs<ScreenOrderDetail> {
     }
 
     List<Widget> list = List.empty(growable: true);
-    list.add(
-        TradeComponentCreator.popupRow(context, 'order_detail_account_label'.tr(), accountInfo /*data.accountName + ' - ' + data.accountType*/));
-    list.add(TradeComponentCreator.popupRow(context, 'order_detail_idx_order_no_label'.tr(), idx_order_no));
-    list.add(TradeComponentCreator.popupRow(context, 'order_detail_order_no_label'.tr(), order_id));
-    list.add(TradeComponentCreator.popupRow(context, 'order_detail_stock_code_label'.tr(), stockCode,
-        textStyleValue: InvestrendTheme.of(context).small_w600_compact.copyWith(color: Theme.of(context).accentColor)));
-    list.add(TradeComponentCreator.popupRow(context, 'order_detail_stock_name_label'.tr(), data.stock_name));
-    list.add(TradeComponentCreator.popupRow(context, 'order_detail_order_type_label'.tr(), orderType));
-    list.add(TradeComponentCreator.popupRow(context, 'order_detail_order_status_label'.tr(), order_status));
-    list.add(TradeComponentCreator.popupRow(context, 'order_detail_order_time_label'.tr(), '$order_date | $order_time'));
     list.add(TradeComponentCreator.popupRow(
-        context, 'order_detail_order_price_label'.tr(), InvestrendTheme.formatMoney(order_price, prefixRp: true)));
-    list.add(TradeComponentCreator.popupRow(context, 'order_detail_order_lot_label'.tr(), InvestrendTheme.formatComma(order_lot)));
-    list.add(TradeComponentCreator.popupRow(context, 'order_detail_done_lot_label'.tr(), InvestrendTheme.formatComma(done_lot)));
-    list.add(TradeComponentCreator.popupRow(context, 'order_detail_balance_lot_label'.tr(), InvestrendTheme.formatComma(balance_lot)));
+        context,
+        'order_detail_account_label'.tr(),
+        accountInfo /*data.accountName + ' - ' + data.accountType*/));
+    list.add(TradeComponentCreator.popupRow(
+        context, 'order_detail_idx_order_no_label'.tr(), idxOrderNo));
+    list.add(TradeComponentCreator.popupRow(
+        context, 'order_detail_order_no_label'.tr(), orderId));
+    list.add(TradeComponentCreator.popupRow(
+        context, 'order_detail_stock_code_label'.tr(), stockCode,
+        textStyleValue: InvestrendTheme.of(context)
+            .small_w600_compact
+            .copyWith(color: Theme.of(context).colorScheme.secondary)));
+    list.add(TradeComponentCreator.popupRow(
+        context, 'order_detail_stock_name_label'.tr(), data.stock_name));
+    list.add(TradeComponentCreator.popupRow(
+        context, 'order_detail_order_type_label'.tr(), orderType));
+    list.add(TradeComponentCreator.popupRow(
+        context, 'order_detail_order_status_label'.tr(), orderStatus));
+    list.add(TradeComponentCreator.popupRow(context,
+        'order_detail_order_time_label'.tr(), '$orderDate | $orderTime'));
+    list.add(TradeComponentCreator.popupRow(
+        context,
+        'order_detail_order_price_label'.tr(),
+        InvestrendTheme.formatMoney(orderPrice, prefixRp: true)));
+    list.add(TradeComponentCreator.popupRow(
+        context,
+        'order_detail_order_lot_label'.tr(),
+        InvestrendTheme.formatComma(orderLot)));
+    list.add(TradeComponentCreator.popupRow(
+        context,
+        'order_detail_done_lot_label'.tr(),
+        InvestrendTheme.formatComma(doneLot)));
+    list.add(TradeComponentCreator.popupRow(
+        context,
+        'order_detail_balance_lot_label'.tr(),
+        InvestrendTheme.formatComma(balanceLot)));
     list.add(SizedBox(height: 8.0));
     list.add(ComponentCreator.divider(context, thickness: 1.0));
     list.add(SizedBox(height: 8.0));
     list.add(TradeComponentCreator.popupRowCustom(
       context,
-      TradeComponentCreator.popupTitle(context, 'order_detail_order_value_label'.tr(), color: InvestrendTheme.of(context).greyLighterTextColor),
-      TradeComponentCreator.popupTitle(context, InvestrendTheme.formatMoney(value, prefixRp: true), textAlign: TextAlign.right),
+      TradeComponentCreator.popupTitle(
+          context, 'order_detail_order_value_label'.tr(),
+          color: InvestrendTheme.of(context).greyLighterTextColor),
+      TradeComponentCreator.popupTitle(
+          context, InvestrendTheme.formatMoney(value, prefixRp: true),
+          textAlign: TextAlign.right),
     ));
 
     if (tradesSummary != null && tradesSummary.isNotEmpty) {
@@ -483,13 +539,22 @@ class _ScreenOrderDetailState extends BaseStateNoTabs<ScreenOrderDetail> {
       list.add(ComponentCreator.divider(context, thickness: 1.0));
       list.add(SizedBox(height: 8.0));
 
-      list.add(TradeComponentCreator.popupRow(context, 'order_detail_done_summary_label'.tr(), 'order_detail_done_summary_info_label'.tr(),
-          textStyleValue: InvestrendTheme.of(context).small_w400_compact.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor)));
+      list.add(TradeComponentCreator.popupRow(
+          context,
+          'order_detail_done_summary_label'.tr(),
+          'order_detail_done_summary_info_label'.tr(),
+          textStyleValue: InvestrendTheme.of(context)
+              .small_w400_compact
+              .copyWith(
+                  color: InvestrendTheme.of(context).greyLighterTextColor)));
       tradesSummary.forEach((trade) {
-
         int lot = trade.matchQty ~/ 100;
         list.add(TradeComponentCreator.popupRow(
-            context, ' ', InvestrendTheme.formatComma(lot) + '  |  ' + InvestrendTheme.formatMoney(trade.tradePrice)));
+            context,
+            ' ',
+            InvestrendTheme.formatComma(lot) +
+                '  |  ' +
+                InvestrendTheme.formatMoney(trade.tradePrice)));
       });
       list.add(Center(
           child: TextButton(
@@ -497,7 +562,9 @@ class _ScreenOrderDetailState extends BaseStateNoTabs<ScreenOrderDetail> {
                 showModalBottomSheet(
                     isScrollControlled: true,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(topLeft: Radius.circular(24.0), topRight: Radius.circular(24.0)),
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(24.0),
+                          topRight: Radius.circular(24.0)),
                     ),
                     //backgroundColor: Colors.transparent,
                     context: context,
@@ -537,7 +604,9 @@ class _ScreenOrderDetailState extends BaseStateNoTabs<ScreenOrderDetail> {
             showModalBottomSheet(
                 isScrollControlled: true,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(topLeft: Radius.circular(24.0), topRight: Radius.circular(24.0)),
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(24.0),
+                      topRight: Radius.circular(24.0)),
                 ),
                 //backgroundColor: Colors.transparent,
                 context: context,
@@ -552,7 +621,9 @@ class _ScreenOrderDetailState extends BaseStateNoTabs<ScreenOrderDetail> {
       showModalBottomSheet(
           isScrollControlled: true,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(topLeft: Radius.circular(24.0), topRight: Radius.circular(24.0)),
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(24.0),
+                topRight: Radius.circular(24.0)),
           ),
           //backgroundColor: Colors.transparent,
           context: context,
@@ -576,17 +647,21 @@ class _ScreenOrderDetailState extends BaseStateNoTabs<ScreenOrderDetail> {
           InvestrendTheme.of(context).showDialogInvalidSession(context);
         } else if (value is String) {
           if (StringUtils.equalsIgnoreCase(value, PIN_SUCCESS)) {
-            InvestrendTheme.push(context, ScreenAmend(data.cloneAsAmend()), ScreenTransition.SlideLeft, '/amend').then((value) {
+            InvestrendTheme.push(context, ScreenAmend(data.cloneAsAmend()),
+                    ScreenTransition.SlideLeft, '/amend')
+                .then((value) {
               if (value != null && value is String) {
                 if (StringUtils.equalsIgnoreCase(value, 'FINISHED')) {
                   Navigator.popUntil(context, (route) {
                     print('popUntil : ' + route.toString());
-                    if (StringUtils.equalsIgnoreCase(route?.settings?.name, '/main')) {
+                    if (StringUtils.equalsIgnoreCase(
+                        route?.settings?.name, '/main')) {
                       return true;
                     }
                     return route.isFirst;
                   });
-                  context.read(mainMenuChangeNotifier).setActive(Tabs.Transaction, TabsTransaction.Intraday.index);
+                  context.read(mainMenuChangeNotifier).setActive(
+                      Tabs.Transaction, TabsTransaction.Intraday.index);
                 }
               }
             });
@@ -594,17 +669,22 @@ class _ScreenOrderDetailState extends BaseStateNoTabs<ScreenOrderDetail> {
         }
       });
     } else {
-      InvestrendTheme.push(context, ScreenAmend(data.cloneAsAmend()), ScreenTransition.SlideLeft, '/amend').then((value) {
+      InvestrendTheme.push(context, ScreenAmend(data.cloneAsAmend()),
+              ScreenTransition.SlideLeft, '/amend')
+          .then((value) {
         if (value != null && value is String) {
           if (StringUtils.equalsIgnoreCase(value, 'FINISHED')) {
             Navigator.popUntil(context, (route) {
               print('popUntil : ' + route.toString());
-              if (StringUtils.equalsIgnoreCase(route?.settings?.name, '/main')) {
+              if (StringUtils.equalsIgnoreCase(
+                  route?.settings?.name, '/main')) {
                 return true;
               }
               return route.isFirst;
             });
-            context.read(mainMenuChangeNotifier).setActive(Tabs.Transaction, TabsTransaction.Intraday.index);
+            context
+                .read(mainMenuChangeNotifier)
+                .setActive(Tabs.Transaction, TabsTransaction.Intraday.index);
           }
         }
       });
@@ -634,7 +714,10 @@ class _ScreenOrderDetailState extends BaseStateNoTabs<ScreenOrderDetail> {
           child: Text(
             'order_detail_button_cancel'.tr(),
             //style: Theme.of(context).textTheme.button.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor),
-            style: Theme.of(context).textTheme.button.copyWith(color: InvestrendTheme.redText),
+            style: Theme.of(context)
+                .textTheme
+                .button
+                .copyWith(color: InvestrendTheme.redText),
           ),
           onPressed: () {
             executeCancel(context);
@@ -669,8 +752,12 @@ class _ScreenOrderDetailState extends BaseStateNoTabs<ScreenOrderDetail> {
       list.add(Expanded(
         flex: 1,
         //child: OutlinedButton(child: Text('order_detail_button_amend'.tr()),
-        child: ComponentCreator.roundedButton(context, 'order_detail_button_amend'.tr(), Theme.of(context).accentColor,
-            InvestrendTheme.of(context).whiteColor, Theme.of(context).accentColor, () {
+        child: ComponentCreator.roundedButton(
+            context,
+            'order_detail_button_amend'.tr(),
+            Theme.of(context).colorScheme.secondary,
+            InvestrendTheme.of(context).whiteColor,
+            Theme.of(context).colorScheme.secondary, () {
           /*
               int index = context.read(dataHolderChangeNotifier).user.getIndexAccountByCode(os.brokercode, os.accountcode);
               print(routeName+' amend got indexAccount : $index  for '+os.accountcode);
@@ -723,7 +810,11 @@ class _ScreenOrderDetailState extends BaseStateNoTabs<ScreenOrderDetail> {
     }
 
     return Padding(
-      padding: EdgeInsets.only(top: 8.0, bottom: paddingBottom > 0 ? paddingBottom : 8.0, right: 24.0, left: 24.0),
+      padding: EdgeInsets.only(
+          top: 8.0,
+          bottom: paddingBottom > 0 ? paddingBottom : 8.0,
+          right: 24.0,
+          left: 24.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -787,7 +878,8 @@ class _ScreenOrderDetailState extends BaseStateNoTabs<ScreenOrderDetail> {
 class BottomSheetTradeSummary extends StatelessWidget {
   final List<TradeStatusSummary> tradesSummary;
 
-  const BottomSheetTradeSummary(this.tradesSummary, {Key key}) : super(key: key);
+  const BottomSheetTradeSummary(this.tradesSummary, {Key key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -795,7 +887,9 @@ class BottomSheetTradeSummary extends StatelessWidget {
     double width = MediaQuery.of(context).size.width;
     double minHeight = height * 0.2;
     double maxHeight = height * 0.7;
-    double heightRowReguler = UIHelper.textSize('WgjLl', InvestrendTheme.of(context).regular_w600_compact).height;
+    double heightRowReguler = UIHelper.textSize(
+            'WgjLl', InvestrendTheme.of(context).regular_w600_compact)
+        .height;
 
     //double contentHeight = 0.0;
     //contentHeight += 30.0 + 24.0 + 39.0;
@@ -810,7 +904,8 @@ class BottomSheetTradeSummary extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(
-            child: TradeComponentCreator.popupTitle(context, 'order_detail_done_summary_label'.tr()),
+            child: TradeComponentCreator.popupTitle(
+                context, 'order_detail_done_summary_label'.tr()),
             flex: 1,
           ),
           IconButton(
@@ -833,12 +928,14 @@ class BottomSheetTradeSummary extends StatelessWidget {
     // contentHeight += 16.0;
 
     if (tradesSummary != null && tradesSummary.isNotEmpty) {
-      TextStyle styleLabel = InvestrendTheme.of(context).small_w400_compact.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor);
+      TextStyle styleLabel = InvestrendTheme.of(context)
+          .small_w400_compact
+          .copyWith(color: InvestrendTheme.of(context).greyLighterTextColor);
       TextStyle styleValue = InvestrendTheme.of(context).small_w400_compact;
       list.add(Expanded(
           flex: 1,
           child: Scrollbar(
-            isAlwaysShown: true,
+            thumbVisibility: true,
             child: ListView.separated(
               itemCount: tradesSummary.length,
               separatorBuilder: (BuildContext context, int index) {
@@ -851,25 +948,41 @@ class BottomSheetTradeSummary extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(top: InvestrendTheme.cardPaddingVertical, bottom: InvestrendTheme.cardPadding),
+                      padding: const EdgeInsets.only(
+                          top: InvestrendTheme.cardPaddingVertical,
+                          bottom: InvestrendTheme.cardPadding),
                       child: Row(
                         children: [
                           Expanded(
                             flex: 3,
                             child: RichText(
-                              text: TextSpan(text: 'order_detail_order_price_label'.tr() + ' : ', style: styleLabel, children: [
-                                TextSpan(text: InvestrendTheme.formatMoney(trade.tradePrice) + '   ', style: styleValue),
-                                // TextSpan(text: 'order_detail_done_lot_label'.tr() + ' : ', style: styleLabel),
-                                // TextSpan(text: InvestrendTheme.formatComma(trade.matchQty), style: styleValue),
-                              ]),
+                              text: TextSpan(
+                                  text: 'order_detail_order_price_label'.tr() +
+                                      ' : ',
+                                  style: styleLabel,
+                                  children: [
+                                    TextSpan(
+                                        text: InvestrendTheme.formatMoney(
+                                                trade.tradePrice) +
+                                            '   ',
+                                        style: styleValue),
+                                    // TextSpan(text: 'order_detail_done_lot_label'.tr() + ' : ', style: styleLabel),
+                                    // TextSpan(text: InvestrendTheme.formatComma(trade.matchQty), style: styleValue),
+                                  ]),
                             ),
                           ),
                           Expanded(
                             flex: 4,
                             child: RichText(
-                              text: TextSpan(text: 'order_detail_done_lot_label'.tr() + ' : ', style: styleLabel, children: [
-                                TextSpan(text: InvestrendTheme.formatComma(lot), style: styleValue),
-                              ]),
+                              text: TextSpan(
+                                  text: 'order_detail_done_lot_label'.tr() +
+                                      ' : ',
+                                  style: styleLabel,
+                                  children: [
+                                    TextSpan(
+                                        text: InvestrendTheme.formatComma(lot),
+                                        style: styleValue),
+                                  ]),
                             ),
                           ),
                         ],
@@ -938,7 +1051,8 @@ class BottomSheetTradeSummary extends StatelessWidget {
       ),
       child: Container(
         // color: Colors.orangeAccent,
-        padding: const EdgeInsets.only(top: 30.0, bottom: 24.0, left: 24.0, right: 24.0),
+        padding: const EdgeInsets.only(
+            top: 30.0, bottom: 24.0, left: 24.0, right: 24.0),
         width: double.maxFinite,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -964,7 +1078,9 @@ class BottomSheetConfirmationCancel extends StatelessWidget {
     double width = MediaQuery.of(context).size.width;
     double minHeight = height * 0.2;
     double maxHeight = height * 0.7;
-    double heightRowReguler = UIHelper.textSize('WgjLl', InvestrendTheme.of(context).regular_w600_compact).height;
+    double heightRowReguler = UIHelper.textSize(
+            'WgjLl', InvestrendTheme.of(context).regular_w600_compact)
+        .height;
 
     double contentHeight = 0.0;
     contentHeight += 30.0 + 24.0 + 39.0;
@@ -979,7 +1095,8 @@ class BottomSheetConfirmationCancel extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(
-            child: TradeComponentCreator.popupTitle(context, 'order_detail_confirmation_cancel_title'.tr()),
+            child: TradeComponentCreator.popupTitle(
+                context, 'order_detail_confirmation_cancel_title'.tr()),
             flex: 1,
           ),
           IconButton(
@@ -1002,7 +1119,8 @@ class BottomSheetConfirmationCancel extends StatelessWidget {
     contentHeight += 16.0;
 
     list.add(Center(
-      child: Text('order_detail_confirmation_cancel_content'.tr(), style: InvestrendTheme.of(context).regular_w400_compact),
+      child: Text('order_detail_confirmation_cancel_content'.tr(),
+          style: InvestrendTheme.of(context).regular_w400_compact),
     ));
     contentHeight += heightRowReguler;
     list.add(SizedBox(
@@ -1049,31 +1167,49 @@ class BottomSheetConfirmationCancel extends StatelessWidget {
     */
     list.add(Container(
       width: double.maxFinite,
-      child: ComponentCreator.roundedButton(context, 'order_detail_confirmation_cancel_button_cancel'.tr(), Theme.of(context).primaryColor,
-          InvestrendTheme.cancelColor, InvestrendTheme.cancelColor, () {
-            print('cancel order clicked');
-            //Navigator.pop(context, data.clone()); // clear data
+      child: ComponentCreator.roundedButton(
+          context,
+          'order_detail_confirmation_cancel_button_cancel'.tr(),
+          Theme.of(context).primaryColor,
+          InvestrendTheme.cancelColor,
+          InvestrendTheme.cancelColor, () {
+        print('cancel order clicked');
+        //Navigator.pop(context, data.clone()); // clear data
 
-            String username = context.read(dataHolderChangeNotifier).user.username;
-            if (orderStatus != null) {
-              print('cancel order using orderStatus');
-              InvestrendTheme.tradingHttp.withdraw(this.reffID, orderStatus.brokercode, orderStatus.accountcode, username, orderStatus.orderid,
-                  InvestrendTheme.of(context).applicationPlatform, InvestrendTheme.of(context).applicationVersion);
-            } else {
-              print('cancel order using data buySell');
-              InvestrendTheme.tradingHttp.withdraw(this.reffID, data.brokerCode, data.accountCode, username, data.orderid,
-                  InvestrendTheme.of(context).applicationPlatform, InvestrendTheme.of(context).applicationVersion);
-            }
+        String username = context.read(dataHolderChangeNotifier).user.username;
+        if (orderStatus != null) {
+          print('cancel order using orderStatus');
+          InvestrendTheme.tradingHttp.withdraw(
+              this.reffID,
+              orderStatus.brokercode,
+              orderStatus.accountcode,
+              username,
+              orderStatus.orderid,
+              InvestrendTheme.of(context).applicationPlatform,
+              InvestrendTheme.of(context).applicationVersion);
+        } else {
+          print('cancel order using data buySell');
+          InvestrendTheme.tradingHttp.withdraw(
+              this.reffID,
+              data.brokerCode,
+              data.accountCode,
+              username,
+              data.orderid,
+              InvestrendTheme.of(context).applicationPlatform,
+              InvestrendTheme.of(context).applicationVersion);
+        }
 
-            Navigator.popUntil(context, (route) {
-              print('popUntil : ' + route.toString());
-              if (StringUtils.equalsIgnoreCase(route?.settings?.name, '/main')) {
-                return true;
-              }
-              return route.isFirst;
-            });
-            context.read(mainMenuChangeNotifier).setActive(Tabs.Transaction, TabsTransaction.Intraday.index);
-          }),
+        Navigator.popUntil(context, (route) {
+          print('popUntil : ' + route.toString());
+          if (StringUtils.equalsIgnoreCase(route?.settings?.name, '/main')) {
+            return true;
+          }
+          return route.isFirst;
+        });
+        context
+            .read(mainMenuChangeNotifier)
+            .setActive(Tabs.Transaction, TabsTransaction.Intraday.index);
+      }),
     ));
     contentHeight += 55.0;
     list.add(SizedBox(
@@ -1097,12 +1233,16 @@ class BottomSheetConfirmationCancel extends StatelessWidget {
     */
     list.add(Container(
       width: double.maxFinite,
-      child: ComponentCreator.roundedButton(context, 'order_detail_confirmation_cancel_button_back'.tr(), InvestrendTheme.cancelColor,
-          InvestrendTheme.of(context).whiteColor, InvestrendTheme.cancelColor, () {
-            print('back clicked');
+      child: ComponentCreator.roundedButton(
+          context,
+          'order_detail_confirmation_cancel_button_back'.tr(),
+          InvestrendTheme.cancelColor,
+          InvestrendTheme.of(context).whiteColor,
+          InvestrendTheme.cancelColor, () {
+        print('back clicked');
 
-            Navigator.pop(context); // keep data
-          }),
+        Navigator.pop(context); // keep data
+      }),
     ));
 
     contentHeight += 55.0;
@@ -1117,7 +1257,8 @@ class BottomSheetConfirmationCancel extends StatelessWidget {
       ),
       child: Container(
         // color: Colors.orangeAccent,
-        padding: const EdgeInsets.only(top: 30.0, bottom: 24.0, left: 24.0, right: 24.0),
+        padding: const EdgeInsets.only(
+            top: 30.0, bottom: 24.0, left: 24.0, right: 24.0),
         width: double.maxFinite,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,

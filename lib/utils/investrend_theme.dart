@@ -1,10 +1,8 @@
 import 'package:Investrend/component/animation_creator.dart';
 import 'package:Investrend/component/button_order.dart';
 import 'package:Investrend/message.dart';
-import 'package:Investrend/objects/class_value_notifier.dart';
 import 'package:Investrend/objects/data_object.dart';
 import 'package:Investrend/objects/persistent_data.dart';
-import 'package:Investrend/objects/serializeable.dart';
 import 'package:Investrend/objects/iii_objects.dart';
 import 'package:Investrend/screens/screen_finder.dart';
 import 'package:Investrend/screens/screen_login.dart';
@@ -25,18 +23,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // import 'package:device_info_plus/device_info_plus.dart';
 
 extension StringCasingExtension on String {
-  String toCapitalized() => this.length > 0 ?'${this[0].toUpperCase()}${this.substring(1).toLowerCase()}':'';
+  String toCapitalized() => this.length > 0
+      ? '${this[0].toUpperCase()}${this.substring(1).toLowerCase()}'
+      : '';
 //String get toTitleCase() => this.replaceAll(RegExp(' +'), ' ').split(" ").map((str) => str.toCapitalized()).join(" ");
 }
 
 class InvestrendTheme extends InheritedWidget {
-
   static final bool DEBUG = false; // matiin timer, refresh manual
   static final bool CHECK_INVITATION = true;
   static final bool FAST_ORDER = true;
   static final bool LOOP_SPLIT = false;
-
-
 
   //static final HttpServices httpServices = HttpServices();
   // static List<Broker> listBroker = List<Broker>.empty(growable: true);
@@ -54,7 +51,8 @@ class InvestrendTheme extends InheritedWidget {
   static const double cardPaddingGeneral = 12.0;
   static const double cardPaddingVertical = 20.0;
 
-  static final int MAX_WATCHLIST_NAME_CHARACTER = 20; // panjang nama watchlist nya
+  static final int MAX_WATCHLIST_NAME_CHARACTER =
+      20; // panjang nama watchlist nya
   static const int MAX_WATCHLIST = 20;
   static const int MAX_STOCK_PER_WATCHLIST = 30;
 
@@ -65,11 +63,11 @@ class InvestrendTheme extends InheritedWidget {
   static final Color cancelColor = Color(0xFFE50449);
   static final Color attentionColor = Color(0xFFEEA356);
 
-
   static final Color buyTextColor = Color(0xFF25B792);
   static final Color sellTextColor = Color(0xFFE50449);
 
-  static final Color blackTextColor = Color(0xFF010000); // tidak ganti mesti theme dark light berubah
+  static final Color blackTextColor =
+      Color(0xFF010000); // tidak ganti mesti theme dark light berubah
 
   final Color _greyLighterTextColorLightTheme = Color(0xFF8C979F);
   final Color _greyLighterTextColorDarkTheme = Color(0xFFA8B0B5);
@@ -119,8 +117,6 @@ class InvestrendTheme extends InheritedWidget {
   */
   final Color pollProgress = Color(0xFFE6DEF6);
 
-
-
   final Color _hyperlinkLight = Color(0xFF5414db);
   final Color _hyperlinkDark = Color(0xFF5414db); // need to define
   Color hyperlink;
@@ -148,7 +144,7 @@ class InvestrendTheme extends InheritedWidget {
 
   static final Color _textWhiteLight = Color(0xFFFAFAFA);
   static final Color _textWhiteDark = Color(0xFFEBEBEB);
-  Color textWhite;// = Color(0xFFFAFAFA);
+  Color textWhite; // = Color(0xFFFAFAFA);
 
   static final Color greenText = Color(0xFF25B792); //Color(0xFF25B792);
   static final Color greenBackground = Color(0xFFBFF5EB); //Color(0xFFB3F3E8);
@@ -172,7 +168,6 @@ class InvestrendTheme extends InheritedWidget {
   final Color _accelerationTextLight = Color(0xFF5414DB);
   final Color _accelerationTextDark = Color(0xFFb49afc);
 
-
   Color tileBorder;
   final Color _tileBorderLight = Color(0xFFEAE6F6);
   final Color _tileBorderDark = Color(0xFF353436);
@@ -184,7 +179,8 @@ class InvestrendTheme extends InheritedWidget {
   final Color _tileSplashColorDark = Color(0xFF5414db);
 
   //static final double appBarTabPaddingTopBottom = 0.0;
-  static final double appBarTabHeight = 46.0; // + appBarTabPaddingTopBottom + appBarTabPaddingTopBottom ;
+  static final double appBarTabHeight =
+      46.0; // + appBarTabPaddingTopBottom + appBarTabPaddingTopBottom ;
   static final double appBarHeight = 40.0;
 
   //const double _kTabHeight = 46.0;
@@ -199,7 +195,8 @@ class InvestrendTheme extends InheritedWidget {
   final double tileRoundedRadius = 20.0;
   final double tileSmallRoundedRadius = 10.0;
 
-  static final EdgeInsets paddingTab = EdgeInsets.symmetric(horizontal: cardPaddingGeneral);
+  static final EdgeInsets paddingTab =
+      EdgeInsets.symmetric(horizontal: cardPaddingGeneral);
 
   TextStyle headline3;
   TextStyle regular_w400;
@@ -218,7 +215,6 @@ class InvestrendTheme extends InheritedWidget {
   TextStyle regular_w500_compact_greyDarker;
   TextStyle regular_w600_compact_greyDarker;
 
-
   TextStyle medium_w400;
   TextStyle medium_w500;
   TextStyle medium_w600;
@@ -234,7 +230,6 @@ class InvestrendTheme extends InheritedWidget {
   TextStyle small_w600_compact;
   TextStyle small_w500_compact;
   TextStyle small_w400_compact;
-
 
   TextStyle small_w600_greyDarker;
   TextStyle small_w500_greyDarker;
@@ -284,11 +279,11 @@ class InvestrendTheme extends InheritedWidget {
   String applicationPlatform = 'Mobile';
   // String applicationDeviceType = 'Mobile';
 
-  InvestrendTheme({BuildContext context, Widget child, Key key}) : super(child: child, key: key) {
+  InvestrendTheme({BuildContext context, Widget child, Key key})
+      : super(child: child, key: key) {
     print('InvestrendTheme created ' + DateTime.now().toString());
     constructTheme(context);
   }
-
 
   // void platformInfo() async{
   //   DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
@@ -303,7 +298,7 @@ class InvestrendTheme extends InheritedWidget {
   //   }
   //   print('platformInfo  applicationDeviceType : $applicationDeviceType ');
   // }
-  void constructTheme(BuildContext context){
+  void constructTheme(BuildContext context) {
     print('InvestrendTheme constructTheme ' + DateTime.now().toString());
     bool lightTheme = Theme.of(context).brightness == Brightness.light;
     //bool lightTheme = MediaQuery.of(context).platformBrightness == Brightness.light;
@@ -314,27 +309,28 @@ class InvestrendTheme extends InheritedWidget {
       String version = packageInfo.version;
       String buildNumber = packageInfo.buildNumber;
 
-      print('PackageInfo.fromPlatform  appName : $appName  packageName : $packageName  version : $version  buildNumber : $buildNumber  ');
+      print(
+          'PackageInfo.fromPlatform  appName : $appName  packageName : $packageName  version : $version  buildNumber : $buildNumber  ');
       //flutter: PackageInfo.fromPlatform  appName : Investrend  packageName : com.investrend.afs.investrendApp  version : 1.0.0  buildNumber : 1
       applicationName = appName;
       applicationVersion = version;
       applicationBuild = buildNumber;
-      applicationPlatform = Platform.isIOS ? 'iOS' : (Platform.isAndroid ? 'Android' : 'Other');
+      applicationPlatform =
+          Platform.isIOS ? 'iOS' : (Platform.isAndroid ? 'Android' : 'Other');
 
       // platformInfo();
     });
-
 
     hyperlink = lightTheme ? _hyperlinkLight : _hyperlinkDark;
     ic_launcher = lightTheme ? _ic_launcherLight : _ic_launcherDark;
 
     pollBackground = lightTheme ? _pollBackgroundLight : _pollBackgroundDark;
 
-
     blackAndWhite = lightTheme ? Colors.white : Colors.black;
     blackAndWhiteLite = lightTheme ? Colors.white54 : Colors.black54;
 
-    blackAndWhiteText = lightTheme ? Color(0xFF010000) : Color(0xFFEBEBEB); //FAFAFA
+    blackAndWhiteText =
+        lightTheme ? Color(0xFF010000) : Color(0xFFEBEBEB); //FAFAFA
     blackAndWhiteTextLite = lightTheme ? Colors.black87 : Colors.white70;
     blackAndWhiteTextInactive = lightTheme ? Colors.black45 : Colors.white54;
 
@@ -342,36 +338,73 @@ class InvestrendTheme extends InheritedWidget {
     tileSplashColor = lightTheme ? _tileSplashColorLight : _tileSplashColorDark;
     tileBorder = lightTheme ? _tileBorderLight : _tileBorderDark;
 
-    accelerationBackground = lightTheme ? _accelerationBackgroundLight : _accelerationBackgroundDark;
-    accelerationTextColor = lightTheme ? _accelerationTextLight : _accelerationTextDark;
+    accelerationBackground =
+        lightTheme ? _accelerationBackgroundLight : _accelerationBackgroundDark;
+    accelerationTextColor =
+        lightTheme ? _accelerationTextLight : _accelerationTextDark;
 
-    investrendPurple = lightTheme ? _investrendPurpleLight : _investrendPurpleDark;
-    greyLighterTextColor = lightTheme ? _greyLighterTextColorLightTheme : _greyLighterTextColorDarkTheme;
+    investrendPurple =
+        lightTheme ? _investrendPurpleLight : _investrendPurpleDark;
+    greyLighterTextColor = lightTheme
+        ? _greyLighterTextColorLightTheme
+        : _greyLighterTextColorDarkTheme;
 
     chipBorder = lightTheme ? _chipBorderLight : _chipBorderDark;
     colorSoft = lightTheme ? _colorSoftLight : _colorSoftDark;
 
-
     headline3 = Theme.of(context).textTheme.headline3;
 
-    medium_w600 = Theme.of(context).textTheme.subtitle1.copyWith(fontSize: 20.0, fontWeight: FontWeight.w600);
-    medium_w500 = Theme.of(context).textTheme.subtitle1.copyWith(fontSize: 20.0,fontWeight: FontWeight.w500);
-    medium_w400 = Theme.of(context).textTheme.subtitle1.copyWith(fontSize: 20.0,fontWeight: FontWeight.w400);
+    medium_w600 = Theme.of(context)
+        .textTheme
+        .subtitle1
+        .copyWith(fontSize: 20.0, fontWeight: FontWeight.w600);
+    medium_w500 = Theme.of(context)
+        .textTheme
+        .subtitle1
+        .copyWith(fontSize: 20.0, fontWeight: FontWeight.w500);
+    medium_w400 = Theme.of(context)
+        .textTheme
+        .subtitle1
+        .copyWith(fontSize: 20.0, fontWeight: FontWeight.w400);
 
-    regular_w600 = Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.w600);
-    regular_w500 = Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.w500);
+    regular_w600 = Theme.of(context)
+        .textTheme
+        .bodyText1
+        .copyWith(fontWeight: FontWeight.w600);
+    regular_w500 = Theme.of(context)
+        .textTheme
+        .bodyText1
+        .copyWith(fontWeight: FontWeight.w500);
     regular_w400 = Theme.of(context).textTheme.bodyText1;
 
-    small_w600 = Theme.of(context).textTheme.bodyText2.copyWith(fontWeight: FontWeight.w600);
-    small_w500 = Theme.of(context).textTheme.bodyText2.copyWith(fontWeight: FontWeight.w500);
+    small_w600 = Theme.of(context)
+        .textTheme
+        .bodyText2
+        .copyWith(fontWeight: FontWeight.w600);
+    small_w500 = Theme.of(context)
+        .textTheme
+        .bodyText2
+        .copyWith(fontWeight: FontWeight.w500);
     small_w400 = Theme.of(context).textTheme.bodyText2;
 
-    support_w600 = Theme.of(context).textTheme.caption.copyWith(fontWeight: FontWeight.w600);
-    support_w500 = Theme.of(context).textTheme.caption.copyWith(fontWeight: FontWeight.w500);
+    support_w600 = Theme.of(context)
+        .textTheme
+        .caption
+        .copyWith(fontWeight: FontWeight.w600);
+    support_w500 = Theme.of(context)
+        .textTheme
+        .caption
+        .copyWith(fontWeight: FontWeight.w500);
     support_w400 = Theme.of(context).textTheme.caption;
 
-    more_support_w600 = Theme.of(context).textTheme.overline.copyWith(fontWeight: FontWeight.w600);
-    more_support_w500 = Theme.of(context).textTheme.overline.copyWith(fontWeight: FontWeight.w500);
+    more_support_w600 = Theme.of(context)
+        .textTheme
+        .overline
+        .copyWith(fontWeight: FontWeight.w600);
+    more_support_w500 = Theme.of(context)
+        .textTheme
+        .overline
+        .copyWith(fontWeight: FontWeight.w500);
     more_support_w400 = Theme.of(context).textTheme.overline;
 
     regular_w400_compact = regular_w400.copyWith(height: 1.0);
@@ -391,20 +424,21 @@ class InvestrendTheme extends InheritedWidget {
     more_support_w500_compact = more_support_w500.copyWith(height: 1.0);
     more_support_w400_compact = more_support_w400.copyWith(height: 1.0);
 
-
-
-
-
     inputLabelStyle = support_w400.copyWith(height: 0.1);
     inputHintStyle = small_w400.copyWith(color: greyLighterTextColor);
     inputHelperStyle = support_w400.copyWith(color: greyLighterTextColor);
     inputPrefixStyle = small_w400;
     inputStyle = small_w400;
-    inputErrorStyle = support_w400.copyWith(color: Theme.of(context).errorColor);
+    inputErrorStyle =
+        support_w400.copyWith(color: Theme.of(context).colorScheme.error);
 
-    appBarActionTextColor = lightTheme ? _appBarActionTextColorLight : _appBarActionTextColorDark;
-    greyDarkerTextColor = lightTheme ? _greyDarkerTextColorLightTheme : _greyDarkerTextColorDarkTheme;
-    greyIconColor = lightTheme ? _greyIconColorLightTheme : _greyIconColorDarkTheme;
+    appBarActionTextColor =
+        lightTheme ? _appBarActionTextColorLight : _appBarActionTextColorDark;
+    greyDarkerTextColor = lightTheme
+        ? _greyDarkerTextColorLightTheme
+        : _greyDarkerTextColorDarkTheme;
+    greyIconColor =
+        lightTheme ? _greyIconColorLightTheme : _greyIconColorDarkTheme;
 
     // textValueStyle = Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.w400);
     // textLabelStyle = Theme.of(context).textTheme.bodyText2.copyWith(color: greyLighterTextColor, fontWeight: FontWeight.w300);
@@ -414,41 +448,56 @@ class InvestrendTheme extends InheritedWidget {
 
     oddColor = lightTheme ? _oddColorLightTheme : _oddColorDarkTheme;
 
-    settingsColor = lightTheme ? _settingsColorLightTheme : _settingsColorDarkTheme;
+    settingsColor =
+        lightTheme ? _settingsColorLightTheme : _settingsColorDarkTheme;
 
     textWhite = lightTheme ? _textWhiteLight : _textWhiteDark;
 
-    investrendPurpleText = lightTheme ? _investrendPurpleTextLight : _investrendPurpleTextDark;
+    investrendPurpleText =
+        lightTheme ? _investrendPurpleTextLight : _investrendPurpleTextDark;
 
     small_w600_greyDarker = small_w600.copyWith(color: greyDarkerTextColor);
     small_w500_greyDarker = small_w500.copyWith(color: greyDarkerTextColor);
     small_w400_greyDarker = small_w400.copyWith(color: greyDarkerTextColor);
 
-    small_w600_compact_greyDarker = small_w600.copyWith(height: 1.0, color: greyDarkerTextColor);
-    small_w500_compact_greyDarker = small_w500.copyWith(height: 1.0, color: greyDarkerTextColor);
-    small_w400_compact_greyDarker = small_w400.copyWith(height: 1.0, color: greyDarkerTextColor);
-
+    small_w600_compact_greyDarker =
+        small_w600.copyWith(height: 1.0, color: greyDarkerTextColor);
+    small_w500_compact_greyDarker =
+        small_w500.copyWith(height: 1.0, color: greyDarkerTextColor);
+    small_w400_compact_greyDarker =
+        small_w400.copyWith(height: 1.0, color: greyDarkerTextColor);
 
     regular_w400_greyDarker = regular_w400.copyWith(color: greyDarkerTextColor);
     regular_w500_greyDarker = regular_w500.copyWith(color: greyDarkerTextColor);
     regular_w600_greyDarker = regular_w600.copyWith(color: greyDarkerTextColor);
 
-    regular_w400_compact_greyDarker = regular_w400.copyWith(height: 1.0, color: greyDarkerTextColor);
-    regular_w500_compact_greyDarker = regular_w500.copyWith(height: 1.0, color: greyDarkerTextColor);
-    regular_w600_compact_greyDarker = regular_w600.copyWith(height: 1.0, color: greyDarkerTextColor);
+    regular_w400_compact_greyDarker =
+        regular_w400.copyWith(height: 1.0, color: greyDarkerTextColor);
+    regular_w500_compact_greyDarker =
+        regular_w500.copyWith(height: 1.0, color: greyDarkerTextColor);
+    regular_w600_compact_greyDarker =
+        regular_w600.copyWith(height: 1.0, color: greyDarkerTextColor);
 
-    more_support_w600_compact_greyDarker = more_support_w600_compact.copyWith(color: greyDarkerTextColor);
-    more_support_w500_compact_greyDarker = more_support_w500_compact.copyWith(color: greyDarkerTextColor);
-    more_support_w400_compact_greyDarker = more_support_w400_compact.copyWith(color: greyDarkerTextColor);
+    more_support_w600_compact_greyDarker =
+        more_support_w600_compact.copyWith(color: greyDarkerTextColor);
+    more_support_w500_compact_greyDarker =
+        more_support_w500_compact.copyWith(color: greyDarkerTextColor);
+    more_support_w400_compact_greyDarker =
+        more_support_w400_compact.copyWith(color: greyDarkerTextColor);
 
-    support_w600_compact_greyDarker = support_w600_compact.copyWith(color: greyDarkerTextColor);
-    support_w500_compact_greyDarker = support_w500_compact.copyWith(color: greyDarkerTextColor);
-    support_w400_compact_greyDarker = support_w400_compact.copyWith(color: greyDarkerTextColor);
+    support_w600_compact_greyDarker =
+        support_w600_compact.copyWith(color: greyDarkerTextColor);
+    support_w500_compact_greyDarker =
+        support_w500_compact.copyWith(color: greyDarkerTextColor);
+    support_w400_compact_greyDarker =
+        support_w400_compact.copyWith(color: greyDarkerTextColor);
 
-    support_w600_compact_greyLighter = support_w600_compact.copyWith(color: greyLighterTextColor);
-    support_w500_compact_greyLighter = support_w500_compact.copyWith(color: greyLighterTextColor);
-    support_w400_compact_greyLighter = support_w400_compact.copyWith(color: greyLighterTextColor);
-
+    support_w600_compact_greyLighter =
+        support_w600_compact.copyWith(color: greyLighterTextColor);
+    support_w500_compact_greyLighter =
+        support_w500_compact.copyWith(color: greyLighterTextColor);
+    support_w400_compact_greyLighter =
+        support_w400_compact.copyWith(color: greyLighterTextColor);
   }
 
   static Color darkenColor(Color color, [double amount = .1]) {
@@ -464,10 +513,12 @@ class InvestrendTheme extends InheritedWidget {
     assert(amount >= 0 && amount <= 1);
 
     final hsl = HSLColor.fromColor(color);
-    final hslLight = hsl.withLightness((hsl.lightness + amount).clamp(0.0, 1.0));
+    final hslLight =
+        hsl.withLightness((hsl.lightness + amount).clamp(0.0, 1.0));
 
     return hslLight.toColor();
   }
+
   double _bottomVoidSpace = 0.0;
 
   double bottomVoidSpace() {
@@ -485,17 +536,23 @@ class InvestrendTheme extends InheritedWidget {
     return true;
   }
 
-  static Future<Object> showFinderScreen(BuildContext context, {bool showStockOnly = false, String watchlistName, List<Stock> fromListStocks}) {
-
-
+  static Future<Object> showFinderScreen(BuildContext context,
+      {bool showStockOnly = false,
+      String watchlistName,
+      List<Stock> fromListStocks}) {
     return Navigator.push(
       context,
       PageRouteBuilder(
         transitionDuration: Duration(milliseconds: 500),
-        pageBuilder: (context, animation1, animation2) => ScreenFinder(showStockOnly: showStockOnly, watchlistName: watchlistName,fromListStocks: fromListStocks,),
+        pageBuilder: (context, animation1, animation2) => ScreenFinder(
+          showStockOnly: showStockOnly,
+          watchlistName: watchlistName,
+          fromListStocks: fromListStocks,
+        ),
         settings: RouteSettings(name: '/finder'),
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return AnimationCreator.transitionSlideUp(context, animation, secondaryAnimation, child);
+          return AnimationCreator.transitionSlideUp(
+              context, animation, secondaryAnimation, child);
         },
       ),
     );
@@ -654,24 +711,24 @@ class InvestrendTheme extends InheritedWidget {
   }
 
   static String formatNewComma(double number) {
-    int frontValue  = number.truncate();
-    String text     = number.toString();
+    int frontValue = number.truncate();
+    String text = number.toString();
     int index = text.indexOf('.');
     String endText = '';
-    if(index > 0){
-      endText = text.substring(index+1);
-      if(Utils.safeInt(endText) == 0){
+    if (index > 0) {
+      endText = text.substring(index + 1);
+      if (Utils.safeInt(endText) == 0) {
         endText = '';
-      }else{
-        endText = '.'+endText;
+      } else {
+        endText = '.' + endText;
       }
     }
     String frontText = formatComma(frontValue);
-    return frontText+endText;
+    return frontText + endText;
   }
 
   static String formatCompact(BuildContext context, int number) {
-    if(number >= 100000){
+    if (number >= 100000) {
       return InvestrendTheme.formatValue(context, number);
     }
     return _formatterNumber.format(number);
@@ -684,7 +741,9 @@ class InvestrendTheme extends InheritedWidget {
   static String formatValue(BuildContext context, int value) {
     //String text = NumberFormat.compact(locale: 'en_US').format(value);
 
-    String text = NumberFormat.compact(locale: EasyLocalization.of(context).locale.languageCode).format(value);
+    String text = NumberFormat.compact(
+            locale: EasyLocalization.of(context).locale.languageCode)
+        .format(value);
 
     //String text = NumberFormat.compactSimpleCurrency(locale: 'en_US',decimalDigits: 2).format(value);
     String lastCharacter = text[text.length - 1];
@@ -698,14 +757,15 @@ class InvestrendTheme extends InheritedWidget {
     return NumberFormat.compactLong(locale: 'en_US').format(value);
   }
 
-  static String formatMoneyDouble(double money, {bool prefixPlus: false, bool prefixRp: true, bool decimal: false}) {
+  static String formatMoneyDouble(double money,
+      {bool prefixPlus = false, bool prefixRp = true, bool decimal = false}) {
     // String prefix = 'Rp ';
     // if (money > 0.0 && prefixPlus) {
     //   prefix = '+ Rp ';
     // }
 
     String textRP = '';
-    if(prefixRp){
+    if (prefixRp) {
       textRP = 'Rp ';
     }
 
@@ -716,9 +776,9 @@ class InvestrendTheme extends InheritedWidget {
       prefix = '-$textRP';
       money = money * -1;
     }
-    if(decimal){
+    if (decimal) {
       return prefix + _formatterNumberDouble.format(money);
-    }else{
+    } else {
       return prefix + _formatterNumber.format(money);
     }
 
@@ -731,7 +791,8 @@ class InvestrendTheme extends InheritedWidget {
     */
   }
 
-  static String formatMoney(int money, {bool prefixPlus: false, bool prefixRp: true}) {
+  static String formatMoney(int money,
+      {bool prefixPlus = false, bool prefixRp = true}) {
     String prefix = 'Rp ';
     if (money > 0.0 && prefixPlus) {
       prefix = '+Rp ';
@@ -764,20 +825,21 @@ class InvestrendTheme extends InheritedWidget {
   //   */
   // }
 
-  static String formatPriceDouble(double price, {bool showDecimal: true, bool threeDecimal: false}) {
+  static String formatPriceDouble(double price,
+      {bool showDecimal = true, bool threeDecimal = false}) {
     if (showDecimal) {
-      if(threeDecimal){
+      if (threeDecimal) {
         return _formatterNumberDoubleThreeDecimal.format(price);
-      }else{
+      } else {
         return _formatterNumberDouble.format(price);
       }
-
     } else {
       return _formatterNumber.format(price.truncate());
     }
   }
 
-  static String formatPercentChange(double number, {bool sufixPercent: true, bool threeDecimal: false}) {
+  static String formatPercentChange(double number,
+      {bool sufixPercent = true, bool threeDecimal = false}) {
     String prefix = '';
     String sufix = '';
     //String formmated  = '';
@@ -790,14 +852,15 @@ class InvestrendTheme extends InheritedWidget {
 
     //return prefix + _formatterNumberDouble.format(number) + sufix;
 
-    if(threeDecimal){
+    if (threeDecimal) {
       return prefix + _formatterNumberDoubleThreeDecimal.format(number) + sufix;
-    }else{
+    } else {
       return prefix + _formatterNumberDouble.format(number) + sufix;
     }
   }
 
-  static String formatPercent(double number, {bool sufixPercent: true, bool prefixPlus: false}) {
+  static String formatPercent(double number,
+      {bool sufixPercent = true, bool prefixPlus = false}) {
     String prefix = '';
     String sufix = '';
     //String formmated  = '';
@@ -811,22 +874,20 @@ class InvestrendTheme extends InheritedWidget {
     return prefix + _formatterNumberDoubleDecimal.format(number) + sufix;
   }
 
-  static String formatChange(double number, {bool threeDecimal: false}) {
-    return formatPercentChange(number, sufixPercent: false, threeDecimal: threeDecimal);
+  static String formatChange(double number, {bool threeDecimal = false}) {
+    return formatPercentChange(number,
+        sufixPercent: false, threeDecimal: threeDecimal);
   }
 
-
-  static String formatNewPrice(var number, {int decimalValue: 0}) {
-
-
+  static String formatNewPrice(var number, {int decimalValue = 0}) {
     NumberFormat formatter;
-    if(decimalValue == 2){
+    if (decimalValue == 2) {
       formatter = _formatterNumberDoubleDecimal;
-    }else if(decimalValue == 3){
+    } else if (decimalValue == 3) {
       formatter = _formatterNumberDoubleThreeDecimal;
-    }else{
+    } else {
       formatter = _formatterNumber;
-      if(number is double){
+      if (number is double) {
         number = number.truncate();
       }
     }
@@ -845,20 +906,18 @@ class InvestrendTheme extends InheritedWidget {
     // }
 
     // return prefix + formatter.format(number) ;
-    return formatter.format(number) ;
+    return formatter.format(number);
   }
 
-  static String formatNewChange(var number, {int decimalValue: 0}) {
-
-
+  static String formatNewChange(var number, {int decimalValue = 0}) {
     NumberFormat formatter;
-    if(decimalValue == 2){
+    if (decimalValue == 2) {
       formatter = _formatterNumberDoubleDecimal;
-    }else if(decimalValue == 3){
+    } else if (decimalValue == 3) {
       formatter = _formatterNumberDoubleThreeDecimal;
-    }else{
+    } else {
       formatter = _formatterNumber;
-      if(number is double){
+      if (number is double) {
         number = number.truncate();
       }
     }
@@ -866,30 +925,28 @@ class InvestrendTheme extends InheritedWidget {
     String prefix = '';
     //String sufix = '';
 
-    if(number is double){
+    if (number is double) {
       if (number > 0.0) {
         prefix = '+';
       }
-    }else if(number is int){
+    } else if (number is int) {
       if (number > 0) {
         prefix = '+';
       }
     }
 
-    return prefix + formatter.format(number) ;
+    return prefix + formatter.format(number);
   }
 
-  static String formatNewPercentChange(var number, {int decimalValue: 2}) {
-
-
+  static String formatNewPercentChange(var number, {int decimalValue = 2}) {
     NumberFormat formatter;
-    if(decimalValue == 2){
+    if (decimalValue == 2) {
       formatter = _formatterNumberDoubleDecimal;
-    }else if(decimalValue == 3){
+    } else if (decimalValue == 3) {
       formatter = _formatterNumberDoubleThreeDecimal;
-    }else{
+    } else {
       formatter = _formatterNumber;
-      if(number is double){
+      if (number is double) {
         number = number.truncate();
       }
     }
@@ -897,11 +954,11 @@ class InvestrendTheme extends InheritedWidget {
     String prefix = '';
     String sufix = '%';
 
-    if(number is double){
+    if (number is double) {
       if (number > 0.0) {
         prefix = '+';
       }
-    }else if(number is int){
+    } else if (number is int) {
       if (number > 0) {
         prefix = '+';
       }
@@ -909,9 +966,6 @@ class InvestrendTheme extends InheritedWidget {
 
     return prefix + formatter.format(number) + sufix;
   }
-
-
-
 
   // static Icon getChangeIcon(double change) {
   //   if (change > 0.0) {
@@ -978,65 +1032,88 @@ class InvestrendTheme extends InheritedWidget {
     }
   }
 
-  static final NumberFormat _formatterNumberDoubleDecimal = NumberFormat("#,##0.##", 'en_US'); //"id"
-  static final NumberFormat _formatterNumberDouble = NumberFormat("#,##0.00", 'en_US'); //"id"
-  static final NumberFormat _formatterNumber = NumberFormat("#,###", 'en_US'); //"id"
+  static final NumberFormat _formatterNumberDoubleDecimal =
+      NumberFormat("#,##0.##", 'en_US'); //"id"
+  static final NumberFormat _formatterNumberDouble =
+      NumberFormat("#,##0.00", 'en_US'); //"id"
+  static final NumberFormat _formatterNumber =
+      NumberFormat("#,###", 'en_US'); //"id"
 
-  static final NumberFormat _formatterNumberDoubleThreeDecimal = NumberFormat("#,##0.000", 'en_US'); //"id"
+  static final NumberFormat _formatterNumberDoubleThreeDecimal =
+      NumberFormat("#,##0.000", 'en_US'); //"id"
 
-  static InvestrendTheme of(BuildContext context) => context.dependOnInheritedWidgetOfExactType<InvestrendTheme>();
+  static InvestrendTheme of(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<InvestrendTheme>();
 
-  Future  showDialogTooltips(BuildContext context, String title, String content){
+  Future showDialogTooltips(
+      BuildContext context, String title, String content) {
     bool showYes = true;
     String buttonYes = 'button_ok'.tr();
-    VoidCallback onPressedYes= (){
+    VoidCallback onPressedYes = () {
       Navigator.of(context).pop();
     };
     List<Widget> listActions = List.empty(growable: true);
 
-      if(showYes){
-        listActions.add(TextButton(
-          child: Text(buttonYes, style: InvestrendTheme.of(context).small_w600_compact.copyWith(color: Theme.of(context).accentColor),),
-          onPressed: onPressedYes,
-        ));
-      }
+    if (showYes) {
+      listActions.add(TextButton(
+        child: Text(
+          buttonYes,
+          style: InvestrendTheme.of(context)
+              .small_w600_compact
+              .copyWith(color: Theme.of(context).colorScheme.secondary),
+        ),
+        onPressed: onPressedYes,
+      ));
+    }
 
-      return showDialog(
-          context: context,
-          builder: (_) => AlertDialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16.0),
-            ),
-            title: Text(title, style: InvestrendTheme.of(context).regular_w600_compact.copyWith(fontSize: 19.0),),
-            content: Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: Text(content, style: InvestrendTheme.of(context).small_w400.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor),),
-            ),
-            actions: listActions,
-          ));
-
+    return showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16.0),
+              ),
+              title: Text(
+                title,
+                style: InvestrendTheme.of(context)
+                    .regular_w600_compact
+                    .copyWith(fontSize: 19.0),
+              ),
+              content: Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Text(
+                  content,
+                  style: InvestrendTheme.of(context).small_w400.copyWith(
+                      color: InvestrendTheme.of(context).greyDarkerTextColor),
+                ),
+              ),
+              actions: listActions,
+            ));
   }
 
-  Future  showDialogPlatform(BuildContext context, String title, String content, {String buttonYes, String buttonNo, VoidCallback onPressedYes, VoidCallback onPressedNo}){
+  Future showDialogPlatform(BuildContext context, String title, String content,
+      {String buttonYes,
+      String buttonNo,
+      VoidCallback onPressedYes,
+      VoidCallback onPressedNo}) {
     bool showYes = !StringUtils.isEmtpy(buttonYes);
     bool showNo = !StringUtils.isEmtpy(buttonNo);
-    if( !showYes && !showNo){
+    if (!showYes && !showNo) {
       showYes = true;
       buttonYes = 'button_close'.tr();
-      onPressedYes= (){
+      onPressedYes = () {
         Navigator.of(context).pop();
       };
     }
     List<Widget> listActions = List.empty(growable: true);
     if (Platform.isIOS) {
       // iOS-specific code
-      if(showYes){
+      if (showYes) {
         listActions.add(CupertinoDialogAction(
           child: Text(buttonYes),
           onPressed: onPressedYes,
         ));
       }
-      if(showNo){
+      if (showNo) {
         listActions.add(CupertinoDialogAction(
           child: Text(buttonNo),
           isDestructiveAction: true,
@@ -1047,23 +1124,38 @@ class InvestrendTheme extends InheritedWidget {
       return showCupertinoDialog(
           context: context,
           builder: (_) => CupertinoAlertDialog(
-            title: Text(title, style: InvestrendTheme.of(context).small_w600,),
-            content: Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: Text(content, style: InvestrendTheme.of(context).support_w400.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor),),
-            ),
-            actions: listActions,
-          ));
+                title: Text(
+                  title,
+                  style: InvestrendTheme.of(context).small_w600,
+                ),
+                content: Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Text(
+                    content,
+                    style: InvestrendTheme.of(context).support_w400.copyWith(
+                        color: InvestrendTheme.of(context).greyDarkerTextColor),
+                  ),
+                ),
+                actions: listActions,
+              ));
     } else {
-      if(showYes){
+      if (showYes) {
         listActions.add(TextButton(
-          child: Text(buttonYes, style: InvestrendTheme.of(context).small_w500_compact,),
+          child: Text(
+            buttonYes,
+            style: InvestrendTheme.of(context).small_w500_compact,
+          ),
           onPressed: onPressedYes,
         ));
       }
-      if(showNo){
+      if (showNo) {
         listActions.add(TextButton(
-          child: Text(buttonNo, style: InvestrendTheme.of(context).small_w500_compact.copyWith(color: InvestrendTheme.redText),),
+          child: Text(
+            buttonNo,
+            style: InvestrendTheme.of(context)
+                .small_w500_compact
+                .copyWith(color: InvestrendTheme.redText),
+          ),
           onPressed: onPressedNo,
         ));
       }
@@ -1071,17 +1163,30 @@ class InvestrendTheme extends InheritedWidget {
       return showDialog(
           context: context,
           builder: (_) => AlertDialog(
-            title: Text(title, style: InvestrendTheme.of(context).small_w600,),
-            content: Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: Text(content, style: InvestrendTheme.of(context).support_w400.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor),),
-            ),
-            actions: listActions,
-          ));
+                title: Text(
+                  title,
+                  style: InvestrendTheme.of(context).small_w600,
+                ),
+                content: Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Text(
+                    content,
+                    style: InvestrendTheme.of(context).support_w400.copyWith(
+                        color: InvestrendTheme.of(context).greyDarkerTextColor),
+                  ),
+                ),
+                actions: listActions,
+              ));
     }
   }
-  Future showDialogInputPlatform(BuildContext context, TextEditingController controller, String title,
-      {String buttonYes, String buttonNo, VoidCallback onPressedYes, VoidCallback onPressedNo, int maxInputLength}) {
+
+  Future showDialogInputPlatform(
+      BuildContext context, TextEditingController controller, String title,
+      {String buttonYes,
+      String buttonNo,
+      VoidCallback onPressedYes,
+      VoidCallback onPressedNo,
+      int maxInputLength}) {
     bool showYes = !StringUtils.isEmtpy(buttonYes);
     bool showNo = !StringUtils.isEmtpy(buttonNo);
     if (!showYes && !showNo) {
@@ -1110,21 +1215,21 @@ class InvestrendTheme extends InheritedWidget {
       return showCupertinoDialog(
           context: context,
           builder: (_) => CupertinoAlertDialog(
-            title: Text(title),
-            content: Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: CupertinoTextField(
-                  controller: controller,
-                  maxLength: maxInputLength,
-                  textInputAction: TextInputAction.done,
-                  keyboardType: TextInputType.text,
-                  maxLines: 1,
-                  //TextStyle(color: InvestrendTheme.of(context).blackAndWhiteText)
-                  style: InvestrendTheme.of(context).small_w400_compact,
-                  cursorColor: Theme.of(context).accentColor),
-            ),
-            actions: listActions,
-          ));
+                title: Text(title),
+                content: Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: CupertinoTextField(
+                      controller: controller,
+                      maxLength: maxInputLength,
+                      textInputAction: TextInputAction.done,
+                      keyboardType: TextInputType.text,
+                      maxLines: 1,
+                      //TextStyle(color: InvestrendTheme.of(context).blackAndWhiteText)
+                      style: InvestrendTheme.of(context).small_w400_compact,
+                      cursorColor: Theme.of(context).colorScheme.secondary),
+                ),
+                actions: listActions,
+              ));
     } else {
       if (showYes) {
         listActions.add(TextButton(
@@ -1139,34 +1244,39 @@ class InvestrendTheme extends InheritedWidget {
         listActions.add(TextButton(
           child: Text(
             buttonNo,
-            style: InvestrendTheme.of(context).small_w500_compact.copyWith(color: InvestrendTheme.redText),
+            style: InvestrendTheme.of(context)
+                .small_w500_compact
+                .copyWith(color: InvestrendTheme.redText),
           ),
           onPressed: onPressedNo,
         ));
         showDialog(
             context: context,
             builder: (_) => AlertDialog(
-              title: Text(title),
-              content: Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: TextField(
-                  controller: controller,
-                  textInputAction: TextInputAction.done,
-                  keyboardType: TextInputType.text,
-                  maxLines: 1,
-                  maxLength: maxInputLength,
-                  //style: TextStyle(color: InvestrendTheme.of(context).blackAndWhiteText),
-                  style: InvestrendTheme.of(context).small_w400_compact,
-                  cursorColor: Theme.of(context).accentColor,
-                ),
-              ),
-              actions: listActions,
-            ));
+                  title: Text(title),
+                  content: Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: TextField(
+                      controller: controller,
+                      textInputAction: TextInputAction.done,
+                      keyboardType: TextInputType.text,
+                      maxLines: 1,
+                      maxLength: maxInputLength,
+                      //style: TextStyle(color: InvestrendTheme.of(context).blackAndWhiteText),
+                      style: InvestrendTheme.of(context).small_w400_compact,
+                      cursorColor: Theme.of(context).colorScheme.secondary,
+                    ),
+                  ),
+                  actions: listActions,
+                ));
       }
     }
   }
 
-  Future<void> showInfoDialog(BuildContext context, {String title = 'Info', String content = '', VoidCallback onClose}) async {
+  Future<void> showInfoDialog(BuildContext context,
+      {String title = 'Info',
+      String content = '',
+      VoidCallback onClose}) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -1174,15 +1284,17 @@ class InvestrendTheme extends InheritedWidget {
         return AlertDialog(
           title: Text(title),
           content: SingleChildScrollView(
-            child: Text(content, style: InvestrendTheme.of(context).small_w400_compact,),
+            child: Text(
+              content,
+              style: InvestrendTheme.of(context).small_w400_compact,
+            ),
           ),
           actions: <Widget>[
             TextButton(
               child: Text('button_close'.tr()),
-
               onPressed: () {
                 Navigator.of(context).pop();
-                if(onClose != null){
+                if (onClose != null) {
                   onClose();
                 }
               },
@@ -1193,16 +1305,17 @@ class InvestrendTheme extends InheritedWidget {
     );
   }
 
-
-
-  void showSnackBar(BuildContext context, String text, {VoidCallback buttonOnPress, String buttonLabel, Color buttonColor, int seconds=2}) {
-
+  void showSnackBar(BuildContext context, String text,
+      {VoidCallback buttonOnPress,
+      String buttonLabel,
+      Color buttonColor,
+      int seconds = 2}) {
     SnackBarAction button;
-    if(!StringUtils.isEmtpy(buttonLabel)){
+    if (!StringUtils.isEmtpy(buttonLabel)) {
       button = SnackBarAction(
         label: buttonLabel,
         onPressed: buttonOnPress,
-        textColor: buttonColor??Theme.of(context).accentColor,
+        textColor: buttonColor ?? Theme.of(context).colorScheme.secondary,
       );
     }
     final snackBar = SnackBar(
@@ -1215,15 +1328,17 @@ class InvestrendTheme extends InheritedWidget {
     // and use it to show a SnackBar.
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
-  void showSnackBarPushMessage(BuildContext context, BaseMessage message) {
 
+  void showSnackBarPushMessage(BuildContext context, BaseMessage message) {
     SnackBarAction button = SnackBarAction(
       label: 'button_view'.tr(),
-      onPressed: (){
+      onPressed: () {
         Navigator.push(
             context,
             CupertinoPageRoute(
-              builder: (_) => ScreenMessage(baseMessage: message,),
+              builder: (_) => ScreenMessage(
+                baseMessage: message,
+              ),
               settings: RouteSettings(name: '/message'),
             ));
       },
@@ -1231,20 +1346,30 @@ class InvestrendTheme extends InheritedWidget {
     );
 
     final snackBar = SnackBar(
-      backgroundColor: Theme.of(context).accentColor,
+      backgroundColor: Theme.of(context).colorScheme.secondary,
       content: SizedBox(
         height: 60.0,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(message.fcm_title,style: InvestrendTheme.of(context).small_w500_compact.copyWith(color: InvestrendTheme.of(context).textWhite), maxLines: 1, overflow: TextOverflow.ellipsis,),
-            Text(message.fcm_body,style: InvestrendTheme.of(context).small_w400_compact.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor),maxLines: 2, overflow: TextOverflow.ellipsis),
+            Text(
+              message.fcm_title,
+              style: InvestrendTheme.of(context)
+                  .small_w500_compact
+                  .copyWith(color: InvestrendTheme.of(context).textWhite),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            Text(message.fcm_body,
+                style: InvestrendTheme.of(context).small_w400_compact.copyWith(
+                    color: InvestrendTheme.of(context).greyLighterTextColor),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis),
           ],
         ),
       ),
       duration: Duration(seconds: 5),
       action: button,
-
     );
 
     // Find the ScaffoldMessenger in the widget tree
@@ -1260,13 +1385,15 @@ class InvestrendTheme extends InheritedWidget {
       // }
       return route.isFirst;
     });
-    InvestrendTheme.pushReplacement(context, ScreenMain(), ScreenTransition.Fade, '/main');
+    InvestrendTheme.pushReplacement(
+        context, ScreenMain(), ScreenTransition.Fade, '/main');
   }
 
-  static void backToScreenMainAndShowTabScreen(BuildContext context, Tabs tab, int childTabIndex){
+  static void backToScreenMainAndShowTabScreen(
+      BuildContext context, Tabs tab, int childTabIndex) {
     Navigator.popUntil(context, (route) {
       print('popUntil : ' + route.toString());
-      if(StringUtils.equalsIgnoreCase(route?.settings?.name, '/main')){
+      if (StringUtils.equalsIgnoreCase(route?.settings?.name, '/main')) {
         return true;
       }
       return route.isFirst;
@@ -1275,7 +1402,8 @@ class InvestrendTheme extends InheritedWidget {
     context.read(mainMenuChangeNotifier).setActive(tab, childTabIndex);
   }
 
-    static void pushReplacement(BuildContext context, Widget screen, ScreenTransition transition, String routeName) {
+  static void pushReplacement(BuildContext context, Widget screen,
+      ScreenTransition transition, String routeName) {
     switch (transition) {
       case ScreenTransition.SlideLeft:
         {
@@ -1285,8 +1413,10 @@ class InvestrendTheme extends InheritedWidget {
               settings: RouteSettings(name: routeName),
               transitionDuration: Duration(milliseconds: 1000),
               pageBuilder: (context, animation1, animation2) => screen,
-              transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                return AnimationCreator.transitionSlideLeft(context, animation, secondaryAnimation, child);
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                return AnimationCreator.transitionSlideLeft(
+                    context, animation, secondaryAnimation, child);
               },
             ),
           );
@@ -1300,8 +1430,10 @@ class InvestrendTheme extends InheritedWidget {
               settings: RouteSettings(name: routeName),
               transitionDuration: Duration(milliseconds: 1000),
               pageBuilder: (context, animation1, animation2) => screen,
-              transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                return AnimationCreator.transitionSlideRight(context, animation, secondaryAnimation, child);
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                return AnimationCreator.transitionSlideRight(
+                    context, animation, secondaryAnimation, child);
               },
             ),
           );
@@ -1316,8 +1448,10 @@ class InvestrendTheme extends InheritedWidget {
               settings: RouteSettings(name: routeName),
               transitionDuration: Duration(milliseconds: 1000),
               pageBuilder: (context, animation1, animation2) => screen,
-              transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                return AnimationCreator.transitionSlideUp(context, animation, secondaryAnimation, child);
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                return AnimationCreator.transitionSlideUp(
+                    context, animation, secondaryAnimation, child);
               },
             ),
           );
@@ -1333,7 +1467,9 @@ class InvestrendTheme extends InheritedWidget {
               settings: RouteSettings(name: routeName),
               transitionDuration: Duration(milliseconds: 1000),
               pageBuilder: (context, animation1, animation2) => screen,
-              transitionsBuilder: (context, animation, secondaryAnimation, child) => FadeTransition(
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) =>
+                      FadeTransition(
                 opacity: animation,
                 child: child,
               ),
@@ -1344,10 +1480,11 @@ class InvestrendTheme extends InheritedWidget {
     }
   }
 
-  static Future<Object> pushScreenTrade(BuildContext context,bool hasAccount, {OrderType type = OrderType.Buy, PriceLot initialPriceLot }){
+  static Future<Object> pushScreenTrade(BuildContext context, bool hasAccount,
+      {OrderType type = OrderType.Buy, PriceLot initialPriceLot}) {
     //bool hasAccount = context.read(dataHolderChangeNotifier).user.accountSize() > 0;
-    if(hasAccount){
-      if(context.read(propertiesNotifier).isNeedPinTrading()){
+    if (hasAccount) {
+      if (context.read(propertiesNotifier).isNeedPinTrading()) {
         Future result = Navigator.push(
             context,
             CupertinoPageRoute(
@@ -1355,34 +1492,42 @@ class InvestrendTheme extends InheritedWidget {
               settings: RouteSettings(name: '/login_pin'),
             ));
         result.then((value) {
-          if(value is TradingHttpException){
+          if (value is TradingHttpException) {
             InvestrendTheme.of(context).showDialogInvalidSession(context);
-          }else if(value is String){
-            if(StringUtils.equalsIgnoreCase(value, PIN_SUCCESS)){
+          } else if (value is String) {
+            if (StringUtils.equalsIgnoreCase(value, PIN_SUCCESS)) {
               return Navigator.push(
                   context,
                   CupertinoPageRoute(
-                    builder: (_) => ScreenTrade(type, initialPriceLot: initialPriceLot,), //PriceLot(close, 0)
+                    builder: (_) => ScreenTrade(
+                      type,
+                      initialPriceLot: initialPriceLot,
+                    ), //PriceLot(close, 0)
                     settings: RouteSettings(name: '/trade'),
                   ));
             }
           }
         });
-      }else{
+      } else {
         return Navigator.push(
             context,
             CupertinoPageRoute(
-              builder: (_) => ScreenTrade(type, initialPriceLot: initialPriceLot,), //PriceLot(close, 0)
+              builder: (_) => ScreenTrade(
+                type,
+                initialPriceLot: initialPriceLot,
+              ), //PriceLot(close, 0)
               settings: RouteSettings(name: '/trade'),
             ));
       }
-
-    }else{
-      InvestrendTheme.of(context).showInfoDialog(context, title: 'info_label'.tr(), content: 'no_account_found_message'.tr());
+    } else {
+      InvestrendTheme.of(context).showInfoDialog(context,
+          title: 'info_label'.tr(), content: 'no_account_found_message'.tr());
     }
-
   }
-  static Future<Object> push(BuildContext context, Widget screen, ScreenTransition transition, String routeName, {int durationMilisecond}) {
+
+  static Future<Object> push(BuildContext context, Widget screen,
+      ScreenTransition transition, String routeName,
+      {int durationMilisecond}) {
     switch (transition) {
       case ScreenTransition.SlideLeft:
         {
@@ -1390,10 +1535,13 @@ class InvestrendTheme extends InheritedWidget {
             context,
             PageRouteBuilder(
               settings: RouteSettings(name: routeName),
-              transitionDuration: Duration(milliseconds: durationMilisecond??1000),
+              transitionDuration:
+                  Duration(milliseconds: durationMilisecond ?? 1000),
               pageBuilder: (context, animation1, animation2) => screen,
-              transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                return AnimationCreator.transitionSlideLeft(context, animation, secondaryAnimation, child);
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                return AnimationCreator.transitionSlideLeft(
+                    context, animation, secondaryAnimation, child);
               },
             ),
           );
@@ -1405,10 +1553,13 @@ class InvestrendTheme extends InheritedWidget {
             context,
             PageRouteBuilder(
               settings: RouteSettings(name: routeName),
-              transitionDuration: Duration(milliseconds: durationMilisecond??1000),
+              transitionDuration:
+                  Duration(milliseconds: durationMilisecond ?? 1000),
               pageBuilder: (context, animation1, animation2) => screen,
-              transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                return AnimationCreator.transitionSlideRight(context, animation, secondaryAnimation, child);
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                return AnimationCreator.transitionSlideRight(
+                    context, animation, secondaryAnimation, child);
               },
             ),
           );
@@ -1421,10 +1572,13 @@ class InvestrendTheme extends InheritedWidget {
             context,
             PageRouteBuilder(
               settings: RouteSettings(name: routeName),
-              transitionDuration: Duration(milliseconds: durationMilisecond??1000),
+              transitionDuration:
+                  Duration(milliseconds: durationMilisecond ?? 1000),
               pageBuilder: (context, animation1, animation2) => screen,
-              transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                return AnimationCreator.transitionSlideUp(context, animation, secondaryAnimation, child);
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                return AnimationCreator.transitionSlideUp(
+                    context, animation, secondaryAnimation, child);
               },
             ),
           );
@@ -1436,10 +1590,13 @@ class InvestrendTheme extends InheritedWidget {
             context,
             PageRouteBuilder(
               settings: RouteSettings(name: routeName),
-              transitionDuration: Duration(milliseconds: durationMilisecond??1000),
+              transitionDuration:
+                  Duration(milliseconds: durationMilisecond ?? 1000),
               pageBuilder: (context, animation1, animation2) => screen,
-              transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                return AnimationCreator.transitionSlideDown(context, animation, secondaryAnimation, child);
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                return AnimationCreator.transitionSlideDown(
+                    context, animation, secondaryAnimation, child);
               },
             ),
           );
@@ -1453,9 +1610,12 @@ class InvestrendTheme extends InheritedWidget {
             context,
             PageRouteBuilder(
               settings: RouteSettings(name: routeName),
-              transitionDuration: Duration(milliseconds: durationMilisecond??1000),
+              transitionDuration:
+                  Duration(milliseconds: durationMilisecond ?? 1000),
               pageBuilder: (context, animation1, animation2) => screen,
-              transitionsBuilder: (context, animation, secondaryAnimation, child) => FadeTransition(
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) =>
+                      FadeTransition(
                 opacity: animation,
                 child: child,
               ),
@@ -1476,9 +1636,9 @@ class InvestrendTheme extends InheritedWidget {
     //super.dispose();
   }
 
-  void logoutToLoginScreen(BuildContext context, {bool clearToken=true}) {
+  void logoutToLoginScreen(BuildContext context, {bool clearToken = true}) {
     context.read(dataHolderChangeNotifier).isLogged = false;
-    if(clearToken) {
+    if (clearToken) {
       Token token = Token('', '');
       token.save().whenComplete(() {
         context.read(managerDatafeedNotifier).disconnect(info: 'logout');
@@ -1487,77 +1647,60 @@ class InvestrendTheme extends InheritedWidget {
           print('popUntil : ' + route.toString());
           return route.isFirst;
         });
-        InvestrendTheme.pushReplacement(context, ScreenLogin(), ScreenTransition.Fade, '/login');
+        InvestrendTheme.pushReplacement(
+            context, ScreenLogin(), ScreenTransition.Fade, '/login');
       });
-    }else {
+    } else {
       context.read(managerDatafeedNotifier).disconnect(info: 'logout');
       context.read(managerEventNotifier).disconnect(info: 'logout');
       Navigator.popUntil(context, (route) {
         print('popUntil : ' + route.toString());
         return route.isFirst;
       });
-      InvestrendTheme.pushReplacement(context, ScreenLogin(autoLogon: false,), ScreenTransition.Fade, '/login');
+      InvestrendTheme.pushReplacement(
+          context,
+          ScreenLogin(
+            autoLogon: false,
+          ),
+          ScreenTransition.Fade,
+          '/login');
     }
-
   }
 
-
-  void showDialogInvalidSession(BuildContext context,{VoidCallback onClosePressed, String message, String title, bool checkLogged=true}) {
-
-    if(checkLogged && !context.read(dataHolderChangeNotifier).isLogged ){
+  void showDialogInvalidSession(BuildContext context,
+      {VoidCallback onClosePressed,
+      String message,
+      String title,
+      bool checkLogged = true}) {
+    if (checkLogged && !context.read(dataHolderChangeNotifier).isLogged) {
       return;
     }
 
     context.read(dataHolderChangeNotifier).isLogged = false;
-    context.read(managerDatafeedNotifier).disconnect(info: 'paused', );
-    context.read(managerEventNotifier).disconnect(info: 'paused', );
+    context.read(managerDatafeedNotifier).disconnect(
+          info: 'paused',
+        );
+    context.read(managerEventNotifier).disconnect(
+          info: 'paused',
+        );
     showDialog<String>(
       context: context,
       builder: (BuildContext context) => new WillPopScope(
         onWillPop: () async => false,
         child: AlertDialog(
           title: Text(title ?? 'info_label'.tr()),
-          content: Text(message ?? 'session_invalid_error_label'.tr(),style: InvestrendTheme.of(context).small_w400),
+          content: Text(message ?? 'session_invalid_error_label'.tr(),
+              style: InvestrendTheme.of(context).small_w400),
           actions: <Widget>[
             TextButton(
               child: Text(
                 'button_close'.tr(),
                 style: TextStyle(color: Colors.red),
               ),
-              onPressed: onClosePressed ?? () {
-                logoutToLoginScreen(context);
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-  void showDialogLogout(BuildContext context,{VoidCallback onClosePressed, String message, String title, bool checkLogged=true}) {
-
-    if(checkLogged && !context.read(dataHolderChangeNotifier).isLogged ){
-      return;
-    }
-
-    context.read(dataHolderChangeNotifier).isLogged = false;
-    context.read(managerDatafeedNotifier).disconnect(info: 'paused', );
-    context.read(managerEventNotifier).disconnect(info: 'paused', );
-    showDialog<String>(
-      context: context,
-      builder: (BuildContext context) => new WillPopScope(
-        onWillPop: () async => false,
-        child: AlertDialog(
-          title: Text(title ?? 'info_label'.tr()),
-          content: Text(message ?? '-',style: InvestrendTheme.of(context).small_w400),
-          actions: <Widget>[
-            TextButton(
-              child: Text(
-                'button_close'.tr(),
-                style: TextStyle(color: Colors.red),
-              ),
-              onPressed: onClosePressed ?? () {
-                logoutToLoginScreen(context,clearToken: false);
-              },
+              onPressed: onClosePressed ??
+                  () {
+                    logoutToLoginScreen(context);
+                  },
             ),
           ],
         ),
@@ -1565,9 +1708,47 @@ class InvestrendTheme extends InheritedWidget {
     );
   }
 
+  void showDialogLogout(BuildContext context,
+      {VoidCallback onClosePressed,
+      String message,
+      String title,
+      bool checkLogged = true}) {
+    if (checkLogged && !context.read(dataHolderChangeNotifier).isLogged) {
+      return;
+    }
+
+    context.read(dataHolderChangeNotifier).isLogged = false;
+    context.read(managerDatafeedNotifier).disconnect(
+          info: 'paused',
+        );
+    context.read(managerEventNotifier).disconnect(
+          info: 'paused',
+        );
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => new WillPopScope(
+        onWillPop: () async => false,
+        child: AlertDialog(
+          title: Text(title ?? 'info_label'.tr()),
+          content: Text(message ?? '-',
+              style: InvestrendTheme.of(context).small_w400),
+          actions: <Widget>[
+            TextButton(
+              child: Text(
+                'button_close'.tr(),
+                style: TextStyle(color: Colors.red),
+              ),
+              onPressed: onClosePressed ??
+                  () {
+                    logoutToLoginScreen(context, clearToken: false);
+                  },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
-
-
 
 enum ScreenTransition { Fade, SlideUp, SlideLeft, SlideDown, SlideRight }
 // class InvestrendCustomTheme {

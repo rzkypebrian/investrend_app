@@ -1,10 +1,8 @@
 import 'dart:async';
 
-import 'package:Investrend/component/avatar.dart';
 import 'package:Investrend/component/bottom_sheet/bottom_sheet_watchlist.dart';
 import 'package:Investrend/component/button_order.dart';
 import 'package:Investrend/component/component_app_bar.dart';
-import 'package:Investrend/component/component_creator.dart';
 import 'package:Investrend/objects/data_object.dart';
 import 'package:Investrend/objects/riverpod_change_notifier.dart';
 import 'package:Investrend/objects/serializeable.dart';
@@ -17,15 +15,11 @@ import 'package:Investrend/screens/stock_detail/screen_stock_detail_key_statisti
 import 'package:Investrend/screens/stock_detail/screen_stock_detail_news.dart';
 import 'package:Investrend/screens/stock_detail/screen_stock_detail_overview.dart';
 import 'package:Investrend/screens/stock_detail/screen_stock_detail_profiles.dart';
-import 'package:Investrend/screens/trade/screen_trade.dart';
-import 'package:Investrend/utils/connection_services.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:Investrend/utils/string_utils.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'dart:io' show Platform;
 
 class ScreenStockDetail extends StatefulWidget {
   const ScreenStockDetail({Key key}) : super(key: key);
@@ -174,14 +168,14 @@ class _ScreenStockDetailState extends BaseStateWithTabs<ScreenStockDetail> {
         data.length >
             5 /* && data.first == 'III' && data.elementAt(1) == 'Q'*/) {
       final String HEADER = data[0];
-      final String TYPE_SUMMARY = data[1];
+      final String typeSummary = data[1];
       final String start = data[2];
       final String end = data[3];
       final String stockCode = data[4];
       final String boardCode = data[5];
       String codeBoard = stockCode + '.' + boardCode;
       String channelData = DatafeedType.Summary.key + '.' + codeBoard;
-      if (HEADER == 'III' && TYPE_SUMMARY == 'Q' && channel == channelData) {
+      if (HEADER == 'III' && typeSummary == 'Q' && channel == channelData) {
         return true;
       }
     }
@@ -366,12 +360,12 @@ class _ScreenStockDetailState extends BaseStateWithTabs<ScreenStockDetail> {
     } else {
       _mainVisibilityListener = () {
         if (mounted) {
-          bool main_active = context
+          bool mainActive = context
               .read(stockDetailScreenVisibilityChangeNotifier)
               .isStockDetailActive();
           print(
-              routeName + ' mainVisibilityListener main_active : $main_active');
-          if (main_active) {
+              routeName + ' mainVisibilityListener main_active : $mainActive');
+          if (mainActive) {
             /* 2021-10-08 MOVING to Streaming
             doUpdate(pullToRefresh: true);
              */
@@ -435,8 +429,8 @@ class _ScreenStockDetailState extends BaseStateWithTabs<ScreenStockDetail> {
     print('onSlideRename [$index] : ' + toRename.name);
     controller.text = toRename.name;
     String title = 'rename_watchlist_title'.tr();
-    String action_save = 'button_save'.tr();
-    String action_cancel = 'button_cancel'.tr();
+    String actionSave = 'button_save'.tr();
+    String actionCancel = 'button_cancel'.tr();
 
     VoidCallback onPressedYes = () {
       if (StringUtils.isEmtpy(controller.text)) {
@@ -473,8 +467,8 @@ class _ScreenStockDetailState extends BaseStateWithTabs<ScreenStockDetail> {
     };
     InvestrendTheme.of(context).showDialogInputPlatform(
         context, controller, title,
-        buttonYes: action_save,
-        buttonNo: action_cancel,
+        buttonYes: actionSave,
+        buttonNo: actionCancel,
         onPressedYes: onPressedYes,
         onPressedNo: onPressedNo,
         maxInputLength: InvestrendTheme.MAX_WATCHLIST_NAME_CHARACTER);
@@ -490,8 +484,8 @@ class _ScreenStockDetailState extends BaseStateWithTabs<ScreenStockDetail> {
 
     String content =
         'confirmation_remove_label'.tr() + '\n\'' + toDelete.name + '\' ?';
-    String action_save = 'button_yes'.tr();
-    String action_cancel = 'button_cancel'.tr();
+    String actionSave = 'button_yes'.tr();
+    String actionCancel = 'button_cancel'.tr();
 
     VoidCallback onPressedYes = () {
       Navigator.of(context).pop();
@@ -509,8 +503,8 @@ class _ScreenStockDetailState extends BaseStateWithTabs<ScreenStockDetail> {
     };
 
     InvestrendTheme.of(context).showDialogPlatform(context, title, content,
-        buttonYes: action_save,
-        buttonNo: action_cancel,
+        buttonYes: actionSave,
+        buttonNo: actionCancel,
         onPressedYes: onPressedYes,
         onPressedNo: onPressedNo);
     /*
@@ -593,8 +587,8 @@ class _ScreenStockDetailState extends BaseStateWithTabs<ScreenStockDetail> {
       InvestrendTheme.of(context).showSnackBar(context, errorFull);
     } else {
       String title = 'new_watchlist_title'.tr();
-      String action_save = 'button_save'.tr();
-      String action_cancel = 'button_cancel'.tr();
+      String actionSave = 'button_save'.tr();
+      String actionCancel = 'button_cancel'.tr();
 
       VoidCallback onPressedYes = () {
         if (StringUtils.isEmtpy(controller.text)) {
@@ -637,8 +631,8 @@ class _ScreenStockDetailState extends BaseStateWithTabs<ScreenStockDetail> {
 
       InvestrendTheme.of(context).showDialogInputPlatform(
           context, controller, title,
-          buttonYes: action_save,
-          buttonNo: action_cancel,
+          buttonYes: actionSave,
+          buttonNo: actionCancel,
           onPressedYes: onPressedYes,
           onPressedNo: onPressedNo,
           maxInputLength: InvestrendTheme.MAX_WATCHLIST_NAME_CHARACTER);
@@ -855,7 +849,7 @@ class _ScreenStockDetailState extends BaseStateWithTabs<ScreenStockDetail> {
     }
 
     return AppBar(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       elevation: elevation,
       shadowColor: shadowColor,
       centerTitle: true,
@@ -1007,7 +1001,7 @@ class _ScreenStockDetailState extends BaseStateWithTabs<ScreenStockDetail> {
   }
 
   Widget build2(BuildContext context) {
-    final Color background = Theme.of(context).backgroundColor;
+    final Color background = Theme.of(context).colorScheme.background;
     final Color fill = InvestrendTheme.of(context).blackAndWhite;
     final List<Color> gradient = [
       background,

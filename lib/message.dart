@@ -3,7 +3,6 @@
 
 import 'package:Investrend/component/component_app_bar.dart';
 import 'package:Investrend/objects/data_object.dart';
-import 'package:Investrend/utils/connection_services.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:Investrend/utils/string_utils.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -46,13 +45,13 @@ class _ScreenMessageState extends State<ScreenMessage> {
 
   Future<String> reportNotification() async {
 
-    String notif_type = ''; // INBOX  BROADCAST
-    String notif_id   = ''; // ib_id  bc_id
+    String notifType = ''; // INBOX  BROADCAST
+    String notifId   = ''; // ib_id  bc_id
 
     //Map map = Map();
     if(widget.baseMessage != null){
-      notif_type = widget.baseMessage.type(); // INBOX  BROADCAST
-      notif_id   = widget.baseMessage.id(); // ib_id  bc_id
+      notifType = widget.baseMessage.type(); // INBOX  BROADCAST
+      notifId   = widget.baseMessage.id(); // ib_id  bc_id
     }else{
       MessageArguments args;
       RemoteMessage message;
@@ -63,8 +62,8 @@ class _ScreenMessageState extends State<ScreenMessage> {
       if(message != null && message.data != null && message.data.isNotEmpty){
         //map.addAll(message.data);
 
-        notif_type = message.data['type']; // INBOX  BROADCAST
-        notif_id   = message.data['notif_id']; // ib_id  bc_id
+        notifType = message.data['type']; // INBOX  BROADCAST
+        notifId   = message.data['notif_id']; // ib_id  bc_id
       }
     }
     //'body_lenght|recipient|time|type|notif_id', '29|richy|2021-11-08 22:40:20|INBOX|123'
@@ -76,19 +75,19 @@ class _ScreenMessageState extends State<ScreenMessage> {
     await myDevice.load();
     try{
 
-      String device_id  = myDevice.unique_id;
-      if( !StringUtils.isEmtpy(notif_type)
-          && !StringUtils.isEmtpy(notif_id)
-          && !StringUtils.isEmtpy(device_id)
+      String deviceId  = myDevice.unique_id;
+      if( !StringUtils.isEmtpy(notifType)
+          && !StringUtils.isEmtpy(notifId)
+          && !StringUtils.isEmtpy(deviceId)
         ){
-        final result = await InvestrendTheme.datafeedHttp.reportNotification(notif_type, notif_id, device_id,action: 'read');
+        final result = await InvestrendTheme.datafeedHttp.reportNotification(notifType, notifId, deviceId,action: 'read');
         if(result != null ){
           print(routeName+' reportNotification got --> '+result.toString());
           return result;
         }
         return 'No Response';
       }else{
-        print(routeName + ' reportNotification Invalid  notif_type : $notif_type  notif_id : $notif_id  device_id : $device_id');
+        print(routeName + ' reportNotification Invalid  notif_type : $notifType  notif_id : $notifId  device_id : $deviceId');
         return 'Invalid';
       }
     }catch(error){
@@ -185,12 +184,12 @@ class _ScreenMessageState extends State<ScreenMessage> {
 
 
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
         elevation: elevation,
         shadowColor: shadowColor,
         centerTitle: true,
-        backgroundColor: Theme.of(context).backgroundColor,
+        backgroundColor: Theme.of(context).colorScheme.background,
         //title: Text(message.messageId),
         title: AppBarTitleText('message_label'.tr()),
         // actions: [
@@ -410,11 +409,11 @@ class MessageView extends StatelessWidget {
       body = notification.body;
     }
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
         elevation: elevation,
         shadowColor: shadowColor,
-        backgroundColor: Theme.of(context).backgroundColor,
+        backgroundColor: Theme.of(context).colorScheme.background,
         centerTitle: true,
         //title: Text(message.messageId),
         title: AppBarTitleText('message_label'.tr()),

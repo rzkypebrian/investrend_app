@@ -1,6 +1,5 @@
 import 'package:Investrend/component/component_creator.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class CardDataWithFilter<T> extends StatelessWidget {
   final EdgeInsetsGeometry margin;

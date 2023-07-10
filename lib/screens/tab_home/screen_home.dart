@@ -4,10 +4,8 @@ import 'dart:math';
 import 'package:Investrend/component/button_account.dart';
 import 'package:Investrend/component/button_banner_open_account.dart';
 import 'package:Investrend/component/button_tab_switch.dart';
-import 'package:Investrend/component/cards/card_competitions.dart';
 import 'package:Investrend/component/cards/card_ipo.dart';
 import 'package:Investrend/component/cards/card_news.dart';
-import 'package:Investrend/component/cards/card_profiles.dart';
 import 'package:Investrend/component/cards/card_stock_themes.dart';
 import 'package:Investrend/component/component_creator.dart';
 import 'package:Investrend/component/empty_label.dart';
@@ -20,15 +18,12 @@ import 'package:Investrend/objects/class_value_notifier.dart';
 import 'package:Investrend/objects/data_object.dart';
 import 'package:Investrend/objects/home_objects.dart';
 import 'package:Investrend/objects/riverpod_change_notifier.dart';
-import 'package:Investrend/objects/sosmed_object.dart';
 import 'package:Investrend/objects/iii_objects.dart';
 import 'package:Investrend/screens/base/base_state.dart';
-import 'package:Investrend/utils/connection_services.dart';
 import 'package:Investrend/utils/debug_writer.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:Investrend/utils/string_utils.dart';
 import 'package:Investrend/utils/ui_helper.dart';
-import 'package:Investrend/utils/utils.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -43,18 +38,18 @@ class WrapperHomeNotifier {
   BriefingNotifier briefingNotifier = BriefingNotifier(Briefing.createBasic());
 
   HomeIndicesNotifier indicesNotifier = HomeIndicesNotifier(HomeIndicesData());
-  HomeCommoditiesNotifier commoditiesNotifier = HomeCommoditiesNotifier(HomeCommoditiesData());
-  HomeCurrenciesNotifier currenciesNotifier = HomeCurrenciesNotifier(HomeCurrenciesData());
+  HomeCommoditiesNotifier commoditiesNotifier =
+      HomeCommoditiesNotifier(HomeCommoditiesData());
+  HomeCurrenciesNotifier currenciesNotifier =
+      HomeCurrenciesNotifier(HomeCurrenciesData());
   HomeCryptoNotifier cryptoNotifier = HomeCryptoNotifier(HomeCryptoData());
 
-  StockPositionNotifier stockPositionNotifier = StockPositionNotifier(new StockPosition('', 0, 0, 0, 0, 0, 0, List.empty(growable: true)));
+  StockPositionNotifier stockPositionNotifier = StockPositionNotifier(
+      new StockPosition('', 0, 0, 0, 0, 0, 0, List.empty(growable: true)));
   ValueNotifier<int> buttonPortfolioRankNotifier = ValueNotifier<int>(0);
   ValueNotifier<bool> returnNotifier = ValueNotifier<bool>(false);
   ValueNotifier<bool> accountNotifier = ValueNotifier<bool>(false);
   ValueNotifier<bool> hidePortfolioNotifier = ValueNotifier<bool>(false);
-
-
-
 
   void dispose() {
     indicesNotifier.dispose();
@@ -68,7 +63,6 @@ class WrapperHomeNotifier {
     themeNotifier.dispose();
     briefingNotifier.dispose();
     hidePortfolioNotifier.dispose();
-
   }
 }
 
@@ -76,10 +70,12 @@ class ScreenHome extends StatefulWidget {
   final WrapperHomeNotifier wrapperHomeNotifier;
   final BaseValueNotifier<bool> visibilityNotifier;
 
-  const ScreenHome(this.wrapperHomeNotifier, {Key key, this.visibilityNotifier}) : super(key: key);
+  const ScreenHome(this.wrapperHomeNotifier, {Key key, this.visibilityNotifier})
+      : super(key: key);
 
   @override
-  _ScreenHomeState createState() => _ScreenHomeState(this.wrapperHomeNotifier, visibilityNotifier: visibilityNotifier);
+  _ScreenHomeState createState() => _ScreenHomeState(this.wrapperHomeNotifier,
+      visibilityNotifier: visibilityNotifier);
 }
 
 class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
@@ -104,11 +100,12 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
   static const Duration _durationUpdate = Duration(milliseconds: 1000);
   bool _selectedHighest = true;
 
-
   final ItemScrollController itemScrollController = ItemScrollController();
-  final ItemPositionsListener itemPositionsListener = ItemPositionsListener.create();
+  final ItemPositionsListener itemPositionsListener =
+      ItemPositionsListener.create();
 
-  _ScreenHomeState(this.wrapper, {BaseValueNotifier<bool> visibilityNotifier}) : super('/home', visibilityNotifier: visibilityNotifier);
+  _ScreenHomeState(this.wrapper, {BaseValueNotifier<bool> visibilityNotifier})
+      : super('/home', visibilityNotifier: visibilityNotifier);
 
   //ValueNotifier<String> wrapper.accountNotifier = ValueNotifier('Ackerman - Reguler');
   /*
@@ -171,13 +168,14 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
       wrapper.returnNotifier.value = !wrapper.returnNotifier.value;
     });
     wrapper.hidePortfolioNotifier.addListener(() {
-      if(mounted){
-        context.read(propertiesNotifier).properties.saveBool(routeName, PROP_HIDE_PORTFOLIO, wrapper.hidePortfolioNotifier.value);
+      if (mounted) {
+        context.read(propertiesNotifier).properties.saveBool(routeName,
+            PROP_HIDE_PORTFOLIO, wrapper.hidePortfolioNotifier.value);
         wrapper.accountNotifier.value = !wrapper.accountNotifier.value;
       }
     });
-    runPostFrame((){
-      if(!active){
+    runPostFrame(() {
+      if (!active) {
         active = true;
       }
       doUpdate(pullToRefresh: true);
@@ -196,18 +194,18 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
       */
 
       // #1 get properties
-      bool hidePortfolio = context.read(propertiesNotifier).properties.getBool(routeName, PROP_HIDE_PORTFOLIO, false);
-
+      bool hidePortfolio = context
+          .read(propertiesNotifier)
+          .properties
+          .getBool(routeName, PROP_HIDE_PORTFOLIO, false);
 
       // #2 use properties
       wrapper.hidePortfolioNotifier.value = hidePortfolio;
 
       // #3 check properties if changed, then save again
       //if(selectedSort != _sortNotifier.value){
-        //context.read(propertiesNotifier).properties.saveInt(routeName, PROP_SELECTED_SORT, _sortNotifier.value);
+      //context.read(propertiesNotifier).properties.saveInt(routeName, PROP_SELECTED_SORT, _sortNotifier.value);
       //}
-
-
     });
 
     // Future.delayed(Duration(milliseconds: 700), () {
@@ -268,7 +266,8 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
     //     .of(context)
     //     .user
     //     .toString());
-    DebugWriter.info('ScreenHome.didChangeDependencies ' + context.read(dataHolderChangeNotifier).user.toString());
+    DebugWriter.info('ScreenHome.didChangeDependencies ' +
+        context.read(dataHolderChangeNotifier).user.toString());
 
     if (onAccountChange != null) {
       context.read(accountChangeNotifier).removeListener(onAccountChange);
@@ -310,7 +309,7 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
 
   @override
   void dispose() {
-    print(routeName+' dispose');
+    print(routeName + ' dispose');
     // wrapper.briefingNotifier.dispose();
     // wrapper.indicesNotifier.dispose();
     // wrapper.commoditiesNotifier.dispose();
@@ -323,7 +322,6 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
     // wrapper.themeNotifier.dispose();
     //_timer?.cancel();
     _stopTimer();
-
 
     final container = ProviderContainer();
     if (onAccountChange != null) {
@@ -585,46 +583,74 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
   //int participant_size;
   //List participants_avatar;
   List<HomeProfiles> listProfiles = <HomeProfiles>[
-    HomeProfiles('Belvin Tannadi', 'Owner @belvinvvip, komunitas saham retail terbesar di indonesia',
+    HomeProfiles(
+        'Belvin Tannadi',
+        'Owner @belvinvvip, komunitas saham retail terbesar di indonesia',
         'https://www.investrend.co.id/mobile/assets/profiles/profile_1.png'),
-    HomeProfiles('Lo Kheng Hong', 'Lo Kheng Hong sebagai investor saham disebut sebut sebagai Warren Buffet-nya Indonesia.',
+    HomeProfiles(
+        'Lo Kheng Hong',
+        'Lo Kheng Hong sebagai investor saham disebut sebut sebagai Warren Buffet-nya Indonesia.',
         'https://www.investrend.co.id/mobile/assets/profiles/profile_2.png'),
   ];
   List<HomeThemes> listThemes = <HomeThemes>[
-    HomeThemes('Digital Bank', 'Disrupting the financial sector at crazy valuations',
-        'https://www.investrend.co.id/mobile/assets/themes/background_1.png'),
-    HomeThemes('Creative Economy', 'Companies recognaized for their creative contributions to indonesia',
-        'https://www.investrend.co.id/mobile/assets/themes/background_2.png'),
-    HomeThemes('Work from Home', 'Companies that are making social distancing possible',
-        'https://www.investrend.co.id/mobile/assets/themes/background_3.png'),
-    HomeThemes('Focus on Diversity', 'Companies with the most diverse and inclusive composition',
-        'https://www.investrend.co.id/mobile/assets/themes/background_4.png'),
     HomeThemes(
-        'Sports and Beyond', 'Companies in the bussiness of sports', 'https://www.investrend.co.id/mobile/assets/themes/background_5.png'),
-    HomeThemes('Digital Bank', 'Disrupting the financial sector at crazy valuations',
+        'Digital Bank',
+        'Disrupting the financial sector at crazy valuations',
         'https://www.investrend.co.id/mobile/assets/themes/background_1.png'),
-    HomeThemes('Creative Economy', 'Companies recognaized for their creative contributions to indonesia',
+    HomeThemes(
+        'Creative Economy',
+        'Companies recognaized for their creative contributions to indonesia',
         'https://www.investrend.co.id/mobile/assets/themes/background_2.png'),
-    HomeThemes('Work from Home', 'Companies that are making social distancing possible',
+    HomeThemes(
+        'Work from Home',
+        'Companies that are making social distancing possible',
+        'https://www.investrend.co.id/mobile/assets/themes/background_3.png'),
+    HomeThemes(
+        'Focus on Diversity',
+        'Companies with the most diverse and inclusive composition',
+        'https://www.investrend.co.id/mobile/assets/themes/background_4.png'),
+    HomeThemes('Sports and Beyond', 'Companies in the bussiness of sports',
+        'https://www.investrend.co.id/mobile/assets/themes/background_5.png'),
+    HomeThemes(
+        'Digital Bank',
+        'Disrupting the financial sector at crazy valuations',
+        'https://www.investrend.co.id/mobile/assets/themes/background_1.png'),
+    HomeThemes(
+        'Creative Economy',
+        'Companies recognaized for their creative contributions to indonesia',
+        'https://www.investrend.co.id/mobile/assets/themes/background_2.png'),
+    HomeThemes(
+        'Work from Home',
+        'Companies that are making social distancing possible',
         'https://www.investrend.co.id/mobile/assets/themes/background_3.png'),
   ];
   List<HomeCompetition> listCompetition = <HomeCompetition>[
-    HomeCompetition('Kompetisi Keren', 4, 12, 'https://www.investrend.co.id/mobile/assets/competition/background_1.png', <String>[
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmJaEK71AwtaHZvhvBQioHWW2MGi4ukH1_9w&usqp=CAU',
-      'https://cdn130.picsart.com/309744679150201.jpg?to=crop&r=256&q=70',
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQhMUJGKzrxVoM2r8dLjVenLwcP-idh11n5Fw&usqp=CAU',
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHWL4kom23RBdd0GP-xLOsFu-7t-bRAtSGEA&usqp=CAU',
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStgx25x3vrWgwCRz0buSYNf7lII-0TWtcFXg&usqp=CAU',
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSiJinli8IBVIpd5Un3l2uUuMb9iIXihrGobg&usqp=CAU',
-    ]),
-    HomeCompetition('Best of the Best', 3, 15, 'https://www.investrend.co.id/mobile/assets/competition/background_2.png', <String>[
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStgx25x3vrWgwCRz0buSYNf7lII-0TWtcFXg&usqp=CAU',
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStgx25x3vrWgwCRz0buSYNf7lII-0TWtcFXg&usqp=CAU',
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHWL4kom23RBdd0GP-xLOsFu-7t-bRAtSGEA&usqp=CAU',
-      'https://cdn130.picsart.com/309744679150201.jpg?to=crop&r=256&q=70',
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmJaEK71AwtaHZvhvBQioHWW2MGi4ukH1_9w&usqp=CAU',
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQhMUJGKzrxVoM2r8dLjVenLwcP-idh11n5Fw&usqp=CAU',
-    ]),
+    HomeCompetition(
+        'Kompetisi Keren',
+        4,
+        12,
+        'https://www.investrend.co.id/mobile/assets/competition/background_1.png',
+        <String>[
+          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmJaEK71AwtaHZvhvBQioHWW2MGi4ukH1_9w&usqp=CAU',
+          'https://cdn130.picsart.com/309744679150201.jpg?to=crop&r=256&q=70',
+          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQhMUJGKzrxVoM2r8dLjVenLwcP-idh11n5Fw&usqp=CAU',
+          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHWL4kom23RBdd0GP-xLOsFu-7t-bRAtSGEA&usqp=CAU',
+          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStgx25x3vrWgwCRz0buSYNf7lII-0TWtcFXg&usqp=CAU',
+          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSiJinli8IBVIpd5Un3l2uUuMb9iIXihrGobg&usqp=CAU',
+        ]),
+    HomeCompetition(
+        'Best of the Best',
+        3,
+        15,
+        'https://www.investrend.co.id/mobile/assets/competition/background_2.png',
+        <String>[
+          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStgx25x3vrWgwCRz0buSYNf7lII-0TWtcFXg&usqp=CAU',
+          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStgx25x3vrWgwCRz0buSYNf7lII-0TWtcFXg&usqp=CAU',
+          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHWL4kom23RBdd0GP-xLOsFu-7t-bRAtSGEA&usqp=CAU',
+          'https://cdn130.picsart.com/309744679150201.jpg?to=crop&r=256&q=70',
+          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmJaEK71AwtaHZvhvBQioHWW2MGi4ukH1_9w&usqp=CAU',
+          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQhMUJGKzrxVoM2r8dLjVenLwcP-idh11n5Fw&usqp=CAU',
+        ]),
   ];
 
   // void showSnackBar(BuildContext context, String text) {
@@ -1269,14 +1295,17 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
     }
     int selected = context.read(accountChangeNotifier).index;
     //Account account = InvestrendTheme.of(context).user.getAccount(selected);
-    Account account = context.read(dataHolderChangeNotifier).user.getAccount(selected);
+    Account account =
+        context.read(dataHolderChangeNotifier).user.getAccount(selected);
 
     if (account == null) {
       //String text = 'No Account Selected. accountSize : ' + InvestrendTheme.of(context).user.accountSize().toString();
 
       //String text = routeName + ' No Account Selected. accountSize : ' + context.read(dataHolderChangeNotifier).user.accountSize().toString();
       String errorNoAccount = 'error_no_account_selected'.tr();
-      String text = routeName + ' $errorNoAccount. accountSize : ' + context.read(dataHolderChangeNotifier).user.accountSize().toString();
+      String text = routeName +
+          ' $errorNoAccount. accountSize : ' +
+          context.read(dataHolderChangeNotifier).user.accountSize().toString();
 
       InvestrendTheme.of(context).showSnackBar(context, text);
       return;
@@ -1289,12 +1318,16 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
             context.read(dataHolderChangeNotifier).user.username,
             InvestrendTheme.of(context).applicationPlatform,
             InvestrendTheme.of(context).applicationVersion);
-        DebugWriter.information(
-            routeName + ' Got stockPosition ' + stockPosition.accountcode + '   stockList.size : ' + stockPosition.stockListSize().toString());
+        DebugWriter.information(routeName +
+            ' Got stockPosition ' +
+            stockPosition.accountcode +
+            '   stockList.size : ' +
+            stockPosition.stockListSize().toString());
 
         wrapper.stockPositionNotifier.setValue(stockPosition);
       } catch (e) {
-        DebugWriter.information(routeName + ' stockPosition Exception : ' + e.toString());
+        DebugWriter.information(
+            routeName + ' stockPosition Exception : ' + e.toString());
         print(e);
         //print(Trace.from(e));
         handleNetworkError(context, e);
@@ -1318,23 +1351,26 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
     }
   }
 
-  final String PROP_HIDE_PORTFOLIO       = 'hide_portfolio';
+  final String PROP_HIDE_PORTFOLIO = 'hide_portfolio';
 
   Widget createCardPortfolio(BuildContext context) {
-
     return Container(
       // color: Theme.of(context).backgroundColor,
       // elevation: 0.0,
       // borderOnForeground: false,
       // shape: null,
-      margin: EdgeInsets.only(top: InvestrendTheme.cardPaddingVertical, bottom: InvestrendTheme.cardPaddingVertical),
+      margin: EdgeInsets.only(
+          top: InvestrendTheme.cardPaddingVertical,
+          bottom: InvestrendTheme.cardPaddingVertical),
       padding: EdgeInsets.zero,
       child: Column(
         //mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral),
+            padding: const EdgeInsets.only(
+                left: InvestrendTheme.cardPaddingGeneral,
+                right: InvestrendTheme.cardPaddingGeneral),
             //child: ComponentCreator.subtitle(context, 'portfolio_card_title'.tr()),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -1348,21 +1384,21 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
                       if (value) {
                         icon = Icon(
                           Icons.remove_red_eye_outlined,
-                          color: InvestrendTheme
-                              .of(context)
-                              .greyLighterTextColor,
+                          color:
+                              InvestrendTheme.of(context).greyLighterTextColor,
                         );
                       } else {
-                        icon = Icon(Icons.remove_red_eye, color: Theme
-                            .of(context)
-                            .accentColor);
+                        icon = Icon(Icons.remove_red_eye,
+                            color: Theme.of(context).colorScheme.secondary);
                       }
                       return IconButton(
-                        padding: EdgeInsets.all(0),
-                        visualDensity: VisualDensity.compact,
-                          onPressed: (){
-                        wrapper.hidePortfolioNotifier.value =  !wrapper.hidePortfolioNotifier.value;
-                      }, icon: icon);
+                          padding: EdgeInsets.all(0),
+                          visualDensity: VisualDensity.compact,
+                          onPressed: () {
+                            wrapper.hidePortfolioNotifier.value =
+                                !wrapper.hidePortfolioNotifier.value;
+                          },
+                          icon: icon);
                     }),
                 //SizedBox(width: InvestrendTheme.cardPadding,),
               ],
@@ -1370,37 +1406,56 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
           ),
           ButtonAccount(/*wrapper.accountNotifier*/),
           Padding(
-            padding: const EdgeInsets.only(left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral),
+            padding: const EdgeInsets.only(
+                left: InvestrendTheme.cardPaddingGeneral,
+                right: InvestrendTheme.cardPaddingGeneral),
             child: ValueListenableBuilder(
               valueListenable: wrapper.accountNotifier,
               builder: (context, data, child) {
                 User user = context.read(dataHolderChangeNotifier).user;
-                Account activeAccount = user.getAccount(context.read(accountChangeNotifier).index);
+                Account activeAccount =
+                    user.getAccount(context.read(accountChangeNotifier).index);
                 String portfolioValue = ' ';
                 String portfolioGainLoss = ' ';
                 String portfolioGainLossPercentage = ' ';
                 int gainLossIDR = 0;
                 bool hasData = false;
-                TextStyle styleValue = Theme.of(context).textTheme.headline5.copyWith(fontWeight: FontWeight.w600);
-                TextStyle styleGainLoss = InvestrendTheme.of(context).small_w400.copyWith(color: InvestrendTheme.priceTextColor(gainLossIDR));
+                TextStyle styleValue = Theme.of(context)
+                    .textTheme
+                    .headline5
+                    .copyWith(fontWeight: FontWeight.w600);
+                TextStyle styleGainLoss = InvestrendTheme.of(context)
+                    .small_w400
+                    .copyWith(
+                        color: InvestrendTheme.priceTextColor(gainLossIDR));
                 if (activeAccount != null) {
-                  AccountStockPosition accountInfo = context.read(accountsInfosNotifier).getInfo(activeAccount.accountcode);
+                  AccountStockPosition accountInfo = context
+                      .read(accountsInfosNotifier)
+                      .getInfo(activeAccount.accountcode);
                   if (accountInfo != null) {
                     gainLossIDR = accountInfo.totalGL;
-                    portfolioValue = InvestrendTheme.formatMoney(accountInfo.totalMarket, prefixRp: true);
-                    portfolioGainLoss = InvestrendTheme.formatMoney(accountInfo.totalGL, prefixRp: true) +
+                    portfolioValue = InvestrendTheme.formatMoney(
+                        accountInfo.totalMarket,
+                        prefixRp: true);
+                    portfolioGainLoss = InvestrendTheme.formatMoney(
+                            accountInfo.totalGL,
+                            prefixRp: true) +
                         ' (' +
-                        InvestrendTheme.formatPercentChange(accountInfo.totalGLPct, sufixPercent: true) +
+                        InvestrendTheme.formatPercentChange(
+                            accountInfo.totalGLPct,
+                            sufixPercent: true) +
                         ')';
 
-                    if(wrapper.hidePortfolioNotifier.value){
+                    if (wrapper.hidePortfolioNotifier.value) {
                       portfolioValue = '* * * * * * * * * * *';
-                      portfolioGainLoss = '* * * * * *' +
-                          ' (' +
-                          '* * * *' +
-                          ')';
-                      styleValue = styleValue.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor);
-                      styleGainLoss = styleGainLoss.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor);
+                      portfolioGainLoss =
+                          '* * * * * *' + ' (' + '* * * *' + ')';
+                      styleValue = styleValue.copyWith(
+                          color:
+                              InvestrendTheme.of(context).greyDarkerTextColor);
+                      styleGainLoss = styleGainLoss.copyWith(
+                          color:
+                              InvestrendTheme.of(context).greyLighterTextColor);
                     }
                     hasData = true;
                   }
@@ -1412,7 +1467,7 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
                       Text(
                         portfolioValue, //InvestrendTheme.formatMoneyDouble(moneyAccount),
                         //style: Theme.of(context).textTheme.headline5.copyWith(fontWeight: FontWeight.w600),
-                          style: styleValue,
+                        style: styleValue,
                       ),
                       Text(
                         portfolioGainLoss,
@@ -1422,7 +1477,10 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
                     ],
                   );
                 } else {
-                  return Container(width: double.maxFinite, height: 40.0, child: Center(child: EmptyLabel()));
+                  return Container(
+                      width: double.maxFinite,
+                      height: 40.0,
+                      child: Center(child: EmptyLabel()));
                 }
               },
             ),
@@ -1431,8 +1489,12 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
             height: 20.0,
           ),
           Padding(
-            padding: const EdgeInsets.only(left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral),
-            child: WidgetBuyingPower(hideNotifier: wrapper.hidePortfolioNotifier,),
+            padding: const EdgeInsets.only(
+                left: InvestrendTheme.cardPaddingGeneral,
+                right: InvestrendTheme.cardPaddingGeneral),
+            child: WidgetBuyingPower(
+              hideNotifier: wrapper.hidePortfolioNotifier,
+            ),
           ),
 
           /*
@@ -1514,13 +1576,16 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
     Color percentChangeBackgroundColor;
 
     percentText = InvestrendTheme.formatPercentChange(data.percentChange);
-    percentChangeTextColor = InvestrendTheme.changeTextColor(data.percentChange);
-    percentChangeBackgroundColor = InvestrendTheme.priceBackgroundColorDouble(data.percentChange);
+    percentChangeTextColor =
+        InvestrendTheme.changeTextColor(data.percentChange);
+    percentChangeBackgroundColor =
+        InvestrendTheme.priceBackgroundColorDouble(data.percentChange);
 
     return MaterialButton(
       elevation: 0.0,
       splashColor: InvestrendTheme.of(context).tileSplashColor,
-      padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0, bottom: 10.0),
+      padding:
+          EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0, bottom: 10.0),
       color: InvestrendTheme.of(context).tileBackground,
       shape: RoundedRectangleBorder(
         borderRadius: new BorderRadius.circular(10.0),
@@ -1545,14 +1610,17 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
             fit: BoxFit.scaleDown,
             child: Text(
               InvestrendTheme.formatPriceDouble(data.price, showDecimal: false),
-              style: InvestrendTheme.of(context).more_support_w600_compact.copyWith(color: percentChangeTextColor, fontSize: 12.0),
+              style: InvestrendTheme.of(context)
+                  .more_support_w600_compact
+                  .copyWith(color: percentChangeTextColor, fontSize: 12.0),
             ),
           ),
           SizedBox(
             height: 5.0,
           ),
           Container(
-            padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 5.0, bottom: 5.0),
+            padding:
+                EdgeInsets.only(left: 10.0, right: 10.0, top: 5.0, bottom: 5.0),
             decoration: BoxDecoration(
               color: percentChangeBackgroundColor,
               shape: BoxShape.rectangle,
@@ -1562,7 +1630,9 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
               fit: BoxFit.scaleDown,
               child: Text(
                 percentText,
-                style: InvestrendTheme.of(context).more_support_w600_compact.copyWith(color: percentChangeTextColor, fontSize: 12.0),
+                style: InvestrendTheme.of(context)
+                    .more_support_w600_compact
+                    .copyWith(color: percentChangeTextColor, fontSize: 12.0),
               ),
             ),
           ),
@@ -1572,7 +1642,8 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
     );
   }
 
-  Widget getButtonIconVertical(BuildContext context, String image, String text, Color textColor, VoidCallback onPressed) {
+  Widget getButtonIconVertical(BuildContext context, String image, String text,
+      Color textColor, VoidCallback onPressed) {
     return SizedBox(
       width: 55,
       height: 55,
@@ -1606,7 +1677,9 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
                     fit: BoxFit.scaleDown,
                     child: Text(
                       text,
-                      style: InvestrendTheme.of(context).more_support_w400_compact.copyWith(color: textColor),
+                      style: InvestrendTheme.of(context)
+                          .more_support_w400_compact
+                          .copyWith(color: textColor),
                       //style: TextStyle(fontSize: 13.0, color: textColor, fontWeight: FontWeight.normal),
                     ),
                   ),
@@ -1622,8 +1695,10 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
     if (wrapper.briefingNotifier.currentState.notFinished()) {
       List<Widget> childs = List.empty(growable: true);
       childs.add(Padding(
-        padding: const EdgeInsets.only(/*top: cardPadding,*/ bottom: cardPadding),
-        child: ComponentCreator.subtitle(context, 'home_card_briefing_title'.tr()),
+        padding:
+            const EdgeInsets.only(/*top: cardPadding,*/ bottom: cardPadding),
+        child:
+            ComponentCreator.subtitle(context, 'home_card_briefing_title'.tr()),
       ));
 
       if (wrapper.briefingNotifier.currentState.isError()) {
@@ -1647,21 +1722,28 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
       );
     }
 
-    String greeting = value.getGreeting(language: EasyLocalization.of(context).locale.languageCode);
-    greeting = greeting + ' ' + context.read(dataHolderChangeNotifier).user.realname;
+    String greeting = value.getGreeting(
+        language: EasyLocalization.of(context).locale.languageCode);
+    greeting =
+        greeting + ' ' + context.read(dataHolderChangeNotifier).user.realname;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(/*top: cardPadding,*/ bottom: cardPadding),
-          child: ComponentCreator.subtitle(context, value.getTitle(language: EasyLocalization.of(context).locale.languageCode)),
+          padding:
+              const EdgeInsets.only(/*top: cardPadding,*/ bottom: cardPadding),
+          child: ComponentCreator.subtitle(
+              context,
+              value.getTitle(
+                  language: EasyLocalization.of(context).locale.languageCode)),
         ),
         Text(
           greeting,
           style: InvestrendTheme.of(context).small_w400,
         ),
         ColapsedText(
-          text: value.getDescription(language: EasyLocalization.of(context).locale.languageCode),
+          text: value.getDescription(
+              language: EasyLocalization.of(context).locale.languageCode),
           maxLines: 10,
         ),
       ],
@@ -1721,7 +1803,8 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
           ),
           Text(
             'home_card_briefing_world_indices'.tr(),
-            style: InvestrendTheme.of(context).small_w400_compact.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor),
+            style: InvestrendTheme.of(context).small_w400_compact.copyWith(
+                color: InvestrendTheme.of(context).greyDarkerTextColor),
           ),
           SizedBox(
             height: 10.0,
@@ -1797,7 +1880,8 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
           ),
           Text(
             'home_card_briefing_commodities'.tr(),
-            style: InvestrendTheme.of(context).small_w400_compact.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor),
+            style: InvestrendTheme.of(context).small_w400_compact.copyWith(
+                color: InvestrendTheme.of(context).greyDarkerTextColor),
           ),
           SizedBox(
             height: 10.0,
@@ -1812,11 +1896,13 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
                         doUpdate(pullToRefresh: true);
                       },
                     ));
-                  } else if (wrapper.commoditiesNotifier.currentState.isLoading()) {
+                  } else if (wrapper.commoditiesNotifier.currentState
+                      .isLoading()) {
                     return Center(
                       child: CircularProgressIndicator(),
                     );
-                  } else if (wrapper.commoditiesNotifier.currentState.isNoData()) {
+                  } else if (wrapper.commoditiesNotifier.currentState
+                      .isNoData()) {
                     return Center(
                       child: EmptyLabel(),
                     );
@@ -1832,7 +1918,8 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
                 //   return Center(child: EmptyLabel());
                 // }
                 //return gridCommodities(context, value.datas);
-                return GridPriceThree(value.datas, gridCount: 4, marginTile: cardMargin);
+                return GridPriceThree(value.datas,
+                    gridCount: 4, marginTile: cardMargin);
               }),
 
           //gridCommodities(context),
@@ -1842,7 +1929,8 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
           ),
           Text(
             'home_card_briefing_currencies'.tr(),
-            style: InvestrendTheme.of(context).small_w400_compact.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor),
+            style: InvestrendTheme.of(context).small_w400_compact.copyWith(
+                color: InvestrendTheme.of(context).greyDarkerTextColor),
           ),
           SizedBox(
             height: 10.0,
@@ -1857,11 +1945,13 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
                         doUpdate(pullToRefresh: true);
                       },
                     ));
-                  } else if (wrapper.currenciesNotifier.currentState.isLoading()) {
+                  } else if (wrapper.currenciesNotifier.currentState
+                      .isLoading()) {
                     return Center(
                       child: CircularProgressIndicator(),
                     );
-                  } else if (wrapper.currenciesNotifier.currentState.isNoData()) {
+                  } else if (wrapper.currenciesNotifier.currentState
+                      .isNoData()) {
                     return Center(
                       child: EmptyLabel(),
                     );
@@ -1891,7 +1981,8 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
           ),
           Text(
             'home_card_briefing_cryptocurrencies'.tr(),
-            style: InvestrendTheme.of(context).small_w400_compact.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor),
+            style: InvestrendTheme.of(context).small_w400_compact.copyWith(
+                color: InvestrendTheme.of(context).greyDarkerTextColor),
           ),
           SizedBox(
             height: 10.0,
@@ -1986,11 +2077,13 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
     });
   }
 
-  Widget tileThemes(HomeThemes themes, double tileWidth, double tileHeight, double leftPadding) {
+  Widget tileThemes(HomeThemes themes, double tileWidth, double tileHeight,
+      double leftPadding) {
     return Padding(
       padding: EdgeInsets.only(left: leftPadding),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(InvestrendTheme.of(context).tileRoundedRadius),
+        borderRadius: BorderRadius.circular(
+            InvestrendTheme.of(context).tileRoundedRadius),
         //clipper: ClipRect(clipper: ,),
         child: SizedBox(
           width: tileWidth,
@@ -2007,7 +2100,8 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
               Container(
                 width: double.maxFinite,
                 height: double.maxFinite,
-                padding: EdgeInsets.all(InvestrendTheme.of(context).tileRoundedRadius),
+                padding: EdgeInsets.all(
+                    InvestrendTheme.of(context).tileRoundedRadius),
                 decoration: BoxDecoration(
                     gradient: LinearGradient(
                   begin: Alignment.bottomCenter,
@@ -2022,14 +2116,16 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
                 child: Material(
                     color: Colors.transparent,
                     child: InkWell(
-                        splashColor: Theme.of(context).accentColor,
+                        splashColor: Theme.of(context).colorScheme.secondary,
                         onTap: () {
-                          InvestrendTheme.of(context).showSnackBar(context, 'Action Theme detail');
+                          InvestrendTheme.of(context)
+                              .showSnackBar(context, 'Action Theme detail');
                         })),
               ),
               IgnorePointer(
                 child: Padding(
-                  padding: EdgeInsets.all(InvestrendTheme.of(context).tileRoundedRadius),
+                  padding: EdgeInsets.all(
+                      InvestrendTheme.of(context).tileRoundedRadius),
                   child: Column(
                     //crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
@@ -2038,14 +2134,18 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
                       ),
                       Text(
                         themes.name,
-                        style: Theme.of(context).textTheme.headline6.copyWith(color: InvestrendTheme.of(context).textWhite /*Colors.white*/),
+                        style: Theme.of(context).textTheme.headline6.copyWith(
+                            color: InvestrendTheme.of(context)
+                                .textWhite /*Colors.white*/),
                       ),
                       SizedBox(
                         height: 4.0,
                       ),
                       Text(
                         themes.description,
-                        style: Theme.of(context).textTheme.bodyText2.copyWith(color: InvestrendTheme.of(context).textWhite /*Colors.white*/),
+                        style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            color: InvestrendTheme.of(context)
+                                .textWhite /*Colors.white*/),
                       ),
                       SizedBox(
                         height: cardPadding,
@@ -2061,8 +2161,13 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
     );
   }
 
-  TextStyle useFontSize(BuildContext context, TextStyle style, double width, String text, {int tried = 1}) {
-    print(routeName + '.useFontSize  try fontSize  : ' + style.fontSize.toString() + '  width : $width  text : $text  ');
+  TextStyle useFontSize(
+      BuildContext context, TextStyle style, double width, String text,
+      {int tried = 1}) {
+    print(routeName +
+        '.useFontSize  try fontSize  : ' +
+        style.fontSize.toString() +
+        '  width : $width  text : $text  ');
     const double font_step = 1.5;
 
     double widthText = UIHelper.textSize(text, style).width;
@@ -2071,12 +2176,16 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
       style = style.copyWith(fontSize: style.fontSize - font_step);
       return useFontSize(context, style, width, text, tried: tried++);
     } else {
-      print(routeName + '.useFontSize Final fontSize  : ' + style.fontSize.toString() + '  text : $text  tried : $tried');
+      print(routeName +
+          '.useFontSize Final fontSize  : ' +
+          style.fontSize.toString() +
+          '  text : $text  tried : $tried');
       return style;
     }
   }
 
-  Widget gridCommodities(BuildContext context, List<HomeCommodities> listCommodities) {
+  Widget gridCommodities(
+      BuildContext context, List<HomeCommodities> listCommodities) {
     return LayoutBuilder(builder: (context, constrains) {
       print('constrains ' + constrains.maxWidth.toString());
       const int gridCount = 4;
@@ -2087,23 +2196,38 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
       List<Widget> columns = List<Widget>.empty(growable: true);
 
       int countData = listCommodities.length;
-      EdgeInsets padding = EdgeInsets.only(left: 4.0, right: 4.0, top: 8.0, bottom: 8.0);
-      EdgeInsets paddingPercent = EdgeInsets.only(left: 8.0, right: 8.0, top: 4.0, bottom: 4.0);
+      EdgeInsets padding =
+          EdgeInsets.only(left: 4.0, right: 4.0, top: 8.0, bottom: 8.0);
+      EdgeInsets paddingPercent =
+          EdgeInsets.only(left: 8.0, right: 8.0, top: 4.0, bottom: 4.0);
       TextStyle codeStyle = InvestrendTheme.of(context).small_w600_compact;
-      TextStyle priceStyle = InvestrendTheme.of(context).more_support_w600_compact.copyWith(fontSize: 12.0);
-      TextStyle percentStyle = InvestrendTheme.of(context).more_support_w600_compact.copyWith(fontSize: 12.0);
+      TextStyle priceStyle = InvestrendTheme.of(context)
+          .more_support_w600_compact
+          .copyWith(fontSize: 12.0);
+      TextStyle percentStyle = InvestrendTheme.of(context)
+          .more_support_w600_compact
+          .copyWith(fontSize: 12.0);
       double availableWidthForCode = tileWidth - padding.left - padding.right;
-      double availableWidthForPercent = tileWidth - padding.left - padding.right - paddingPercent.left - paddingPercent.right;
+      double availableWidthForPercent = tileWidth -
+          padding.left -
+          padding.right -
+          paddingPercent.left -
+          paddingPercent.right;
 
       for (int i = 0; i < countData; i++) {
         HomeCommodities com = listCommodities.elementAt(i);
         if (com != null) {
           String codeText = com.code;
-          String priceText = InvestrendTheme.formatPriceDouble(com.price, showDecimal: true);
-          String percentText = InvestrendTheme.formatPercentChange(com.percentChange);
-          codeStyle = useFontSize(context, codeStyle, availableWidthForCode, codeText);
-          priceStyle = useFontSize(context, priceStyle, availableWidthForCode, priceText);
-          percentStyle = useFontSize(context, percentStyle, availableWidthForPercent, percentText);
+          String priceText =
+              InvestrendTheme.formatPriceDouble(com.price, showDecimal: true);
+          String percentText =
+              InvestrendTheme.formatPercentChange(com.percentChange);
+          codeStyle =
+              useFontSize(context, codeStyle, availableWidthForCode, codeText);
+          priceStyle = useFontSize(
+              context, priceStyle, availableWidthForCode, priceText);
+          percentStyle = useFontSize(
+              context, percentStyle, availableWidthForPercent, percentText);
         }
       }
       List<Widget> cols = List<Widget>.empty(growable: true);
@@ -2113,10 +2237,14 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
         HomeCommodities com = listCommodities.elementAt(i);
         if (com != null) {
           String codeText = com.code;
-          String priceText = InvestrendTheme.formatPriceDouble(com.price, showDecimal: false);
-          String percentText = InvestrendTheme.formatPercentChange(com.percentChange);
-          Color percentChangeTextColor = InvestrendTheme.changeTextColor(com.percentChange);
-          Color percentChangeBackgroundColor = InvestrendTheme.priceBackgroundColorDouble(com.percentChange);
+          String priceText =
+              InvestrendTheme.formatPriceDouble(com.price, showDecimal: false);
+          String percentText =
+              InvestrendTheme.formatPercentChange(com.percentChange);
+          Color percentChangeTextColor =
+              InvestrendTheme.changeTextColor(com.percentChange);
+          Color percentChangeBackgroundColor =
+              InvestrendTheme.priceBackgroundColorDouble(com.percentChange);
 
           rows.add(TilePriceThree(
             width: tileWidth,
@@ -2151,7 +2279,8 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
     });
   }
 
-  Widget gridCommoditiesBackup(BuildContext context, List<HomeCommodities> listCommodities) {
+  Widget gridCommoditiesBackup(
+      BuildContext context, List<HomeCommodities> listCommodities) {
     return LayoutBuilder(builder: (context, constrains) {
       print('constrains ' + constrains.maxWidth.toString());
       const int gridCount = 4;
@@ -2222,23 +2351,38 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
 
       int countData = listData.length;
 
-      EdgeInsets padding = EdgeInsets.only(left: 4.0, right: 4.0, top: 8.0, bottom: 8.0);
-      EdgeInsets paddingPercent = EdgeInsets.only(left: 8.0, right: 8.0, top: 4.0, bottom: 4.0);
+      EdgeInsets padding =
+          EdgeInsets.only(left: 4.0, right: 4.0, top: 8.0, bottom: 8.0);
+      EdgeInsets paddingPercent =
+          EdgeInsets.only(left: 8.0, right: 8.0, top: 4.0, bottom: 4.0);
       TextStyle codeStyle = InvestrendTheme.of(context).small_w600_compact;
-      TextStyle priceStyle = InvestrendTheme.of(context).more_support_w600_compact.copyWith(fontSize: 12.0);
-      TextStyle percentStyle = InvestrendTheme.of(context).more_support_w600_compact.copyWith(fontSize: 12.0);
+      TextStyle priceStyle = InvestrendTheme.of(context)
+          .more_support_w600_compact
+          .copyWith(fontSize: 12.0);
+      TextStyle percentStyle = InvestrendTheme.of(context)
+          .more_support_w600_compact
+          .copyWith(fontSize: 12.0);
       double availableWidthForCode = tileWidth - padding.left - padding.right;
-      double availableWidthForPercent = tileWidth - padding.left - padding.right - paddingPercent.left - paddingPercent.right;
+      double availableWidthForPercent = tileWidth -
+          padding.left -
+          padding.right -
+          paddingPercent.left -
+          paddingPercent.right;
 
       for (int i = 0; i < countData; i++) {
         HomeCurrencies data = listData.elementAt(i);
         if (data != null) {
           String codeText = data.code;
-          String priceText = InvestrendTheme.formatPriceDouble(data.price, showDecimal: true);
-          String percentText = InvestrendTheme.formatPercentChange(data.percentChange);
-          codeStyle = useFontSize(context, codeStyle, availableWidthForCode, codeText);
-          priceStyle = useFontSize(context, priceStyle, availableWidthForCode, priceText);
-          percentStyle = useFontSize(context, percentStyle, availableWidthForPercent, percentText);
+          String priceText =
+              InvestrendTheme.formatPriceDouble(data.price, showDecimal: true);
+          String percentText =
+              InvestrendTheme.formatPercentChange(data.percentChange);
+          codeStyle =
+              useFontSize(context, codeStyle, availableWidthForCode, codeText);
+          priceStyle = useFontSize(
+              context, priceStyle, availableWidthForCode, priceText);
+          percentStyle = useFontSize(
+              context, percentStyle, availableWidthForPercent, percentText);
         }
       }
       List<Widget> cols = List<Widget>.empty(growable: true);
@@ -2256,10 +2400,14 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
         HomeCurrencies data = listData.elementAt(i);
         if (data != null) {
           String codeText = data.code;
-          String priceText = InvestrendTheme.formatPriceDouble(data.price, showDecimal: false);
-          String percentText = InvestrendTheme.formatPercentChange(data.percentChange);
-          Color percentChangeTextColor = InvestrendTheme.changeTextColor(data.percentChange);
-          Color percentChangeBackgroundColor = InvestrendTheme.priceBackgroundColorDouble(data.percentChange);
+          String priceText =
+              InvestrendTheme.formatPriceDouble(data.price, showDecimal: false);
+          String percentText =
+              InvestrendTheme.formatPercentChange(data.percentChange);
+          Color percentChangeTextColor =
+              InvestrendTheme.changeTextColor(data.percentChange);
+          Color percentChangeBackgroundColor =
+              InvestrendTheme.priceBackgroundColorDouble(data.percentChange);
 
           rows.add(TilePriceThree(
             width: tileWidth,
@@ -2417,27 +2565,43 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
       print('gridCryptoCurrencies availableWidth $availableWidth');
       double tileWidth = availableWidth / gridCount;
       double tileHeight = tileWidth * 0.8;
-      print('gridCryptoCurrencies tileWidth $tileWidth  tileHeight $tileHeight');
+      print(
+          'gridCryptoCurrencies tileWidth $tileWidth  tileHeight $tileHeight');
 
       int countData = listData.length;
 
-      EdgeInsets padding = EdgeInsets.only(left: 4.0, right: 4.0, top: 8.0, bottom: 8.0);
-      EdgeInsets paddingPercent = EdgeInsets.only(left: 8.0, right: 8.0, top: 4.0, bottom: 4.0);
+      EdgeInsets padding =
+          EdgeInsets.only(left: 4.0, right: 4.0, top: 8.0, bottom: 8.0);
+      EdgeInsets paddingPercent =
+          EdgeInsets.only(left: 8.0, right: 8.0, top: 4.0, bottom: 4.0);
       TextStyle codeStyle = InvestrendTheme.of(context).small_w600_compact;
-      TextStyle priceStyle = InvestrendTheme.of(context).more_support_w600_compact.copyWith(fontSize: 12.0);
-      TextStyle percentStyle = InvestrendTheme.of(context).more_support_w600_compact.copyWith(fontSize: 12.0);
+      TextStyle priceStyle = InvestrendTheme.of(context)
+          .more_support_w600_compact
+          .copyWith(fontSize: 12.0);
+      TextStyle percentStyle = InvestrendTheme.of(context)
+          .more_support_w600_compact
+          .copyWith(fontSize: 12.0);
       double availableWidthForCode = tileWidth - padding.left - padding.right;
-      double availableWidthForPercent = tileWidth - padding.left - padding.right - paddingPercent.left - paddingPercent.right;
+      double availableWidthForPercent = tileWidth -
+          padding.left -
+          padding.right -
+          paddingPercent.left -
+          paddingPercent.right;
 
       for (int i = 0; i < countData; i++) {
         HomeCrypto data = listData.elementAt(i);
         if (data != null) {
           String codeText = data.code;
-          String priceText = InvestrendTheme.formatPriceDouble(data.price, showDecimal: true);
-          String percentText = InvestrendTheme.formatPercentChange(data.percentChange);
-          codeStyle = useFontSize(context, codeStyle, availableWidthForCode, codeText);
-          priceStyle = useFontSize(context, priceStyle, availableWidthForCode, priceText);
-          percentStyle = useFontSize(context, percentStyle, availableWidthForPercent, percentText);
+          String priceText =
+              InvestrendTheme.formatPriceDouble(data.price, showDecimal: true);
+          String percentText =
+              InvestrendTheme.formatPercentChange(data.percentChange);
+          codeStyle =
+              useFontSize(context, codeStyle, availableWidthForCode, codeText);
+          priceStyle = useFontSize(
+              context, priceStyle, availableWidthForCode, priceText);
+          percentStyle = useFontSize(
+              context, percentStyle, availableWidthForPercent, percentText);
         }
       }
       List<Widget> cols = List<Widget>.empty(growable: true);
@@ -2455,10 +2619,14 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
         HomeCrypto data = listData.elementAt(i);
         if (data != null) {
           String codeText = data.code;
-          String priceText = InvestrendTheme.formatPriceDouble(data.price, showDecimal: false);
-          String percentText = InvestrendTheme.formatPercentChange(data.percentChange);
-          Color percentChangeTextColor = InvestrendTheme.changeTextColor(data.percentChange);
-          Color percentChangeBackgroundColor = InvestrendTheme.priceBackgroundColorDouble(data.percentChange);
+          String priceText =
+              InvestrendTheme.formatPriceDouble(data.price, showDecimal: false);
+          String percentText =
+              InvestrendTheme.formatPercentChange(data.percentChange);
+          Color percentChangeTextColor =
+              InvestrendTheme.changeTextColor(data.percentChange);
+          Color percentChangeBackgroundColor =
+              InvestrendTheme.priceBackgroundColorDouble(data.percentChange);
 
           rows.add(TilePriceThree(
             width: tileWidth,
@@ -2610,7 +2778,8 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
     });
   }
 
-  Widget tileWorlIndices(BuildContext context, HomeWorldIndices data, bool first) {
+  Widget tileWorlIndices(
+      BuildContext context, HomeWorldIndices data, bool first) {
     double left = first ? 0 : 8.0;
     //double right = end ? 0 : 0.0;
     String priceText;
@@ -2623,7 +2792,8 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
     percentText = InvestrendTheme.formatPercentChange(data.percentChange);
     changeText = InvestrendTheme.formatChange(data.change);
     percentChangeTextColor = InvestrendTheme.changeTextColor(data.change);
-    percentChangeBackgroundColor = InvestrendTheme.priceBackgroundColorDouble(data.change);
+    percentChangeBackgroundColor =
+        InvestrendTheme.priceBackgroundColorDouble(data.change);
     /*
     if (data.percentChange > 0.0) {
       percentText = '+' + formatterNumber.format(data.percentChange) + '%';
@@ -2680,7 +2850,10 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
                     AutoSizeText(
                       priceText,
                       minFontSize: 8.0,
-                      style: InvestrendTheme.of(context).more_support_w600_compact.copyWith(fontSize: 12.0, color: percentChangeTextColor),
+                      style: InvestrendTheme.of(context)
+                          .more_support_w600_compact
+                          .copyWith(
+                              fontSize: 12.0, color: percentChangeTextColor),
                       maxLines: 1,
                     ),
 
@@ -2709,7 +2882,8 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
                 height: 48.0,
                 //color: percentChangeBackgroundColor,
                 margin: EdgeInsets.only(left: 8.0),
-                padding: EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0, bottom: 8.0),
+                padding: EdgeInsets.only(
+                    left: 8.0, right: 8.0, top: 8.0, bottom: 8.0),
                 decoration: BoxDecoration(
                   color: percentChangeBackgroundColor,
                   shape: BoxShape.rectangle,
@@ -2723,14 +2897,20 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
                     AutoSizeText(
                       changeText,
                       minFontSize: 8.0,
-                      style: InvestrendTheme.of(context).more_support_w600_compact.copyWith(fontSize: 12.0, color: percentChangeTextColor),
+                      style: InvestrendTheme.of(context)
+                          .more_support_w600_compact
+                          .copyWith(
+                              fontSize: 12.0, color: percentChangeTextColor),
                       maxLines: 1,
                       textAlign: TextAlign.end,
                     ),
                     AutoSizeText(
                       percentText,
                       minFontSize: 8.0,
-                      style: InvestrendTheme.of(context).more_support_w600_compact.copyWith(fontSize: 12.0, color: percentChangeTextColor),
+                      style: InvestrendTheme.of(context)
+                          .more_support_w600_compact
+                          .copyWith(
+                              fontSize: 12.0, color: percentChangeTextColor),
                       maxLines: 1,
                       textAlign: TextAlign.end,
                     ),
@@ -2753,15 +2933,18 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
     );
   }
 
-  Widget tileCommodities(BuildContext context, HomeCommodities data, bool first, double width) {
+  Widget tileCommodities(
+      BuildContext context, HomeCommodities data, bool first, double width) {
     double left = first ? 0 : 8.0;
     //double right = end ? 0 : 0.0;
     String percentText;
     Color percentChangeTextColor;
     Color percentChangeBackgroundColor;
     percentText = InvestrendTheme.formatPercentChange(data.percentChange);
-    percentChangeTextColor = InvestrendTheme.changeTextColor(data.percentChange);
-    percentChangeBackgroundColor = InvestrendTheme.priceBackgroundColorDouble(data.percentChange);
+    percentChangeTextColor =
+        InvestrendTheme.changeTextColor(data.percentChange);
+    percentChangeBackgroundColor =
+        InvestrendTheme.priceBackgroundColorDouble(data.percentChange);
     /*
     if (data.percentChange > 0) {
       percentText = '+' + formatterNumber.format(data.percentChange) + '%';
@@ -2808,7 +2991,9 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
             AutoSizeText(
               InvestrendTheme.formatPriceDouble(data.price, showDecimal: false),
               minFontSize: 8.0,
-              style: InvestrendTheme.of(context).more_support_w600_compact.copyWith(fontSize: 12.0, color: percentChangeTextColor),
+              style: InvestrendTheme.of(context)
+                  .more_support_w600_compact
+                  .copyWith(fontSize: 12.0, color: percentChangeTextColor),
               maxLines: 1,
             ),
             SizedBox(
@@ -2833,7 +3018,8 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
             //   height: 5.0,
             // ),
             Container(
-              padding: EdgeInsets.only(left: 8.0, right: 8.0, top: 4.0, bottom: 4.0),
+              padding:
+                  EdgeInsets.only(left: 8.0, right: 8.0, top: 4.0, bottom: 4.0),
               decoration: BoxDecoration(
                 color: percentChangeBackgroundColor,
                 shape: BoxShape.rectangle,
@@ -2842,7 +3028,9 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
               child: AutoSizeText(
                 percentText,
                 minFontSize: 8.0,
-                style: InvestrendTheme.of(context).more_support_w600_compact.copyWith(fontSize: 12.0, color: percentChangeTextColor),
+                style: InvestrendTheme.of(context)
+                    .more_support_w600_compact
+                    .copyWith(fontSize: 12.0, color: percentChangeTextColor),
                 maxLines: 1,
               ),
               // child: FittedBox(
@@ -2860,7 +3048,8 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
     );
   }
 
-  Widget tileThreeLayers(BuildContext context, String code, double price, double percentChange, bool first, double width) {
+  Widget tileThreeLayers(BuildContext context, String code, double price,
+      double percentChange, bool first, double width) {
     double left = first ? 0 : 8.0;
     //double right = end ? 0 : 0.0;
     String percentText;
@@ -2869,7 +3058,8 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
 
     percentText = InvestrendTheme.formatPercentChange(percentChange);
     percentChangeTextColor = InvestrendTheme.changeTextColor(percentChange);
-    percentChangeBackgroundColor = InvestrendTheme.priceBackgroundColorDouble(percentChange);
+    percentChangeBackgroundColor =
+        InvestrendTheme.priceBackgroundColorDouble(percentChange);
 
     /*
     if (percentChange > 0) {
@@ -2892,7 +3082,8 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
         elevation: 0.0,
         minWidth: 50.0,
         splashColor: InvestrendTheme.of(context).tileSplashColor,
-        padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0, bottom: 10.0),
+        padding:
+            EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0, bottom: 10.0),
         color: InvestrendTheme.of(context).tileBackground,
         shape: RoundedRectangleBorder(
           borderRadius: new BorderRadius.circular(10.0),
@@ -2915,7 +3106,9 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
             AutoSizeText(
               InvestrendTheme.formatPriceDouble(price, showDecimal: false),
               minFontSize: 8.0,
-              style: InvestrendTheme.of(context).more_support_w600.copyWith(fontSize: 12.0, color: percentChangeTextColor),
+              style: InvestrendTheme.of(context)
+                  .more_support_w600
+                  .copyWith(fontSize: 12.0, color: percentChangeTextColor),
               maxLines: 1,
             ),
             SizedBox(
@@ -2940,7 +3133,8 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
             //   height: 5.0,
             // ),
             Container(
-              padding: EdgeInsets.only(left: 8.0, right: 8.0, top: 4.0, bottom: 4.0),
+              padding:
+                  EdgeInsets.only(left: 8.0, right: 8.0, top: 4.0, bottom: 4.0),
               decoration: BoxDecoration(
                 color: percentChangeBackgroundColor,
                 shape: BoxShape.rectangle,
@@ -2949,7 +3143,9 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
               child: AutoSizeText(
                 percentText,
                 minFontSize: 8.0,
-                style: InvestrendTheme.of(context).more_support_w600.copyWith(fontSize: 12.0, color: percentChangeTextColor),
+                style: InvestrendTheme.of(context)
+                    .more_support_w600
+                    .copyWith(fontSize: 12.0, color: percentChangeTextColor),
                 maxLines: 1,
               ),
               // child: FittedBox(
@@ -3042,7 +3238,8 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
 
   @override
   Widget createBody(BuildContext context, double paddingBottom) {
-    bool hasAccount = context.read(dataHolderChangeNotifier).user.accountSize() > 0;
+    bool hasAccount =
+        context.read(dataHolderChangeNotifier).user.accountSize() > 0;
     List<Widget> childs = [
       hasAccount
           ? createCardPortfolio(context)
@@ -3058,12 +3255,13 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
       ValueListenableBuilder(
           valueListenable: wrapper.returnNotifier,
           builder: (context, value, child) {
-          bool hasAccount = context.read(dataHolderChangeNotifier).user.accountSize() > 0;
-          if (!hasAccount) {
+            bool hasAccount =
+                context.read(dataHolderChangeNotifier).user.accountSize() > 0;
+            if (!hasAccount) {
               return SizedBox(
                 width: 1.0,
               );
-          }
+            }
             // bool isEmpty = listHighest.isEmpty && listLowest.isEmpty;
             // if (isEmpty) {
             //   return SizedBox(
@@ -3091,22 +3289,30 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
                   child: ValueListenableBuilder(
                     valueListenable: wrapper.returnNotifier,
                     builder: (context, value, child) {
-                      bool highest = wrapper.buttonPortfolioRankNotifier.value == 0;
+                      bool highest =
+                          wrapper.buttonPortfolioRankNotifier.value == 0;
                       List content = highest ? listHighest : listLowest;
-                      String emptyMessage = highest ? 'return_highest_empty_label'.tr() : 'return_lowest_empty_label'.tr();
+                      String emptyMessage = highest
+                          ? 'return_highest_empty_label'.tr()
+                          : 'return_lowest_empty_label'.tr();
                       return GridPriceThree(
                         content,
                         gridCount: 3,
-                        stylePrice: InvestrendTheme.of(context).small_w600_compact,
+                        stylePrice:
+                            InvestrendTheme.of(context).small_w600_compact,
                         ratioHeight: 0.8,
                         emptyMessage: emptyMessage,
                         showDecimalPrice: false,
                         onSelected: (code) {
                           if (!StringUtils.isEmtpy(code)) {
-                            Stock stock = InvestrendTheme.storedData.findStock(code);
+                            Stock stock =
+                                InvestrendTheme.storedData.findStock(code);
                             if (stock != null) {
-                              context.read(primaryStockChangeNotifier).setStock(stock);
-                              InvestrendTheme.of(context).showStockDetail(context);
+                              context
+                                  .read(primaryStockChangeNotifier)
+                                  .setStock(stock);
+                              InvestrendTheme.of(context)
+                                  .showStockDetail(context);
                             }
                           }
                         },
@@ -3133,8 +3339,10 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
       // ),
       Consumer(builder: (context, watch, child) {
         final notifier = watch(eipoNotifier);
-        if(notifier.currentState.isNoData()){
-          return SizedBox(width: 1.0,);
+        if (notifier.currentState.isNoData()) {
+          return SizedBox(
+            width: 1.0,
+          );
         }
         return ComponentCreator.dividerCard(context);
       }),
@@ -3169,7 +3377,7 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
 
     return RefreshIndicator(
       color: InvestrendTheme.of(context).textWhite,
-      backgroundColor: Theme.of(context).accentColor,
+      backgroundColor: Theme.of(context).colorScheme.secondary,
       onRefresh: onRefresh,
       /*
         child: ListView(
@@ -3260,13 +3468,17 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
 
   Future doUpdate({bool pullToRefresh = false}) async {
     if (!active) {
-      print(routeName + ' doUpdate ignored active : $active  isVisible : ' + isVisible().toString());
+      print(routeName +
+          ' doUpdate ignored active : $active  isVisible : ' +
+          isVisible().toString());
       return false;
     }
     if (mounted && context != null) {
       bool isForeground = context.read(dataHolderChangeNotifier).isForeground;
-      if(!isForeground){
-        print(routeName + ' doUpdate ignored isForeground : $isForeground  isVisible : ' + isVisible().toString());
+      if (!isForeground) {
+        print(routeName +
+            ' doUpdate ignored isForeground : $isForeground  isVisible : ' +
+            isVisible().toString());
         return false;
       }
     }
@@ -3312,7 +3524,8 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
         setNotifierError(wrapper.briefingNotifier, error.toString());
       }
     }
-    Future<List<StockThemes>> themes = InvestrendTheme.datafeedHttp.fetchThemes();
+    Future<List<StockThemes>> themes =
+        InvestrendTheme.datafeedHttp.fetchThemes();
     themes.then((value) {
       StockThemesData dataTheme = StockThemesData();
       if (value != null) {
@@ -3441,36 +3654,49 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
       return false;
     }
 
-    bool hasAccount = context.read(dataHolderChangeNotifier).user.accountSize() > 0;
+    bool hasAccount =
+        context.read(dataHolderChangeNotifier).user.accountSize() > 0;
     if (hasAccount) {
       //updateStockPositionActiveAccount();
       int selected = context.read(accountChangeNotifier).index;
       //Account account = InvestrendTheme.of(context).user.getAccount(selected);
-      Account account = context.read(dataHolderChangeNotifier).user.getAccount(selected);
+      Account account =
+          context.read(dataHolderChangeNotifier).user.getAccount(selected);
 
       if (account == null) {
         //String text = 'No Account Selected. accountSize : ' + InvestrendTheme.of(context).user.accountSize().toString();
         //String text = routeName + ' No Account Selected. accountSize : ' + context.read(dataHolderChangeNotifier).user.accountSize().toString();
         String errorNoAccount = 'error_no_account_selected'.tr();
-        String text = routeName + ' $errorNoAccount. accountSize : ' + context.read(dataHolderChangeNotifier).user.accountSize().toString();
+        String text = routeName +
+            ' $errorNoAccount. accountSize : ' +
+            context
+                .read(dataHolderChangeNotifier)
+                .user
+                .accountSize()
+                .toString();
         InvestrendTheme.of(context).showSnackBar(context, text);
         return false;
       } else {
         try {
           print(routeName + ' try stockPosition');
-          final stockPosition = await InvestrendTheme.tradingHttp.stock_position(
-              account.brokercode,
-              account.accountcode,
-              context.read(dataHolderChangeNotifier).user.username,
-              InvestrendTheme.of(context).applicationPlatform,
-              InvestrendTheme.of(context).applicationVersion);
-          DebugWriter.information(
-              routeName + ' Got stockPosition ' + stockPosition.accountcode + '   stockList.size : ' + stockPosition.stockListSize().toString());
+          final stockPosition = await InvestrendTheme.tradingHttp
+              .stock_position(
+                  account.brokercode,
+                  account.accountcode,
+                  context.read(dataHolderChangeNotifier).user.username,
+                  InvestrendTheme.of(context).applicationPlatform,
+                  InvestrendTheme.of(context).applicationVersion);
+          DebugWriter.information(routeName +
+              ' Got stockPosition ' +
+              stockPosition.accountcode +
+              '   stockList.size : ' +
+              stockPosition.stockListSize().toString());
           if (mounted) {
             wrapper.stockPositionNotifier.setValue(stockPosition);
           }
         } catch (e) {
-          DebugWriter.information(routeName + ' stockPosition Exception : ' + e.toString());
+          DebugWriter.information(
+              routeName + ' stockPosition Exception : ' + e.toString());
 
           handleNetworkError(context, e);
           return false;
@@ -3494,7 +3720,8 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
       }
 
       try {
-        print('try Summarys : ' + wrapper.stockPositionNotifier.value.stockListSize().toString());
+        print('try Summarys : ' +
+            wrapper.stockPositionNotifier.value.stockListSize().toString());
         if (wrapper.stockPositionNotifier.value.stockListSize() > 0) {
           String codes = '';
           wrapper.stockPositionNotifier.value.stocksList.forEach((element) {
@@ -3505,7 +3732,8 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
             }
           });
 
-          final stockSummarys = await InvestrendTheme.datafeedHttp.fetchStockSummaryMultiple(codes, 'RG');
+          final stockSummarys = await InvestrendTheme.datafeedHttp
+              .fetchStockSummaryMultiple(codes, 'RG');
           listLowest.clear();
           listHighest.clear();
           if (mounted) {
@@ -3514,13 +3742,15 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
               //_summaryNotifier.setData(stockSummary);
               //context.read(stockSummaryChangeNotifier).setData(stockSummary);
               int count = stockSummarys.length;
-              stockSummarys.sort((a, b) => a.percentChange.compareTo(b.percentChange));
+              stockSummarys
+                  .sort((a, b) => a.percentChange.compareTo(b.percentChange));
               int maxLoop = 3;
               for (int i = 0; i < count; i++) {
                 if (i < maxLoop) {
                   StockSummary data = stockSummarys.elementAt(i);
                   if (data.change < 0) {
-                    listLowest.add(HomePortfolio(data.code, data.close.toDouble(), data.percentChange));
+                    listLowest.add(HomePortfolio(
+                        data.code, data.close.toDouble(), data.percentChange));
                   }
                 } else {
                   break;
@@ -3531,7 +3761,8 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
                 if (index < maxLoop) {
                   StockSummary data = stockSummarys.elementAt(i);
                   if (data.change > 0) {
-                    listHighest.add(HomePortfolio(data.code, data.close.toDouble(), data.percentChange));
+                    listHighest.add(HomePortfolio(
+                        data.code, data.close.toDouble(), data.percentChange));
                   }
                   index++;
                 } else {
@@ -3545,7 +3776,8 @@ class _ScreenHomeState extends BaseStateNoTabs<ScreenHome> {
           }
         }
       } catch (e) {
-        DebugWriter.information(routeName + ' Summarys Exception : ' + e.toString());
+        DebugWriter.information(
+            routeName + ' Summarys Exception : ' + e.toString());
         print(e);
       }
     }

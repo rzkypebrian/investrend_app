@@ -1,14 +1,11 @@
 
 import 'package:Investrend/component/component_creator.dart';
-import 'package:Investrend/component/empty_label.dart';
 import 'package:Investrend/component/group_title.dart';
 import 'package:Investrend/component/rows/row_general_price.dart';
-import 'package:Investrend/component/text_button_retry.dart';
 import 'package:Investrend/objects/class_value_notifier.dart';
 import 'package:Investrend/objects/home_objects.dart';
 import 'package:Investrend/screens/base/base_state.dart';
 import 'package:Investrend/screens/screen_main.dart';
-import 'package:Investrend/utils/connection_services.dart';
 import 'package:flutter/material.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
 
@@ -112,7 +109,7 @@ class _ScreenSearchGlobalState extends BaseStateNoTabsWithParentTab<ScreenSearch
       color: InvestrendTheme.of(context).textWhite,
       backgroundColor: Theme
           .of(context)
-          .accentColor,
+          .colorScheme.secondary,
       onRefresh: onRefresh,
       child:ValueListenableBuilder<GroupedData>(
           valueListenable: _groupedNotifier,

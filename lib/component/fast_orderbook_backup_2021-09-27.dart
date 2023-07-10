@@ -532,8 +532,8 @@ class _FastOrderbookState extends State<FastOrderbook> {
       }
     });
 
-    listInvalid.forEach((invalid_price) {
-      data.removeFastPriceLot(invalid_price);
+    listInvalid.forEach((invalidPrice) {
+      data.removeFastPriceLot(invalidPrice);
     });
     listInvalid.clear();
     listValid.clear();
@@ -599,8 +599,8 @@ class _FastOrderbookState extends State<FastOrderbook> {
 
   double useFontSize(BuildContext context, double fontSize, double widthSection, OrderBook value, {int offset = 0}) {
     print('FastOrderbook[' + widget.owner + '].useFontSize Try fontSize  : $fontSize  offset : $offset');
-    TextStyle small_w400 = InvestrendTheme.of(context).small_w400.copyWith(fontSize: fontSize);
-    TextStyle small_w500 = InvestrendTheme.of(context).small_w500.copyWith(fontSize: fontSize);
+    TextStyle smallW400 = InvestrendTheme.of(context).small_w400.copyWith(fontSize: fontSize);
+    TextStyle smallW500 = InvestrendTheme.of(context).small_w500.copyWith(fontSize: fontSize);
     const double font_step = 1.0;
     double widthCell = widthSection / 3;
     int count = min(widget.maxShowLevel, value.countBids());
@@ -623,11 +623,11 @@ class _FastOrderbookState extends State<FastOrderbook> {
 
       if (widget._orderType == OrderType.Buy) {
         String leftText = bidQueue + bidLot + bidPrice;
-        double widthSectionTextLeft = _textSize(leftText, small_w400).width;
+        double widthSectionTextLeft = _textSize(leftText, smallW400).width;
 
         // double widthSectionTextLeft =
         //     _textSize(bidQueue, small_w400).width + _textSize(bidLot, small_w400).width + _textSize(bidPrice, small_w500).width;
-        double widthOffer = _textSize(offerPrice, small_w500).width;
+        double widthOffer = _textSize(offerPrice, smallW500).width;
 
         //bool reduceFontSize = widthSectionTextLeft > widthSection || widthOffer > (widthSection / 3);
         bool reduceFontSize = widthSectionTextLeft > widthSection || widthOffer > widthCell;
@@ -640,12 +640,12 @@ class _FastOrderbookState extends State<FastOrderbook> {
         }
       } else {
         String rightText = offerPrice + offerLot + offerQueue;
-        double widthSectionTextRight = _textSize(rightText, small_w500).width;
+        double widthSectionTextRight = _textSize(rightText, smallW500).width;
 
         // double widthSectionTextRight =
         //     _textSize(offerPrice, small_w500).width + _textSize(offerLot, small_w400).width + _textSize(offerQueue, small_w400).width;
 
-        double widthBid = _textSize(bidPrice, small_w500).width;
+        double widthBid = _textSize(bidPrice, smallW500).width;
 
         //bool reduceFontSize = widthSectionTextRight > widthSection || widthBid > (widthSection / 3);
         bool reduceFontSize = widthSectionTextRight > widthSection || widthBid > widthCell;
@@ -836,8 +836,8 @@ class _FastOrderbookState extends State<FastOrderbook> {
                     decoration: InputDecoration(
                       isDense: true,
                       border: UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey, width: 1.0)),
-                      focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Theme.of(context).accentColor, width: 1.0)),
-                      focusColor: Theme.of(context).accentColor,
+                      focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Theme.of(context).colorScheme.secondary, width: 1.0)),
+                      focusColor: Theme.of(context).colorScheme.secondary,
                       prefixStyle: InvestrendTheme.of(context).inputPrefixStyle,
                       hintStyle: InvestrendTheme.of(context).inputHintStyle,
                       helperStyle: InvestrendTheme.of(context).inputHelperStyle,
@@ -1012,8 +1012,8 @@ class _FastOrderbookState extends State<FastOrderbook> {
                     decoration: InputDecoration(
                       isDense: true,
                       border: UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey, width: 1.0)),
-                      focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Theme.of(context).accentColor, width: 1.0)),
-                      focusColor: Theme.of(context).accentColor,
+                      focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Theme.of(context).colorScheme.secondary, width: 1.0)),
+                      focusColor: Theme.of(context).colorScheme.secondary,
                       prefixStyle: InvestrendTheme.of(context).inputPrefixStyle,
                       hintStyle: InvestrendTheme.of(context).inputHintStyle,
                       helperStyle: InvestrendTheme.of(context).inputHelperStyle,
@@ -1203,8 +1203,8 @@ class _FastOrderbookState extends State<FastOrderbook> {
       decoration: InputDecoration(
         isDense: true,
         border: UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey, width: 1.0)),
-        focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Theme.of(context).accentColor, width: 1.0)),
-        focusColor: Theme.of(context).accentColor,
+        focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Theme.of(context).colorScheme.secondary, width: 1.0)),
+        focusColor: Theme.of(context).colorScheme.secondary,
         prefixStyle: InvestrendTheme.of(context).inputPrefixStyle,
         hintStyle: InvestrendTheme.of(context).inputHintStyle,
         helperStyle: InvestrendTheme.of(context).inputHelperStyle,

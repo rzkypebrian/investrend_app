@@ -56,10 +56,10 @@ class _ScreenProfilePostState extends BaseStateNoTabsWithParentTab<ScreenProfile
     }
     print('reach the bottom');
 
-    String next_page_url = context.read(sosmedFeedChangeNotifier).next_page_url;
-    int current_page = context.read(sosmedFeedChangeNotifier).current_page;
-    int last_page = context.read(sosmedFeedChangeNotifier).last_page;
-    if(current_page == last_page){
+    String nextPageUrl = context.read(sosmedFeedChangeNotifier).next_page_url;
+    int currentPage = context.read(sosmedFeedChangeNotifier).current_page;
+    int lastPage = context.read(sosmedFeedChangeNotifier).last_page;
+    if(currentPage == lastPage){
       if(showedLastPageInfo){
         return;
       }
@@ -71,8 +71,8 @@ class _ScreenProfilePostState extends BaseStateNoTabsWithParentTab<ScreenProfile
       return;
     }
     context.read(sosmedFeedChangeNotifier).showLoadingBottom(true);
-    int next_page = current_page + 1;
-    final result = doUpdate(nextPage: next_page);
+    int nextPage = currentPage + 1;
+    final result = doUpdate(nextPage: nextPage);
   }
   bool showLoadingFirstTime = true;
 
@@ -167,7 +167,7 @@ class _ScreenProfilePostState extends BaseStateNoTabsWithParentTab<ScreenProfile
   Widget createBody(BuildContext context, double paddingBottom) {
     return RefreshIndicator(
       color: InvestrendTheme.of(context).textWhite,
-      backgroundColor: Theme.of(context).accentColor,
+      backgroundColor: Theme.of(context).colorScheme.secondary,
       onRefresh: onRefresh,
       child: Consumer(builder: (context, watch, child) {
         final notifier = watch(sosmedFeedChangeNotifier);
@@ -180,7 +180,7 @@ class _ScreenProfilePostState extends BaseStateNoTabsWithParentTab<ScreenProfile
           );
           */
           if(showLoadingFirstTime){
-            return Center(child: CircularProgressIndicator(color: Theme.of(context).accentColor, backgroundColor: Theme.of(context).accentColor.withOpacity(0.2),));
+            return Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.secondary, backgroundColor: Theme.of(context).colorScheme.secondary.withOpacity(0.2),));
           }else{
             return Center(child: EmptyLabel(text: 'infinity_label️'.tr(),));
           }
@@ -255,9 +255,9 @@ class _ScreenProfilePostState extends BaseStateNoTabsWithParentTab<ScreenProfile
 
               }else{
                 if(notifier.loadingBottom){
-                  return Center(child: CircularProgressIndicator(color: Theme.of(context).accentColor, backgroundColor: Theme.of(context).accentColor.withOpacity(0.2),));
+                  return Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.secondary, backgroundColor: Theme.of(context).colorScheme.secondary.withOpacity(0.2),));
                 }else if(notifier.retryBottom){
-                  return Center(child: TextButton(child: Text('button_retry'.tr(), style: InvestrendTheme.of(context).small_w400_compact.copyWith(color: Theme.of(context).accentColor),), onPressed: (){
+                  return Center(child: TextButton(child: Text('button_retry'.tr(), style: InvestrendTheme.of(context).small_w400_compact.copyWith(color: Theme.of(context).colorScheme.secondary),), onPressed: (){
                     fetchNextPage();
                   },));
                 }else{

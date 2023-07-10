@@ -80,10 +80,10 @@ class _ComposeActivitySellWidgetState extends State<ComposeActivitySellWidget> {
     });
   }
   void updateParameter({int cost}){
-    int buy_price = cost ?? widget.stateTransaction.averagePrice;
-    int sell_price = widget.orderData.normalPriceLot.price;
-    int change = sell_price - buy_price;
-    activityPercent = Utils.calculatePercent(buy_price, sell_price);
+    int buyPrice = cost ?? widget.stateTransaction.averagePrice;
+    int sellPrice = widget.orderData.normalPriceLot.price;
+    int change = sellPrice - buyPrice;
+    activityPercent = Utils.calculatePercent(buyPrice, sellPrice);
 
     if (widget.orderData.isSell()) {
       if (change > 0) {
@@ -149,9 +149,9 @@ class _ComposeActivitySellWidgetState extends State<ComposeActivitySellWidget> {
           InvestrendTheme.of(context).showSnackBar(context, e.message());
           return;
         }else{
-          String network_error_label = 'network_error_label'.tr();
-          network_error_label = network_error_label.replaceFirst("#CODE#", e.code.toString());
-          InvestrendTheme.of(context).showSnackBar(context, network_error_label);
+          String networkErrorLabel = 'network_error_label'.tr();
+          networkErrorLabel = networkErrorLabel.replaceFirst("#CODE#", e.code.toString());
+          InvestrendTheme.of(context).showSnackBar(context, networkErrorLabel);
           return;
         }
       }else{
@@ -175,8 +175,8 @@ class _ComposeActivitySellWidgetState extends State<ComposeActivitySellWidget> {
         ),
         ValueListenableBuilder<int>(
             valueListenable: _averagePriceNotifier,
-            builder: (context, avg_price, child) {
-              if (avg_price == IntFlag.error_value) {
+            builder: (context, avgPrice, child) {
+              if (avgPrice == IntFlag.error_value) {
                 return TextButton(
                     onPressed: () {
                       retrieveCostFromPortfolio();
@@ -185,7 +185,7 @@ class _ComposeActivitySellWidgetState extends State<ComposeActivitySellWidget> {
                       'button_retry'.tr(),
                       style: InvestrendTheme.of(context).more_support_w600_compact.copyWith(color: Colors.red),
                     ));
-              } else if (avg_price == IntFlag.loading_value) {
+              } else if (avgPrice == IntFlag.loading_value) {
                 return CircularProgressIndicator();
               }
               return Column(
@@ -200,8 +200,8 @@ class _ComposeActivitySellWidgetState extends State<ComposeActivitySellWidget> {
                     text: 'sosmed_label_average_price'.tr(), style: InvestrendTheme.of(context).more_support_w400.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor),
                     children: [
                       TextSpan(
-                        text: '   '+InvestrendTheme.formatMoney(avg_price, prefixRp: true),
-                        style: InvestrendTheme.of(context).more_support_w400.copyWith(color: Theme.of(context).accentColor),
+                        text: '   '+InvestrendTheme.formatMoney(avgPrice, prefixRp: true),
+                        style: InvestrendTheme.of(context).more_support_w400.copyWith(color: Theme.of(context).colorScheme.secondary),
                       ),
                     ]
                   )),
@@ -298,11 +298,11 @@ class _ComposePredictionWidgetState extends State<ComposePredictionWidget> {
       updateExpireAt();
     });
     _marketPriceNotifier.addListener(() {
-      int start_price = 0;
+      int startPrice = 0;
       if (_marketPriceNotifier.value == IntFlag.loading_value || _marketPriceNotifier.value == IntFlag.error_value) {
-        start_price = 0;
+        startPrice = 0;
       } else {
-        start_price = _marketPriceNotifier.value;
+        startPrice = _marketPriceNotifier.value;
       }
       widget.state_prediction.start_price = _marketPriceNotifier.value;
     });
@@ -326,24 +326,24 @@ class _ComposePredictionWidgetState extends State<ComposePredictionWidget> {
     // 'sosmed_label_polling_6_month'.tr(), 3
     // 'sosmed_label_polling_1_year'.tr(),  4
     DateTime now = DateTime.now().toUtc();
-    DateTime expired_at;
+    DateTime expiredAt;
     int index = timingNotifier.value;
     if (index == 0) {
-      expired_at = new DateTime.utc(now.year, now.month, now.day + 7, now.hour, now.minute, now.second, now.millisecond, now.microsecond);
+      expiredAt = new DateTime.utc(now.year, now.month, now.day + 7, now.hour, now.minute, now.second, now.millisecond, now.microsecond);
     } else if (index == 1) {
-      expired_at = new DateTime.utc(now.year, now.month + 1, now.day, now.hour, now.minute, now.second, now.millisecond, now.microsecond);
+      expiredAt = new DateTime.utc(now.year, now.month + 1, now.day, now.hour, now.minute, now.second, now.millisecond, now.microsecond);
     } else if (index == 2) {
-      expired_at = new DateTime.utc(now.year, now.month + 3, now.day, now.hour, now.minute, now.second, now.millisecond, now.microsecond);
+      expiredAt = new DateTime.utc(now.year, now.month + 3, now.day, now.hour, now.minute, now.second, now.millisecond, now.microsecond);
     } else if (index == 3) {
-      expired_at = new DateTime.utc(now.year, now.month + 6, now.day, now.hour, now.minute, now.second, now.millisecond, now.microsecond);
+      expiredAt = new DateTime.utc(now.year, now.month + 6, now.day, now.hour, now.minute, now.second, now.millisecond, now.microsecond);
     } else if (index == 4) {
-      expired_at = new DateTime.utc(now.year + 1, now.month, now.day, now.hour, now.minute, now.second, now.millisecond, now.microsecond);
+      expiredAt = new DateTime.utc(now.year + 1, now.month, now.day, now.hour, now.minute, now.second, now.millisecond, now.microsecond);
     } else {
-      expired_at = new DateTime.utc(now.year, now.month + 1, now.day, now.hour, now.minute, now.second, now.millisecond, now.microsecond);
+      expiredAt = new DateTime.utc(now.year, now.month + 1, now.day, now.hour, now.minute, now.second, now.millisecond, now.microsecond);
     }
     print('now : ' + now.toString());
-    print('expired_at : ' + expired_at.toString());
-    widget.state_prediction.expire_at = Utils.formatDate(expired_at);
+    print('expired_at : ' + expiredAt.toString());
+    widget.state_prediction.expire_at = Utils.formatDate(expiredAt);
     print('state_prediction.expired_at : ' + widget.state_prediction.expire_at);
   }
 
@@ -501,7 +501,7 @@ class _ComposePredictionWidgetState extends State<ComposePredictionWidget> {
                               builder: (context, index, child) {
                                 return Text(
                                   timingOptions.elementAt(index),
-                                  style: InvestrendTheme.of(context).more_support_w400_compact.copyWith(color: Theme.of(context).accentColor),
+                                  style: InvestrendTheme.of(context).more_support_w400_compact.copyWith(color: Theme.of(context).colorScheme.secondary),
                                 );
                               }),
                         ],
@@ -511,8 +511,8 @@ class _ComposePredictionWidgetState extends State<ComposePredictionWidget> {
                   ),
                   ValueListenableBuilder<int>(
                     valueListenable: _marketPriceNotifier,
-                    builder: (context, close_price, child) {
-                      if (close_price == IntFlag.error_value) {
+                    builder: (context, closePrice, child) {
+                      if (closePrice == IntFlag.error_value) {
                         return TextButton(
                             onPressed: () {
                               validateStockCode();
@@ -521,7 +521,7 @@ class _ComposePredictionWidgetState extends State<ComposePredictionWidget> {
                               'button_retry'.tr(),
                               style: InvestrendTheme.of(context).more_support_w600_compact.copyWith(color: Colors.red),
                             ));
-                      } else if (close_price == IntFlag.loading_value) {
+                      } else if (closePrice == IntFlag.loading_value) {
                         return CircularProgressIndicator();
                       }
 
@@ -536,8 +536,8 @@ class _ComposePredictionWidgetState extends State<ComposePredictionWidget> {
                             height: 5.0,
                           ),
                           Text(
-                            close_price > 0 ? InvestrendTheme.formatPrice(close_price) : '-',
-                            style: InvestrendTheme.of(context).more_support_w400_compact.copyWith(color: Theme.of(context).accentColor),
+                            closePrice > 0 ? InvestrendTheme.formatPrice(closePrice) : '-',
+                            style: InvestrendTheme.of(context).more_support_w400_compact.copyWith(color: Theme.of(context).colorScheme.secondary),
                           ),
                         ],
                       );
@@ -599,24 +599,24 @@ class _ComposePollWidgetState extends State<ComposePollWidget> {
     // 'sosmed_label_polling_6_month'.tr(), 3
     // 'sosmed_label_polling_1_year'.tr(),  4
     DateTime now = DateTime.now().toUtc();
-    DateTime expired_at;
+    DateTime expiredAt;
     int index = timingNotifier.value;
     if (index == 0) {
-      expired_at = new DateTime.utc(now.year, now.month, now.day + 7, now.hour, now.minute, now.second, now.millisecond, now.microsecond);
+      expiredAt = new DateTime.utc(now.year, now.month, now.day + 7, now.hour, now.minute, now.second, now.millisecond, now.microsecond);
     } else if (index == 1) {
-      expired_at = new DateTime.utc(now.year, now.month + 1, now.day, now.hour, now.minute, now.second, now.millisecond, now.microsecond);
+      expiredAt = new DateTime.utc(now.year, now.month + 1, now.day, now.hour, now.minute, now.second, now.millisecond, now.microsecond);
     } else if (index == 2) {
-      expired_at = new DateTime.utc(now.year, now.month + 3, now.day, now.hour, now.minute, now.second, now.millisecond, now.microsecond);
+      expiredAt = new DateTime.utc(now.year, now.month + 3, now.day, now.hour, now.minute, now.second, now.millisecond, now.microsecond);
     } else if (index == 3) {
-      expired_at = new DateTime.utc(now.year, now.month + 6, now.day, now.hour, now.minute, now.second, now.millisecond, now.microsecond);
+      expiredAt = new DateTime.utc(now.year, now.month + 6, now.day, now.hour, now.minute, now.second, now.millisecond, now.microsecond);
     } else if (index == 4) {
-      expired_at = new DateTime.utc(now.year + 1, now.month, now.day, now.hour, now.minute, now.second, now.millisecond, now.microsecond);
+      expiredAt = new DateTime.utc(now.year + 1, now.month, now.day, now.hour, now.minute, now.second, now.millisecond, now.microsecond);
     } else {
-      expired_at = new DateTime.utc(now.year, now.month + 1, now.day, now.hour, now.minute, now.second, now.millisecond, now.microsecond);
+      expiredAt = new DateTime.utc(now.year, now.month + 1, now.day, now.hour, now.minute, now.second, now.millisecond, now.microsecond);
     }
     print('now : ' + now.toString());
-    print('expired_at : ' + expired_at.toString());
-    widget.state_polls.expire_at = Utils.formatDate(expired_at);
+    print('expired_at : ' + expiredAt.toString());
+    widget.state_polls.expire_at = Utils.formatDate(expiredAt);
     print('state_polls.expired_at : ' + widget.state_polls.expire_at);
   }
 
@@ -706,7 +706,7 @@ class _ComposePollWidgetState extends State<ComposePollWidget> {
               children: [
                 Image.asset(
                   'images/icons/plus.png',
-                  color: Theme.of(context).accentColor,
+                  color: Theme.of(context).colorScheme.secondary,
                   width: 16.0,
                   height: 16.0,
                 ),
@@ -715,7 +715,7 @@ class _ComposePollWidgetState extends State<ComposePollWidget> {
                 ),
                 Text(
                   'sosmed_label_add_option'.tr(),
-                  style: InvestrendTheme.of(context).small_w400_compact.copyWith(color: Theme.of(context).accentColor),
+                  style: InvestrendTheme.of(context).small_w400_compact.copyWith(color: Theme.of(context).colorScheme.secondary),
                 ),
               ],
             )),
@@ -764,7 +764,7 @@ class _ComposePollWidgetState extends State<ComposePollWidget> {
                     builder: (context, index, child) {
                       return Text(
                         timingOptions.elementAt(index),
-                        style: InvestrendTheme.of(context).more_support_w400_compact.copyWith(color: Theme.of(context).accentColor),
+                        style: InvestrendTheme.of(context).more_support_w400_compact.copyWith(color: Theme.of(context).colorScheme.secondary),
                       );
                     }),
               ],
@@ -974,7 +974,7 @@ class _TextFieldCounterState extends State<TextFieldCounter> {
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(14.0),
             borderSide: BorderSide(
-              color: Theme.of(context).accentColor,
+              color: Theme.of(context).colorScheme.secondary,
               width: 0.5,
             ),
           ),
@@ -1025,7 +1025,7 @@ class _TextFieldCounterState extends State<TextFieldCounter> {
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(14.0),
             borderSide: BorderSide(
-              color: Theme.of(context).accentColor,
+              color: Theme.of(context).colorScheme.secondary,
               width: 0.5,
             ),
           ),

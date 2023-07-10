@@ -33,28 +33,31 @@ class ScreenPortfolioStocks extends StatefulWidget {
   final TabController tabController;
   final int tabIndex;
 
-  ScreenPortfolioStocks(this.tabIndex, this.tabController, {Key key}) : super(key: key);
+  ScreenPortfolioStocks(this.tabIndex, this.tabController, {Key key})
+      : super(key: key);
 
   @override
-  _ScreenPortfolioStocksState createState() => _ScreenPortfolioStocksState(tabIndex, tabController);
+  _ScreenPortfolioStocksState createState() =>
+      _ScreenPortfolioStocksState(tabIndex, tabController);
 }
 
-
-class WrapperPortfolioWithSummary{
+class WrapperPortfolioWithSummary {
   StockSummary summary;
   StockPositionDetail portfolio;
-
-
 }
-class _ScreenPortfolioStocksState extends BaseStateNoTabsWithParentTab<ScreenPortfolioStocks> {
+
+class _ScreenPortfolioStocksState
+    extends BaseStateNoTabsWithParentTab<ScreenPortfolioStocks> {
   //ChartNotifier _chartNotifier = ChartNotifier(ChartLineData());
   final SlidableController slidableController = SlidableController();
   final ValueNotifier<int> _sortNotifier = ValueNotifier<int>(0);
   //PortfolioNotifier _portfolioNotifier = PortfolioNotifier(new PortfolioData());
-  StockPositionNotifier _stockPositionNotifier = StockPositionNotifier(new StockPosition('', 0, 0, 0, 0, 0, 0, List.empty(growable: true)));
+  StockPositionNotifier _stockPositionNotifier = StockPositionNotifier(
+      new StockPosition('', 0, 0, 0, 0, 0, 0, List.empty(growable: true)));
   final ValueNotifier<bool> _accountNotifier = ValueNotifier<bool>(false);
 
-  final BaseValueNotifier<bool> _updateListNotifier = BaseValueNotifier<bool>(false);
+  final BaseValueNotifier<bool> _updateListNotifier =
+      BaseValueNotifier<bool>(false);
 
   GroupStyle groupStyle = GroupStyle();
 
@@ -65,50 +68,44 @@ class _ScreenPortfolioStocksState extends BaseStateNoTabsWithParentTab<ScreenPor
   bool canTapRow = true;
 
   List<String> _sort_by_option = [
-
     'portfolio_stock_sort_by_a_to_z'.tr(),
     'portfolio_stock_sort_by_z_to_a'.tr(),
-
     'portfolio_stock_sort_by_movers_highest'.tr(),
     'portfolio_stock_sort_by_movers_lowest'.tr(),
-
     'portfolio_stock_sort_by_market_value_highest'.tr(),
     'portfolio_stock_sort_by_market_value_lowest'.tr(),
-
     'portfolio_stock_sort_by_return_highest'.tr(),
     'portfolio_stock_sort_by_return_lowest'.tr(),
-
     'portfolio_stock_sort_by_return_highest_percent'.tr(),
     'portfolio_stock_sort_by_return_lowest_percent'.tr(),
-
-
   ];
 
-
   _ScreenPortfolioStocksState(int tabIndex, TabController tabController)
-      : super('/portfolio_stocks', tabIndex, tabController, parentTabIndex: Tabs.Portfolio.index);
+      : super('/portfolio_stocks', tabIndex, tabController,
+            parentTabIndex: Tabs.Portfolio.index);
 
-
-  void sort(){
-    switch(_sortNotifier.value){
+  void sort() {
+    switch (_sortNotifier.value) {
       case 0: //a_to_z
         {
           //numbers.sort((a, b) => a.length.compareTo(b.length));
-          _stockPositionNotifier.value.stocksList.sort((a, b) => a.stockCode.compareTo(b.stockCode));
+          _stockPositionNotifier.value.stocksList
+              .sort((a, b) => a.stockCode.compareTo(b.stockCode));
         }
         break;
       case 1: // z_to_a
         {
-          _stockPositionNotifier.value.stocksList.sort((a, b) => b.stockCode.compareTo(a.stockCode));
+          _stockPositionNotifier.value.stocksList
+              .sort((a, b) => b.stockCode.compareTo(a.stockCode));
         }
         break;
       case 2: // movers_highest
         {
           _stockPositionNotifier.value.stocksList.sort((a, b) {
-            StockSummary summary_a = summarys[a.stockCode];
-            StockSummary summary_b = summarys[b.stockCode];
-            if(summary_a != null && summary_b != null){
-              return summary_b.percentChange.compareTo(summary_a.percentChange);
+            StockSummary summaryA = summarys[a.stockCode];
+            StockSummary summaryB = summarys[b.stockCode];
+            if (summaryA != null && summaryB != null) {
+              return summaryB.percentChange.compareTo(summaryA.percentChange);
             }
             return b.stockCode.compareTo(a.stockCode);
           });
@@ -117,10 +114,10 @@ class _ScreenPortfolioStocksState extends BaseStateNoTabsWithParentTab<ScreenPor
       case 3: // movers_lowest
         {
           _stockPositionNotifier.value.stocksList.sort((a, b) {
-            StockSummary summary_a = summarys[a.stockCode];
-            StockSummary summary_b = summarys[b.stockCode];
-            if(summary_a != null && summary_b != null){
-              return summary_a.percentChange.compareTo(summary_b.percentChange);
+            StockSummary summaryA = summarys[a.stockCode];
+            StockSummary summaryB = summarys[b.stockCode];
+            if (summaryA != null && summaryB != null) {
+              return summaryA.percentChange.compareTo(summaryB.percentChange);
             }
             return a.stockCode.compareTo(b.stockCode);
           });
@@ -128,63 +125,82 @@ class _ScreenPortfolioStocksState extends BaseStateNoTabsWithParentTab<ScreenPor
         break;
       case 4: // market_value_highest
         {
-          _stockPositionNotifier.value.stocksList.sort((a, b) => b.marketVal.compareTo(a.marketVal));
+          _stockPositionNotifier.value.stocksList
+              .sort((a, b) => b.marketVal.compareTo(a.marketVal));
         }
         break;
       case 5: // market_value_lowest
         {
-          _stockPositionNotifier.value.stocksList.sort((a, b) => a.marketVal.compareTo(b.marketVal));
+          _stockPositionNotifier.value.stocksList
+              .sort((a, b) => a.marketVal.compareTo(b.marketVal));
         }
         break;
       case 6: // return_highest
         {
-          _stockPositionNotifier.value.stocksList.sort((a, b) => b.stockGL.compareTo(a.stockGL));
+          _stockPositionNotifier.value.stocksList
+              .sort((a, b) => b.stockGL.compareTo(a.stockGL));
         }
         break;
       case 7: // return_lowest
         {
-          _stockPositionNotifier.value.stocksList.sort((a, b) => a.stockGL.compareTo(b.stockGL));
+          _stockPositionNotifier.value.stocksList
+              .sort((a, b) => a.stockGL.compareTo(b.stockGL));
         }
         break;
       case 8: // return_highest percent
         {
-          _stockPositionNotifier.value.stocksList.sort((a, b) => b.stockGLPct.compareTo(a.stockGLPct));
+          _stockPositionNotifier.value.stocksList
+              .sort((a, b) => b.stockGLPct.compareTo(a.stockGLPct));
         }
         break;
       case 9: // return_lowest percent
         {
-          _stockPositionNotifier.value.stocksList.sort((a, b) => a.stockGLPct.compareTo(b.stockGLPct));
+          _stockPositionNotifier.value.stocksList
+              .sort((a, b) => a.stockGLPct.compareTo(b.stockGLPct));
         }
         break;
-
     }
     _updateListNotifier.value = !_updateListNotifier.value;
-    context.read(propertiesNotifier).properties.saveInt(routeName, PROP_SELECTED_SORT, _sortNotifier.value);
+    context
+        .read(propertiesNotifier)
+        .properties
+        .saveInt(routeName, PROP_SELECTED_SORT, _sortNotifier.value);
   }
+
   bool onProgress = false;
   Future doUpdate({bool pullToRefresh = false}) async {
-    if(!active){
-      print(routeName+' doUpdate ignored active : $active');
+    if (!active) {
+      print(routeName + ' doUpdate ignored active : $active');
       return false;
     }
     if (mounted && context != null) {
       bool isForeground = context.read(dataHolderChangeNotifier).isForeground;
-      if(!isForeground){
-        print(routeName + ' doUpdate ignored isForeground : $isForeground  isVisible : ' + isVisible().toString());
+      if (!isForeground) {
+        print(routeName +
+            ' doUpdate ignored isForeground : $isForeground  isVisible : ' +
+            isVisible().toString());
         return false;
       }
     }
-    print(routeName+' doUpdate perform at : '+DateTime.now().toString());
+    print(routeName + ' doUpdate perform at : ' + DateTime.now().toString());
     onProgress = true;
-    bool hasAccount = context.read(dataHolderChangeNotifier).user.accountSize() > 0;
+    bool hasAccount =
+        context.read(dataHolderChangeNotifier).user.accountSize() > 0;
     if (hasAccount) {
       int selected = context.read(accountChangeNotifier).index;
-      Account account = context.read(dataHolderChangeNotifier).user.getAccount(selected);
+      Account account =
+          context.read(dataHolderChangeNotifier).user.getAccount(selected);
       if (account == null) {
         //String text = 'No Account Selected. accountSize : ' + InvestrendTheme.of(context).user.accountSize().toString();
         //String text = routeName + ' No Account Selected. accountSize : ' + context.read(dataHolderChangeNotifier).user.accountSize().toString();
         String errorNoAccount = 'error_no_account_selected'.tr();
-        String text = routeName + ' $errorNoAccount. accountSize : ' + context.read(dataHolderChangeNotifier).user.accountSize().toString();
+        String text = routeName +
+            ' $errorNoAccount. accountSize : ' +
+            context
+                .read(dataHolderChangeNotifier)
+                .user
+                .accountSize()
+                .toString();
         InvestrendTheme.of(context).showSnackBar(context, text);
         onProgress = false;
         return;
@@ -195,14 +211,16 @@ class _ScreenPortfolioStocksState extends BaseStateNoTabsWithParentTab<ScreenPor
         }
         try {
           print(routeName + ' try stockPosition');
-          final stockPosition = await InvestrendTheme.tradingHttp.stock_position(
-              account.brokercode,
-              account.accountcode,
-              context.read(dataHolderChangeNotifier).user.username,
-              InvestrendTheme.of(context).applicationPlatform,
-              InvestrendTheme.of(context).applicationVersion);
+          final stockPosition = await InvestrendTheme.tradingHttp
+              .stock_position(
+                  account.brokercode,
+                  account.accountcode,
+                  context.read(dataHolderChangeNotifier).user.username,
+                  InvestrendTheme.of(context).applicationPlatform,
+                  InvestrendTheme.of(context).applicationVersion);
           //DebugWriter.info(routeName + ' Got stockPosition ' + stockPosition.accountcode + '   stockList.size : ' + stockPosition.stockListSize().toString());
-          DebugWriter.info(routeName + ' Got stockPosition ' +stockPosition.toString());
+          DebugWriter.info(
+              routeName + ' Got stockPosition ' + stockPosition.toString());
           if (stockPosition != null) {
             if (mounted) {
               _stockPositionNotifier.setValue(stockPosition);
@@ -213,7 +231,8 @@ class _ScreenPortfolioStocksState extends BaseStateNoTabsWithParentTab<ScreenPor
             setNotifierNoData(_stockPositionNotifier);
           }
         } catch (e) {
-          DebugWriter.information(routeName + ' stockPosition Exception : ' + e.toString());
+          DebugWriter.information(
+              routeName + ' stockPosition Exception : ' + e.toString());
           //_stockPositionNotifier?.setError(message: e.toString());
           setNotifierError(_stockPositionNotifier, e);
           handleNetworkError(context, e);
@@ -236,7 +255,8 @@ class _ScreenPortfolioStocksState extends BaseStateNoTabsWithParentTab<ScreenPor
           print('try Summarys');
           String codes = _stockPositionNotifier.joinCode('_');
           if (!StringUtils.isEmtpy(codes)) {
-            final stockSummarys = await InvestrendTheme.datafeedHttp.fetchStockSummaryMultiple(codes, 'RG');
+            final stockSummarys = await InvestrendTheme.datafeedHttp
+                .fetchStockSummaryMultiple(codes, 'RG');
             if (stockSummarys != null && stockSummarys.isNotEmpty) {
               stockSummarys.forEach((summary) {
                 if (summary != null) {
@@ -255,7 +275,8 @@ class _ScreenPortfolioStocksState extends BaseStateNoTabsWithParentTab<ScreenPor
             print(routeName + ' Future Summarys codes EMPTY, not requesting');
           }
         } catch (e) {
-          DebugWriter.information(routeName + ' Summarys Exception : ' + e.toString());
+          DebugWriter.information(
+              routeName + ' Summarys Exception : ' + e.toString());
           print(e);
         }
       }
@@ -268,26 +289,28 @@ class _ScreenPortfolioStocksState extends BaseStateNoTabsWithParentTab<ScreenPor
     return true;
   }
 
-
   bool onProgressListStockHist = false;
   Future loadStockHist() async {
-    if(onProgressListStockHist){
+    if (onProgressListStockHist) {
       return false;
     }
-    bool hasAccount = context.read(dataHolderChangeNotifier).user.accountSize() > 0;
+    bool hasAccount =
+        context.read(dataHolderChangeNotifier).user.accountSize() > 0;
     if (hasAccount) {
-      int selected = context
-          .read(accountChangeNotifier)
-          .index;
-      Account account = context
-          .read(dataHolderChangeNotifier)
-          .user
-          .getAccount(selected);
+      int selected = context.read(accountChangeNotifier).index;
+      Account account =
+          context.read(dataHolderChangeNotifier).user.getAccount(selected);
       if (account == null) {
         //String text = 'No Account Selected. accountSize : ' + InvestrendTheme.of(context).user.accountSize().toString();
         //String text = routeName + ' No Account Selected. accountSize : ' + context.read(dataHolderChangeNotifier).user.accountSize().toString();
         String errorNoAccount = 'error_no_account_selected'.tr();
-        String text = routeName + ' $errorNoAccount. accountSize : ' + context.read(dataHolderChangeNotifier).user.accountSize().toString();
+        String text = routeName +
+            ' $errorNoAccount. accountSize : ' +
+            context
+                .read(dataHolderChangeNotifier)
+                .user
+                .accountSize()
+                .toString();
         InvestrendTheme.of(context).showSnackBar(context, text);
         onProgressListStockHist = false;
         return;
@@ -299,80 +322,94 @@ class _ScreenPortfolioStocksState extends BaseStateNoTabsWithParentTab<ScreenPor
         onProgressListStockHist = true;
         try {
           print(routeName + ' try list_stock_hist');
-          final list_stock_hist = await InvestrendTheme.tradingHttp.list_stock_hist(
-              account.brokercode,
-              account.accountcode,
-              context
-                  .read(dataHolderChangeNotifier)
-                  .user
-                  .username,
-              InvestrendTheme
-                  .of(context)
-                  .applicationPlatform,
-              InvestrendTheme
-                  .of(context)
-                  .applicationVersion);
+          final listStockHist = await InvestrendTheme.tradingHttp
+              .list_stock_hist(
+                  account.brokercode,
+                  account.accountcode,
+                  context.read(dataHolderChangeNotifier).user.username,
+                  InvestrendTheme.of(context).applicationPlatform,
+                  InvestrendTheme.of(context).applicationVersion);
           //DebugWriter.info(routeName + ' Got stockPosition ' + stockPosition.accountcode + '   stockList.size : ' + stockPosition.stockListSize().toString());
 
-          int count = list_stock_hist != null ? list_stock_hist.length : 0;
+          int count = listStockHist != null ? listStockHist.length : 0;
           DebugWriter.information(routeName + ' Got list_stock_hist $count');
           if (mounted) {
-            if (count > 0 ) {
+            if (count > 0) {
               List<Stock> stockList = List.empty(growable: true);
-              for(int i=0; i < count; i++){
-                StockHist stockHist = list_stock_hist.elementAt(i);
-                if(stockHist != null){
-                  Stock stock = InvestrendTheme.storedData.findStock(stockHist.stockCode);
-                  if(stock != null){
+              for (int i = 0; i < count; i++) {
+                StockHist stockHist = listStockHist.elementAt(i);
+                if (stockHist != null) {
+                  Stock stock =
+                      InvestrendTheme.storedData.findStock(stockHist.stockCode);
+                  if (stock != null) {
                     stockList.add(stock);
-                  }else{
+                  } else {
                     stockList.add(Stock(stockHist.stockCode, '-'));
                   }
                 }
               }
-              DebugWriter.information(routeName + ' find stockList : '+stockList.length.toString());
-              final result = InvestrendTheme.showFinderScreen(context, showStockOnly: true, fromListStocks: stockList);
+              DebugWriter.information(routeName +
+                  ' find stockList : ' +
+                  stockList.length.toString());
+              final result = InvestrendTheme.showFinderScreen(context,
+                  showStockOnly: true, fromListStocks: stockList);
               result.then((value) {
                 if (value == null) {
                   print('result finder = null');
                 } else if (value is Stock) {
                   print('result finder = ' + value.code);
 
-                  StockPositionDetail foundPortfolio = _stockPositionNotifier.value.getStockPositionDetailByCode(value.code);
-
+                  StockPositionDetail foundPortfolio = _stockPositionNotifier
+                      .value
+                      .getStockPositionDetailByCode(value.code);
 
                   String accountInfo = '?';
-                  bool hasAccount = context.read(dataHolderChangeNotifier).user.accountSize() > 0;
+                  bool hasAccount = context
+                          .read(dataHolderChangeNotifier)
+                          .user
+                          .accountSize() >
+                      0;
                   if (hasAccount) {
-                    int selected = context
-                        .read(accountChangeNotifier)
-                        .index;
+                    int selected = context.read(accountChangeNotifier).index;
                     Account account = context
                         .read(dataHolderChangeNotifier)
                         .user
                         .getAccount(selected);
                     if (account != null) {
-                      accountInfo = account.typeString() + ' - ' + account.accountcode;
-                      if(foundPortfolio == null){
+                      accountInfo =
+                          account.typeString() + ' - ' + account.accountcode;
+                      if (foundPortfolio == null) {
                         foundPortfolio = StockPositionDetail.createBasic();
                         foundPortfolio.stockCode = value.code;
                       }
-                      Stock stock = InvestrendTheme.storedData.findStock(value.code);
-                      if(stock != null){
-                        context.read(primaryStockChangeNotifier).setStock(value);
+                      Stock stock =
+                          InvestrendTheme.storedData.findStock(value.code);
+                      if (stock != null) {
+                        context
+                            .read(primaryStockChangeNotifier)
+                            .setStock(value);
                       }
                       Navigator.push(
                           context,
                           CupertinoPageRoute(
                             //builder: (_) => ScreenDetailPortfolio(accountInfo,stock.code, stock.name, gp),
-                            builder: (_) => ScreenDetailPortfolio(foundPortfolio, value.code, value.name, accountInfo, account.accountcode, context.read(dataHolderChangeNotifier).user.username, account.brokercode, init_historical: true,),
+                            builder: (_) => ScreenDetailPortfolio(
+                              foundPortfolio,
+                              value.code,
+                              value.name,
+                              accountInfo,
+                              account.accountcode,
+                              context
+                                  .read(dataHolderChangeNotifier)
+                                  .user
+                                  .username,
+                              account.brokercode,
+                              init_historical: true,
+                            ),
                             settings: RouteSettings(name: '/detail_portfolio'),
                           ));
                     }
                   }
-
-
-
 
                   // context.read(primaryStockChangeNotifier).setStock(value);
                   //
@@ -382,34 +419,38 @@ class _ScreenPortfolioStocksState extends BaseStateNoTabsWithParentTab<ScreenPor
                   print('result finder = ' + value.name);
                 }
               });
-            }else{
-              InvestrendTheme.of(context).showSnackBar(context, 'error_list_stock_hist_empty'.tr());
+            } else {
+              InvestrendTheme.of(context)
+                  .showSnackBar(context, 'error_list_stock_hist_empty'.tr());
             }
           }
         } catch (e) {
-          DebugWriter.information(routeName + ' stockPosition Exception : ' + e.toString());
+          DebugWriter.information(
+              routeName + ' stockPosition Exception : ' + e.toString());
           //_stockPositionNotifier?.setError(message: e.toString());
           setNotifierError(_stockPositionNotifier, e);
           handleNetworkError(context, e);
         }
       }
-    }else{
-      InvestrendTheme.of(context).showSnackBar(context, 'error_no_account_selected'.tr());
+    } else {
+      InvestrendTheme.of(context)
+          .showSnackBar(context, 'error_no_account_selected'.tr());
     }
     onProgressListStockHist = false;
-
   }
+
   @override
   Widget createAppBar(BuildContext context) {
     return null;
   }
 
-
-
-
   Widget _optionsPortfolio(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8.0, left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral, top: InvestrendTheme.cardPaddingVertical),
+      padding: const EdgeInsets.only(
+          bottom: 8.0,
+          left: InvestrendTheme.cardPaddingGeneral,
+          right: InvestrendTheme.cardPaddingGeneral,
+          top: InvestrendTheme.cardPaddingVertical),
       child: Container(
         //color: Colors.purple,
         child: Row(
@@ -418,11 +459,18 @@ class _ScreenPortfolioStocksState extends BaseStateNoTabsWithParentTab<ScreenPor
             Spacer(
               flex: 1,
             ),
-            ButtonRounded('historical_text'.tr(), (){
+            ButtonRounded('historical_text'.tr(), () {
               loadStockHist();
             }),
-            SizedBox(width: 5.0,),
-            ButtonDropdown(_sortNotifier, _sort_by_option, clickAndClose: true,showEmojiDescendingAscending: true,),
+            SizedBox(
+              width: 5.0,
+            ),
+            ButtonDropdown(
+              _sortNotifier,
+              _sort_by_option,
+              clickAndClose: true,
+              showEmojiDescendingAscending: true,
+            ),
             /*
             OutlinedButton(
                 onPressed: () {},
@@ -671,7 +719,7 @@ class _ScreenPortfolioStocksState extends BaseStateNoTabsWithParentTab<ScreenPor
   }
 
   Future onRefresh() {
-    if(!active){
+    if (!active) {
       active = true;
       canTapRow = true;
       startTimer();
@@ -680,8 +728,9 @@ class _ScreenPortfolioStocksState extends BaseStateNoTabsWithParentTab<ScreenPor
     // return Future.delayed(Duration(seconds: 3));
   }
 
-  Widget row(BuildContext context, StockPositionDetail gp, StockSummary summary, int index, {bool firstRow = false}) {
-
+  Widget row(BuildContext context, StockPositionDetail gp, StockSummary summary,
+      int index,
+      {bool firstRow = false}) {
     return Slidable(
         controller: slidableController,
         closeOnScroll: true,
@@ -695,7 +744,9 @@ class _ScreenPortfolioStocksState extends BaseStateNoTabsWithParentTab<ScreenPor
               print('buy clicked code : ' + gp.stockCode);
               Stock stock = InvestrendTheme.storedData.findStock(gp.stockCode);
               if (stock == null) {
-                print('buy clicked code : ' + gp.stockCode + ' aborted, not find stock on StockStorer');
+                print('buy clicked code : ' +
+                    gp.stockCode +
+                    ' aborted, not find stock on StockStorer');
                 return;
               }
 
@@ -703,9 +754,13 @@ class _ScreenPortfolioStocksState extends BaseStateNoTabsWithParentTab<ScreenPor
 
               //InvestrendTheme.push(context, ScreenTrade(OrderType.Buy), ScreenTransition.SlideLeft, '/trade');
 
-              bool hasAccount = context.read(dataHolderChangeNotifier).user.accountSize() > 0;
-              InvestrendTheme.pushScreenTrade(context, hasAccount, type: OrderType.Buy, );
-
+              bool hasAccount =
+                  context.read(dataHolderChangeNotifier).user.accountSize() > 0;
+              InvestrendTheme.pushScreenTrade(
+                context,
+                hasAccount,
+                type: OrderType.Buy,
+              );
 
               /*
               Navigator.push(
@@ -725,15 +780,22 @@ class _ScreenPortfolioStocksState extends BaseStateNoTabsWithParentTab<ScreenPor
               print('sell clicked code : ' + gp.stockCode);
               Stock stock = InvestrendTheme.storedData.findStock(gp.stockCode);
               if (stock == null) {
-                print('sell clicked code : ' + gp.stockCode + ' aborted, not find stock on StockStorer');
+                print('sell clicked code : ' +
+                    gp.stockCode +
+                    ' aborted, not find stock on StockStorer');
                 return;
               }
 
               context.read(primaryStockChangeNotifier).setStock(stock);
               //InvestrendTheme.push(context, ScreenTrade(OrderType.Sell), ScreenTransition.SlideLeft, '/trade');
 
-              bool hasAccount = context.read(dataHolderChangeNotifier).user.accountSize() > 0;
-              InvestrendTheme.pushScreenTrade(context, hasAccount, type: OrderType.Sell, );
+              bool hasAccount =
+                  context.read(dataHolderChangeNotifier).user.accountSize() > 0;
+              InvestrendTheme.pushScreenTrade(
+                context,
+                hasAccount,
+                type: OrderType.Sell,
+              );
               /*
               Navigator.push(
                   context,
@@ -753,18 +815,20 @@ class _ScreenPortfolioStocksState extends BaseStateNoTabsWithParentTab<ScreenPor
           gp,
           firstRow: firstRow, //(index == 0),
           onTap: () {
-            print('clicked code : ' + gp.stockCode + '  canTapRow : $canTapRow');
+            print(
+                'clicked code : ' + gp.stockCode + '  canTapRow : $canTapRow');
             if (canTapRow) {
               canTapRow = false;
 
               Stock stock = InvestrendTheme.storedData.findStock(gp.stockCode);
               if (stock == null) {
-                print('clicked code : ' + gp.stockCode + ' aborted, not find stock on StockStorer');
+                print('clicked code : ' +
+                    gp.stockCode +
+                    ' aborted, not find stock on StockStorer');
                 canTapRow = true;
                 return;
               }
               context.read(primaryStockChangeNotifier).setStock(stock);
-
 
               Future.delayed(Duration(milliseconds: 200), () {
                 canTapRow = true;
@@ -772,67 +836,74 @@ class _ScreenPortfolioStocksState extends BaseStateNoTabsWithParentTab<ScreenPor
                 //InvestrendTheme.of(context).showStockDetail(context);
 
                 String accountInfo = '?';
-                bool hasAccount = context.read(dataHolderChangeNotifier).user.accountSize() > 0;
+                bool hasAccount =
+                    context.read(dataHolderChangeNotifier).user.accountSize() >
+                        0;
                 if (hasAccount) {
-                  int selected = context
-                      .read(accountChangeNotifier)
-                      .index;
+                  int selected = context.read(accountChangeNotifier).index;
                   Account account = context
                       .read(dataHolderChangeNotifier)
                       .user
                       .getAccount(selected);
                   if (account != null) {
-                    accountInfo = account.typeString() + ' - ' + account.accountcode;
+                    accountInfo =
+                        account.typeString() + ' - ' + account.accountcode;
                     Navigator.push(
                         context,
                         CupertinoPageRoute(
                           //builder: (_) => ScreenDetailPortfolio(accountInfo,stock.code, stock.name, gp),
-                          builder: (_) => ScreenDetailPortfolio(gp, stock.code, stock.name, accountInfo, account.accountcode, context.read(dataHolderChangeNotifier).user.username, account.brokercode),
+                          builder: (_) => ScreenDetailPortfolio(
+                              gp,
+                              stock.code,
+                              stock.name,
+                              accountInfo,
+                              account.accountcode,
+                              context
+                                  .read(dataHolderChangeNotifier)
+                                  .user
+                                  .username,
+                              account.brokercode),
                           settings: RouteSettings(name: '/detail_portfolio'),
                         ));
                   }
                 }
-
-
               });
-
-
-
-
             }
           },
           paddingLeftRight: InvestrendTheme.cardPaddingGeneral,
           summary: summary,
-          onPressedButtonCorporateAction: ()=> onPressedButtonCorporateAction(context, gp.stockCode),
+          onPressedButtonCorporateAction: () =>
+              onPressedButtonCorporateAction(context, gp.stockCode),
           //onPressedButtonSpecialNotation: ()=> onPressedButtonSpecialNotation(context, gp.stockCode),
-          onPressedButtonSpecialNotation: ()=> onPressedButtonImportantInformation(context, gp.stockCode),
-
+          onPressedButtonSpecialNotation: () =>
+              onPressedButtonImportantInformation(context, gp.stockCode),
         ));
   }
 
-  void onPressedButtonImportantInformation(BuildContext context, String code ) {
-    List<Remark2Mapping> notation = context.read(remark2Notifier).getSpecialNotation(code);
-    SuspendStock suspendStock = context.read(suspendedStockNotifier).getSuspended(code, Stock.defaultBoardByCode(code));
+  void onPressedButtonImportantInformation(BuildContext context, String code) {
+    List<Remark2Mapping> notation =
+        context.read(remark2Notifier).getSpecialNotation(code);
+    SuspendStock suspendStock = context
+        .read(suspendedStockNotifier)
+        .getSuspended(code, Stock.defaultBoardByCode(code));
 
     int count = notation == null ? 0 : notation.length;
-    if(count == 0 && suspendStock == null){
-      print(routeName+'.onPressedButtonImportantInformation not showing anything');
+    if (count == 0 && suspendStock == null) {
+      print(routeName +
+          '.onPressedButtonImportantInformation not showing anything');
       return;
     }
-    print(routeName+'.onPressedButtonImportantInformation');
+    print(routeName + '.onPressedButtonImportantInformation');
     List<Widget> childs = List.empty(growable: true);
 
-
     double height = 0;
-    if(suspendStock != null){
-
-
+    if (suspendStock != null) {
       String infoSuspend = 'suspended_time_info'.tr();
 
       DateFormat dateFormatter = DateFormat('EEEE, dd/MM/yyyy', 'id');
       DateFormat dateParser = DateFormat('yyyy-MM-dd');
       DateTime dateTime = dateParser.parseUtc(suspendStock.date);
-      print('dateTime : '+dateTime.toString());
+      print('dateTime : ' + dateTime.toString());
       //print('indexSummary.date : '+data.date+' '+data.time);
       String formatedDate = dateFormatter.format(dateTime);
       //String formatedTime = timeFormatter.format(dateTime);
@@ -843,24 +914,30 @@ class _ScreenPortfolioStocksState extends BaseStateNoTabsWithParentTab<ScreenPor
       height += 25.0;
       childs.add(Padding(
         padding: const EdgeInsets.only(bottom: 5.0),
-        child: Text('Suspended '+suspendStock.board, style: InvestrendTheme.of(context).small_w600,),
+        child: Text(
+          'Suspended ' + suspendStock.board,
+          style: InvestrendTheme.of(context).small_w600,
+        ),
       ));
 
       height += 50.0;
       childs.add(Padding(
         padding: const EdgeInsets.only(bottom: 15.0),
         child: RichText(
-          text: TextSpan(text:  '•  ', style: InvestrendTheme.of(context).small_w600, children: [
-            TextSpan(
-              text: infoSuspend,
-              style: InvestrendTheme.of(context).small_w400,
-            )
-          ]),
+          text: TextSpan(
+              text: '•  ',
+              style: InvestrendTheme.of(context).small_w600,
+              children: [
+                TextSpan(
+                  text: infoSuspend,
+                  style: InvestrendTheme.of(context).small_w400,
+                )
+              ]),
         ),
       ));
     }
     bool titleSpecialNotation = true;
-    for(int i = 0; i < count; i++){
+    for (int i = 0; i < count; i++) {
       /* SEBELUM AUDIT
       Remark2Mapping remark2 = notation.elementAt(i);
       if(remark2 != null){
@@ -896,42 +973,51 @@ class _ScreenPortfolioStocksState extends BaseStateNoTabsWithParentTab<ScreenPor
       }
       */
       Remark2Mapping remark2 = notation.elementAt(i);
-      if(remark2 != null){
-        if(remark2.isSurveilance()) {
+      if (remark2 != null) {
+        if (remark2.isSurveilance()) {
           height += 35.0;
           childs.add(Padding(
             padding: const EdgeInsets.only(bottom: 15.0),
-            child: Text(remark2.code+' : '+remark2.value, style: InvestrendTheme.of(context).small_w600,),
+            child: Text(
+              remark2.code + ' : ' + remark2.value,
+              style: InvestrendTheme.of(context).small_w600,
+            ),
           ));
-        }else {
-          if(titleSpecialNotation){
+        } else {
+          if (titleSpecialNotation) {
             titleSpecialNotation = false;
             height += 25.0;
             childs.add(Padding(
               padding: const EdgeInsets.only(bottom: 5.0),
-              child: Text('bottom_sheet_alert_title'.tr(), style: InvestrendTheme.of(context).small_w600,),
+              child: Text(
+                'bottom_sheet_alert_title'.tr(),
+                style: InvestrendTheme.of(context).small_w600,
+              ),
             ));
           }
           height += 40.0;
           childs.add(Padding(
             padding: const EdgeInsets.only(bottom: 5.0),
             child: RichText(
-              text: TextSpan(text: /*remark2.code + " : "*/ '•  ', style: InvestrendTheme.of(context).small_w600, children: [
-                TextSpan(
-                  text: remark2.code,
+              text: TextSpan(
+                  text: /*remark2.code + " : "*/ '•  ',
                   style: InvestrendTheme.of(context).small_w600,
-                ),
-                TextSpan(
-                  text: ' : '+remark2.value,
-                  style: InvestrendTheme.of(context).small_w400,
-                )
-              ]),
+                  children: [
+                    TextSpan(
+                      text: remark2.code,
+                      style: InvestrendTheme.of(context).small_w600,
+                    ),
+                    TextSpan(
+                      text: ' : ' + remark2.value,
+                      style: InvestrendTheme.of(context).small_w400,
+                    )
+                  ]),
             ),
           ));
         }
       }
     }
-    if(childs.isNotEmpty){
+    if (childs.isNotEmpty) {
       showAlert(context, childs, childsHeight: height, title: ' ');
     }
   }
@@ -961,10 +1047,9 @@ class _ScreenPortfolioStocksState extends BaseStateNoTabsWithParentTab<ScreenPor
     }
   }
   */
-  void onPressedButtonCorporateAction(BuildContext context, String code ) {
-
-
-    List<CorporateActionEvent> corporateAction = context.read(corporateActionEventNotifier).getEvent(code);
+  void onPressedButtonCorporateAction(BuildContext context, String code) {
+    List<CorporateActionEvent> corporateAction =
+        context.read(corporateActionEventNotifier).getEvent(code);
     //print('onPressedButtonCorporateAction : '+corporateAction.toString());
     List<Widget> childs = List.empty(growable: true);
     if (corporateAction != null && corporateAction.isNotEmpty) {
@@ -973,15 +1058,16 @@ class _ScreenPortfolioStocksState extends BaseStateNoTabsWithParentTab<ScreenPor
           childs.add(Padding(
             padding: const EdgeInsets.only(bottom: 20),
             child: ca.getInformationWidget(context),
-
           ));
         }
       });
 
-      showAlert(context, childs, childsHeight: (childs.length * 50).toDouble(),title: 'Corporate Action');
+      showAlert(context, childs,
+          childsHeight: (childs.length * 50).toDouble(),
+          title: 'Corporate Action');
     }
-
   }
+
   @override
   Widget createBody(BuildContext context, double paddingBottom) {
     // int todayReturnValue = 0;
@@ -991,33 +1077,47 @@ class _ScreenPortfolioStocksState extends BaseStateNoTabsWithParentTab<ScreenPor
     // double totalReturnPercentage = 0;
 
     List<Widget> preWidget = List.empty(growable: true);
-    preWidget.add(Align(alignment: Alignment.centerLeft, child: ButtonAccount(/*_accountNotifier*/)));
+    preWidget.add(Align(
+        alignment: Alignment.centerLeft,
+        child: ButtonAccount(/*_accountNotifier*/)));
     preWidget.add(ValueListenableBuilder(
       valueListenable: _accountNotifier,
       builder: (context, data, child) {
         User user = context.read(dataHolderChangeNotifier).user;
-        Account activeAccount = user.getAccount(context.read(accountChangeNotifier).index);
+        Account activeAccount =
+            user.getAccount(context.read(accountChangeNotifier).index);
         String portfolioValue = ' ';
         String portfolioGainLoss = ' ';
         String portfolioGainLossPercentage = ' ';
         int gainLossIDR = 0;
         if (activeAccount != null) {
-          AccountStockPosition accountInfo = context.read(accountsInfosNotifier).getInfo(activeAccount.accountcode);
+          AccountStockPosition accountInfo = context
+              .read(accountsInfosNotifier)
+              .getInfo(activeAccount.accountcode);
           if (accountInfo != null) {
             gainLossIDR = accountInfo.totalGL;
-            portfolioValue = InvestrendTheme.formatMoney(accountInfo.totalMarket, prefixRp: true);
-            portfolioGainLoss = InvestrendTheme.formatMoney(accountInfo.totalGL, prefixRp: true) +
+            portfolioValue = InvestrendTheme.formatMoney(
+                accountInfo.totalMarket,
+                prefixRp: true);
+            portfolioGainLoss = InvestrendTheme.formatMoney(accountInfo.totalGL,
+                    prefixRp: true) +
                 ' (' +
-                InvestrendTheme.formatPercentChange(accountInfo.totalGLPct, sufixPercent: true) +
+                InvestrendTheme.formatPercentChange(accountInfo.totalGLPct,
+                    sufixPercent: true) +
                 ')';
           }
         }
         return Padding(
           padding: const EdgeInsets.only(
-              left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral, bottom: InvestrendTheme.cardPaddingGeneral),
+              left: InvestrendTheme.cardPaddingGeneral,
+              right: InvestrendTheme.cardPaddingGeneral,
+              bottom: InvestrendTheme.cardPaddingGeneral),
           child: Text(
             portfolioValue,
-            style: Theme.of(context).textTheme.headline5.copyWith(fontWeight: FontWeight.w800),
+            style: Theme.of(context)
+                .textTheme
+                .headline5
+                .copyWith(fontWeight: FontWeight.w800),
           ),
         );
       },
@@ -1031,10 +1131,16 @@ class _ScreenPortfolioStocksState extends BaseStateNoTabsWithParentTab<ScreenPor
       child: ValueListenableBuilder(
           valueListenable: _stockPositionNotifier,
           builder: (context, StockPosition data, child) {
-            if(data != null){
-              DebugWriter.info('WidgetReturns build --> '+data.toString());
-              return WidgetReturns(data.totalTodayGL.toInt(), data.totalTodayGLPct, data.totalGL.toInt(), data.totalGLPct, groupStyle: groupStyle,);
-            }else{
+            if (data != null) {
+              DebugWriter.info('WidgetReturns build --> ' + data.toString());
+              return WidgetReturns(
+                data.totalTodayGL.toInt(),
+                data.totalTodayGLPct,
+                data.totalGL.toInt(),
+                data.totalGLPct,
+                groupStyle: groupStyle,
+              );
+            } else {
               return Container(
                 width: double.maxFinite,
                 height: 60,
@@ -1065,7 +1171,7 @@ class _ScreenPortfolioStocksState extends BaseStateNoTabsWithParentTab<ScreenPor
 
     return RefreshIndicator(
       color: InvestrendTheme.of(context).textWhite,
-      backgroundColor: Theme.of(context).accentColor,
+      backgroundColor: Theme.of(context).colorScheme.secondary,
       onRefresh: onRefresh,
       child: ValueListenableBuilder(
           valueListenable: _updateListNotifier,
@@ -1073,7 +1179,6 @@ class _ScreenPortfolioStocksState extends BaseStateNoTabsWithParentTab<ScreenPor
             //bool hasData = _stockPositionNotifier.value.isEmpty();
 
             if (_stockPositionNotifier.value.isEmpty()) {
-
               return ListView.builder(
                   shrinkWrap: false,
                   //padding: const EdgeInsets.all(8),
@@ -1084,7 +1189,8 @@ class _ScreenPortfolioStocksState extends BaseStateNoTabsWithParentTab<ScreenPor
                     } else if (index == preWidget.length) {
                       if (_stockPositionNotifier.currentState.isLoading()) {
                         return Center(child: CircularProgressIndicator());
-                      } else if (_stockPositionNotifier.currentState.isError()) {
+                      } else if (_stockPositionNotifier.currentState
+                          .isError()) {
                         return Center(child: TextButtonRetry(
                           onPressed: () {
                             doUpdate(pullToRefresh: true);
@@ -1096,27 +1202,40 @@ class _ScreenPortfolioStocksState extends BaseStateNoTabsWithParentTab<ScreenPor
                             SizedBox(
                               height: MediaQuery.of(context).size.width / 4,
                             ),
-                            EmptyTitleLabel(text: 'portfolio_stock_list_empty_title'.tr()),
+                            EmptyTitleLabel(
+                                text: 'portfolio_stock_list_empty_title'.tr()),
                             SizedBox(
                               height: InvestrendTheme.cardPaddingGeneral,
                             ),
-                            EmptyLabel(text: 'portfolio_stock_list_empty_description'.tr()),
+                            EmptyLabel(
+                                text: 'portfolio_stock_list_empty_description'
+                                    .tr()),
                             SizedBox(
                               height: 40.0,
                             ),
                             ButtonOutlinedRounded(
                               'button_find_stock'.tr(),
                               onPressed: () {
-                                final result = InvestrendTheme.showFinderScreen(context, showStockOnly: true);
+                                final result = InvestrendTheme.showFinderScreen(
+                                    context,
+                                    showStockOnly: true);
                                 result.then((value) {
                                   if (value == null) {
                                     print('result finder = null');
                                   } else if (value is Stock) {
                                     print('result finder = ' + value.code);
-                                    context.read(primaryStockChangeNotifier).setStock(value);
+                                    context
+                                        .read(primaryStockChangeNotifier)
+                                        .setStock(value);
 
-                                    bool hasAccount = context.read(dataHolderChangeNotifier).user.accountSize() > 0;
-                                    InvestrendTheme.pushScreenTrade(context, hasAccount, type: OrderType.Buy);
+                                    bool hasAccount = context
+                                            .read(dataHolderChangeNotifier)
+                                            .user
+                                            .accountSize() >
+                                        0;
+                                    InvestrendTheme.pushScreenTrade(
+                                        context, hasAccount,
+                                        type: OrderType.Buy);
                                     /*
                                     Navigator.push(
                                         context,
@@ -1145,7 +1264,8 @@ class _ScreenPortfolioStocksState extends BaseStateNoTabsWithParentTab<ScreenPor
                   });
             }
 
-            int itemCount = preWidget.length + 1 + _stockPositionNotifier.value.count();
+            int itemCount =
+                preWidget.length + 1 + _stockPositionNotifier.value.count();
             int portfolioCount = _stockPositionNotifier.value.count();
             return ListView.builder(
                 shrinkWrap: false,
@@ -1156,13 +1276,15 @@ class _ScreenPortfolioStocksState extends BaseStateNoTabsWithParentTab<ScreenPor
                     return preWidget.elementAt(index);
                   } else if (index < (preWidget.length + portfolioCount)) {
                     int indexPortfolioRow = index - preWidget.length;
-                    StockPositionDetail gp = _stockPositionNotifier.value.getStockPositionDetail(indexPortfolioRow);
+                    StockPositionDetail gp = _stockPositionNotifier.value
+                        .getStockPositionDetail(indexPortfolioRow);
                     StockSummary summary;
                     if (summarys.containsKey(gp.stockCode)) {
                       summary = summarys[gp.stockCode];
                     }
 
-                    return row(context, gp, summary, index, firstRow: indexPortfolioRow == 0);
+                    return row(context, gp, summary, index,
+                        firstRow: indexPortfolioRow == 0);
                   } else {
                     return postWidget;
                   }
@@ -1210,12 +1332,13 @@ class _ScreenPortfolioStocksState extends BaseStateNoTabsWithParentTab<ScreenPor
   void startTimer() {
     if (!InvestrendTheme.DEBUG) {
       if (timer == null || !timer.isActive) {
-        print(routeName+' startTimer');
+        print(routeName + ' startTimer');
         timer = Timer.periodic(durationUpdate, (timer) {
           if (active) {
-            if(onProgress){
-              print(routeName+' timer aborted caused by onProgress : $onProgress');
-            }else{
+            if (onProgress) {
+              print(routeName +
+                  ' timer aborted caused by onProgress : $onProgress');
+            } else {
               doUpdate();
             }
           }
@@ -1225,31 +1348,36 @@ class _ScreenPortfolioStocksState extends BaseStateNoTabsWithParentTab<ScreenPor
   }
 
   void stopTimer() {
-
     if (timer == null || !timer.isActive) {
       return;
     }
-    print(routeName+' _stopTimer');
+    print(routeName + ' _stopTimer');
     timer.cancel();
     timer = null;
   }
 
-  final String PROP_SELECTED_SORT       = 'selectedSort';
+  final String PROP_SELECTED_SORT = 'selectedSort';
   @override
   void initState() {
     super.initState();
     _sortNotifier.addListener(sort);
 
-    runPostFrame((){
+    runPostFrame(() {
       // #1 get properties
-      int selectedSort = context.read(propertiesNotifier).properties.getInt(routeName, PROP_SELECTED_SORT, 0);
+      int selectedSort = context
+          .read(propertiesNotifier)
+          .properties
+          .getInt(routeName, PROP_SELECTED_SORT, 0);
 
       // #2 use properties
-      _sortNotifier.value = min(selectedSort, _sort_by_option.length - 1) ;
+      _sortNotifier.value = min(selectedSort, _sort_by_option.length - 1);
 
       // #3 check properties if changed, then save again
-      if(selectedSort != _sortNotifier.value){
-        context.read(propertiesNotifier).properties.saveInt(routeName, PROP_SELECTED_SORT, _sortNotifier.value);
+      if (selectedSort != _sortNotifier.value) {
+        context
+            .read(propertiesNotifier)
+            .properties
+            .saveInt(routeName, PROP_SELECTED_SORT, _sortNotifier.value);
       }
     });
     /*
@@ -1298,11 +1426,14 @@ class _ScreenPortfolioStocksState extends BaseStateNoTabsWithParentTab<ScreenPor
     super.didChangeDependencies();
 
     if (_activeAccountChangedListener != null) {
-      context.read(accountChangeNotifier).removeListener(_activeAccountChangedListener);
+      context
+          .read(accountChangeNotifier)
+          .removeListener(_activeAccountChangedListener);
     } else {
       _activeAccountChangedListener = () {
         if (mounted) {
-          bool hasAccount = context.read(dataHolderChangeNotifier).user.accountSize() > 0;
+          bool hasAccount =
+              context.read(dataHolderChangeNotifier).user.accountSize() > 0;
           if (hasAccount) {
             _accountNotifier.value = !_accountNotifier.value;
             _stockPositionNotifier.setValue(null);
@@ -1312,7 +1443,9 @@ class _ScreenPortfolioStocksState extends BaseStateNoTabsWithParentTab<ScreenPor
         }
       };
     }
-    context.read(accountChangeNotifier).addListener(_activeAccountChangedListener);
+    context
+        .read(accountChangeNotifier)
+        .addListener(_activeAccountChangedListener);
 
     /*
     context.read(accountChangeNotifier).addListener(() {
@@ -1344,11 +1477,11 @@ class _ScreenPortfolioStocksState extends BaseStateNoTabsWithParentTab<ScreenPor
     _stockPositionNotifier.dispose();
     _sortNotifier.dispose();
 
-
-
     final container = ProviderContainer();
     if (_activeAccountChangedListener != null) {
-      container.read(accountChangeNotifier).removeListener(_activeAccountChangedListener);
+      container
+          .read(accountChangeNotifier)
+          .removeListener(_activeAccountChangedListener);
     }
 
     super.dispose();

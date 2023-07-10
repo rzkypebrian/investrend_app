@@ -97,7 +97,7 @@ abstract class _ScreenRegisterRDNState extends State<ScreenRegisterRDN>
                     'button_done'.tr(),
                     style: InvestrendTheme.of(context)
                         .small_w500_compact
-                        .copyWith(color: Theme.of(context).accentColor),
+                        .copyWith(color: Theme.of(context).colorScheme.secondary),
                   ),
                   onPressed: () {
                     _bottomSheetNotifier.value = true;
@@ -381,7 +381,7 @@ abstract class _ScreenRegisterRDNState extends State<ScreenRegisterRDN>
     bool autoReCreate = true,
     ValueChanged<DynamicUi> onGetNewUi,
     Function(int, int) onSendProgress,
-    String headers: "application/json",
+    String headers = "application/json",
   }) {
     viewModel.startLoading();
     data = data ?? FormData();
@@ -740,7 +740,7 @@ class _ScreenRegisterRDNViewState extends _ScreenRegisterRDNState {
     return ChangeNotifierProvider.value(
       value: super.viewModel,
       child: Scaffold(
-        backgroundColor: Theme.of(context).backgroundColor,
+        backgroundColor: Theme.of(context).colorScheme.background,
         appBar: appBar(),
         body: Stack(
           children: [
@@ -784,7 +784,7 @@ class _ScreenRegisterRDNViewState extends _ScreenRegisterRDNState {
   //appbar
   PreferredSizeWidget appBar() {
     return AppBar(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       automaticallyImplyLeading: false,
       leading: Consumer<ScreenRegisterRDNViewModel>(
         builder: (c, d, w) {

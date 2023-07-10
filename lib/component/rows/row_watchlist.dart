@@ -5,7 +5,6 @@ import 'package:Investrend/component/component_creator.dart';
 import 'package:Investrend/objects/data_object.dart';
 import 'package:Investrend/objects/riverpod_change_notifier.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
-import 'package:Investrend/utils/string_utils.dart';
 import 'package:Investrend/utils/ui_helper.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';

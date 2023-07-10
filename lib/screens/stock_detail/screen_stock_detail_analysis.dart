@@ -14,9 +14,7 @@ import 'package:Investrend/objects/riverpod_change_notifier.dart';
 import 'package:Investrend/objects/iii_objects.dart';
 import 'package:Investrend/screens/base/base_state.dart';
 import 'package:Investrend/screens/stock_detail/screen_netbs_summary.dart';
-import 'package:Investrend/utils/connection_services.dart';
 import 'package:Investrend/utils/string_utils.dart';
-import 'package:Investrend/utils/utils.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -456,7 +454,7 @@ class _ScreenStockDetailAnalysisState extends BaseStateNoTabsWithParentTab<Scree
                   value.sellData,
                   'buy_value_label'.tr(),
                   'sell_value_label'.tr(),
-                  Theme.of(context).accentColor,
+                  Theme.of(context).colorScheme.secondary,
                   InvestrendTheme.redText,
                   animate: true,
                 );
@@ -507,7 +505,7 @@ class _ScreenStockDetailAnalysisState extends BaseStateNoTabsWithParentTab<Scree
                   value.sellData,
                   'buy_value_label'.tr(),
                   'sell_value_label'.tr(),
-                  Theme.of(context).accentColor,
+                  Theme.of(context).colorScheme.secondary,
                   InvestrendTheme.redText,
                   animate: true,
                 );
@@ -554,7 +552,7 @@ class _ScreenStockDetailAnalysisState extends BaseStateNoTabsWithParentTab<Scree
                 return ChartSingleBar(
                   value.netData,
                   'net_buy_value_label'.tr(),
-                  Theme.of(context).accentColor,
+                  Theme.of(context).colorScheme.secondary,
                   animate: true,
                 );
               }),
@@ -619,7 +617,7 @@ class _ScreenStockDetailAnalysisState extends BaseStateNoTabsWithParentTab<Scree
 
     return RefreshIndicator(
       color: InvestrendTheme.of(context).textWhite,
-      backgroundColor: Theme.of(context).accentColor,
+      backgroundColor: Theme.of(context).colorScheme.secondary,
       onRefresh: onRefresh,
       child: ListView(
         controller: pScrollController,

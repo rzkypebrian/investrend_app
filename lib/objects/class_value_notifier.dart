@@ -9,7 +9,6 @@ import 'package:Investrend/objects/home_objects.dart';
 import 'package:Investrend/objects/iii_objects.dart';
 import 'package:Investrend/objects/riverpod_change_notifier.dart';
 import 'package:Investrend/screens/stock_detail/screen_stock_detail_analysis.dart';
-import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:Investrend/utils/string_utils.dart';
 //import 'package:dartis/dartis.dart';
 import 'package:flutter/foundation.dart';

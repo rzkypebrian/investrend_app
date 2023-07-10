@@ -7,7 +7,6 @@ import 'package:Investrend/component/info_detail_widget.dart';
 import 'package:Investrend/objects/class_value_notifier.dart';
 import 'package:Investrend/objects/data_object.dart';
 import 'package:Investrend/objects/riverpod_change_notifier.dart';
-import 'package:Investrend/utils/connection_services.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:Investrend/utils/string_utils.dart';
 import 'package:flutter/material.dart';
@@ -333,7 +332,7 @@ class _ScreenTopUpHowToState extends BaseStateNoTabs<ScreenTopUpHowTo> {
       shadowColor = Colors.red;
     }
     return AppBar(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       elevation: elevation,
       shadowColor: shadowColor,
       title: AppBarTitleText('top_up_title'.tr()),
@@ -521,7 +520,7 @@ class _ScreenTopUpHowToState extends BaseStateNoTabs<ScreenTopUpHowTo> {
   Widget createBody(BuildContext context, double paddingBottom) {
     return RefreshIndicator(
       color: InvestrendTheme.of(context).textWhite,
-      backgroundColor: Theme.of(context).accentColor,
+      backgroundColor: Theme.of(context).colorScheme.secondary,
       onRefresh: onRefresh,
       child: ValueListenableBuilder(
           valueListenable: _banksNotifier,

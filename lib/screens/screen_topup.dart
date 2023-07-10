@@ -12,10 +12,10 @@ class ScreenTopUp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
 
-        backgroundColor: Theme.of(context).backgroundColor,
+        backgroundColor: Theme.of(context).colorScheme.background,
         elevation: 0.0,
         leading: AppBarActionIcon('images/icons/action_clear.png', (){
           Navigator.pop(context);
@@ -41,7 +41,7 @@ class ScreenTopUp extends StatelessWidget {
           Spacer(flex: 2,),
           FractionallySizedBox(
             widthFactor: 0.4,
-              child: ComponentCreator.roundedButton(context, 'button_top_up'.tr(), Theme.of(context).accentColor, Theme.of(context).primaryColor, Theme.of(context).accentColor, () {
+              child: ComponentCreator.roundedButton(context, 'button_top_up'.tr(), Theme.of(context).colorScheme.secondary, Theme.of(context).primaryColor, Theme.of(context).colorScheme.secondary, () {
                 Navigator.push(context, CupertinoPageRoute(
                   builder: (_) => ScreenTopUpHowTo(), settings: RouteSettings(name: '/topup_how_to'),));
               })),

@@ -69,8 +69,8 @@ class _TabBarTradeState extends State<TabBarTrade> with SingleTickerProviderStat
 
 
     bool isBuy = widget.tabController.index == OrderType.Buy.index;
-    Color color = isBuy ? Theme.of(context).accentColor : InvestrendTheme.sellColor;
-    Color borderColor = isBuy ? Theme.of(context).accentColor : InvestrendTheme.sellColor;
+    Color color = isBuy ? Theme.of(context).colorScheme.secondary : InvestrendTheme.sellColor;
+    Color borderColor = isBuy ? Theme.of(context).colorScheme.secondary : InvestrendTheme.sellColor;
     print('isBuy : $isBuy');
     print('tabController : '+(widget.tabController == null ? 'NULL' : 'ADA'));
     print('tabs : '+(widget.tabs == null ? 'NULL' : 'ADA'));

@@ -1,7 +1,5 @@
-import 'package:Investrend/objects/data_object.dart';
 import 'package:Investrend/objects/iii_objects.dart';
 import 'package:Investrend/utils/string_utils.dart';
-import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class StoredData {
@@ -43,13 +41,13 @@ class StoredData {
     return result;
   }
 
-  List<Stock> getRelatedStock(String for_code){
+  List<Stock> getRelatedStock(String forCode){
     List<Stock> relatedStocks = List.empty(growable: true);
-    String mainCode = for_code;
-    int index = for_code.indexOf('-');
+    String mainCode = forCode;
+    int index = forCode.indexOf('-');
     if(index > 0){
-      mainCode = for_code.substring(0, index);
-      print('getRelatedStock mainCode = $mainCode  from stock.code = '+for_code);
+      mainCode = forCode.substring(0, index);
+      print('getRelatedStock mainCode = $mainCode  from stock.code = '+forCode);
     }
     relatedStocks.clear();
 

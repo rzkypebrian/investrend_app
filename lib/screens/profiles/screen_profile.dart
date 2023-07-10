@@ -197,13 +197,13 @@ class _ScreenProfileState extends BaseStateWithTabs<ScreenProfile> {
           //setState(() {
           noCache = DateTime.now().toString();
           //});
-          String url_profile = 'https://' +
+          String urlProfile = 'https://' +
               InvestrendTheme.tradingHttp.tradingBaseUrl +
               '/getpic?username=' +
               context.read(dataHolderChangeNotifier).user.username +
               '&url=&nocache=' +
               noCache;
-          context.read(avatarChangeNotifier).setUrl(url_profile);
+          context.read(avatarChangeNotifier).setUrl(urlProfile);
         }
       } else if (StringUtils.equalsIgnoreCase(message, 'unauthorized')) {
         //loadingNotifier.value = true;
@@ -270,13 +270,13 @@ class _ScreenProfileState extends BaseStateWithTabs<ScreenProfile> {
           //setState(() {
           noCache = DateTime.now().toString();
           //});
-          String url_profile = 'https://' +
+          String urlProfile = 'https://' +
               InvestrendTheme.tradingHttp.tradingBaseUrl +
               '/getpic?username=' +
               context.read(dataHolderChangeNotifier).user.username +
               '&url=&nocache=' +
               noCache;
-          context.read(avatarChangeNotifier).setUrl(url_profile);
+          context.read(avatarChangeNotifier).setUrl(urlProfile);
         }
       } else if (StringUtils.equalsIgnoreCase(message, 'unauthorized')) {
         //loadingNotifier.value = true;
@@ -472,7 +472,7 @@ class _ScreenProfileState extends BaseStateWithTabs<ScreenProfile> {
   Widget build(BuildContext context) {
     double paddingBottom = MediaQuery.of(context).viewPadding.bottom;
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       appBar: createAppBar(context),
       body: Column(
         children: [
@@ -496,7 +496,7 @@ class _ScreenProfileState extends BaseStateWithTabs<ScreenProfile> {
           Expanded(
             flex: 1,
             child: Scaffold(
-              backgroundColor: Theme.of(context).backgroundColor,
+              backgroundColor: Theme.of(context).colorScheme.background,
               appBar: createTabs(context),
               body: createBody(context, paddingBottom),
             ),
@@ -622,10 +622,11 @@ class _ScreenProfileState extends BaseStateWithTabs<ScreenProfile> {
             ),*/
             OutlinedButton(
                 style: OutlinedButton.styleFrom(
-                  primary: Theme.of(context).accentColor,
+                  primary: Theme.of(context).colorScheme.secondary,
                   minimumSize: Size(50.0, 36.0),
                   side: BorderSide(
-                      color: Theme.of(context).accentColor, width: 1.0),
+                      color: Theme.of(context).colorScheme.secondary,
+                      width: 1.0),
                   shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(16.0))),
                 ),
@@ -638,7 +639,8 @@ class _ScreenProfileState extends BaseStateWithTabs<ScreenProfile> {
                       'button_edit'.tr(),
                       style: InvestrendTheme.of(context)
                           .small_w600_compact
-                          .copyWith(color: Theme.of(context).accentColor),
+                          .copyWith(
+                              color: Theme.of(context).colorScheme.secondary),
                     ),
                     SizedBox(
                       width: 5.0,
@@ -717,7 +719,8 @@ class _ScreenProfileState extends BaseStateWithTabs<ScreenProfile> {
                     value.ranking,
                     style: InvestrendTheme.of(context)
                         .more_support_w400
-                        .copyWith(color: Theme.of(context).accentColor),
+                        .copyWith(
+                            color: Theme.of(context).colorScheme.secondary),
                   )
                 ],
               );
@@ -938,11 +941,12 @@ class _ScreenProfileState extends BaseStateWithTabs<ScreenProfile> {
             */
             OutlinedButton(
                 style: OutlinedButton.styleFrom(
-                  primary: Theme.of(context).accentColor,
+                  primary: Theme.of(context).colorScheme.secondary,
                   minimumSize: Size(50.0, 36.0),
                   side: BorderSide(
-                      color: Theme.of(context).accentColor, width: 1.0),
-                  backgroundColor: Theme.of(context).accentColor,
+                      color: Theme.of(context).colorScheme.secondary,
+                      width: 1.0),
+                  backgroundColor: Theme.of(context).colorScheme.secondary,
                   shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(16.0))),
                 ),
@@ -1033,7 +1037,7 @@ class _ScreenProfileState extends BaseStateWithTabs<ScreenProfile> {
       shadowColor = Colors.red;
     }
     return AppBar(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       elevation: elevation,
       shadowColor: shadowColor,
       leading: AppBarActionIcon('images/icons/action_back.png', () {
@@ -1060,7 +1064,7 @@ class _ScreenProfileState extends BaseStateWithTabs<ScreenProfile> {
 
   Widget createAppBarOld(BuildContext context) {
     return AppBar(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       elevation: 0.0,
       // bottom: PreferredSize(
       //   preferredSize: Size.fromHeight(82.0), // + 10.0 // here the desired height
@@ -1156,7 +1160,7 @@ class _ScreenProfileState extends BaseStateWithTabs<ScreenProfile> {
     return PreferredSize(
       preferredSize: Size.fromHeight(InvestrendTheme.appBarTabHeight),
       child: Container(
-        color: Theme.of(context).backgroundColor,
+        color: Theme.of(context).colorScheme.background,
         child: Align(
           alignment: Alignment.centerLeft,
           child: TabBar(

@@ -6,7 +6,6 @@ import 'package:Investrend/objects/data_object.dart';
 import 'package:Investrend/objects/riverpod_change_notifier.dart';
 import 'package:Investrend/screens/base/base_state.dart';
 import 'package:Investrend/screens/help/screen_help_detail.dart';
-import 'package:Investrend/utils/connection_services.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:Investrend/utils/string_utils.dart';
 import 'package:flutter/cupertino.dart';
@@ -115,14 +114,14 @@ class _ScreenHelpState extends BaseStateNoTabs<ScreenHelp> {
       return;
     }
     try {
-      String md5_help_contents = context.read(helpNotifier).data.md5_help_contents;
-      String md5_help_menus = context.read(helpNotifier).data.md5_help_menus;
-      final help = await InvestrendTheme.datafeedHttp.fetchHelp(md5_help_contents: md5_help_contents, md5_help_menus: md5_help_menus);
+      String md5HelpContents = context.read(helpNotifier).data.md5_help_contents;
+      String md5HelpMenus = context.read(helpNotifier).data.md5_help_menus;
+      final help = await InvestrendTheme.datafeedHttp.fetchHelp(md5_help_contents: md5HelpContents, md5_help_menus: md5HelpMenus);
       if (help != null) {
         print(routeName + ' Future help DATA : ' + help.toString());
         //_summaryNotifier.setData(stockSummary);
-        bool menusChanged = !StringUtils.equalsIgnoreCase(md5_help_menus, help.md5_help_menus) && help.menus != null && help.menus.isNotEmpty;
-        bool contentChanged = !StringUtils.equalsIgnoreCase(md5_help_contents, help.md5_help_contents) &&
+        bool menusChanged = !StringUtils.equalsIgnoreCase(md5HelpMenus, help.md5_help_menus) && help.menus != null && help.menus.isNotEmpty;
+        bool contentChanged = !StringUtils.equalsIgnoreCase(md5HelpContents, help.md5_help_contents) &&
             help.contents != null &&
             help.md5_help_contents.isNotEmpty;
 
@@ -165,7 +164,7 @@ class _ScreenHelpState extends BaseStateNoTabs<ScreenHelp> {
   Widget createBody(BuildContext context, double paddingBottom) {
     return RefreshIndicator(
       color: InvestrendTheme.of(context).textWhite,
-      backgroundColor: Theme.of(context).accentColor,
+      backgroundColor: Theme.of(context).colorScheme.secondary,
       onRefresh: onRefresh,
       child: Column(
         //shrinkWrap: false,

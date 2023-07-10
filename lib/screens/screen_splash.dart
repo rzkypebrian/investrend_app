@@ -1,10 +1,7 @@
-import 'package:Investrend/message.dart';
 import 'package:Investrend/objects/data_object.dart';
 import 'package:Investrend/objects/persistent_data.dart';
 import 'package:Investrend/objects/riverpod_change_notifier.dart';
 import 'package:Investrend/objects/iii_objects.dart';
-import 'package:Investrend/screens/onboarding/screen_register.dart';
-import 'package:Investrend/screens/onboarding/screen_register_pin.dart';
 import 'package:Investrend/screens/onboarding/screen_invitation.dart';
 import 'package:Investrend/screens/screen_login.dart';
 import 'package:Investrend/utils/debug_writer.dart';
@@ -13,7 +10,6 @@ import 'package:Investrend/utils/string_utils.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'package:Investrend/screens/screen_main.dart';
 import 'onboarding/screen_landing.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -401,22 +397,22 @@ class _ScreenSplashState
     //Image icon = Image.asset('images/icons/ic_launcher_white.png');
     double left = (width - 65) / 2;
     double top = (height - 20) / 2;
-    double left_padding = (width - (60 * 3)) / 2;
-    double top_badge = height;
-    double left_badge_1 = 0;
-    double left_badge_2 = left_padding + 60;
-    double left_badge_3 = width;
+    double leftPadding = (width - (60 * 3)) / 2;
+    double topBadge = height;
+    double leftBadge1 = 0;
+    double leftBadge2 = leftPadding + 60;
+    double leftBadge3 = width;
 
     double topBuana = height;
     double leftBuana = (width - 112) / 2;
 
     if (animate) {
       top = height * 0.07;
-      top_badge = height * 0.87;
-      left_badge_1 = left_padding - 30;
-      left_badge_3 = left_padding + (60 * 2) + 30;
+      topBadge = height * 0.87;
+      leftBadge1 = leftPadding - 30;
+      leftBadge3 = leftPadding + (60 * 2) + 30;
 
-      topBuana = top_badge - 40;
+      topBuana = topBadge - 40;
     }
     return Stack(
       children: [
@@ -496,20 +492,20 @@ class _ScreenSplashState
             child: Image.asset('images/icons/icon_name_white.png')),
         AnimatedPositioned(
             duration: Duration(milliseconds: 1500),
-            top: top_badge,
-            left: left_badge_1,
+            top: topBadge,
+            left: leftBadge1,
             curve: Curves.decelerate,
             child: Image.asset('images/icons/badge_1.png')),
         AnimatedPositioned(
             duration: Duration(milliseconds: 1500),
-            top: top_badge,
-            left: left_badge_2,
+            top: topBadge,
+            left: leftBadge2,
             curve: Curves.decelerate,
             child: Image.asset('images/icons/badge_2.png')),
         AnimatedPositioned(
             duration: Duration(milliseconds: 1500),
-            top: top_badge,
-            left: left_badge_3,
+            top: topBadge,
+            left: leftBadge3,
             curve: Curves.decelerate,
             child: Image.asset('images/icons/badge_3.png')),
         Column(

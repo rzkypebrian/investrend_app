@@ -1,16 +1,11 @@
-import 'dart:async';
 import 'dart:math';
 
 import 'package:Investrend/component/button_rounded.dart';
 import 'package:Investrend/component/component_creator.dart';
 import 'package:Investrend/objects/riverpod_change_notifier.dart';
-import 'package:Investrend/objects/iii_objects.dart';
-import 'package:Investrend/utils/connection_services.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
-import 'package:Investrend/utils/string_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 enum FilterTransaction { All, Buy, Sell }
@@ -100,11 +95,11 @@ extension FilterPeriodExtension on FilterPeriod {
   }
 }
 
-/*****************************************
- *
- * Historical FILTER
- *
- ******************************************/
+/// ***************************************
+///
+/// Historical FILTER
+///
+///****************************************
 class BottomSheetTransactionHistoricalFilter extends StatefulWidget {
   final int index_period;
   final int index_transaction;
@@ -253,8 +248,8 @@ class _BottomSheetTransactionHistoricalFilterState extends State<BottomSheetTran
             Container(
               padding: const EdgeInsets.only(bottom: 8.0),
               width: double.maxFinite,
-              child: ComponentCreator.roundedButton(context, 'filter_apply_button'.tr(), Theme.of(context).accentColor,
-                  Theme.of(context).primaryColor, Theme.of(context).accentColor, () {
+              child: ComponentCreator.roundedButton(context, 'filter_apply_button'.tr(), Theme.of(context).colorScheme.secondary,
+                  Theme.of(context).primaryColor, Theme.of(context).colorScheme.secondary, () {
                 context.read(transactionHistoricalFilterChangeNotifier).setIndex(index_transaction, index_period);
                 Navigator.pop(context);
               }),
@@ -271,8 +266,8 @@ class _BottomSheetTransactionHistoricalFilterState extends State<BottomSheetTran
     //Color colorBackground = selected ? colorSoft : Colors.transparent;
     Color colorBackground = selected ? InvestrendTheme.of(context).colorSoft : Colors.transparent;
 
-    Color colorBorder = selected ? Theme.of(context).accentColor : Colors.transparent;
-    Color colorText = selected ? Theme.of(context).accentColor : style.color;
+    Color colorBorder = selected ? Theme.of(context).colorScheme.secondary : Colors.transparent;
+    Color colorText = selected ? Theme.of(context).colorScheme.secondary : style.color;
     return OutlinedButton(
         style: ButtonStyle(
           backgroundColor: MaterialStateColor.resolveWith((states) {
@@ -301,11 +296,11 @@ class _BottomSheetTransactionHistoricalFilterState extends State<BottomSheetTran
   }
 }
 
-/*****************************************
- *
- * Intraday FILTER
- *
- ******************************************/
+/// ***************************************
+///
+/// Intraday FILTER
+///
+///****************************************
 class BottomSheetTransactionIntradayFilter extends StatefulWidget {
   final int index_status;
   final int index_transaction;
@@ -458,8 +453,8 @@ class _BottomSheetTransactionIntradayFilterState extends State<BottomSheetTransa
             Container(
               padding: const EdgeInsets.only(bottom: 8.0),
               width: double.maxFinite,
-              child: ComponentCreator.roundedButton(context, 'filter_apply_button'.tr(), Theme.of(context).accentColor,
-                  Theme.of(context).primaryColor, Theme.of(context).accentColor, () {
+              child: ComponentCreator.roundedButton(context, 'filter_apply_button'.tr(), Theme.of(context).colorScheme.secondary,
+                  Theme.of(context).primaryColor, Theme.of(context).colorScheme.secondary, () {
                 context.read(transactionIntradayFilterChangeNotifier).setIndex(index_transaction, index_status);
                 Navigator.pop(context);
               }),

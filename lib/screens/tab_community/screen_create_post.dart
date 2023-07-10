@@ -7,7 +7,6 @@ import 'package:Investrend/objects/data_holder.dart';
 import 'package:Investrend/objects/sosmed_object.dart';
 import 'package:Investrend/screens/base/base_state.dart';
 import 'package:Investrend/screens/trade/component/bottom_sheet_loading.dart';
-import 'package:Investrend/utils/connection_services.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:Investrend/utils/string_utils.dart';
 import 'package:Investrend/utils/utils.dart';
@@ -28,10 +27,12 @@ class ScreenCreatePost extends StatefulWidget {
   final String fromRoute;
   final BuySell orderData;
 
-  const ScreenCreatePost(this.fromRoute, {this.orderData, Key key}) : super(key: key);
+  const ScreenCreatePost(this.fromRoute, {this.orderData, Key key})
+      : super(key: key);
 
   @override
-  _ScreenCreatePostState createState() => _ScreenCreatePostState(this.fromRoute, this.orderData);
+  _ScreenCreatePostState createState() =>
+      _ScreenCreatePostState(this.fromRoute, this.orderData);
 }
 
 /*
@@ -62,7 +63,8 @@ class _ScreenCreatePostState extends BaseStateNoTabs<ScreenCreatePost> {
   ValueNotifier<bool> imageNotifier = ValueNotifier(false);
   ValueNotifier<bool> typeNotifier = ValueNotifier(false);
 
-  _ScreenCreatePostState(this.fromRoute, this.orderData) : super('/create_post');
+  _ScreenCreatePostState(this.fromRoute, this.orderData)
+      : super('/create_post');
 
   StateComposePoll statePoll = StateComposePoll();
   StateComposePrediction statePrediction = StateComposePrediction();
@@ -74,7 +76,7 @@ class _ScreenCreatePostState extends BaseStateNoTabs<ScreenCreatePost> {
     // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
     //   scrollToBottom();
     // });
-    Future.delayed(Duration(milliseconds: 500),scrollToBottom);
+    Future.delayed(Duration(milliseconds: 500), scrollToBottom);
   }
 
   void removeImage(int index) {
@@ -89,17 +91,18 @@ class _ScreenCreatePostState extends BaseStateNoTabs<ScreenCreatePost> {
   //   return Container();
   // }
 
-  imageTools.Image resizeImage(String path){
+  imageTools.Image resizeImage(String path) {
     // Read a jpeg image from file.
-    imageTools.Image image = imageTools.decodeImage(new File(path).readAsBytesSync());
+    imageTools.Image image =
+        imageTools.decodeImage(new File(path).readAsBytesSync());
 
     // Resize the image to a 120x? thumbnail (maintaining the aspect ratio).
 
     int maxWidth = 2000;
-    if(image.width > maxWidth){
+    if (image.width > maxWidth) {
       imageTools.Image resized = imageTools.copyResize(image, width: maxWidth);
       return resized;
-    }else{
+    } else {
       return image;
     }
   }
@@ -122,6 +125,7 @@ class _ScreenCreatePostState extends BaseStateNoTabs<ScreenCreatePost> {
       print('Upload exception : ' + e.toString());
     }
   }
+
   /*
   void upload(BuildContext context, File imageFile) async {
     /*
@@ -180,8 +184,8 @@ class _ScreenCreatePostState extends BaseStateNoTabs<ScreenCreatePost> {
   void initState() {
     super.initState();
     fieldTextController = TextEditingController();
-    if(_fromOrder()){
-      print('_fromOrder : '+orderData.toString());
+    if (_fromOrder()) {
+      print('_fromOrder : ' + orderData.toString());
       isSelected[0] = true;
       isSelected[1] = false;
       isSelected[2] = false;
@@ -203,7 +207,7 @@ class _ScreenCreatePostState extends BaseStateNoTabs<ScreenCreatePost> {
 
     return AppBar(
       elevation: 0.0,
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       leading: AppBarActionIcon(
         'images/icons/action_clear.png',
         () {
@@ -213,10 +217,11 @@ class _ScreenCreatePostState extends BaseStateNoTabs<ScreenCreatePost> {
     );
   }
 
-  void scrollToBottom(){
+  void scrollToBottom() {
     scrollController.animateTo(scrollController.position.maxScrollExtent,
         duration: Duration(milliseconds: 500), curve: Curves.ease);
   }
+
   @override
   Widget createBody(BuildContext context, double paddingBottom) {
     //bool lightTheme = MediaQuery.of(context).platformBrightness == Brightness.light;
@@ -227,7 +232,8 @@ class _ScreenCreatePostState extends BaseStateNoTabs<ScreenCreatePost> {
         //isAlwaysShown: true,
         child: SingleChildScrollView(
           controller: scrollController,
-          padding: EdgeInsets.only(left: 14.0, right: 14.0, bottom: (paddingBottom + 55)),
+          padding: EdgeInsets.only(
+              left: 14.0, right: 14.0, bottom: (paddingBottom + 55)),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -251,11 +257,17 @@ class _ScreenCreatePostState extends BaseStateNoTabs<ScreenCreatePost> {
                           url = 'https://' +
                               InvestrendTheme.tradingHttp.tradingBaseUrl +
                               '/getpic?username=' +
-                              context.read(dataHolderChangeNotifier).user.username +
+                              context
+                                  .read(dataHolderChangeNotifier)
+                                  .user
+                                  .username +
                               '&url=&nocache=';
                         }
                         return AvatarProfileButton(
-                          fullname: context.read(dataHolderChangeNotifier).user.realname,
+                          fullname: context
+                              .read(dataHolderChangeNotifier)
+                              .user
+                              .realname,
                           url: url,
                           size: 32.0,
                           // style: Theme.of(context)
@@ -287,27 +299,55 @@ class _ScreenCreatePostState extends BaseStateNoTabs<ScreenCreatePost> {
                               hintText: 'create_post_information'.tr(),
                               hintStyle: InvestrendTheme.of(context)
                                   .regular_w400_compact
-                                  .copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor),
+                                  .copyWith(
+                                      color: InvestrendTheme.of(context)
+                                          .greyDarkerTextColor),
                               counterStyle: InvestrendTheme.of(context)
-                                  .more_support_w400_compact.copyWith(fontSize: 10.0)
-                                  .copyWith(color: InvestrendTheme.of(context).greyLighterTextColor),
-                              border: UnderlineInputBorder(borderSide: BorderSide(color: Colors.transparent, width: 0.0)),
-                              focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.transparent, width: 0.0)),
-                              disabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.transparent, width: 0.0)),
-                              enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.transparent, width: 0.0)),
-                              errorBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.transparent, width: 0.0)),
-                              focusedErrorBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.transparent, width: 0.0)),
-                              focusColor: Theme.of(context).accentColor,
+                                  .more_support_w400_compact
+                                  .copyWith(fontSize: 10.0)
+                                  .copyWith(
+                                      color: InvestrendTheme.of(context)
+                                          .greyLighterTextColor),
+                              border: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Colors.transparent, width: 0.0)),
+                              focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Colors.transparent, width: 0.0)),
+                              disabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Colors.transparent, width: 0.0)),
+                              enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Colors.transparent, width: 0.0)),
+                              errorBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Colors.transparent, width: 0.0)),
+                              focusedErrorBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Colors.transparent, width: 0.0)),
+                              focusColor:
+                                  Theme.of(context).colorScheme.secondary,
                             ),
                           ),
-                          SizedBox(height: 20.0,),
+                          SizedBox(
+                            height: 20.0,
+                          ),
                           ValueListenableBuilder<bool>(
                               valueListenable: typeNotifier,
                               builder: (context, value, child) {
-                                bool isText = !isSelected[0] && !isSelected[1] && !isSelected[2];
-                                bool isOrder = isSelected[0] && !isSelected[1] && !isSelected[2];
-                                bool isPoll = !isSelected[0] && isSelected[1] && !isSelected[2];
-                                bool isPrediction = !isSelected[0] && !isSelected[1] && isSelected[2];
+                                bool isText = !isSelected[0] &&
+                                    !isSelected[1] &&
+                                    !isSelected[2];
+                                bool isOrder = isSelected[0] &&
+                                    !isSelected[1] &&
+                                    !isSelected[2];
+                                bool isPoll = !isSelected[0] &&
+                                    isSelected[1] &&
+                                    !isSelected[2];
+                                bool isPrediction = !isSelected[0] &&
+                                    !isSelected[1] &&
+                                    isSelected[2];
 
                                 if (isPoll) {
                                   return ComposePollWidget(
@@ -332,25 +372,33 @@ class _ScreenCreatePostState extends BaseStateNoTabs<ScreenCreatePost> {
                                 } else if (isOrder && orderData != null) {
                                   bool isBuy = orderData.isBuy();
                                   print('fromOrder widget isBuy : $isBuy ');
-                                  print('fromOrder --> '+orderData.toString());
+                                  print(
+                                      'fromOrder --> ' + orderData.toString());
 
-                                  if(isBuy){
-                                    return ComposeActivityBuyWidget(orderData, onDelete: () {
-                                      print('onDelete Activity');
-                                      isSelected[0] = false;
-                                      stateTransaction.clear();
-                                      typeNotifier.value = !typeNotifier.value;
-                                    },);
-                                  }else{
-                                    return ComposeActivitySellWidget(stateTransaction, orderData, onDelete: () {
-                                      print('onDelete Activity');
-                                      isSelected[0] = false;
-                                      stateTransaction.clear();
-                                      typeNotifier.value = !typeNotifier.value;
-                                    },);  
+                                  if (isBuy) {
+                                    return ComposeActivityBuyWidget(
+                                      orderData,
+                                      onDelete: () {
+                                        print('onDelete Activity');
+                                        isSelected[0] = false;
+                                        stateTransaction.clear();
+                                        typeNotifier.value =
+                                            !typeNotifier.value;
+                                      },
+                                    );
+                                  } else {
+                                    return ComposeActivitySellWidget(
+                                      stateTransaction,
+                                      orderData,
+                                      onDelete: () {
+                                        print('onDelete Activity');
+                                        isSelected[0] = false;
+                                        stateTransaction.clear();
+                                        typeNotifier.value =
+                                            !typeNotifier.value;
+                                      },
+                                    );
                                   }
-                                  
-
                                 } else {
                                   return ValueListenableBuilder<bool>(
                                       valueListenable: imageNotifier,
@@ -366,20 +414,28 @@ class _ScreenCreatePostState extends BaseStateNoTabs<ScreenCreatePost> {
                                             paths.length,
                                             (int index) {
                                               return Padding(
-                                                padding: const EdgeInsets.only(top: 14.0),
+                                                padding: const EdgeInsets.only(
+                                                    top: 14.0),
                                                 child: Column(
                                                   //alignment: Alignment.topRight,
-                                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.end,
                                                   children: [
                                                     IconButton(
                                                       onPressed: () {
                                                         removeImage(index);
                                                       },
-                                                      icon: Image.asset('images/icons/delete_circle.png'),
-                                                      visualDensity: VisualDensity.compact,
-                                                      padding: EdgeInsets.only(left: 10.0, bottom: 1.0, top: 1.0),
+                                                      icon: Image.asset(
+                                                          'images/icons/delete_circle.png'),
+                                                      visualDensity:
+                                                          VisualDensity.compact,
+                                                      padding: EdgeInsets.only(
+                                                          left: 10.0,
+                                                          bottom: 1.0,
+                                                          top: 1.0),
                                                     ),
-                                                    Image.file(File(paths.elementAt(index))),
+                                                    Image.file(File(paths
+                                                        .elementAt(index))),
                                                   ],
                                                 ),
                                               );
@@ -412,10 +468,14 @@ class _ScreenCreatePostState extends BaseStateNoTabs<ScreenCreatePost> {
   }
 
   Color _getColorToggle(BuildContext context, int index) {
-    if(index == 0 && _fromOrder()){
-      return isSelected[index] ? Theme.of(context).accentColor : InvestrendTheme.of(context).greyLighterTextColor;
-    }else{
-      return isSelected[index] ? InvestrendTheme.of(context).greyDarkerTextColor : InvestrendTheme.of(context).greyLighterTextColor;
+    if (index == 0 && _fromOrder()) {
+      return isSelected[index]
+          ? Theme.of(context).colorScheme.secondary
+          : InvestrendTheme.of(context).greyLighterTextColor;
+    } else {
+      return isSelected[index]
+          ? InvestrendTheme.of(context).greyDarkerTextColor
+          : InvestrendTheme.of(context).greyLighterTextColor;
     }
   }
 
@@ -448,7 +508,8 @@ class _ScreenCreatePostState extends BaseStateNoTabs<ScreenCreatePost> {
         Container(
           // color: Colors.orange,
           height: height,
-          padding: EdgeInsets.only(left: 14.0, right: 14.0, bottom: paddingBottom),
+          padding:
+              EdgeInsets.only(left: 14.0, right: 14.0, bottom: paddingBottom),
           width: double.maxFinite,
           child: Row(
             children: [
@@ -456,7 +517,6 @@ class _ScreenCreatePostState extends BaseStateNoTabs<ScreenCreatePost> {
                   valueListenable: typeNotifier,
                   builder: (context, value, child) {
                     return ToggleButtons(
-
                       borderColor: Colors.transparent,
                       selectedBorderColor: Colors.transparent,
                       highlightColor: Colors.transparent,
@@ -466,16 +526,22 @@ class _ScreenCreatePostState extends BaseStateNoTabs<ScreenCreatePost> {
                       disabledColor: Colors.transparent,
                       children: [
                         Image.asset(
-                          _fromOrder() ? 'images/icons/create_post_order.png' : 'images/icons/create_post_order_list.png',
+                          _fromOrder()
+                              ? 'images/icons/create_post_order.png'
+                              : 'images/icons/create_post_order_list.png',
                           color: _getColorToggle(context, 0),
                         ),
-                        Image.asset('images/icons/create_post_poll.png', color: _getColorToggle(context, 1)),
-                        Image.asset('images/icons/create_post_prediction.png', color: _getColorToggle(context, 2)),
+                        Image.asset('images/icons/create_post_poll.png',
+                            color: _getColorToggle(context, 1)),
+                        Image.asset('images/icons/create_post_prediction.png',
+                            color: _getColorToggle(context, 2)),
                       ],
                       onPressed: (int index) {
                         // setState(() {
 
-                        for (int buttonIndex = 0; buttonIndex < isSelected.length; buttonIndex++) {
+                        for (int buttonIndex = 0;
+                            buttonIndex < isSelected.length;
+                            buttonIndex++) {
                           if (buttonIndex == index) {
                             isSelected[buttonIndex] = !isSelected[buttonIndex];
                           } else {
@@ -491,24 +557,33 @@ class _ScreenCreatePostState extends BaseStateNoTabs<ScreenCreatePost> {
               Spacer(
                 flex: 1,
               ),
-              ValueListenableBuilder<bool>(valueListenable: typeNotifier, builder: (context, value, child) {
-                bool isText = !isSelected[0] && !isSelected[1] && !isSelected[2];
-                if(isText && paths.length < 3){
-                  return TapableWidget(
-                    //splashColor: InvestrendTheme.of(context).tileSplashColor,
-                    child: SizedBox(
-                        width: height - paddingBottom,
-                        height: height - paddingBottom,
-                        child: Image.asset('images/icons/create_post_add_image.png', color: InvestrendTheme.of(context).greyDarkerTextColor)),
-                    onTap: () => chooseImageSource(context),
-                  );
-                }else{
-                  return SizedBox(
-                      width: height - paddingBottom,
-                      height: height - paddingBottom,
-                      child: Image.asset('images/icons/create_post_add_image.png', color: InvestrendTheme.of(context).greyLighterTextColor));
-                }
-              }),
+              ValueListenableBuilder<bool>(
+                  valueListenable: typeNotifier,
+                  builder: (context, value, child) {
+                    bool isText =
+                        !isSelected[0] && !isSelected[1] && !isSelected[2];
+                    if (isText && paths.length < 3) {
+                      return TapableWidget(
+                        //splashColor: InvestrendTheme.of(context).tileSplashColor,
+                        child: SizedBox(
+                            width: height - paddingBottom,
+                            height: height - paddingBottom,
+                            child: Image.asset(
+                                'images/icons/create_post_add_image.png',
+                                color: InvestrendTheme.of(context)
+                                    .greyDarkerTextColor)),
+                        onTap: () => chooseImageSource(context),
+                      );
+                    } else {
+                      return SizedBox(
+                          width: height - paddingBottom,
+                          height: height - paddingBottom,
+                          child: Image.asset(
+                              'images/icons/create_post_add_image.png',
+                              color: InvestrendTheme.of(context)
+                                  .greyLighterTextColor));
+                    }
+                  }),
               /*
               TapableWidget(
                 //splashColor: InvestrendTheme.of(context).tileSplashColor,
@@ -539,14 +614,19 @@ class _ScreenCreatePostState extends BaseStateNoTabs<ScreenCreatePost> {
                 style: OutlinedButton.styleFrom(
                   primary: Theme.of(context).primaryColor,
                   minimumSize: Size(50.0, 36.0),
-                  side: BorderSide(color: Theme.of(context).accentColor, width: 1.0),
-                  backgroundColor: Theme.of(context).accentColor,
-                  shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(16.0))),
+                  side: BorderSide(
+                      color: Theme.of(context).colorScheme.secondary,
+                      width: 1.0),
+                  backgroundColor: Theme.of(context).colorScheme.secondary,
+                  shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(16.0))),
                 ),
                 onPressed: () => submitPost(context),
                 child: Text(
                   'button_post'.tr(),
-                  style: InvestrendTheme.of(context).small_w600_compact.copyWith(color: Theme.of(context).primaryColor),
+                  style: InvestrendTheme.of(context)
+                      .small_w600_compact
+                      .copyWith(color: Theme.of(context).primaryColor),
                 ),
               ),
             ],
@@ -575,7 +655,10 @@ class _ScreenCreatePostState extends BaseStateNoTabs<ScreenCreatePost> {
                       Navigator.of(context).pop();
                     }),
                 CupertinoButton(
-                    child: Text('button_cancel'.tr(), style: TextStyle(color: Colors.red),),
+                    child: Text(
+                      'button_cancel'.tr(),
+                      style: TextStyle(color: Colors.red),
+                    ),
                     //color: Colors.red,
                     onPressed: () {
                       Navigator.of(context).pop();
@@ -584,10 +667,11 @@ class _ScreenCreatePostState extends BaseStateNoTabs<ScreenCreatePost> {
             ));
   }
 
-  void showCommunityFeedScreen(BuildContext context, bool fromOrder){
+  void showCommunityFeedScreen(BuildContext context, bool fromOrder) {
     context.read(sosmedFeedChangeNotifier).mustNotifyListener();
-    if(fromOrder){
-      context.read(sosmedActiveActionNotifier).index = ActiveActionType.DoUpdate.index;
+    if (fromOrder) {
+      context.read(sosmedActiveActionNotifier).index =
+          ActiveActionType.DoUpdate.index;
       /*
       Navigator.popUntil(context, (route) {
         print('popUntil : ' + route.toString());
@@ -596,8 +680,8 @@ class _ScreenCreatePostState extends BaseStateNoTabs<ScreenCreatePost> {
       context.read(mainMenuChangeNotifier).setActive(Tabs.Community, TabsCommunity.Feed.index);
       */
       Navigator.of(context).pop('SHOW_COMMUNITY_FEED');
-    }else{
-      Navigator.pop(context,'REFRESH');
+    } else {
+      Navigator.pop(context, 'REFRESH');
     }
   }
 
@@ -607,44 +691,45 @@ class _ScreenCreatePostState extends BaseStateNoTabs<ScreenCreatePost> {
     bool isPoll = !isSelected[0] && isSelected[1] && !isSelected[2];
     bool isPrediction = !isSelected[0] && !isSelected[1] && isSelected[2];
 
-    if(isOrder && orderData == null){
-      InvestrendTheme.of(context).showSnackBar(context, 'sosmed_activity_error_please_select_order'.tr());
+    if (isOrder && orderData == null) {
+      InvestrendTheme.of(context).showSnackBar(
+          context, 'sosmed_activity_error_please_select_order'.tr());
       return;
     }
-
 
     String text = fieldTextController.text;
-    if(StringUtils.isEmtpy(text)){
-      InvestrendTheme.of(context).showSnackBar(context, 'sosmed_error_text'.tr());
+    if (StringUtils.isEmtpy(text)) {
+      InvestrendTheme.of(context)
+          .showSnackBar(context, 'sosmed_error_text'.tr());
       return;
     }
-    if(isPrediction){
+    if (isPrediction) {
       String error = statePrediction.getError();
-      if(!StringUtils.isEmtpy(error)){
+      if (!StringUtils.isEmtpy(error)) {
         InvestrendTheme.of(context).showSnackBar(context, error);
         return;
       }
-    }else if(isPoll){
+    } else if (isPoll) {
       String error = statePoll.getError();
-      if(!StringUtils.isEmtpy(error)){
+      if (!StringUtils.isEmtpy(error)) {
         InvestrendTheme.of(context).showSnackBar(context, error);
         return;
       }
-    }else if(isOrder && orderData.isSell()){
+    } else if (isOrder && orderData.isSell()) {
       String error = stateTransaction.getError();
-      if(!StringUtils.isEmtpy(error)){
+      if (!StringUtils.isEmtpy(error)) {
         InvestrendTheme.of(context).showSnackBar(context, error);
         return;
       }
     }
-
 
     showModalBottomSheet(
         isScrollControlled: true,
         isDismissible: false,
         enableDrag: false,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(topLeft: Radius.circular(24.0), topRight: Radius.circular(24.0)),
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(24.0), topRight: Radius.circular(24.0)),
         ),
         //backgroundColor: Colors.transparent,
         context: context,
@@ -652,7 +737,6 @@ class _ScreenCreatePostState extends BaseStateNoTabs<ScreenCreatePost> {
           String action = 'sosmed_label_posting'.tr();
           return LoadingBottomSheetSimple(action);
         });
-
 
     if (isText) {
       try {
@@ -663,7 +747,7 @@ class _ScreenCreatePostState extends BaseStateNoTabs<ScreenCreatePost> {
             language: EasyLocalization.of(context).locale.languageCode);
         */
         SubmitCreateText submitResult;
-        if(Utils.safeLenght(paths) <= 0){
+        if (Utils.safeLenght(paths) <= 0) {
           /*
           submitResult = await SosMedHttp.createPostText(
               fieldTextController.text, '123', InvestrendTheme.of(context).applicationPlatform, InvestrendTheme.of(context).applicationVersion,
@@ -672,27 +756,34 @@ class _ScreenCreatePostState extends BaseStateNoTabs<ScreenCreatePost> {
           */
 
           submitResult = await InvestrendTheme.tradingHttp.sosmedCreatePostText(
-              fieldTextController.text,  InvestrendTheme.of(context).applicationPlatform, InvestrendTheme.of(context).applicationVersion,
+              fieldTextController.text,
+              InvestrendTheme.of(context).applicationPlatform,
+              InvestrendTheme.of(context).applicationVersion,
               //attachments: paths,
               language: EasyLocalization.of(context).locale.languageCode);
-        }else{
+        } else {
           /*
           submitResult = await SosMedHttp.createPostTextWithAttachments(
               fieldTextController.text,paths, '123', InvestrendTheme.of(context).applicationPlatform, InvestrendTheme.of(context).applicationVersion,
               language: EasyLocalization.of(context).locale.languageCode);
           */
 
-          submitResult = await InvestrendTheme.tradingHttp.sosmedCreatePostTextWithAttachments(
-              fieldTextController.text,paths, InvestrendTheme.of(context).applicationPlatform, InvestrendTheme.of(context).applicationVersion,
-              language: EasyLocalization.of(context).locale.languageCode);
-
+          submitResult = await InvestrendTheme.tradingHttp
+              .sosmedCreatePostTextWithAttachments(
+                  fieldTextController.text,
+                  paths,
+                  InvestrendTheme.of(context).applicationPlatform,
+                  InvestrendTheme.of(context).applicationVersion,
+                  language: EasyLocalization.of(context).locale.languageCode);
         }
         if (submitResult != null) {
           print('submitResult = ' + submitResult.toString());
-          bool success = submitResult.status == 200; // && submitResult?.result?.id >= 0;
+          bool success =
+              submitResult.status == 200; // && submitResult?.result?.id >= 0;
           if (mounted) {
             Navigator.of(context).pop();
-            InvestrendTheme.of(context).showSnackBar(context, submitResult.message);
+            InvestrendTheme.of(context)
+                .showSnackBar(context, submitResult.message);
           }
           if (success) {
             if (mounted) {
@@ -709,7 +800,8 @@ class _ScreenCreatePostState extends BaseStateNoTabs<ScreenCreatePost> {
           }
         }
       } catch (error) {
-        print(routeName + '.createPostText Exception like : ' + error.toString());
+        print(
+            routeName + '.createPostText Exception like : ' + error.toString());
         print(error);
         Navigator.of(context).pop();
         //InvestrendTheme.of(context).showSnackBar(context, error.toString());
@@ -731,24 +823,22 @@ class _ScreenCreatePostState extends BaseStateNoTabs<ScreenCreatePost> {
       }
     } else if (isOrder) {
       String code = orderData.stock_code;
-      int buy_price = 0;
-      int sell_price = 0;
-      String transaction_type = '';
-      String order_id = orderData.orderid;
-      String publish_time = _fromOrder() ? 'PENDING' : 'NOW';
-      String order_date = orderData.orderdate;
-      if(orderData.isBuy()){
-        transaction_type = 'BUY';
-        buy_price = orderData.normalPriceLot.price;
-        sell_price = 0;
-      }else{
-        transaction_type = 'SELL';
-        buy_price = stateTransaction.averagePrice; //  di isi berdasarkan average price portfolio stock nya.
-        sell_price = orderData.normalPriceLot.price;
+      int buyPrice = 0;
+      int sellPrice = 0;
+      String transactionType = '';
+      String orderId = orderData.orderid;
+      String publishTime = _fromOrder() ? 'PENDING' : 'NOW';
+      String orderDate = orderData.orderdate;
+      if (orderData.isBuy()) {
+        transactionType = 'BUY';
+        buyPrice = orderData.normalPriceLot.price;
+        sellPrice = 0;
+      } else {
+        transactionType = 'SELL';
+        buyPrice = stateTransaction
+            .averagePrice; //  di isi berdasarkan average price portfolio stock nya.
+        sellPrice = orderData.normalPriceLot.price;
       }
-
-
-
 
       try {
         /*
@@ -758,19 +848,28 @@ class _ScreenCreatePostState extends BaseStateNoTabs<ScreenCreatePost> {
             '123', InvestrendTheme.of(context).applicationPlatform, InvestrendTheme.of(context).applicationVersion,
             language: EasyLocalization.of(context).locale.languageCode);
         */
-        SubmitCreateTransaction submitResult = await InvestrendTheme.tradingHttp.sosmedCreatePostTransaction(
-            code, transaction_type,  buy_price, sell_price,
-            fieldTextController.text, order_id, publish_time, order_date,
-            InvestrendTheme.of(context).applicationPlatform, InvestrendTheme.of(context).applicationVersion,
-            language: EasyLocalization.of(context).locale.languageCode);
-
+        SubmitCreateTransaction submitResult = await InvestrendTheme.tradingHttp
+            .sosmedCreatePostTransaction(
+                code,
+                transactionType,
+                buyPrice,
+                sellPrice,
+                fieldTextController.text,
+                orderId,
+                publishTime,
+                orderDate,
+                InvestrendTheme.of(context).applicationPlatform,
+                InvestrendTheme.of(context).applicationVersion,
+                language: EasyLocalization.of(context).locale.languageCode);
 
         if (submitResult != null) {
           print('submitResult = ' + submitResult.toString());
-          bool success = submitResult.status == 200; // && submitResult?.result?.id >= 0;
+          bool success =
+              submitResult.status == 200; // && submitResult?.result?.id >= 0;
           if (mounted) {
             Navigator.of(context).pop();
-            InvestrendTheme.of(context).showSnackBar(context, submitResult.message);
+            InvestrendTheme.of(context)
+                .showSnackBar(context, submitResult.message);
           }
           if (success) {
             if (mounted) {
@@ -817,16 +916,23 @@ class _ScreenCreatePostState extends BaseStateNoTabs<ScreenCreatePost> {
         //     InvestrendTheme.of(context).applicationPlatform, InvestrendTheme.of(context).applicationVersion,
         //     language: EasyLocalization.of(context).locale.languageCode);
 
-        SubmitCreatePolls submitResult = await InvestrendTheme.tradingHttp.sosmedCreatePostPoll(fieldTextController.text, statePoll.options, statePoll.expire_at,
-            InvestrendTheme.of(context).applicationPlatform, InvestrendTheme.of(context).applicationVersion,
-            language: EasyLocalization.of(context).locale.languageCode);
+        SubmitCreatePolls submitResult = await InvestrendTheme.tradingHttp
+            .sosmedCreatePostPoll(
+                fieldTextController.text,
+                statePoll.options,
+                statePoll.expire_at,
+                InvestrendTheme.of(context).applicationPlatform,
+                InvestrendTheme.of(context).applicationVersion,
+                language: EasyLocalization.of(context).locale.languageCode);
 
         if (submitResult != null) {
           print('submitResult = ' + submitResult.toString());
-          bool success = submitResult.status == 200; // && submitResult?.result?.id >= 0;
+          bool success =
+              submitResult.status == 200; // && submitResult?.result?.id >= 0;
           if (mounted) {
             Navigator.of(context).pop();
-            InvestrendTheme.of(context).showSnackBar(context, submitResult.message);
+            InvestrendTheme.of(context)
+                .showSnackBar(context, submitResult.message);
           }
           if (success) {
             if (mounted) {
@@ -873,18 +979,26 @@ class _ScreenCreatePostState extends BaseStateNoTabs<ScreenCreatePost> {
             InvestrendTheme.of(context).applicationPlatform, InvestrendTheme.of(context).applicationVersion,
             language: EasyLocalization.of(context).locale.languageCode);
         */
-        SubmitCreatePrediction submitResult = await InvestrendTheme.tradingHttp.sosmedCreatePostPrediction(
-            statePrediction.transaction_type, fieldTextController.text, statePrediction.code,
-            statePrediction.start_price, statePrediction.target_price, statePrediction.expire_at,
-            InvestrendTheme.of(context).applicationPlatform, InvestrendTheme.of(context).applicationVersion,
-            language: EasyLocalization.of(context).locale.languageCode);
+        SubmitCreatePrediction submitResult = await InvestrendTheme.tradingHttp
+            .sosmedCreatePostPrediction(
+                statePrediction.transaction_type,
+                fieldTextController.text,
+                statePrediction.code,
+                statePrediction.start_price,
+                statePrediction.target_price,
+                statePrediction.expire_at,
+                InvestrendTheme.of(context).applicationPlatform,
+                InvestrendTheme.of(context).applicationVersion,
+                language: EasyLocalization.of(context).locale.languageCode);
 
         if (submitResult != null) {
           print('submitResult = ' + submitResult.toString());
-          bool success = submitResult.status == 200; // && submitResult?.result?.id >= 0;
+          bool success =
+              submitResult.status == 200; // && submitResult?.result?.id >= 0;
           if (mounted) {
             Navigator.of(context).pop();
-            InvestrendTheme.of(context).showSnackBar(context, submitResult.message);
+            InvestrendTheme.of(context)
+                .showSnackBar(context, submitResult.message);
           }
           if (success) {
             if (mounted) {
@@ -932,18 +1046,20 @@ class _ScreenCreatePostState extends BaseStateNoTabs<ScreenCreatePost> {
     // TODO: implement onInactive
   }
 }
+
 class IntFlag {
   static final int error_value = 9999999;
   static final int loading_value = 8888888;
 }
-class StateActivityTransaction{
+
+class StateActivityTransaction {
   int averagePrice = 0;
-  String getError(){
-    if(averagePrice == IntFlag.error_value){
+  String getError() {
+    if (averagePrice == IntFlag.error_value) {
       return 'sosmed_activity_error_cost_failed'.tr();
-    }else if(averagePrice == IntFlag.loading_value){
+    } else if (averagePrice == IntFlag.loading_value) {
       return 'sosmed_activity_error_cost_loading'.tr();
-    }else if (averagePrice <= 0){
+    } else if (averagePrice <= 0) {
       return 'sosmed_activity_error_cost_invalid'.tr();
     }
     return null;
@@ -966,34 +1082,35 @@ class StateComposePoll {
     expire_at = '';
     options.clear();
   }
+
   bool valid() {
     int optionsCount = 0;
     options.forEach((value) {
-      if( !StringUtils.isEmtpy(value) ){
+      if (!StringUtils.isEmtpy(value)) {
         optionsCount++;
       }
     });
     return !StringUtils.isEmtpy(expire_at) && optionsCount >= 2;
   }
+
   bool inValid() {
     return !valid();
   }
 
-  String getError(){
+  String getError() {
     int optionsCount = 0;
     options.forEach((value) {
-      if( !StringUtils.isEmtpy(value) ){
+      if (!StringUtils.isEmtpy(value)) {
         optionsCount++;
       }
     });
-    if(StringUtils.isEmtpy(expire_at)){
+    if (StringUtils.isEmtpy(expire_at)) {
       return 'sosmed_polling_error_expire_at'.tr();
-    }else if(optionsCount < 2){
+    } else if (optionsCount < 2) {
       return 'sosmed_polling_error_options'.tr();
     }
     return null;
   }
-
 }
 
 class StateComposePrediction {
@@ -1012,22 +1129,27 @@ class StateComposePrediction {
   }
 
   bool valid() {
-    return !StringUtils.isEmtpy(code) && target_price > 0 && start_price > 0
-        && !StringUtils.isEmtpy(expire_at) && !StringUtils.isEmtpy(transaction_type);
+    return !StringUtils.isEmtpy(code) &&
+        target_price > 0 &&
+        start_price > 0 &&
+        !StringUtils.isEmtpy(expire_at) &&
+        !StringUtils.isEmtpy(transaction_type);
   }
+
   bool inValid() {
     return !valid();
   }
-  String getError(){
-    if(StringUtils.isEmtpy(code)){
+
+  String getError() {
+    if (StringUtils.isEmtpy(code)) {
       return 'sosmed_prediction_error_code'.tr();
-    }else if(target_price <= 0){
+    } else if (target_price <= 0) {
       return 'sosmed_prediction_error_target_price'.tr();
-    }else if(start_price <= 0){
+    } else if (start_price <= 0) {
       return 'sosmed_prediction_error_start_price'.tr();
-    }else if(StringUtils.isEmtpy(expire_at)){
+    } else if (StringUtils.isEmtpy(expire_at)) {
       return 'sosmed_prediction_error_expire_at'.tr();
-    }else if(StringUtils.isEmtpy(transaction_type)){
+    } else if (StringUtils.isEmtpy(transaction_type)) {
       return 'sosmed_prediction_error_transaction_type'.tr();
     }
     return null;

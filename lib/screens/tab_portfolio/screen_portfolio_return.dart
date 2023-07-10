@@ -1,26 +1,11 @@
-import 'dart:math';
 
-import 'package:Investrend/component/button_order.dart';
-import 'package:Investrend/component/cards/card_earning_pershare.dart';
-import 'package:Investrend/component/cards/card_general_price.dart';
-import 'package:Investrend/component/cards/card_label_value.dart';
-import 'package:Investrend/component/cards/card_local_foreign.dart';
-import 'package:Investrend/component/cards/card_performance.dart';
-import 'package:Investrend/component/chips_range.dart';
 import 'package:Investrend/component/component_creator.dart';
-import 'package:Investrend/component/rows/row_general_price.dart';
-import 'package:Investrend/component/slide_action_button.dart';
 import 'package:Investrend/objects/class_value_notifier.dart';
 import 'package:Investrend/objects/data_object.dart';
-import 'package:Investrend/objects/riverpod_change_notifier.dart';
-import 'package:Investrend/objects/iii_objects.dart';
-import 'package:Investrend/screens/base/base_screen_tabs.dart';
 import 'package:Investrend/screens/base/base_state.dart';
 import 'package:Investrend/screens/screen_main.dart';
 import 'package:Investrend/screens/tab_portfolio/component/bottom_sheet_list.dart';
 import 'package:Investrend/screens/tab_portfolio/screen_portfolio_detail.dart';
-import 'package:Investrend/screens/trade/screen_trade.dart';
-import 'package:Investrend/utils/string_utils.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -169,7 +154,7 @@ class _ScreenPortfolioReturnState extends BaseStateNoTabsWithParentTab<ScreenPor
     childs.add(SizedBox(height: paddingBottom));
     return RefreshIndicator(
       color: InvestrendTheme.of(context).textWhite,
-      backgroundColor: Theme.of(context).accentColor,
+      backgroundColor: Theme.of(context).colorScheme.secondary,
       onRefresh: onRefresh,
       child: ListView(
         shrinkWrap: false,
@@ -301,17 +286,17 @@ class _ScreenPortfolioReturnState extends BaseStateNoTabsWithParentTab<ScreenPor
         GestureTapCallback onTap = () {
           print('onTap rdn : ' + rdn.date);
 
-          int beginning_asset_value = 3000000000;
+          int beginningAssetValue = 3000000000;
           int deposit = 0;
           int withdraw = 0;
           int change = 30000000;
-          int end_asset_value = 3030000000;
-          int gain_loss = 30000000;
+          int endAssetValue = 3030000000;
+          int gainLoss = 30000000;
           double yield = 1.00;
           List<LabelValueColor> listLVC = [
             LabelValueColor(
               'portfolio_detail_beginning_asset_value_label'.tr(),
-              InvestrendTheme.formatMoney(beginning_asset_value, prefixRp: true),
+              InvestrendTheme.formatMoney(beginningAssetValue, prefixRp: true),
             ),
             LabelValueColor(
               'portfolio_detail_deposit_label'.tr(),
@@ -322,8 +307,8 @@ class _ScreenPortfolioReturnState extends BaseStateNoTabsWithParentTab<ScreenPor
               withdraw == 0 ? 'N/A' : InvestrendTheme.formatMoney(withdraw),
             ),
             LabelValueColor('portfolio_detail_change_label'.tr(), InvestrendTheme.formatMoney(change, prefixRp: true, prefixPlus: true)),
-            LabelValueColor('portfolio_detail_end_asset_value_label'.tr(), InvestrendTheme.formatMoney(end_asset_value)),
-            LabelValueColor('portfolio_detail_gain_loss_label'.tr(), InvestrendTheme.formatMoney(gain_loss, prefixPlus: true, prefixRp: true),
+            LabelValueColor('portfolio_detail_end_asset_value_label'.tr(), InvestrendTheme.formatMoney(endAssetValue)),
+            LabelValueColor('portfolio_detail_gain_loss_label'.tr(), InvestrendTheme.formatMoney(gainLoss, prefixPlus: true, prefixRp: true),
                 color: InvestrendTheme.priceTextColor(30000000)),
             LabelValueColor(
               'portfolio_detail_yield_label'.tr(),

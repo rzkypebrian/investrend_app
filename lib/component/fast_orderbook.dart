@@ -12,15 +12,11 @@ import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:Investrend/utils/string_utils.dart';
 import 'package:Investrend/utils/utils.dart';
 import 'package:auto_size_text_field/auto_size_text_field.dart';
-import 'package:flutter/foundation.dart';
 
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:local_auth/error_codes.dart';
 import 'dart:ui' as ui;
-
-import 'package:reorderables/reorderables.dart';
 
 class FastOrderbook extends StatefulWidget {
   final OrderbookNotifier notifier;
@@ -43,7 +39,6 @@ class FastOrderbook extends StatefulWidget {
 }
 
 class WrapperNotifierFast {
-  int index;
   StringColorFontNotifier primaryOpenNotifier =
       StringColorFontNotifier(StringColorFont());
   StringColorFontNotifier primaryQueNotifier =
@@ -55,7 +50,6 @@ class WrapperNotifierFast {
   StringColorFontNotifier secondaryPriceNotifier =
       StringColorFontNotifier(StringColorFont());
   ValueNotifier<bool> show = ValueNotifier(false);
-  ValueNotifier<Color> color = ValueNotifier(Colors.transparent);
 
   void dispose() {
     primaryOpenNotifier.dispose();
@@ -69,7 +63,6 @@ class WrapperNotifierFast {
 
 class _FastOrderbookState extends State<FastOrderbook> {
   double widthSection = 0.0;
-
   List<WrapperNotifierFast> _notifiers = <WrapperNotifierFast>[
     WrapperNotifierFast(),
     WrapperNotifierFast(),
@@ -134,6 +127,19 @@ class _FastOrderbookState extends State<FastOrderbook> {
     UniqueKey(),
   ];
 
+  // List <Key> keysBid = [
+  //   UniqueKey(),
+  //   UniqueKey(),
+  //   UniqueKey(),
+  //   UniqueKey(),
+  //   UniqueKey(),
+  //   UniqueKey(),
+  //   UniqueKey(),
+  //   UniqueKey(),
+  //   UniqueKey(),
+  //   UniqueKey(),
+  // ];
+
   List<FocusNode> _focusNodes = <FocusNode>[
     FocusNode(),
     FocusNode(),
@@ -147,10 +153,64 @@ class _FastOrderbookState extends State<FastOrderbook> {
     FocusNode(),
   ];
 
-  VoidCallback listener;
+  /*
+  List<StringColorFontNotifier> _priceListeners = <StringColorFontNotifier>[
+    StringColorFontNotifier(StringColorFont()),
+    StringColorFontNotifier(StringColorFont()),
+    StringColorFontNotifier(StringColorFont()),
+    StringColorFontNotifier(StringColorFont()),
+    StringColorFontNotifier(StringColorFont()),
+    StringColorFontNotifier(StringColorFont()),
+    StringColorFontNotifier(StringColorFont()),
+    StringColorFontNotifier(StringColorFont()),
+    StringColorFontNotifier(StringColorFont()),
+    StringColorFontNotifier(StringColorFont())
+  ];
+  List<StringColorFontNotifier> _lotsListeners = <StringColorFontNotifier>[
+    StringColorFontNotifier(StringColorFont()),
+    StringColorFontNotifier(StringColorFont()),
+    StringColorFontNotifier(StringColorFont()),
+    StringColorFontNotifier(StringColorFont()),
+    StringColorFontNotifier(StringColorFont()),
+    StringColorFontNotifier(StringColorFont()),
+    StringColorFontNotifier(StringColorFont()),
+    StringColorFontNotifier(StringColorFont()),
+    StringColorFontNotifier(StringColorFont()),
+    StringColorFontNotifier(StringColorFont())
+  ];
+  List<StringColorFontNotifier> _queueListeners = <StringColorFontNotifier>[
+    StringColorFontNotifier(StringColorFont()),
+    StringColorFontNotifier(StringColorFont()),
+    StringColorFontNotifier(StringColorFont()),
+    StringColorFontNotifier(StringColorFont()),
+    StringColorFontNotifier(StringColorFont()),
+    StringColorFontNotifier(StringColorFont()),
+    StringColorFontNotifier(StringColorFont()),
+    StringColorFontNotifier(StringColorFont()),
+    StringColorFontNotifier(StringColorFont()),
+    StringColorFontNotifier(StringColorFont())
+  ];
+  List<IntColorFontNotifier> _openListeners = <IntColorFontNotifier>[
+    IntColorFontNotifier(IntColorFont()),
+    IntColorFontNotifier(IntColorFont()),
+    IntColorFontNotifier(IntColorFont()),
+    IntColorFontNotifier(IntColorFont()),
+    IntColorFontNotifier(IntColorFont()),
+    IntColorFontNotifier(IntColorFont()),
+    IntColorFontNotifier(IntColorFont()),
+    IntColorFontNotifier(IntColorFont()),
+    IntColorFontNotifier(IntColorFont()),
+    IntColorFontNotifier(IntColorFont())
+  ];
+  */
+  // List<ValueNotifier> _notifiers = [
+  //   ValueNotifier
+  // ];
 
-  String lockedOpen = "";
-  String lockedBid = "";
+  //ValueNotifier<bool> loadingNotifier = ValueNotifier<bool>(false);
+  //Map details = new Map();
+
+  VoidCallback listener;
 
   void _enableListener() {
     _controllers.forEach((controller) {
@@ -209,7 +269,6 @@ class _FastOrderbookState extends State<FastOrderbook> {
       bool showBid = bid > 0;
       bool showOffer = offer > 0;
 
-      //DATA DARI LIST
       String bidQueue = data.orderbook.bidsQueueText.elementAt(index);
       String bidLot = data.orderbook.bidsLotText.elementAt(index);
       String bidPrice = data.orderbook.bidsText.elementAt(index);
@@ -240,7 +299,7 @@ class _FastOrderbookState extends State<FastOrderbook> {
       } else {
         OpenOrder openOrder = context.read(openOrderChangeNotifier).get(offer);
         String lotOpen = openOrder == null
-            ? '20'
+            ? ''
             : InvestrendTheme.formatValue(context, openOrder.lot);
         notifier.primaryPriceNotifier
             .setValue(offerPrice, fontSize: fontSize, newColor: offerColor);
@@ -256,6 +315,7 @@ class _FastOrderbookState extends State<FastOrderbook> {
     //WidgetsBinding.instance.addPostFrameCallback((_) {
     reconcileOrderbook();
     //});
+    setState(() {});
   }
 
   @override
@@ -268,11 +328,26 @@ class _FastOrderbookState extends State<FastOrderbook> {
     _enableListener();
 
     WidgetsBinding.instance.addPostFrameCallback(
-      (timeStamp) => onOrderbookReceive(caller: 'initState'),
-    );
+        (timeStamp) => onOrderbookReceive(caller: 'initState'));
     widget.notifier.addListener(onOrderbookReceive);
+    // _controllers.forEach((controller) {
+    //   controller.addListener(() {
+    //     calculateOrder();
+    //   });
+    // });
+
+    // if (widget.calculateNotifier != null) {
+    //   widget.calculateNotifier.addListener(() {
+    //     if (widget.calculateNotifier.canFastModeCalculate(widget._orderType)) {
+    //       calculateOrder();
+    //     }
+    //   });
+    // }
+
+    // Future.delayed(Duration(seconds: 2)).then((value) {});
   }
 
+  /*
   void calculateOrder() {
     OrderBook ob = context.read(orderBookChangeNotifier).orderbook;
     bool isBuy = widget._orderType == OrderType.Buy;
@@ -280,6 +355,83 @@ class _FastOrderbookState extends State<FastOrderbook> {
         context.read(buySellChangeNotifier).getData(widget._orderType);
     data.clearFastPriceLot();
     int value = 0;
+    for (int i = 0; i < _controllers.length; i++) {
+      int price;
+      if (isBuy) {
+        price = ob.countBids() > i ? ob.bids.elementAt(i) : 0;
+      } else {
+        price = ob.countOffers() > i ? ob.offers.elementAt(i) : 0;
+      }
+      TextEditingController controller = _controllers.elementAt(i);
+      if (controller.text.isNotEmpty) {
+        int lot = Utils.safeInt(controller.text.replaceAll(',', ''));
+        if (price > 0 && lot > 0) {
+          bool added = data.addFastPriceLot(price, lot);
+          //bool added = data.addFastPriceLotAverage(price, lot,0);
+          if (added) {
+            value += price * lot * 100;
+          }
+        }
+      }
+    }
+
+    if (data.orderType.isBuyOrAmendBuy()) {
+      double feeBuy = context.read(dataHolderChangeNotifier).user.feepct;
+      Account activeAccount = context
+          .read(dataHolderChangeNotifier)
+          .user
+          .getAccount(context.read(accountChangeNotifier).index);
+      if (activeAccount != null) {
+        feeBuy = activeAccount.commission;
+      }
+      if (feeBuy > 0) {
+        value = (value * (1.0 + (feeBuy / 100))).toInt();
+      }
+    }
+    data.fastTotalValue = value;
+    context.read(buySellChangeNotifier).mustNotifyListener();
+    /*
+    int value = 0;
+    for (int i = 0; i < _controllers.length; i++) {
+      int price;
+      if (isBuy) {
+        price = ob.bids.elementAt(i);
+      } else {
+        price = ob.offers.elementAt(i);
+      }
+      TextEditingController controller = _controllers.elementAt(i);
+      if (controller.text.isNotEmpty) {
+
+        details[price.toString()] = controller.text;
+        details['$i'] = price.toString();
+
+        int lot = Utils.safeInt(controller.text.replaceAll(',', ''));
+        context.read(orderDataChangeNotifier).addPriceLot(price, lot);
+        value += price * lot * 100;
+      } else {
+        details.remove(price.toString());
+        details.remove('$i');
+      }
+    }
+    context.read(orderDataChangeNotifier).update(value: value, orderType: widget._orderType, stock_code: ob.code);
+    // }
+    print(details);
+     */
+  }
+  */
+  void calculateOrder() {
+    OrderBook ob = context.read(orderBookChangeNotifier).orderbook;
+    bool isBuy = widget._orderType == OrderType.Buy;
+    BuySell data =
+        context.read(buySellChangeNotifier).getData(widget._orderType);
+    data.clearFastPriceLot();
+    int value = 0;
+
+    double averagePrice = 0.0;
+    if (data.orderType.isSellOrAmendSell()) {
+      final lotAverage = context.read(sellLotAvgChangeNotifier);
+      averagePrice = lotAverage.averagePrice;
+    }
     for (int i = 0; i < _controllers.length; i++) {
       int price;
       if (isBuy) {
@@ -378,12 +530,62 @@ class _FastOrderbookState extends State<FastOrderbook> {
             '] constrains ' +
             constraints.maxWidth.toString() +
             '  aaa');
+        //return buildOrderbook(context, constraints.maxWidth, constraints.maxHeight);
 
         return buildOrderbookStatic(
             context, constraints.maxWidth, constraints.maxHeight);
+
+        /*
+        return Column(
+          children: [
+            buildOrderbook(context, constraints.maxWidth, constraints.maxHeight),
+            ValueListenableBuilder(
+              valueListenable: loadingNotifier,
+              builder: (context, value, child) {
+                if(value){
+                  return Center(child: CircularProgressIndicator(color: Theme.of(context).accentColor, backgroundColor: Theme.of(context).accentColor.withOpacity(0.2),));
+                }
+                return SizedBox(width: 1.0,);
+              },
+            ),
+          ],
+        );
+         */
       },
     );
   }
+
+  /*
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      //color: Colors.lightBlueAccent,
+      margin: EdgeInsets.all(InvestrendTheme.cardMargin),
+      child: Padding(
+        padding: EdgeInsets.all(InvestrendTheme.cardPadding),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              height: InvestrendTheme.cardPaddingPlusMargin,
+            ),
+            ComponentCreator.subtitle(context, 'card_order_book_title'.tr()),
+            SizedBox(
+              height: InvestrendTheme.cardPadding,
+            ),
+            LayoutBuilder(
+              builder: (context, constraints) {
+                print('CardOrderbook constrains ' + constraints.maxWidth.toString());
+                return buildOrderbook(context, constraints.maxWidth, constraints.maxHeight);
+              },
+            )
+
+          ],
+        ),
+      ),
+    );
+  }
+  */
 
   Size _textSize(String text, TextStyle style) {
     final TextPainter textPainter = TextPainter(
@@ -571,7 +773,6 @@ class _FastOrderbookState extends State<FastOrderbook> {
         });
   }
 
-  //perubahan
   Widget buildOrderbookStatic(
       BuildContext context, double widthWidget, double heightWidget) {
     //double widthHalf = widthWidget / 2;
@@ -594,213 +795,28 @@ class _FastOrderbookState extends State<FastOrderbook> {
       TextEditingController controller = _controllers.elementAt(index);
       if (widget._orderType == OrderType.Buy) {
         //OpenOrder openOrder = context.read(openOrderChangeNotifier).get(bid);
-        _notifiers.elementAt(index).index = index;
+
         list.add(
-          LongPressDraggable<WrapperNotifierFast>(
-            data: _notifiers.elementAt(index),
-            feedbackOffset: Offset(50, -10),
-            onDragStarted: () {
-              lockedOpen =
-                  _notifiers.elementAt(index).primaryOpenNotifier.value.value;
-              lockedBid =
-                  _notifiers.elementAt(index).primaryPriceNotifier.value.value;
-            },
-            feedback: Padding(
-              padding: const EdgeInsets.only(
-                left: 50,
-              ),
-              child: Container(
-                child: createRowBuyStatic(
-                  context,
-                  widthSection,
-                  _controllers.elementAt(index),
-                  keysBid.elementAt(index),
-                  _notifiers.elementAt(index),
-                  focusNode: focusNode,
-                  nextFocusNode: nextFocusNode,
-                  onDrag: true,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey,
-                    ),
-                  ],
-                  border: Border.all(
-                    color: Colors.black,
-                  ),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(10),
-                  ),
-                ),
-                height: 50,
-                width: MediaQuery.of(context).size.width / 3,
-              ),
-            ),
-            child: DragTarget<WrapperNotifierFast>(
-              onMove: (data) {
-                _notifiers.elementAt(index).color.value =
-                    InvestrendTheme.of(context).oddColor;
-              },
-              onLeave: (data) {
-                _notifiers.elementAt(index).color.value = Colors.transparent;
-              },
-              onAccept: (data) {
-                _notifiers.elementAt(index).color.value = Colors.transparent;
-
-                if (_notifiers.elementAt(index).primaryPriceNotifier.value ==
-                    data.primaryPriceNotifier.value) {
-                  return;
-                }
-
-                String dragedValue = lockedOpen == "" ? "0" : lockedOpen;
-
-                String targetdValue =
-                    _notifiers[index].primaryOpenNotifier.value.value == ""
-                        ? "0"
-                        : _notifiers[index].primaryOpenNotifier.value.value;
-
-                if (int.parse(dragedValue) > 0) {
-                  var obj = _notifiers
-                      .where((e) =>
-                          e.primaryPriceNotifier.value.value == lockedBid)
-                      .first;
-
-                  if (obj != null) {
-                    obj.primaryOpenNotifier.value.value =
-                        (int.parse(dragedValue) - 1).toString();
-                  }
-
-                  data.primaryOpenNotifier.notifyListeners();
-
-                  _notifiers[index].primaryOpenNotifier.value.value =
-                      (int.parse(targetdValue) + 1).toString();
-                  _notifiers[index].primaryOpenNotifier.notifyListeners();
-                }
-              },
-              builder: (BuildContext context, List<Object> candidateData,
-                  List<dynamic> rejectedData) {
-                return Container(
-                  color: _notifiers.elementAt(index).color.value,
-                  child: createRowBuyStatic(
-                    context,
-                    widthSection,
-                    _controllers.elementAt(index),
-                    keysBid.elementAt(index),
-                    _notifiers.elementAt(index),
-                    focusNode: focusNode,
-                    nextFocusNode: nextFocusNode,
-                  ),
-                );
-              },
-            ),
-          ),
+          createRowBuyStatic(
+              context,
+              widthSection,
+              _controllers.elementAt(index),
+              keysBid.elementAt(index),
+              _notifiers.elementAt(index),
+              focusNode: focusNode,
+              nextFocusNode: nextFocusNode),
         );
       } else {
-        _notifiers.elementAt(index).index = index;
+        //OpenOrder openOrder = context.read(openOrderChangeNotifier).get(offer);
         list.add(
-          LongPressDraggable<WrapperNotifierFast>(
-            data: _notifiers.elementAt(index),
-            feedbackOffset: Offset(50, -10),
-            onDragStarted: () {
-              lockedOpen =
-                  _notifiers.elementAt(index).primaryOpenNotifier.value.value;
-              lockedBid = _notifiers
-                  .elementAt(index)
-                  .secondaryPriceNotifier
-                  .value
-                  .value;
-            },
-            feedback: Padding(
-              padding: const EdgeInsets.only(
-                left: 200,
-              ),
-              child: Container(
-                child: createRowSellStatic(
-                  context,
-                  widthSection,
-                  _controllers.elementAt(index),
-                  keysOffer.elementAt(index),
-                  _notifiers.elementAt(index),
-                  focusNode: focusNode,
-                  nextFocusNode: nextFocusNode,
-                  onDrag: true,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey,
-                    ),
-                  ],
-                  border: Border.all(
-                    color: Colors.black,
-                  ),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(10),
-                  ),
-                ),
-                height: 50,
-                width: MediaQuery.of(context).size.width / 3,
-              ),
-            ),
-            child: DragTarget<WrapperNotifierFast>(
-              onMove: (data) {
-                _notifiers.elementAt(index).color.value =
-                    InvestrendTheme.of(context).oddColor;
-              },
-              onLeave: (data) {
-                _notifiers.elementAt(index).color.value = Colors.transparent;
-              },
-              onAccept: (data) {
-                _notifiers.elementAt(index).color.value = Colors.transparent;
-
-                if (_notifiers.elementAt(index).secondaryPriceNotifier.value ==
-                    data.secondaryPriceNotifier.value) {
-                  return;
-                }
-
-                String dragedValue = lockedOpen == "" ? "0" : lockedOpen;
-                String targetdValue =
-                    _notifiers[index].primaryOpenNotifier.value.value == ""
-                        ? "0"
-                        : _notifiers[index].primaryOpenNotifier.value.value;
-
-                if (int.parse(dragedValue) > 0) {
-                  var obj = _notifiers
-                      .where((e) =>
-                          e.secondaryPriceNotifier.value.value == lockedBid)
-                      .first;
-
-                  if (obj != null) {
-                    obj.primaryOpenNotifier.value.value =
-                        (int.parse(dragedValue) - 1).toString();
-                  }
-
-                  data.primaryOpenNotifier.notifyListeners();
-
-                  _notifiers[index].primaryOpenNotifier.value.value =
-                      (int.parse(targetdValue) + 1).toString();
-                  _notifiers[index].primaryOpenNotifier.notifyListeners();
-                }
-              },
-              builder: (BuildContext context, List<Object> candidateData,
-                  List<dynamic> rejectedData) {
-                return Container(
-                  color: _notifiers.elementAt(index).color.value,
-                  child: createRowSellStatic(
-                      context,
-                      widthSection,
-                      _controllers.elementAt(index),
-                      keysOffer.elementAt(index),
-                      _notifiers.elementAt(index),
-                      focusNode: focusNode,
-                      nextFocusNode: nextFocusNode),
-                );
-              },
-            ),
-          ),
+          createRowSellStatic(
+              context,
+              widthSection,
+              _controllers.elementAt(index),
+              keysOffer.elementAt(index),
+              _notifiers.elementAt(index),
+              focusNode: focusNode,
+              nextFocusNode: nextFocusNode),
         );
       }
     }
@@ -808,6 +824,103 @@ class _FastOrderbookState extends State<FastOrderbook> {
       mainAxisSize: MainAxisSize.max,
       children: list,
     );
+    /*
+    return ValueListenableBuilder(
+        valueListenable: widget.notifier,
+        builder: (context, OrderbookData data, child) {
+          if (widget.notifier.invalid()) {
+            return Center(child: CircularProgressIndicator());
+          }
+
+          StockSummary stockSummary = context.read(stockSummaryChangeNotifier).summary;
+          int prev = stockSummary != null && stockSummary.prev != null && StringUtils.equalsIgnoreCase(stockSummary.code, data.orderbook.code)
+              ? stockSummary.prev
+              : 0;
+
+          data.orderbook.generateDataForUI(widget.maxShowLevel);
+
+          int totalVolumeShowedBid = data.orderbook.totalVolumeShowedBid;
+          int totalVolumeShowedOffer = data.orderbook.totalVolumeShowedOffer;
+
+          double fontSize = InvestrendTheme.of(context).small_w400.fontSize;
+          fontSize = useFontSize(context, fontSize, widthSection, data.orderbook);
+          print('FastOrderbook [' + widget._orderType.routeName + '] buildOrderbook  code : ' + data.orderbook.code + '  prev : $prev');
+
+          bool isBuy = widget._orderType == OrderType.Buy;
+          int count = min(widget.maxShowLevel, data.orderbook.countBids());
+
+          for (int index = 0; index < count; index++) {
+            // double fractionBid = value.bidVol(index) / totalVolumeShowedBid;
+            // double fractionOffer = value.offerVol(index) / totalVolumeShowedOffer;
+
+            bool showBid = data.orderbook.bids.elementAt(index) > 0;
+            bool showOffer = data.orderbook.offers.elementAt(index) > 0;
+
+            // print('orderbook[$index] --> fractionBid : $fractionBid  fractionOffer --> $fractionOffer');
+            // print('orderbook[$index] --> totalBid : ' + value.totalBid.toString() + '  bidVol --> ' + value.bidVol(index).toString());
+            // print('orderbook[$index] --> totalOffer : ' + value.totalOffer.toString() + '  offerVol --> ' + value.offerVol(index).toString());
+
+            // String bidQueue = InvestrendTheme.formatComma(value.bidsQueue.elementAt(index));
+            // String bidLot = InvestrendTheme.formatComma(value.bidLot(index));
+            // String bidPrice = InvestrendTheme.formatPrice(value.bids.elementAt(index));
+            // Color bidColor = InvestrendTheme.priceTextColor(value.bids.elementAt(index), prev: prev);
+            //
+            // String offerQueue = InvestrendTheme.formatComma(value.offersQueue.elementAt(index));
+            // String offerLot = InvestrendTheme.formatComma(value.offerLot(index));
+            // String offerPrice = InvestrendTheme.formatPrice(value.offers.elementAt(index));
+            // Color offerColor = InvestrendTheme.priceTextColor(value.offers.elementAt(index), prev: prev);
+
+            int bid = data.orderbook.bids.elementAt(index);
+            int offer = data.orderbook.offers.elementAt(index);
+            //Key key = isBuy ? keysBid.elementAt(index) : keysOffer.elementAt(index);
+
+            String bidQueue = data.orderbook.bidsQueueText.elementAt(index);
+            String bidLot = data.orderbook.bidsLotText.elementAt(index);
+            String bidPrice = data.orderbook.bidsText.elementAt(index);
+            //Color bidColor = prev == 0 ? InvestrendTheme.of(context).blackAndWhiteText : InvestrendTheme.priceTextColor(bid, prev: prev, caller: widget._orderType.routeName+'[Bid]');
+            Color bidColor = prev == 0 ? InvestrendTheme.of(context).blackAndWhiteText : InvestrendTheme.priceTextColor(bid, prev: prev);
+            String offerQueue = data.orderbook.offersQueueText.elementAt(index);
+            String offerLot = data.orderbook.offersLotText.elementAt(index);
+            String offerPrice = data.orderbook.offersText.elementAt(index);
+            //Color offerColor = prev == 0 ? InvestrendTheme.of(context).blackAndWhiteText : InvestrendTheme.priceTextColor(offer, prev: prev, caller: widget._orderType.routeName+'[Offer]');
+            Color offerColor = prev == 0 ? InvestrendTheme.of(context).blackAndWhiteText : InvestrendTheme.priceTextColor(offer, prev: prev);
+
+            // String bidQueue = '100,000';
+            // String bidLot = '1,000,000';
+            // String bidPrice = '200,000';
+            // Color bidColor = InvestrendTheme.priceTextColor(value.bids.elementAt(index), prev: prev);
+            // String offerQueue = InvestrendTheme.formatComma(value.offersQueue.elementAt(index));
+            // String offerLot = InvestrendTheme.formatComma(value.offerLot(index));
+            // String offerPrice = '1,780';
+            // Color offerColor = InvestrendTheme.priceTextColor(value.offers.elementAt(index), prev: prev);
+
+            FocusNode focusNode = _focusNodes.elementAt(index);
+            int nextIndex = (index + 1);
+            FocusNode nextFocusNode = (nextIndex < count) ? _focusNodes.elementAt(nextIndex) : null;
+            TextEditingController controller = _controllers.elementAt(index);
+            if (widget._orderType == OrderType.Buy) {
+              OpenOrder openOrder = context.read(openOrderChangeNotifier).get(bid);
+              list.add(createRowBuy(context, bidQueue, bidLot, bidPrice, bidColor, offerQueue, offerLot, offerPrice, offerColor, widthSection,
+                  fontSize, _controllers.elementAt(index), showBid, keysBid.elementAt(index), openOrder,
+                  focusNode: focusNode, nextFocusNode: nextFocusNode));
+            } else {
+              OpenOrder openOrder = context.read(openOrderChangeNotifier).get(offer);
+              list.add(createRowSell(context, bidQueue, bidLot, bidPrice, bidColor, offerQueue, offerLot, offerPrice, offerColor, widthSection,
+                  fontSize, _controllers.elementAt(index), showOffer, keysOffer.elementAt(index), openOrder,
+                  focusNode: focusNode, nextFocusNode: nextFocusNode));
+            }
+          }
+
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            reconcileOrderbook();
+          });
+          return Column(
+            mainAxisSize: MainAxisSize.max,
+            children: list,
+          );
+        });
+
+     */
   }
 
   void reconcileOrderbook() {
@@ -849,6 +962,7 @@ class _FastOrderbookState extends State<FastOrderbook> {
         }
       }
     }
+
     List<int> listInvalid = List.empty(growable: true);
     int value = 0;
     data.listFastPriceLot.forEach((priceLot) {
@@ -860,8 +974,8 @@ class _FastOrderbookState extends State<FastOrderbook> {
       }
     });
 
-    listInvalid.forEach((invalid_price) {
-      data.removeFastPriceLot(invalid_price);
+    listInvalid.forEach((invalidPrice) {
+      data.removeFastPriceLot(invalidPrice);
     });
     listInvalid.clear();
     listValid.clear();
@@ -934,9 +1048,9 @@ class _FastOrderbookState extends State<FastOrderbook> {
     print('FastOrderbook[' +
         widget.owner +
         '].useFontSize Try fontSize  : $fontSize  offset : $offset');
-    TextStyle small_w400 =
+    TextStyle smallW400 =
         InvestrendTheme.of(context).small_w400.copyWith(fontSize: fontSize);
-    TextStyle small_w500 =
+    TextStyle smallW500 =
         InvestrendTheme.of(context).small_w500.copyWith(fontSize: fontSize);
     const double font_step = 1.0;
     double widthCell = widthSection / 3;
@@ -960,11 +1074,11 @@ class _FastOrderbookState extends State<FastOrderbook> {
 
       if (widget._orderType == OrderType.Buy) {
         String leftText = bidQueue + bidLot + bidPrice;
-        double widthSectionTextLeft = _textSize(leftText, small_w400).width;
+        double widthSectionTextLeft = _textSize(leftText, smallW400).width;
 
         // double widthSectionTextLeft =
         //     _textSize(bidQueue, small_w400).width + _textSize(bidLot, small_w400).width + _textSize(bidPrice, small_w500).width;
-        double widthOffer = _textSize(offerPrice, small_w500).width;
+        double widthOffer = _textSize(offerPrice, smallW500).width;
 
         //bool reduceFontSize = widthSectionTextLeft > widthSection || widthOffer > (widthSection / 3);
         bool reduceFontSize =
@@ -980,12 +1094,12 @@ class _FastOrderbookState extends State<FastOrderbook> {
         }
       } else {
         String rightText = offerPrice + offerLot + offerQueue;
-        double widthSectionTextRight = _textSize(rightText, small_w500).width;
+        double widthSectionTextRight = _textSize(rightText, smallW500).width;
 
         // double widthSectionTextRight =
         //     _textSize(offerPrice, small_w500).width + _textSize(offerLot, small_w400).width + _textSize(offerQueue, small_w400).width;
 
-        double widthBid = _textSize(bidPrice, small_w500).width;
+        double widthBid = _textSize(bidPrice, smallW500).width;
 
         //bool reduceFontSize = widthSectionTextRight > widthSection || widthBid > (widthSection / 3);
         bool reduceFontSize =
@@ -1108,9 +1222,8 @@ class _FastOrderbookState extends State<FastOrderbook> {
               Positioned.fill(
                   child: createLabelLot(context, fontSize, offerLot)),
               Positioned.fill(
-                child: createLabelQueue(
-                    context, fontSize, offerQueue, TextAlign.right),
-              ),
+                  child: createLabelQueue(
+                      context, fontSize, offerQueue, TextAlign.right)),
             ],
           ),
         ),
@@ -1220,9 +1333,9 @@ class _FastOrderbookState extends State<FastOrderbook> {
                               BorderSide(color: Colors.grey, width: 1.0)),
                       focusedBorder: UnderlineInputBorder(
                           borderSide: BorderSide(
-                              color: Theme.of(context).accentColor,
+                              color: Theme.of(context).colorScheme.secondary,
                               width: 1.0)),
-                      focusColor: Theme.of(context).accentColor,
+                      focusColor: Theme.of(context).colorScheme.secondary,
                       prefixStyle: InvestrendTheme.of(context).inputPrefixStyle,
                       hintStyle: InvestrendTheme.of(context).inputHintStyle,
                       helperStyle: InvestrendTheme.of(context).inputHelperStyle,
@@ -1241,7 +1354,6 @@ class _FastOrderbookState extends State<FastOrderbook> {
     );
   }
 
-//perubahan
   Widget createRowSellStatic(
     BuildContext context,
     double widthSection,
@@ -1251,15 +1363,228 @@ class _FastOrderbookState extends State<FastOrderbook> {
     FocusNode focusNode,
     FocusNode nextFocusNode,
     Key keyRow,
-    bool onDrag = false,
   }) {
+    //int open = (openOrder != null ? openOrder.lot : 0);
+    //String openString = InvestrendTheme.formatComma(open);
+
     return Row(
       key: keyRow,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        onDrag == true
-            ? SizedBox()
-            : SizedBox(
+        DragTarget<WrapperNotifierFast>(
+          onAccept: (data) {
+            OrderBook ob = context.read(orderBookChangeNotifier).orderbook;
+            showDialog(
+              context: context,
+              builder: (_) => AlertDialog(
+                title: Center(
+                  child: Column(
+                    children: [
+                      Text(
+                        'preview_buy'.tr(),
+                        style: InvestrendTheme.of(context).medium_w400.copyWith(
+                              color: Theme.of(context).colorScheme.secondary,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 22,
+                            ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Image.asset(
+                        'images/order_success_normal_mode.png',
+                        color: Theme.of(context).colorScheme.secondary,
+                      )
+                    ],
+                  ),
+                ),
+                content: Container(
+                    padding: EdgeInsets.all(
+                      15,
+                    ),
+                    child: Table(
+                      border: TableBorder.all(
+                        color: Colors.grey.shade300,
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(
+                            10,
+                          ),
+                        ),
+                      ),
+                      children: [
+                        TableRow(
+                          children: [
+                            TableCell(
+                              verticalAlignment:
+                                  TableCellVerticalAlignment.middle,
+                              child: Container(
+                                padding: EdgeInsets.all(5),
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  'stock_label'.tr(),
+                                  style: InvestrendTheme.of(context)
+                                      .medium_w400
+                                      .copyWith(
+                                        color: Colors.black,
+                                        fontSize: 16,
+                                      ),
+                                ),
+                              ),
+                            ),
+                            TableCell(
+                              child: Container(
+                                padding: EdgeInsets.all(5),
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  ob.code,
+                                  style: InvestrendTheme.of(context)
+                                      .medium_w400
+                                      .copyWith(
+                                        color: Colors.black,
+                                        fontSize: 16,
+                                      ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        TableRow(
+                          children: [
+                            TableCell(
+                              child: Container(
+                                padding: EdgeInsets.all(5),
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  'trade_confirmation_price_label'.tr(),
+                                  style: InvestrendTheme.of(context)
+                                      .medium_w400
+                                      .copyWith(
+                                        color: Colors.black,
+                                        fontSize: 16,
+                                      ),
+                                ),
+                              ),
+                            ),
+                            TableCell(
+                              child: Container(
+                                padding: EdgeInsets.all(5),
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  '${data.secondaryPriceNotifier.value.value}',
+                                  style: InvestrendTheme.of(context)
+                                      .medium_w400
+                                      .copyWith(
+                                        color: Colors.black,
+                                        fontSize: 16,
+                                      ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        TableRow(
+                          children: [
+                            TableCell(
+                              child: Container(
+                                padding: EdgeInsets.all(5),
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  'Price After',
+                                  style: InvestrendTheme.of(context)
+                                      .medium_w400
+                                      .copyWith(
+                                        color: Colors.black,
+                                        fontSize: 16,
+                                      ),
+                                ),
+                              ),
+                            ),
+                            TableCell(
+                              child: Container(
+                                padding: EdgeInsets.all(5),
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  '${notifier.secondaryPriceNotifier.value.value}',
+                                  style: InvestrendTheme.of(context)
+                                      .medium_w400
+                                      .copyWith(
+                                        color: Colors.black,
+                                        fontSize: 16,
+                                      ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        TableRow(
+                          children: [
+                            TableCell(
+                              child: Container(
+                                padding: EdgeInsets.all(5),
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  'trade_confirmation_lot_label'.tr(),
+                                  style: InvestrendTheme.of(context)
+                                      .medium_w400
+                                      .copyWith(
+                                        color: Colors.black,
+                                        fontSize: 16,
+                                      ),
+                                ),
+                              ),
+                            ),
+                            TableCell(
+                              verticalAlignment:
+                                  TableCellVerticalAlignment.middle,
+                              child: Container(
+                                padding: EdgeInsets.all(5),
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  '${data.primaryOpenNotifier.value.value}',
+                                  style: InvestrendTheme.of(context)
+                                      .medium_w400
+                                      .copyWith(
+                                        color: Colors.black,
+                                        fontSize: 16,
+                                      ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    )),
+                actions: [
+                  Center(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.secondary,
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10),
+                        ),
+                      ),
+                      width: double.infinity,
+                      child: TextButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: Text(
+                          'Place Order Buy',
+                          style: InvestrendTheme.of(context)
+                              .textLabelStyle
+                              .copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+          builder: (BuildContext context, List<Object> candidateData,
+              List<dynamic> rejectedData) {
+            return Container(
                 width: widthSection / 3,
                 child: ValueListenableBuilder(
                   valueListenable: notifier.secondaryPriceNotifier,
@@ -1267,79 +1592,278 @@ class _FastOrderbookState extends State<FastOrderbook> {
                     return createLabelPrice(context, data.fontSize, data.value,
                         TextAlign.right, data.color);
                   },
+                ));
+          },
+        ),
+        SizedBox(
+          width: (FastOrderbook.middle_gap / 2) - 0.5,
+        ),
+        Container(
+          width: 1.0,
+          //height: 25.0,
+          color: Theme.of(context).dividerColor,
+          child: createLabelPrice(
+              context,
+              InvestrendTheme.of(context).small_w500.fontSize,
+              '',
+              TextAlign.right,
+              InvestrendTheme.sellTextColor),
+        ),
+        SizedBox(
+          width: (FastOrderbook.middle_gap / 2) - 0.5,
+        ),
+        Container(
+          width: widthSection,
+          //color: Colors.yellow,
+          child: Stack(
+            children: [
+              createLabelPrice(
+                  context,
+                  InvestrendTheme.of(context).small_w500.fontSize,
+                  '',
+                  TextAlign.right,
+                  InvestrendTheme.sellTextColor),
+              Positioned.fill(
+                //child: createLabelPrice(context, fontSize, offerPrice, TextAlign.left, offerColor /*, key: key*/),
+                child: ValueListenableBuilder(
+                  valueListenable: notifier.primaryPriceNotifier,
+                  builder: (context, StringColorFont data, child) {
+                    return createLabelPrice(context, data.fontSize, data.value,
+                        TextAlign.left, data.color /*, key: key*/);
+                  },
                 ),
               ),
-        onDrag == true
-            ? ValueListenableBuilder(
-                valueListenable: notifier.primaryPriceNotifier,
-                builder: (context, StringColorFont data, child) {
-                  return createLabelPrice(context, data.fontSize, data.value,
-                      TextAlign.left, data.color /*, key: key*/);
-                },
-              )
-            : SizedBox(),
-        onDrag == true
-            ? SizedBox()
-            : SizedBox(
-                width: (FastOrderbook.middle_gap / 2) - 0.5,
+              Positioned.fill(
+                //child: createLabelLot(context, fontSize, offerLot),
+                child: ValueListenableBuilder(
+                  valueListenable: notifier.primaryLotNotifier,
+                  builder: (context, StringColorFont data, child) {
+                    return createLabelLot(context, data.fontSize, data.value);
+                  },
+                ),
               ),
-        onDrag == true
-            ? SizedBox()
-            : Container(
-                width: 1.0,
-                //height: 25.0,
-                color: Theme.of(context).dividerColor,
-                child: createLabelPrice(
-                    context,
-                    InvestrendTheme.of(context).small_w500.fontSize,
-                    '',
-                    TextAlign.right,
-                    InvestrendTheme.sellTextColor),
-              ),
-        onDrag == true
-            ? SizedBox()
-            : SizedBox(
-                width: (FastOrderbook.middle_gap / 2) - 0.5,
-              ),
-        onDrag == true
-            ? SizedBox()
-            : Container(
-                width: widthSection,
-                //color: Colors.yellow,
-                child: Stack(
-                  children: [
-                    createLabelPrice(
-                        context,
-                        InvestrendTheme.of(context).small_w500.fontSize,
-                        '',
-                        TextAlign.right,
-                        InvestrendTheme.sellTextColor),
-                    Positioned.fill(
-                      //child: createLabelPrice(context, fontSize, offerPrice, TextAlign.left, offerColor /*, key: key*/),
-                      child: ValueListenableBuilder(
-                        valueListenable: notifier.primaryPriceNotifier,
-                        builder: (context, StringColorFont data, child) {
-                          return createLabelPrice(
-                              context,
-                              data.fontSize,
-                              data.value,
-                              TextAlign.left,
-                              data.color /*, key: key*/);
-                        },
+              Positioned.fill(
+                //child: createLabelQueue(context, fontSize, offerQueue, TextAlign.right),
+                child: DragTarget<WrapperNotifierFast>(
+                  onAccept: (data) {
+                    OrderBook ob =
+                        context.read(orderBookChangeNotifier).orderbook;
+                    showDialog(
+                      context: context,
+                      builder: (_) => AlertDialog(
+                        title: Center(
+                          child: Column(
+                            children: [
+                              Text(
+                                'preview_sell'.tr(),
+                                style: InvestrendTheme.of(context)
+                                    .medium_w400
+                                    .copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 22,
+                                    ),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Image.asset(
+                                'images/order_success_normal_mode.png',
+                                color: Theme.of(context).colorScheme.secondary,
+                              )
+                            ],
+                          ),
+                        ),
+                        content: Container(
+                            padding: EdgeInsets.all(
+                              15,
+                            ),
+                            child: Table(
+                              border: TableBorder.all(
+                                color: Colors.grey.shade300,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(
+                                    10,
+                                  ),
+                                ),
+                              ),
+                              children: [
+                                TableRow(
+                                  children: [
+                                    TableCell(
+                                      verticalAlignment:
+                                          TableCellVerticalAlignment.middle,
+                                      child: Container(
+                                        padding: EdgeInsets.all(5),
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          'stock_label'.tr(),
+                                          style: InvestrendTheme.of(context)
+                                              .medium_w400
+                                              .copyWith(
+                                                color: Colors.black,
+                                                fontSize: 16,
+                                              ),
+                                        ),
+                                      ),
+                                    ),
+                                    TableCell(
+                                      child: Container(
+                                        padding: EdgeInsets.all(5),
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          ob.code,
+                                          style: InvestrendTheme.of(context)
+                                              .medium_w400
+                                              .copyWith(
+                                                color: Colors.black,
+                                                fontSize: 16,
+                                              ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                TableRow(
+                                  children: [
+                                    TableCell(
+                                      child: Container(
+                                        padding: EdgeInsets.all(5),
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          'trade_confirmation_price_label'.tr(),
+                                          style: InvestrendTheme.of(context)
+                                              .medium_w400
+                                              .copyWith(
+                                                color: Colors.black,
+                                                fontSize: 16,
+                                              ),
+                                        ),
+                                      ),
+                                    ),
+                                    TableCell(
+                                      child: Container(
+                                        padding: EdgeInsets.all(5),
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          '${data.primaryPriceNotifier.value.value}',
+                                          style: InvestrendTheme.of(context)
+                                              .medium_w400
+                                              .copyWith(
+                                                color: Colors.black,
+                                                fontSize: 16,
+                                              ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                TableRow(
+                                  children: [
+                                    TableCell(
+                                      child: Container(
+                                        padding: EdgeInsets.all(5),
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          'Price After',
+                                          style: InvestrendTheme.of(context)
+                                              .medium_w400
+                                              .copyWith(
+                                                color: Colors.black,
+                                                fontSize: 16,
+                                              ),
+                                        ),
+                                      ),
+                                    ),
+                                    TableCell(
+                                      child: Container(
+                                        padding: EdgeInsets.all(5),
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          '${notifier.primaryPriceNotifier.value.value}',
+                                          style: InvestrendTheme.of(context)
+                                              .medium_w400
+                                              .copyWith(
+                                                color: Colors.black,
+                                                fontSize: 16,
+                                              ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                TableRow(
+                                  children: [
+                                    TableCell(
+                                      child: Container(
+                                        padding: EdgeInsets.all(5),
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          'trade_confirmation_lot_label'.tr(),
+                                          style: InvestrendTheme.of(context)
+                                              .medium_w400
+                                              .copyWith(
+                                                color: Colors.black,
+                                                fontSize: 16,
+                                              ),
+                                        ),
+                                      ),
+                                    ),
+                                    TableCell(
+                                      verticalAlignment:
+                                          TableCellVerticalAlignment.middle,
+                                      child: Container(
+                                        padding: EdgeInsets.all(5),
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          '${data.primaryOpenNotifier.value.value}',
+                                          style: InvestrendTheme.of(context)
+                                              .medium_w400
+                                              .copyWith(
+                                                color: Colors.black,
+                                                fontSize: 16,
+                                              ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            )),
+                        actions: [
+                          Center(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.secondary,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(10),
+                                ),
+                              ),
+                              width: double.infinity,
+                              child: TextButton(
+                                onPressed: () => Navigator.of(context).pop(),
+                                child: Text(
+                                  'Place Order Buy',
+                                  style: InvestrendTheme.of(context)
+                                      .textLabelStyle
+                                      .copyWith(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    Positioned.fill(
-                      //child: createLabelLot(context, fontSize, offerLot),
-                      child: ValueListenableBuilder(
-                        valueListenable: notifier.primaryLotNotifier,
-                        builder: (context, StringColorFont data, child) {
-                          return createLabelLot(
-                              context, data.fontSize, data.value);
-                        },
-                      ),
-                    ),
-                    Positioned.fill(
-                      //child: createLabelQueue(context, fontSize, offerQueue, TextAlign.right),
+                    );
+                  },
+                  builder: (BuildContext context, List<Object> candidateData,
+                      List<dynamic> rejectedData) {
+                    return Container(
+                      width: widthSection / 3,
                       child: ValueListenableBuilder(
                         valueListenable: notifier.primaryQueNotifier,
                         builder: (context, StringColorFont data, child) {
@@ -1347,107 +1871,144 @@ class _FastOrderbookState extends State<FastOrderbook> {
                               data.value, TextAlign.right);
                         },
                       ),
-                    ),
-                  ],
+                    );
+                  },
                 ),
               ),
-        SizedBox(
-          width: widthSection / 3,
-          child: Builder(
-            builder: (builder) {
-              if (onDrag) {
-                return createLabelOpenStatic(
-                  context,
-                  notifier.primaryOpenNotifier.value.fontSize,
-                  notifier.primaryOpenNotifier.value.value,
-                  TextAlign.right,
-                );
-              } else {
-                return ValueListenableBuilder(
+            ],
+          ),
+        ),
+        notifier.primaryOpenNotifier.value.value == '0' ||
+                notifier.primaryOpenNotifier.value.value == ''
+            ? Container(
+                width: widthSection / 3,
+                child: ValueListenableBuilder(
                   valueListenable: notifier.primaryOpenNotifier,
                   builder: (context, StringColorFont data, child) {
                     return createLabelOpenStatic(
-                        context, data.fontSize, data.value, TextAlign.right);
+                        context, data.fontSize, data.value, TextAlign.left);
                   },
-                );
-              }
-            },
+                ),
+              )
+            : LongPressDraggable<WrapperNotifierFast>(
+                data: notifier,
+                child: Container(
+                  width: widthSection / 3,
+                  child: ValueListenableBuilder(
+                    valueListenable: notifier.primaryOpenNotifier,
+                    builder: (context, StringColorFont data, child) {
+                      return createLabelOpenStatic(
+                          context, data.fontSize, data.value, TextAlign.right);
+                    },
+                  ),
+                ),
+                feedback: notifier.primaryOpenNotifier.value.value == '0' ||
+                        notifier.primaryOpenNotifier.value.value == ''
+                    ? SizedBox()
+                    : Container(
+                        padding: EdgeInsets.only(left: 5.0, right: 5.0),
+                        //margin: EdgeInsets.only(left: 30),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey,
+                            ),
+                          ],
+                          border: Border.all(
+                            color: Colors.black,
+                          ),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10),
+                          ),
+                        ),
+                        //width: double.minPositive,
+                        child: Center(
+                          child: ValueListenableBuilder(
+                            valueListenable: notifier.primaryOpenNotifier,
+                            builder: (context, StringColorFont data, child) {
+                              //return createLabelOpenStatic(context, data.fontSize, data.value, TextAlign.right);
+                              return Row(
+                                children: [
+                                  createLabelPriceStatic(
+                                      context,
+                                      data.fontSize,
+                                      notifier.primaryPriceNotifier.value.value,
+                                      TextAlign.left,
+                                      notifier
+                                          .primaryPriceNotifier.value.color),
+                                  SizedBox(
+                                    width: 10.0,
+                                  ),
+                                  createLabelOpenStatic(context, data.fontSize,
+                                      data.value, TextAlign.left),
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+              ),
+        SizedBox(
+          width: widthSection / 3,
+          child: Padding(
+            padding: const EdgeInsets.only(left: InvestrendTheme.cardPadding),
+            child: ValueListenableBuilder(
+                valueListenable: notifier.show,
+                builder: (context, bool show, child) {
+                  if (!show) {
+                    return SizedBox(
+                      width: 1.0,
+                    );
+                  }
+                  return AutoSizeTextField(
+                    key: key,
+                    controller: controller,
+                    //onSubmitted: (_) => context.nextEditableTextFocus(),
+                    focusNode: focusNode,
+                    onSubmitted: (_) {
+                      print('onSubmitted');
+                      focusNode.unfocus();
+                      // if (nextFocusNode != null) {
+                      //   print('onSubmitted nextFocusNode.requestFocus');
+                      //   nextFocusNode.requestFocus();
+                      // } else {
+                      //   print('onSubmitted nextEditableTextFocus');
+                      //   context.nextEditableTextFocus();
+                      // }
+                    },
+                    inputFormatters: [
+                      PriceFormatter(),
+                    ],
+                    maxLines: 1,
+                    style: InvestrendTheme.of(context).small_w400.copyWith(
+                        color: InvestrendTheme.of(context).greyDarkerTextColor,
+                        fontSize:
+                            InvestrendTheme.of(context).small_w400.fontSize),
+                    textInputAction: TextInputAction.done,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      isDense: true,
+                      border: UnderlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Colors.grey, width: 1.0)),
+                      focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                              color: Theme.of(context).colorScheme.secondary,
+                              width: 1.0)),
+                      focusColor: Theme.of(context).colorScheme.secondary,
+                      prefixStyle: InvestrendTheme.of(context).inputPrefixStyle,
+                      hintStyle: InvestrendTheme.of(context).inputHintStyle,
+                      helperStyle: InvestrendTheme.of(context).inputHelperStyle,
+                      errorStyle: InvestrendTheme.of(context).inputErrorStyle,
+                      fillColor: Colors.grey,
+                      contentPadding: EdgeInsets.all(0.0),
+                    ),
+                    textAlign: TextAlign.right,
+                  );
+                }),
           ),
         ),
-        onDrag == true
-            ? SizedBox()
-            : SizedBox(
-                width: widthSection / 3,
-                child: Padding(
-                  padding:
-                      const EdgeInsets.only(left: InvestrendTheme.cardPadding),
-                  child: ValueListenableBuilder(
-                      valueListenable: notifier.show,
-                      builder: (context, bool show, child) {
-                        if (!show) {
-                          return SizedBox(
-                            width: 1.0,
-                          );
-                        }
-                        if (onDrag) {
-                          return Material(child: Text(controller.text));
-                        }
-                        return AutoSizeTextField(
-                          key: key,
-                          controller: controller,
-                          //onSubmitted: (_) => context.nextEditableTextFocus(),
-                          focusNode: focusNode,
-                          onSubmitted: (_) {
-                            print('onSubmitted');
-                            focusNode.unfocus();
-                            // if (nextFocusNode != null) {
-                            //   print('onSubmitted nextFocusNode.requestFocus');
-                            //   nextFocusNode.requestFocus();
-                            // } else {
-                            //   print('onSubmitted nextEditableTextFocus');
-                            //   context.nextEditableTextFocus();
-                            // }
-                          },
-                          inputFormatters: [
-                            PriceFormatter(),
-                          ],
-                          maxLines: 1,
-                          style: InvestrendTheme.of(context)
-                              .small_w400
-                              .copyWith(
-                                  color: InvestrendTheme.of(context)
-                                      .greyDarkerTextColor,
-                                  fontSize: InvestrendTheme.of(context)
-                                      .small_w400
-                                      .fontSize),
-                          textInputAction: TextInputAction.done,
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                            isDense: true,
-                            border: UnderlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.grey, width: 1.0)),
-                            focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Theme.of(context).accentColor,
-                                    width: 1.0)),
-                            focusColor: Theme.of(context).accentColor,
-                            prefixStyle:
-                                InvestrendTheme.of(context).inputPrefixStyle,
-                            hintStyle:
-                                InvestrendTheme.of(context).inputHintStyle,
-                            helperStyle:
-                                InvestrendTheme.of(context).inputHelperStyle,
-                            errorStyle:
-                                InvestrendTheme.of(context).inputErrorStyle,
-                            fillColor: Colors.grey,
-                            contentPadding: EdgeInsets.all(0.0),
-                          ),
-                          textAlign: TextAlign.right,
-                        );
-                      }),
-                ),
-              ),
       ],
     );
   }
@@ -1514,9 +2075,9 @@ class _FastOrderbookState extends State<FastOrderbook> {
                               BorderSide(color: Colors.grey, width: 1.0)),
                       focusedBorder: UnderlineInputBorder(
                           borderSide: BorderSide(
-                              color: Theme.of(context).accentColor,
+                              color: Theme.of(context).colorScheme.secondary,
                               width: 1.0)),
-                      focusColor: Theme.of(context).accentColor,
+                      focusColor: Theme.of(context).colorScheme.secondary,
                       prefixStyle: InvestrendTheme.of(context).inputPrefixStyle,
                       hintStyle: InvestrendTheme.of(context).inputHintStyle,
                       helperStyle: InvestrendTheme.of(context).inputHelperStyle,
@@ -1575,7 +2136,6 @@ class _FastOrderbookState extends State<FastOrderbook> {
     );
   }
 
-  //perubahan
   Widget createRowBuyStatic(
     BuildContext context,
     double widthSection,
@@ -1585,224 +2145,665 @@ class _FastOrderbookState extends State<FastOrderbook> {
     FocusNode focusNode,
     FocusNode nextFocusNode,
     Key keyRow,
-    bool onDrag = false,
+    // String lockedOpen = '',
+    // String lockedBid = '',
+    // String lockedAsk = '',
   }) {
     return Row(
       key: keyRow,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        onDrag == true
-            ? SizedBox()
-            : SizedBox(
-                width: widthSection / 3,
-                child: Padding(
-                  padding:
-                      const EdgeInsets.only(right: InvestrendTheme.cardPadding),
-                  child: ValueListenableBuilder(
-                    valueListenable: notifier.show,
-                    builder: (context, bool show, child) {
-                      if (!show) {
-                        return SizedBox(
-                          width: 1.0,
-                        );
-                      }
-                      if (onDrag) {
-                        return Material(child: Text(controller.text));
-                      }
-                      return AutoSizeTextField(
-                        controller: controller,
-                        key: key,
-                        //onSubmitted: (_) => context.nextEditableTextFocus(),
-                        focusNode: focusNode,
-                        onSubmitted: (_) {
-                          print('onSubmitted');
-                          focusNode.unfocus();
-                          // if (nextFocusNode != null) {
-                          //   print('onSubmitted nextFocusNode.requestFocus');
-                          //   nextFocusNode.requestFocus();
-                          // } else {
-                          //   print('onSubmitted nextEditableTextFocus');
-                          //   context.nextEditableTextFocus();
-                          // }
-                        },
-                        inputFormatters: [
-                          PriceFormatter(),
-                        ],
-                        maxLines: 1,
-                        style: InvestrendTheme.of(context).small_w400.copyWith(
-                            color:
-                                InvestrendTheme.of(context).greyDarkerTextColor,
-                            fontSize: InvestrendTheme.of(context)
-                                .small_w400
-                                .fontSize),
-                        textInputAction: TextInputAction.done,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          isDense: true,
-                          border: UnderlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.grey, width: 1.0),
-                          ),
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(
-                                color: Theme.of(context).accentColor,
-                                width: 1.0),
-                          ),
-                          focusColor: Theme.of(context).accentColor,
-                          prefixStyle:
-                              InvestrendTheme.of(context).inputPrefixStyle,
-                          hintStyle: InvestrendTheme.of(context).inputHintStyle,
-                          helperStyle:
-                              InvestrendTheme.of(context).inputHelperStyle,
-                          errorStyle:
-                              InvestrendTheme.of(context).inputErrorStyle,
-                          fillColor: Colors.grey,
-                          contentPadding: EdgeInsets.all(0.0),
-                        ),
-                        textAlign: TextAlign.left,
-                      );
-                    },
-                  ),
-                ),
-              ),
         SizedBox(
           width: widthSection / 3,
-          child: Builder(
-            builder: (builder) {
-              if (onDrag) {
-                return createLabelOpenStatic(
-                  context,
-                  notifier.primaryOpenNotifier.value.fontSize,
-                  notifier.primaryOpenNotifier.value.value,
-                  TextAlign.left,
+          child: Padding(
+            padding: const EdgeInsets.only(right: InvestrendTheme.cardPadding),
+            child: ValueListenableBuilder(
+              valueListenable: notifier.show,
+              builder: (context, bool show, child) {
+                if (!show) {
+                  return SizedBox(
+                    width: 1.0,
+                  );
+                }
+                return AutoSizeTextField(
+                  controller: controller,
+                  key: key,
+                  //onSubmitted: (_) => context.nextEditableTextFocus(),
+                  focusNode: focusNode,
+                  onSubmitted: (_) {
+                    print('onSubmitted');
+                    focusNode.unfocus();
+                    // if (nextFocusNode != null) {
+                    //   print('onSubmitted nextFocusNode.requestFocus');
+                    //   nextFocusNode.requestFocus();
+                    // } else {
+                    //   print('onSubmitted nextEditableTextFocus');
+                    //   context.nextEditableTextFocus();
+                    // }
+                  },
+                  inputFormatters: [
+                    PriceFormatter(),
+                  ],
+                  maxLines: 1,
+                  style: InvestrendTheme.of(context).small_w400.copyWith(
+                      color: InvestrendTheme.of(context).greyDarkerTextColor,
+                      fontSize:
+                          InvestrendTheme.of(context).small_w400.fontSize),
+                  textInputAction: TextInputAction.done,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    isDense: true,
+                    border: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey, width: 1.0)),
+                    focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.secondary, width: 1.0)),
+                    focusColor: Theme.of(context).colorScheme.secondary,
+                    prefixStyle: InvestrendTheme.of(context).inputPrefixStyle,
+                    hintStyle: InvestrendTheme.of(context).inputHintStyle,
+                    helperStyle: InvestrendTheme.of(context).inputHelperStyle,
+                    errorStyle: InvestrendTheme.of(context).inputErrorStyle,
+                    fillColor: Colors.grey,
+                    contentPadding: EdgeInsets.all(0.0),
+                  ),
+                  textAlign: TextAlign.left,
                 );
-              } else {
-                return ValueListenableBuilder(
+              },
+            ),
+          ),
+        ),
+        notifier.primaryOpenNotifier.value.value == "0" ||
+                notifier.primaryOpenNotifier.value.value == ""
+            ? Container(
+                width: widthSection / 3,
+                child: ValueListenableBuilder(
                   valueListenable: notifier.primaryOpenNotifier,
                   builder: (context, StringColorFont data, child) {
                     return createLabelOpenStatic(
                         context, data.fontSize, data.value, TextAlign.left);
                   },
-                );
-              }
-            },
-          ),
-        ),
-
-        onDrag == true
-            ? SizedBox()
-            : Container(
-                width: widthSection,
-                //color: Colors.yellow,
-                child: Stack(
-                  children: [
-                    createLabelPrice(
-                      context,
-                      InvestrendTheme.of(context).small_w500.fontSize,
-                      '',
-                      TextAlign.right,
-                      InvestrendTheme.buyTextColor,
-                    ),
-                    Positioned.fill(
-                      child: ValueListenableBuilder(
-                        valueListenable: notifier.primaryQueNotifier,
-                        builder: (context, StringColorFont data, child) {
-                          return createLabelQueueStatic(context, data.fontSize,
-                              data.value, TextAlign.left);
-                        },
-                      ),
-                    ),
-
-                    //Blot
-                    Positioned.fill(
-                      child: ValueListenableBuilder(
-                        valueListenable: notifier.primaryLotNotifier,
-                        builder: (context, StringColorFont data, child) {
-                          return createLabelLotStatic(
-                            context,
-                            data.fontSize,
-                            data.value,
-                          );
-                        },
-                      ),
-                    ),
-
-                    //Bid
-                    Positioned.fill(
-                      child: ValueListenableBuilder(
-                        valueListenable: notifier.primaryPriceNotifier,
-                        builder: (context, StringColorFont data, child) {
-                          return createLabelPriceStatic(
-                            context,
-                            data.fontSize,
-                            data.value,
-                            TextAlign.right,
-                            data.color, /*, key: key*/
-                          );
-                        },
-                      ),
-                    ),
-                  ],
                 ),
-              ),
-        onDrag == true
-            ? ValueListenableBuilder(
-                valueListenable: notifier.primaryPriceNotifier,
-                builder: (context, StringColorFont data, child) {
-                  return createLabelPriceStatic(
-                    context,
-                    data.fontSize,
-                    data.value,
-                    TextAlign.right,
-                    data.color, /*key: key*/
-                  );
-                },
               )
-            : SizedBox(),
-
-        onDrag == true
-            ? SizedBox()
-            : SizedBox(
-                width: (FastOrderbook.middle_gap / 2) - 0.5,
+            : LongPressDraggable<WrapperNotifierFast>(
+                data: notifier,
+                child: Container(
+                  width: widthSection / 3,
+                  child: ValueListenableBuilder(
+                    valueListenable: notifier.primaryOpenNotifier,
+                    builder: (context, StringColorFont data, child) {
+                      return createLabelOpenStatic(
+                          context, data.fontSize, data.value, TextAlign.left);
+                    },
+                  ),
+                ),
+                feedback: notifier.primaryOpenNotifier.value.value == '0' ||
+                        notifier.primaryOpenNotifier.value.value == ''
+                    ? SizedBox()
+                    : Container(
+                        padding: EdgeInsets.only(left: 5.0, right: 5.0),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey,
+                            ),
+                          ],
+                          border: Border.all(
+                            color: Colors.black,
+                          ),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10),
+                          ),
+                        ),
+                        //width: double.minPositive,
+                        child: Center(
+                          child: ValueListenableBuilder(
+                            valueListenable: notifier.primaryOpenNotifier,
+                            builder: (context, StringColorFont data, child) {
+                              return Row(
+                                children: [
+                                  createLabelPriceStatic(
+                                      context,
+                                      data.fontSize,
+                                      notifier.primaryPriceNotifier.value.value,
+                                      TextAlign.left,
+                                      notifier
+                                          .primaryPriceNotifier.value.color),
+                                  SizedBox(
+                                    width: 10.0,
+                                  ),
+                                  createLabelOpenStatic(context, data.fontSize,
+                                      data.value, TextAlign.left),
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                      ),
               ),
-        onDrag == true
-            ? SizedBox()
-            : Container(
-                width: 1.0,
-                //height: 25.0,
-                color: Theme.of(context).dividerColor,
-                child: createLabelPriceStatic(
+        Container(
+          width: widthSection,
+          //color: Colors.yellow,
+          child: Stack(
+            children: [
+              createLabelPrice(
                   context,
                   InvestrendTheme.of(context).small_w500.fontSize,
                   '',
                   TextAlign.right,
-                  InvestrendTheme.buyTextColor,
+                  InvestrendTheme.buyTextColor),
+              Positioned.fill(
+                child: ValueListenableBuilder(
+                  valueListenable: notifier.primaryQueNotifier,
+                  builder: (context, StringColorFont data, child) {
+                    return createLabelQueueStatic(
+                        context, data.fontSize, data.value, TextAlign.left);
+                  },
                 ),
               ),
-        onDrag == true
-            ? SizedBox()
-            : SizedBox(
-                width: (FastOrderbook.middle_gap / 2) - 0.5,
-              ),
-
-        //Ask
-        onDrag == true
-            ? SizedBox()
-            : SizedBox(
-                width: widthSection / 3,
+              Positioned.fill(
                 child: ValueListenableBuilder(
-                  valueListenable: notifier.secondaryPriceNotifier,
+                  valueListenable: notifier.primaryLotNotifier,
                   builder: (context, StringColorFont data, child) {
-                    return createLabelPriceStatic(
-                      context,
-                      data.fontSize,
-                      data.value,
-                      TextAlign.left,
-                      data.color,
+                    return createLabelLotStatic(
+                        context, data.fontSize, data.value);
+                  },
+                ),
+              ),
+              Positioned.fill(
+                child: DragTarget<WrapperNotifierFast>(
+                  onAccept: (data) {
+                    OrderBook ob =
+                        context.read(orderBookChangeNotifier).orderbook;
+                    showDialog(
+                      context: context,
+                      builder: (_) => AlertDialog(
+                        title: Center(
+                          child: Column(
+                            children: [
+                              Text(
+                                'preview_buy'.tr(),
+                                style: InvestrendTheme.of(context)
+                                    .medium_w400
+                                    .copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 22,
+                                    ),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Image.asset(
+                                'images/order_success_normal_mode.png',
+                                color: Theme.of(context).colorScheme.secondary,
+                              )
+                            ],
+                          ),
+                        ),
+                        content: Container(
+                            padding: EdgeInsets.all(
+                              15,
+                            ),
+                            child: Table(
+                              border: TableBorder.all(
+                                color: Colors.grey.shade300,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(
+                                    10,
+                                  ),
+                                ),
+                              ),
+                              children: [
+                                TableRow(
+                                  children: [
+                                    TableCell(
+                                      verticalAlignment:
+                                          TableCellVerticalAlignment.middle,
+                                      child: Container(
+                                        padding: EdgeInsets.all(5),
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          'stock_label'.tr(),
+                                          style: InvestrendTheme.of(context)
+                                              .medium_w400
+                                              .copyWith(
+                                                color: Colors.black,
+                                                fontSize: 16,
+                                              ),
+                                        ),
+                                      ),
+                                    ),
+                                    TableCell(
+                                      child: Container(
+                                        padding: EdgeInsets.all(5),
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          ob.code,
+                                          style: InvestrendTheme.of(context)
+                                              .medium_w400
+                                              .copyWith(
+                                                color: Colors.black,
+                                                fontSize: 16,
+                                              ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                TableRow(
+                                  children: [
+                                    TableCell(
+                                      child: Container(
+                                        padding: EdgeInsets.all(5),
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          'trade_confirmation_price_label'.tr(),
+                                          style: InvestrendTheme.of(context)
+                                              .medium_w400
+                                              .copyWith(
+                                                color: Colors.black,
+                                                fontSize: 16,
+                                              ),
+                                        ),
+                                      ),
+                                    ),
+                                    TableCell(
+                                      child: Container(
+                                        padding: EdgeInsets.all(5),
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          '${data.primaryPriceNotifier.value.value}',
+                                          style: InvestrendTheme.of(context)
+                                              .medium_w400
+                                              .copyWith(
+                                                color: Colors.black,
+                                                fontSize: 16,
+                                              ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                TableRow(
+                                  children: [
+                                    TableCell(
+                                      child: Container(
+                                        padding: EdgeInsets.all(5),
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          'Price After',
+                                          style: InvestrendTheme.of(context)
+                                              .medium_w400
+                                              .copyWith(
+                                                color: Colors.black,
+                                                fontSize: 16,
+                                              ),
+                                        ),
+                                      ),
+                                    ),
+                                    TableCell(
+                                      child: Container(
+                                        padding: EdgeInsets.all(5),
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          '${notifier.primaryPriceNotifier.value.value}',
+                                          style: InvestrendTheme.of(context)
+                                              .medium_w400
+                                              .copyWith(
+                                                color: Colors.black,
+                                                fontSize: 16,
+                                              ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                TableRow(
+                                  children: [
+                                    TableCell(
+                                      child: Container(
+                                        padding: EdgeInsets.all(5),
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          'trade_confirmation_lot_label'.tr(),
+                                          style: InvestrendTheme.of(context)
+                                              .medium_w400
+                                              .copyWith(
+                                                color: Colors.black,
+                                                fontSize: 16,
+                                              ),
+                                        ),
+                                      ),
+                                    ),
+                                    TableCell(
+                                      child: Container(
+                                        padding: EdgeInsets.all(5),
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          '${data.primaryOpenNotifier.value.value}',
+                                          style: InvestrendTheme.of(context)
+                                              .medium_w400
+                                              .copyWith(
+                                                color: Colors.black,
+                                                fontSize: 16,
+                                              ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            )),
+                        actions: [
+                          Center(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.secondary,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(10),
+                                ),
+                              ),
+                              width: double.infinity,
+                              child: TextButton(
+                                onPressed: () => Navigator.of(context).pop(),
+                                child: Text(
+                                  'Place Order Buy',
+                                  style: InvestrendTheme.of(context)
+                                      .textLabelStyle
+                                      .copyWith(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                  builder: (BuildContext context, List<Object> candidateData,
+                      List<dynamic> rejectedData) {
+                    return Container(
+                      width: widthSection / 3,
+                      child: ValueListenableBuilder(
+                        valueListenable: notifier.primaryPriceNotifier,
+                        builder: (context, StringColorFont data, child) {
+                          return createLabelPriceStatic(
+                              context,
+                              data.fontSize,
+                              data.value,
+                              TextAlign.right,
+                              data.color /*, key: key*/);
+                        },
+                      ),
                     );
                   },
                 ),
               ),
+            ],
+          ),
+        ),
+        SizedBox(
+          width: (FastOrderbook.middle_gap / 2) - 0.5,
+        ),
+        Container(
+          width: 1.0,
+          color: Theme.of(context).dividerColor,
+          child: createLabelPriceStatic(
+              context,
+              InvestrendTheme.of(context).small_w500.fontSize,
+              '',
+              TextAlign.right,
+              InvestrendTheme.buyTextColor),
+        ),
+        SizedBox(
+          width: (FastOrderbook.middle_gap / 2) - 0.5,
+        ),
+        DragTarget<WrapperNotifierFast>(
+          onAccept: (data) {
+            OrderBook ob = context.read(orderBookChangeNotifier).orderbook;
+            showDialog(
+              context: context,
+              builder: (_) => AlertDialog(
+                title: Center(
+                  child: Column(
+                    children: [
+                      Text(
+                        'preview_buy'.tr(),
+                        style: InvestrendTheme.of(context).medium_w400.copyWith(
+                              color: Theme.of(context).colorScheme.secondary,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 22,
+                            ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Image.asset(
+                        'images/order_success_normal_mode.png',
+                        color: Theme.of(context).colorScheme.secondary,
+                      )
+                    ],
+                  ),
+                ),
+                content: Container(
+                    padding: EdgeInsets.all(
+                      15,
+                    ),
+                    child: Table(
+                      border: TableBorder.all(
+                        color: Colors.grey.shade300,
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(
+                            10,
+                          ),
+                        ),
+                      ),
+                      children: [
+                        TableRow(
+                          children: [
+                            TableCell(
+                              verticalAlignment:
+                                  TableCellVerticalAlignment.middle,
+                              child: Container(
+                                padding: EdgeInsets.all(5),
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  'stock_label'.tr(),
+                                  style: InvestrendTheme.of(context)
+                                      .medium_w400
+                                      .copyWith(
+                                        color: Colors.black,
+                                        fontSize: 16,
+                                      ),
+                                ),
+                              ),
+                            ),
+                            TableCell(
+                              child: Container(
+                                padding: EdgeInsets.all(5),
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  ob.code,
+                                  style: InvestrendTheme.of(context)
+                                      .medium_w400
+                                      .copyWith(
+                                        color: Colors.black,
+                                        fontSize: 16,
+                                      ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        TableRow(
+                          children: [
+                            TableCell(
+                              child: Container(
+                                padding: EdgeInsets.all(5),
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  'trade_confirmation_price_label'.tr(),
+                                  style: InvestrendTheme.of(context)
+                                      .medium_w400
+                                      .copyWith(
+                                        color: Colors.black,
+                                        fontSize: 16,
+                                      ),
+                                ),
+                              ),
+                            ),
+                            TableCell(
+                              child: Container(
+                                padding: EdgeInsets.all(5),
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  '${data.secondaryPriceNotifier.value.value}',
+                                  style: InvestrendTheme.of(context)
+                                      .medium_w400
+                                      .copyWith(
+                                        color: Colors.black,
+                                        fontSize: 16,
+                                      ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        TableRow(
+                          children: [
+                            TableCell(
+                              child: Container(
+                                padding: EdgeInsets.all(5),
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  'Price After',
+                                  style: InvestrendTheme.of(context)
+                                      .medium_w400
+                                      .copyWith(
+                                        color: Colors.black,
+                                        fontSize: 16,
+                                      ),
+                                ),
+                              ),
+                            ),
+                            TableCell(
+                              child: Container(
+                                padding: EdgeInsets.all(5),
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  '${notifier.secondaryPriceNotifier.value.value}',
+                                  style: InvestrendTheme.of(context)
+                                      .medium_w400
+                                      .copyWith(
+                                        color: Colors.black,
+                                        fontSize: 16,
+                                      ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        TableRow(
+                          children: [
+                            TableCell(
+                              child: Container(
+                                padding: EdgeInsets.all(5),
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  'trade_confirmation_lot_label'.tr(),
+                                  style: InvestrendTheme.of(context)
+                                      .medium_w400
+                                      .copyWith(
+                                        color: Colors.black,
+                                        fontSize: 16,
+                                      ),
+                                ),
+                              ),
+                            ),
+                            TableCell(
+                              verticalAlignment:
+                                  TableCellVerticalAlignment.middle,
+                              child: Container(
+                                padding: EdgeInsets.all(5),
+                                alignment: Alignment.centerLeft,
+                                child: TextField(
+                                  controller: controller,
+                                  focusNode: focusNode,
+                                  style: InvestrendTheme.of(context)
+                                      .regular_w400_greyDarker,
+                                  decoration: InputDecoration(
+                                    isDense: true,
+                                    contentPadding: EdgeInsets.only(top: 2),
+                                    hintStyle: TextStyle(
+                                      fontStyle: FontStyle.normal,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                    counterText: "",
+                                    errorStyle:
+                                        TextStyle(color: Colors.red.shade700),
+                                    errorMaxLines: 2,
+                                    enabledBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                        color: Colors.transparent,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    )),
+                actions: [
+                  Center(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.secondary,
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10),
+                        ),
+                      ),
+                      width: double.infinity,
+                      child: TextButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: Text(
+                          'Place Order Sell',
+                          style: InvestrendTheme.of(context)
+                              .textLabelStyle
+                              .copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+
+            print(
+                "BERHASIL MASUKKKKK ON ACCEPT  == = = = = = = ==================");
+          },
+          builder: (BuildContext context, List<Object> candidateData,
+              List<dynamic> rejectedData) {
+            return Container(
+                width: widthSection / 3,
+                child: ValueListenableBuilder(
+                  valueListenable: notifier.secondaryPriceNotifier,
+                  builder: (context, StringColorFont data, child) {
+                    return createLabelPriceStatic(context, data.fontSize,
+                        data.value, TextAlign.left, data.color);
+                  },
+                ));
+          },
+        ),
       ],
     );
   }
@@ -1818,7 +2819,6 @@ class _FastOrderbookState extends State<FastOrderbook> {
     );
   }
 
-  //header bid
   Widget createHeaderRight(BuildContext context, String text) {
     return Padding(
       padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
@@ -1830,7 +2830,6 @@ class _FastOrderbookState extends State<FastOrderbook> {
     );
   }
 
-  //header blot
   Widget createHeaderCenter(BuildContext context, String text) {
     return Padding(
       padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
@@ -1856,7 +2855,6 @@ class _FastOrderbookState extends State<FastOrderbook> {
     );
   }
 
-  //Que
   Widget createLabelQueueStatic(
       BuildContext context, double fontSize, String text, TextAlign textAlign) {
     return Padding(
@@ -1884,7 +2882,6 @@ class _FastOrderbookState extends State<FastOrderbook> {
     );
   }
 
-  //BLot
   Widget createLabelLotStatic(
       BuildContext context, double fontSize, String text) {
     return Padding(
@@ -1927,7 +2924,6 @@ class _FastOrderbookState extends State<FastOrderbook> {
     );
   }
 
-  //Open
   Widget createLabelOpenStatic(BuildContext context, double fontSize,
       String openText, TextAlign textAlign) {
     bool empty = StringUtils.isEmtpy(openText) ||
@@ -1994,7 +2990,6 @@ class _FastOrderbookState extends State<FastOrderbook> {
     );
   }
 
-  //Bid dan Ask
   Widget createLabelPriceStatic(BuildContext context, double fontSize,
       String text, TextAlign textAlign, Color color,
       {Key key}) {
@@ -2049,8 +3044,8 @@ class _FastOrderbookState extends State<FastOrderbook> {
             borderSide: BorderSide(color: Colors.grey, width: 1.0)),
         focusedBorder: UnderlineInputBorder(
             borderSide:
-                BorderSide(color: Theme.of(context).accentColor, width: 1.0)),
-        focusColor: Theme.of(context).accentColor,
+                BorderSide(color: Theme.of(context).colorScheme.secondary, width: 1.0)),
+        focusColor: Theme.of(context).colorScheme.secondary,
         prefixStyle: InvestrendTheme.of(context).inputPrefixStyle,
         hintStyle: InvestrendTheme.of(context).inputHintStyle,
         helperStyle: InvestrendTheme.of(context).inputHelperStyle,

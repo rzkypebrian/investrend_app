@@ -10,7 +10,7 @@ class ScreenNoAccount extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Theme.of(context).backgroundColor,
+      color: Theme.of(context).colorScheme.background,
       width: double.maxFinite,
       height: double.maxFinite,
       margin: EdgeInsets.only(

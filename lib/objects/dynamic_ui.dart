@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:Investrend/component/image_picker_component.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
@@ -7,7 +6,6 @@ import 'package:Investrend/utils/utils.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:Investrend/component/video_picker_component.dart';
-import 'package:flutter/services.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:search_choices/search_choices.dart';
 
@@ -618,7 +616,7 @@ class DropDownUI extends DynamicUIField {
                             ),
                             onChanged: (val) {
                               print(
-                                  "CEK PRINT VALUE = ${val.value} || ${val.key}");
+                                  "CEK PRINT VALUE = ${val.price} || ${val.key}");
                               content = (val as Option).key;
                               onChanged(this);
                             },

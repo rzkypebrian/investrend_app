@@ -1,11 +1,7 @@
 import 'package:Investrend/component/component_creator.dart';
-import 'package:Investrend/component/empty_label.dart';
-import 'package:Investrend/component/text_button_retry.dart';
 import 'package:Investrend/objects/class_value_notifier.dart';
 import 'package:Investrend/objects/data_object.dart';
-import 'package:Investrend/objects/home_objects.dart';
 import 'package:Investrend/screens/screen_themes_detail.dart';
-import 'package:Investrend/utils/callbacks.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:Investrend/utils/string_utils.dart';
 import 'package:flutter/cupertino.dart';
@@ -359,7 +355,7 @@ class CardStockThemes extends StatelessWidget {
                 child: Material(
                     color: Colors.transparent,
                     child: InkWell(
-                        splashColor: Theme.of(context).accentColor,
+                        splashColor: Theme.of(context).colorScheme.secondary,
                         onTap: () {
                           InvestrendTheme.of(context)
                               .showSnackBar(context, 'Action Theme detail');

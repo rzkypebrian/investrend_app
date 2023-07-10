@@ -57,9 +57,9 @@ class ButtonAccount extends StatelessWidget {
               InvestrendTheme.of(context).showDialogInvalidSession(context);
               return;
             }else{
-              String network_error_label = 'network_error_label'.tr();
-              network_error_label  = network_error_label.replaceFirst("#CODE#", error.code.toString());
-              InvestrendTheme.of(context).showSnackBar(context, network_error_label);
+              String networkErrorLabel = 'network_error_label'.tr();
+              networkErrorLabel  = networkErrorLabel.replaceFirst("#CODE#", error.code.toString());
+              InvestrendTheme.of(context).showSnackBar(context, networkErrorLabel);
               return;
             }
           }

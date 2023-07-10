@@ -1,27 +1,13 @@
 import 'dart:math';
 
-import 'package:Investrend/component/button_order.dart';
 import 'package:Investrend/component/button_rounded.dart';
-import 'package:Investrend/component/cards/card_earning_pershare.dart';
-import 'package:Investrend/component/cards/card_general_price.dart';
-import 'package:Investrend/component/cards/card_label_value.dart';
-import 'package:Investrend/component/cards/card_local_foreign.dart';
-import 'package:Investrend/component/cards/card_performance.dart';
-import 'package:Investrend/component/chips_range.dart';
 import 'package:Investrend/component/component_creator.dart';
-import 'package:Investrend/component/rows/row_general_price.dart';
-import 'package:Investrend/component/slide_action_button.dart';
 import 'package:Investrend/objects/class_value_notifier.dart';
 import 'package:Investrend/objects/data_object.dart';
 import 'package:Investrend/objects/riverpod_change_notifier.dart';
-import 'package:Investrend/objects/iii_objects.dart';
-import 'package:Investrend/screens/base/base_screen_tabs.dart';
 import 'package:Investrend/screens/base/base_state.dart';
 import 'package:Investrend/screens/screen_main.dart';
-import 'package:Investrend/screens/tab_portfolio/component/bottom_sheet_list.dart';
 import 'package:Investrend/screens/tab_portfolio/screen_portfolio_detail.dart';
-import 'package:Investrend/screens/trade/screen_trade.dart';
-import 'package:Investrend/utils/string_utils.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -33,14 +19,18 @@ class ScreenPortfolioRealized extends StatefulWidget {
   final TabController tabController;
   final int tabIndex;
 
-  ScreenPortfolioRealized(this.tabIndex, this.tabController, {Key key}) : super(key: key);
+  ScreenPortfolioRealized(this.tabIndex, this.tabController, {Key key})
+      : super(key: key);
 
   @override
-  _ScreenPortfolioRealizedState createState() => _ScreenPortfolioRealizedState(tabIndex, tabController);
+  _ScreenPortfolioRealizedState createState() =>
+      _ScreenPortfolioRealizedState(tabIndex, tabController);
 }
 
-class _ScreenPortfolioRealizedState extends BaseStateNoTabsWithParentTab<ScreenPortfolioRealized> {
-  final RealizedNotifier _realizedDataNotifier = RealizedNotifier(new RealizedStockData());
+class _ScreenPortfolioRealizedState
+    extends BaseStateNoTabsWithParentTab<ScreenPortfolioRealized> {
+  final RealizedNotifier _realizedDataNotifier =
+      RealizedNotifier(new RealizedStockData());
   final ValueNotifier<bool> _accountNotifier = ValueNotifier<bool>(false);
   final ValueNotifier _rangeNotifier = ValueNotifier<int>(0);
   final ValueNotifier<int> _sortNotifier = ValueNotifier<int>(0);
@@ -50,12 +40,12 @@ class _ScreenPortfolioRealizedState extends BaseStateNoTabsWithParentTab<ScreenP
   // LabelValueNotifier _boardOfCommisionersNotifier = LabelValueNotifier(new LabelValueData());
 
   _ScreenPortfolioRealizedState(int tabIndex, TabController tabController)
-      : super('/portfolio_realized', tabIndex, tabController, parentTabIndex: Tabs.Portfolio.index);
+      : super('/portfolio_realized', tabIndex, tabController,
+            parentTabIndex: Tabs.Portfolio.index);
 
   // @override
   // bool get wantKeepAlive => true;
   List<String> _sort_by_option = [
-
     'portfolio_stock_sort_by_a_to_z'.tr(),
     'portfolio_stock_sort_by_z_to_a'.tr(),
 
@@ -70,8 +60,6 @@ class _ScreenPortfolioRealizedState extends BaseStateNoTabsWithParentTab<ScreenP
 
     // 'portfolio_stock_sort_by_return_highest_percent'.tr(),
     // 'portfolio_stock_sort_by_return_lowest_percent'.tr(),
-
-
   ];
 
   List<String> _range_options = [
@@ -89,17 +77,18 @@ class _ScreenPortfolioRealizedState extends BaseStateNoTabsWithParentTab<ScreenP
     'all',
   ];
 
-
-  void sort(){
-    switch(_sortNotifier.value){
+  void sort() {
+    switch (_sortNotifier.value) {
       case 0: //a_to_z
         {
-          _realizedDataNotifier.value.datas.sort((a, b) => a.stockCode.compareTo(b.stockCode));
+          _realizedDataNotifier.value.datas
+              .sort((a, b) => a.stockCode.compareTo(b.stockCode));
         }
         break;
       case 1: // z_to_a
         {
-          _realizedDataNotifier.value.datas.sort((a, b) => b.stockCode.compareTo(a.stockCode));
+          _realizedDataNotifier.value.datas
+              .sort((a, b) => b.stockCode.compareTo(a.stockCode));
         }
         break;
       /*
@@ -141,12 +130,14 @@ class _ScreenPortfolioRealizedState extends BaseStateNoTabsWithParentTab<ScreenP
        */
       case 2: // return_highest
         {
-          _realizedDataNotifier.value.datas.sort((a, b) => b.gl.compareTo(a.gl));
+          _realizedDataNotifier.value.datas
+              .sort((a, b) => b.gl.compareTo(a.gl));
         }
         break;
       case 3: // return_lowest
         {
-          _realizedDataNotifier.value.datas.sort((a, b) => a.gl.compareTo(b.gl));
+          _realizedDataNotifier.value.datas
+              .sort((a, b) => a.gl.compareTo(b.gl));
         }
         break;
       /*
@@ -164,10 +155,14 @@ class _ScreenPortfolioRealizedState extends BaseStateNoTabsWithParentTab<ScreenP
     }
     //_updateListNotifier.value = !_updateListNotifier.value;
     _realizedDataNotifier.mustNotifyListeners();
-    context.read(propertiesNotifier).properties.saveInt(routeName, PROP_SELECTED_SORT, _sortNotifier.value);
+    context
+        .read(propertiesNotifier)
+        .properties
+        .saveInt(routeName, PROP_SELECTED_SORT, _sortNotifier.value);
   }
-  final String PROP_SELECTED_SORT       = 'selectedSort';
-  final String PROP_SELECTED_RANGE       = 'selectedRange';
+
+  final String PROP_SELECTED_SORT = 'selectedSort';
+  final String PROP_SELECTED_RANGE = 'selectedRange';
 
   List<String> _filter_options = ['all_stocks_label'.tr()];
 
@@ -245,7 +240,10 @@ class _ScreenPortfolioRealizedState extends BaseStateNoTabsWithParentTab<ScreenP
   //int netGainLoss = 149999789;
 
   Future doUpdate({bool pullToRefresh = false}) async {
-    print(routeName + '.doUpdate : ' + DateTime.now().toString() + "  active : $active  pullToRefresh : $pullToRefresh");
+    print(routeName +
+        '.doUpdate : ' +
+        DateTime.now().toString() +
+        "  active : $active  pullToRefresh : $pullToRefresh");
 
     final notifier = context.read(accountChangeNotifier);
 
@@ -261,8 +259,13 @@ class _ScreenPortfolioRealizedState extends BaseStateNoTabsWithParentTab<ScreenP
         setNotifierLoading(_realizedDataNotifier);
       }
       String range = _range_type.elementAt(_rangeNotifier.value);
-      final result = await InvestrendTheme.tradingHttp.realizedStock(activeAccount.brokercode, activeAccount.accountcode, user.username, range,
-          InvestrendTheme.of(context).applicationPlatform, InvestrendTheme.of(context).applicationVersion);
+      final result = await InvestrendTheme.tradingHttp.realizedStock(
+          activeAccount.brokercode,
+          activeAccount.accountcode,
+          user.username,
+          range,
+          InvestrendTheme.of(context).applicationPlatform,
+          InvestrendTheme.of(context).applicationVersion);
       if (result != null) {
         print(routeName + ' Future realizedStock DATA : ' + result.toString());
         if (mounted) {
@@ -292,15 +295,16 @@ class _ScreenPortfolioRealizedState extends BaseStateNoTabsWithParentTab<ScreenP
   @override
   Widget createBody(BuildContext context, double paddingBottom) {
     List<Widget> childs = [
-
-
-
       //_options(context),
       Row(
         children: [
-          SizedBox(width: InvestrendTheme.cardPaddingGeneral,),
+          SizedBox(
+            width: InvestrendTheme.cardPaddingGeneral,
+          ),
           ButtonDropdown(_rangeNotifier, _range_options),
-          Spacer(flex: 1,),
+          Spacer(
+            flex: 1,
+          ),
         ],
       ),
 
@@ -314,13 +318,17 @@ class _ScreenPortfolioRealizedState extends BaseStateNoTabsWithParentTab<ScreenP
           children: [
             Text(
               'net_gain_loss_label'.tr(),
-              style: InvestrendTheme.of(context).more_support_w400_compact.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor),
+              style: InvestrendTheme.of(context)
+                  .more_support_w400_compact
+                  .copyWith(
+                      color: InvestrendTheme.of(context).greyDarkerTextColor),
             ),
             SizedBox(
               width: 5.0,
             ),
             //Icon(Icons.info_outline, size: 15.0),
-            Image.asset('images/icons/information.png', width: 10.0, height: 10.0),
+            Image.asset('images/icons/information.png',
+                width: 10.0, height: 10.0),
           ],
         ),
       ),
@@ -351,17 +359,19 @@ class _ScreenPortfolioRealizedState extends BaseStateNoTabsWithParentTab<ScreenP
       ),
       */
       Padding(
-        padding: const EdgeInsets.only(left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral),
+        padding: const EdgeInsets.only(
+            left: InvestrendTheme.cardPaddingGeneral,
+            right: InvestrendTheme.cardPaddingGeneral),
         child: ValueListenableBuilder(
           valueListenable: _realizedDataNotifier,
           builder: (context, RealizedStockData data, child) {
-
-            Widget noWidget = _realizedDataNotifier.currentState.getNoWidget(onRetry: (){
+            Widget noWidget =
+                _realizedDataNotifier.currentState.getNoWidget(onRetry: () {
               doUpdate(pullToRefresh: true);
             });
 
             String text = '';
-            if(noWidget != null){
+            if (noWidget != null) {
               //return Center(child: noWidget);
               text = '';
               // return Text(
@@ -371,26 +381,25 @@ class _ScreenPortfolioRealizedState extends BaseStateNoTabsWithParentTab<ScreenP
               //       .headline4
               //       .copyWith(color: InvestrendTheme.changeTextColor(data.totalGL), fontWeight: FontWeight.w600),
               // );
-            }else{
-              text = InvestrendTheme.formatMoneyDouble(data.totalGL, prefixRp: true, prefixPlus: true);
+            } else {
+              text = InvestrendTheme.formatMoneyDouble(data.totalGL,
+                  prefixRp: true, prefixPlus: true);
             }
             return Text(
               text,
-              style: Theme.of(context)
-                  .textTheme
-                  .headline4
-                  .copyWith(color: InvestrendTheme.changeTextColor(data.totalGL), fontWeight: FontWeight.w600),
+              style: Theme.of(context).textTheme.headline4.copyWith(
+                  color: InvestrendTheme.changeTextColor(data.totalGL),
+                  fontWeight: FontWeight.w600),
             );
-
           },
         ),
       ),
       Padding(
         padding: const EdgeInsets.only(
-            left: InvestrendTheme.cardPaddingGeneral,
-            right: InvestrendTheme.cardPaddingGeneral,
-            top: 20.0,
-            //bottom: InvestrendTheme.cardPaddingGeneral
+          left: InvestrendTheme.cardPaddingGeneral,
+          right: InvestrendTheme.cardPaddingGeneral,
+          top: 20.0,
+          //bottom: InvestrendTheme.cardPaddingGeneral
         ),
         //padding: const EdgeInsets.all(InvestrendTheme.cardPaddingPlusMargin),
         child: Row(
@@ -399,7 +408,12 @@ class _ScreenPortfolioRealizedState extends BaseStateNoTabsWithParentTab<ScreenP
             Spacer(
               flex: 1,
             ),
-            ButtonDropdown(_sortNotifier, _sort_by_option, clickAndClose: true,showEmojiDescendingAscending: true,),
+            ButtonDropdown(
+              _sortNotifier,
+              _sort_by_option,
+              clickAndClose: true,
+              showEmojiDescendingAscending: true,
+            ),
           ],
         ),
       ),
@@ -409,10 +423,11 @@ class _ScreenPortfolioRealizedState extends BaseStateNoTabsWithParentTab<ScreenP
           // if (_realizedDataNotifier.invalid()) {
           //   return Center(child: CircularProgressIndicator());
           // }
-          Widget noWidget = _realizedDataNotifier.currentState.getNoWidget(onRetry: (){
+          Widget noWidget =
+              _realizedDataNotifier.currentState.getNoWidget(onRetry: () {
             doUpdate(pullToRefresh: true);
           });
-          if(noWidget != null){
+          if (noWidget != null) {
             return Center(child: noWidget);
           }
           return tableRealized(context, data);
@@ -420,21 +435,24 @@ class _ScreenPortfolioRealizedState extends BaseStateNoTabsWithParentTab<ScreenP
       ),
 
       SizedBox(
-        height: paddingBottom ,
+        height: paddingBottom,
       ),
     ];
 
     return RefreshIndicator(
       color: InvestrendTheme.of(context).textWhite,
-      backgroundColor: Theme.of(context).accentColor,
+      backgroundColor: Theme.of(context).colorScheme.secondary,
       onRefresh: onRefresh,
       child: ListView(
-        padding: const EdgeInsets.only(top: InvestrendTheme.cardPaddingGeneral, bottom: InvestrendTheme.cardPaddingGeneral),
+        padding: const EdgeInsets.only(
+            top: InvestrendTheme.cardPaddingGeneral,
+            bottom: InvestrendTheme.cardPaddingGeneral),
         shrinkWrap: false,
         children: childs,
       ),
     );
   }
+
   /*
   @override
   Widget createBody(BuildContext context, double paddingBottom) {
@@ -546,23 +564,38 @@ class _ScreenPortfolioRealizedState extends BaseStateNoTabsWithParentTab<ScreenP
     super.initState();
     _sortNotifier.addListener(sort);
     _rangeNotifier.addListener(() {
-      context.read(propertiesNotifier).properties.saveInt(routeName, PROP_SELECTED_RANGE, _rangeNotifier.value);
+      context
+          .read(propertiesNotifier)
+          .properties
+          .saveInt(routeName, PROP_SELECTED_RANGE, _rangeNotifier.value);
     });
-    runPostFrame((){
+    runPostFrame(() {
       // #1 get properties
-      int selectedSort = context.read(propertiesNotifier).properties.getInt(routeName, PROP_SELECTED_SORT, 0);
-      int selectedRange = context.read(propertiesNotifier).properties.getInt(routeName, PROP_SELECTED_RANGE, 0);
+      int selectedSort = context
+          .read(propertiesNotifier)
+          .properties
+          .getInt(routeName, PROP_SELECTED_SORT, 0);
+      int selectedRange = context
+          .read(propertiesNotifier)
+          .properties
+          .getInt(routeName, PROP_SELECTED_RANGE, 0);
 
       // #2 use properties
-      _sortNotifier.value = min(selectedSort, _sort_by_option.length - 1) ;
-      _rangeNotifier.value = min(selectedRange, _range_options.length - 1) ;
+      _sortNotifier.value = min(selectedSort, _sort_by_option.length - 1);
+      _rangeNotifier.value = min(selectedRange, _range_options.length - 1);
 
       // #3 check properties if changed, then save again
-      if(selectedSort != _sortNotifier.value){
-        context.read(propertiesNotifier).properties.saveInt(routeName, PROP_SELECTED_SORT, _sortNotifier.value);
+      if (selectedSort != _sortNotifier.value) {
+        context
+            .read(propertiesNotifier)
+            .properties
+            .saveInt(routeName, PROP_SELECTED_SORT, _sortNotifier.value);
       }
-      if(selectedRange != _rangeNotifier.value){
-        context.read(propertiesNotifier).properties.saveInt(routeName, PROP_SELECTED_RANGE, _sortNotifier.value);
+      if (selectedRange != _rangeNotifier.value) {
+        context
+            .read(propertiesNotifier)
+            .properties
+            .saveInt(routeName, PROP_SELECTED_RANGE, _sortNotifier.value);
       }
     });
     /*
@@ -582,9 +615,8 @@ class _ScreenPortfolioRealizedState extends BaseStateNoTabsWithParentTab<ScreenP
     });
     */
 
-
     _rangeNotifier.addListener(() {
-      if(mounted){
+      if (mounted) {
         doUpdate(pullToRefresh: true);
       }
     });
@@ -598,7 +630,9 @@ class _ScreenPortfolioRealizedState extends BaseStateNoTabsWithParentTab<ScreenP
     _sortNotifier.dispose();
     final container = ProviderContainer();
     if (_activeAccountChangedListener != null) {
-      container.read(accountChangeNotifier).removeListener(_activeAccountChangedListener);
+      container
+          .read(accountChangeNotifier)
+          .removeListener(_activeAccountChangedListener);
     }
 
     super.dispose();
@@ -611,11 +645,14 @@ class _ScreenPortfolioRealizedState extends BaseStateNoTabsWithParentTab<ScreenP
     super.didChangeDependencies();
 
     if (_activeAccountChangedListener != null) {
-      context.read(accountChangeNotifier).removeListener(_activeAccountChangedListener);
+      context
+          .read(accountChangeNotifier)
+          .removeListener(_activeAccountChangedListener);
     } else {
       _activeAccountChangedListener = () {
         if (mounted) {
-          bool hasAccount = context.read(dataHolderChangeNotifier).user.accountSize() > 0;
+          bool hasAccount =
+              context.read(dataHolderChangeNotifier).user.accountSize() > 0;
           if (hasAccount) {
             _accountNotifier.value = !_accountNotifier.value;
             doUpdate(pullToRefresh: true);
@@ -623,7 +660,9 @@ class _ScreenPortfolioRealizedState extends BaseStateNoTabsWithParentTab<ScreenP
         }
       };
     }
-    context.read(accountChangeNotifier).addListener(_activeAccountChangedListener);
+    context
+        .read(accountChangeNotifier)
+        .addListener(_activeAccountChangedListener);
 
     /*
     context.read(accountChangeNotifier).addListener(() {
@@ -634,7 +673,7 @@ class _ScreenPortfolioRealizedState extends BaseStateNoTabsWithParentTab<ScreenP
     */
 
     context.read(accountsInfosNotifier).addListener(() {
-      if(mounted){
+      if (mounted) {
         _accountNotifier.value = !_accountNotifier.value;
       }
     });
@@ -648,8 +687,10 @@ class _ScreenPortfolioRealizedState extends BaseStateNoTabsWithParentTab<ScreenP
   Widget tableRealized(BuildContext context, RealizedStockData data) {
     TextStyle small500 = InvestrendTheme.of(context).small_w500;
     TextStyle small400 = InvestrendTheme.of(context).small_w400;
-    TextStyle smallLighter400 = small400.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor);
-    TextStyle smallDarker400 = small400.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor);
+    TextStyle smallLighter400 = small400.copyWith(
+        color: InvestrendTheme.of(context).greyLighterTextColor);
+    TextStyle smallDarker400 = small400.copyWith(
+        color: InvestrendTheme.of(context).greyDarkerTextColor);
     TextStyle reguler700 = InvestrendTheme.of(context).regular_w600;
 
     const double paddingTopBottom = 15.0;
@@ -661,13 +702,16 @@ class _ScreenPortfolioRealizedState extends BaseStateNoTabsWithParentTab<ScreenP
       //   child: Text('date_label'.tr(), style: small500),
       // ),
       Padding(
-        padding: const EdgeInsets.only(top: paddingHeaderTopBottom, bottom: paddingHeaderTopBottom),
+        padding: const EdgeInsets.only(
+            top: paddingHeaderTopBottom, bottom: paddingHeaderTopBottom),
         child: Text('stock_label'.tr(), style: small500),
       ),
       Padding(
-        padding: const EdgeInsets.only(top: paddingHeaderTopBottom, bottom: paddingHeaderTopBottom),
+        padding: const EdgeInsets.only(
+            top: paddingHeaderTopBottom, bottom: paddingHeaderTopBottom),
         //child: Text('value_label'.tr(), style: small500, textAlign: TextAlign.left),
-        child: Text('value_not_include_fee_label'.tr(), style: small500, textAlign: TextAlign.left),
+        child: Text('value_not_include_fee_label'.tr(),
+            style: small500, textAlign: TextAlign.left),
       ),
       // Padding(
       //   padding: const EdgeInsets.only(top: paddingHeaderTopBottom, bottom: paddingHeaderTopBottom),
@@ -695,11 +739,11 @@ class _ScreenPortfolioRealizedState extends BaseStateNoTabsWithParentTab<ScreenP
         GestureTapCallback onTap = () {
           print('onTap rdn : ' + rdn.date);
 
-          int quantity_lot = rdn.lot;
-          double average_buy = rdn.avgBuy;
-          double average_sell = rdn.avgSell;
-          int sell_value = rdn.valueSell;
-          double gain_loss = rdn.gl;
+          int quantityLot = rdn.lot;
+          double averageBuy = rdn.avgBuy;
+          double averageSell = rdn.avgSell;
+          int sellValue = rdn.valueSell;
+          double gainLoss = rdn.gl;
           double yield = rdn.yield;
 
           List<LabelValueColor> listLVC = [
@@ -709,21 +753,24 @@ class _ScreenPortfolioRealizedState extends BaseStateNoTabsWithParentTab<ScreenP
             ),
             LabelValueColor(
               'portfolio_detail_quantity_lot_label'.tr(),
-              InvestrendTheme.formatComma(quantity_lot),
+              InvestrendTheme.formatComma(quantityLot),
             ),
             LabelValueColor(
               'portfolio_detail_average_buy_label'.tr(),
-              InvestrendTheme.formatPriceDouble(average_buy),
+              InvestrendTheme.formatPriceDouble(averageBuy),
             ),
             LabelValueColor(
               'portfolio_detail_average_sell_label'.tr(),
-              InvestrendTheme.formatPriceDouble(average_sell),
+              InvestrendTheme.formatPriceDouble(averageSell),
             ),
             LabelValueColor(
               'portfolio_detail_sell_value_label'.tr(),
-              InvestrendTheme.formatMoney(sell_value),
+              InvestrendTheme.formatMoney(sellValue),
             ),
-            LabelValueColor('portfolio_detail_gain_loss_label'.tr(), InvestrendTheme.formatMoneyDouble(gain_loss, prefixPlus: true, prefixRp: true),
+            LabelValueColor(
+                'portfolio_detail_gain_loss_label'.tr(),
+                InvestrendTheme.formatMoneyDouble(gainLoss,
+                    prefixPlus: true, prefixRp: true),
                 color: InvestrendTheme.changeTextColor(rdn.gl)),
             LabelValueColor(
               'portfolio_detail_yield_label'.tr(),
@@ -732,7 +779,10 @@ class _ScreenPortfolioRealizedState extends BaseStateNoTabsWithParentTab<ScreenP
           ];
 
           InvestrendTheme.push(
-              context, ScreenPortfolioDetail(rdn.stockCode, rdn.gl, rdn.date, listLVC), ScreenTransition.SlideUp, '/portfolio_detail');
+              context,
+              ScreenPortfolioDetail(rdn.stockCode, rdn.gl, rdn.date, listLVC),
+              ScreenTransition.SlideUp,
+              '/portfolio_detail');
         };
 
         Color colorValue = InvestrendTheme.changeTextColor(rdn.gl);
@@ -747,14 +797,16 @@ class _ScreenPortfolioRealizedState extends BaseStateNoTabsWithParentTab<ScreenP
           TableRowInkWell(
             onTap: onTap,
             child: Padding(
-              padding: const EdgeInsets.only(top: paddingTopBottom, bottom: paddingTopBottom),
+              padding: const EdgeInsets.only(
+                  top: paddingTopBottom, bottom: paddingTopBottom),
               child: Text(rdn.stockCode, style: smallLighter400),
             ),
           ),
           TableRowInkWell(
             onTap: onTap,
             child: Padding(
-              padding: const EdgeInsets.only(top: paddingTopBottom, bottom: paddingTopBottom),
+              padding: const EdgeInsets.only(
+                  top: paddingTopBottom, bottom: paddingTopBottom),
               child: FittedBox(
                   alignment: Alignment.centerLeft,
                   fit: BoxFit.scaleDown,
@@ -778,7 +830,9 @@ class _ScreenPortfolioRealizedState extends BaseStateNoTabsWithParentTab<ScreenP
     }
 
     return Padding(
-      padding: const EdgeInsets.only(left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral),
+      padding: const EdgeInsets.only(
+          left: InvestrendTheme.cardPaddingGeneral,
+          right: InvestrendTheme.cardPaddingGeneral),
       child: Table(
         columnWidths: {
           0: FractionColumnWidth(.25),

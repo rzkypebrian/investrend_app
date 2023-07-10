@@ -1,10 +1,8 @@
 import 'package:Investrend/objects/class_value_notifier.dart';
 import 'package:Investrend/objects/data_object.dart';
 import 'package:Investrend/screens/stock_detail/screen_stock_detail_analysis.dart';
-import 'package:Investrend/utils/callbacks.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:Investrend/utils/string_utils.dart';
-import 'package:Investrend/utils/utils.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
@@ -215,14 +213,14 @@ class _ChipsRangeCustomState extends State<ChipsRangeCustom> {
                 Color color;
                 Color colorText;
                 if (selected) {
-                  color = Theme.of(context).accentColor;
+                  color = Theme.of(context).colorScheme.secondary;
                   colorText = Colors.white;
                 } else {
                   if (enabled) {
                     color = Colors.transparent;
                     colorText = InvestrendTheme.of(context).blackAndWhiteText;
                   } else {
-                    color = Theme.of(context).backgroundColor;
+                    color = Theme.of(context).colorScheme.background;
                     colorText = InvestrendTheme.of(context).greyLighterTextColor;
                   }
                 }
@@ -420,7 +418,7 @@ class ChipsRange extends StatelessWidget {
                 Color color;
                 Color colorText;
                 if (selected) {
-                  color = Theme.of(context).accentColor;
+                  color = Theme.of(context).colorScheme.secondary;
                   //colorText = Colors.white;
                   colorText = InvestrendTheme.of(context).textWhite;
                 } else {
@@ -428,7 +426,7 @@ class ChipsRange extends StatelessWidget {
                     color = Colors.transparent;
                     colorText = InvestrendTheme.of(context).blackAndWhiteText;
                   } else {
-                    color = Theme.of(context).backgroundColor;
+                    color = Theme.of(context).colorScheme.background;
                     colorText = InvestrendTheme.of(context).greyLighterTextColor;
                   }
                 }

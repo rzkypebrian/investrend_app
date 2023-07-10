@@ -8,9 +8,8 @@ import 'package:Investrend/component/cards/card_news.dart';
 import 'package:Investrend/component/cards/card_ohlcv_chart.dart';
 import 'package:Investrend/component/cards/card_orderbook.dart';
 import 'package:Investrend/component/cards/card_rating.dart';
+import 'package:Investrend/component/trade_done.dart';
 import 'package:Investrend/component/component_creator.dart';
-import 'package:Investrend/component/filter/filter.dart';
-import 'package:Investrend/component/filter/filtertest.dart';
 import 'package:Investrend/component/rating_slider.dart';
 import 'package:Investrend/component/sort_and_filter_popup.dart';
 import 'package:Investrend/component/widget_price.dart';
@@ -1670,119 +1669,6 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
               ),
             );
           }),
-          /*
-          ValueListenableBuilder( valueListenable: InvestrendTheme.of(context).summaryNotifier, builder: (context,StockSummary value, child) {
-            if (InvestrendTheme.of(context).summaryNotifier.invalid()) {
-              return Center(child: CircularProgressIndicator());
-            }
-            return WidgetPrice(InvestrendTheme.of(context).summaryNotifier.stock.code, InvestrendTheme.of(context).summaryNotifier.stock.name, value.close.toDouble(), value.change.toDouble(), value.percentChange);
-          }),
-          */
-          /*
-          ValueListenableBuilder(
-              //valueListenable: _summaryNotifier,
-              valueListenable: InvestrendTheme.of(context).summaryNotifier,
-              builder: (context, StockSummary value, child) {
-                if (InvestrendTheme.of(context).summaryNotifier.invalid()
-                    //_summaryNotifier.invalid()
-                    ) {
-                  return Center(child: CircularProgressIndicator());
-                }
-                return Container(
-                  color: Colors.purple,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ValueListenableBuilder(
-                            valueListenable: InvestrendTheme.of(context).stockNotifier,
-                            builder: (context, Stock value, child) {
-                              if (InvestrendTheme.of(context).stockNotifier.invalid()) {
-                                return Center(child: CircularProgressIndicator());
-                              }
-                              return Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    value.code,
-                                    style: InvestrendTheme.of(context).headline3,
-                                  ),
-                                  InkWell(
-                                    child: SizedBox(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(7.5),
-                                        child: Image.asset(
-                                          'images/icons/special_notation.png',
-                                          width: 15.0,
-                                          height: 15.0,
-                                        ),
-                                      ),
-                                      width: 30.0,
-                                      height: 30.0,
-                                    ),
-                                    onTap: () {},
-                                  ),
-                                ],
-                              );
-                            },
-                          ),
-
-                          // Text(
-                          //   (InvestrendTheme.of(context).stock != null ? InvestrendTheme.of(context).stock.code : '-'),
-                          //   style: Theme.of(context).textTheme.headline4.copyWith(fontWeight: FontWeight.bold),
-                          // ),
-                          SizedBox(
-                            height: 4.0,
-                          ),
-                          Text(
-                            //_summaryNotifier.stock.name,
-                            InvestrendTheme.of(context).summaryNotifier.stock.name,
-                            style: InvestrendTheme.of(context).support_w400.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor),
-                          ),
-                        ],
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Row(
-                            children: [
-                              //InvestrendTheme.getChangeIcon(_summaryNotifier.value.change),
-                              InvestrendTheme.getChangeImage(value.change),
-                              SizedBox(
-                                width: 5.0,
-                              ),
-                              // Icon(
-                              //   Icons.arrow_drop_up,
-                              //   color: InvestrendTheme.greenText,
-                              // ),
-                              Text(
-                                //InvestrendTheme.formatPrice(_summaryNotifier.value.close),
-                                InvestrendTheme.formatPrice(value.close),
-                                style: InvestrendTheme.of(context)
-                                    .headline3
-                                    .copyWith(color: InvestrendTheme.changeTextColor(value.change)),
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 4.0,
-                          ),
-                          Text(
-                            InvestrendTheme.formatChange(value.change) + ' (' + InvestrendTheme.formatPercentChange(value.percentChange) + ')',
-                            style: InvestrendTheme.of(context).regular_w400
-                                .copyWith(color: InvestrendTheme.changeTextColor(value.change)),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                );
-              }),
-          */
-
           SizedBox(
             height: 10.0,
           ),
@@ -4642,8 +4528,34 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
           top: InvestrendTheme.cardPaddingVertical,
           //bottom: InvestrendTheme.cardPaddingGeneral
         ),
-        child:
-            ComponentCreator.subtitle(context, 'trade_title_trade_book'.tr()),
+        child: Row(
+          children: [
+            Expanded(
+              child: ComponentCreator.subtitle(
+                context,
+                'trade_title_trade_book'.tr(),
+              ),
+            ),
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                      builder: (_) => TradeDone(),
+                      settings: RouteSettings(name: '/trade_done_page'),
+                    ));
+              },
+              child: Text(
+                'portfolio_detail_detail_label'.tr(),
+                textAlign: TextAlign.end,
+                style: InvestrendTheme.of(context).small_w600.copyWith(
+                      color: InvestrendTheme.of(context).investrendPurple,
+                      fontWeight: FontWeight.normal,
+                    ),
+              ),
+            )
+          ],
+        ),
       ),
       WidgetTradebook(
         maxShowLine: 5,
@@ -4676,7 +4588,7 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
 
     return RefreshIndicator(
       color: InvestrendTheme.of(context).textWhite,
-      backgroundColor: Theme.of(context).accentColor,
+      backgroundColor: Theme.of(context).colorScheme.secondary,
       onRefresh: onRefresh,
       /*
       child: ListView(

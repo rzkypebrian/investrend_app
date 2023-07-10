@@ -1,53 +1,29 @@
 // import 'package:Investrend/component/spinnies.dart';
 import 'dart:async';
-import 'dart:convert';
 
-import 'package:Investrend/objects/data_object.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-import 'message.dart';
-import 'message_list.dart';
 
 //import 'permissions.dart';
-import 'token_monitor.dart';
 import 'package:flutter/services.dart';
 
 import 'package:Investrend/main_application.dart';
 
 //import 'package:Investrend/message.dart';
 //import 'package:Investrend/message_list.dart';
-import 'package:Investrend/objects/riverpod_change_notifier.dart';
-import 'package:Investrend/screens/onboarding/screen_friends.dart';
-import 'package:Investrend/screens/onboarding/screen_friends_contact.dart';
-import 'package:Investrend/screens/onboarding/screen_landing.dart';
-import 'package:Investrend/screens/onboarding/screen_landing_rdn.dart';
-import 'package:Investrend/screens/screen_login.dart';
-import 'package:Investrend/screens/onboarding/screen_register.dart';
-import 'package:Investrend/screens/onboarding/screen_register_rdn.dart';
-import 'package:Investrend/screens/screen_text_sample.dart';
 
 //import 'package:Investrend/token_monitor.dart';
-import 'package:Investrend/utils/investrend_theme.dart';
-import 'package:flutter/material.dart';
-import 'package:Investrend/screens/screen_main.dart';
-import 'package:Investrend/screens/screen_splash.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 // Import the firebase_core plugin
-import 'package:firebase_core/firebase_core.dart';
 
 // ignore: import_of_legacy_library_into_null_safe
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 extension ColorExtension on String {
   toColor() {
@@ -83,7 +59,7 @@ extension ImageExtension on Image {
       errorBuilder: (context, error, stackTrace) => Center(
         child: Icon(
           Icons.error_outline,
-          color: Theme.of(context).errorColor,
+          color: Theme.of(context).colorScheme.error,
         ),
       ),
     );

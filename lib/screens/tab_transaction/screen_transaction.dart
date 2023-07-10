@@ -9,7 +9,6 @@ import 'package:Investrend/screens/tab_transaction/screen_transaction_historical
 import 'package:Investrend/screens/tab_transaction/screen_transaction_intraday.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -97,7 +96,7 @@ class _ScreenTransactionState extends BaseStateWithTabs<
                 'transaction_button_fast_order'.tr(),
                 style: InvestrendTheme.of(context)
                     .small_w400_compact
-                    .copyWith(color: Theme.of(context).accentColor),
+                    .copyWith(color: Theme.of(context).colorScheme.secondary),
               ),
               onPressed: () {}),
           SizedBox(
@@ -145,8 +144,8 @@ class _ScreenTransactionState extends BaseStateWithTabs<
                 side: MaterialStateProperty.resolveWith<BorderSide>(
                     (Set<MaterialState> states) {
                   final Color colors = states.contains(MaterialState.pressed)
-                      ? Theme.of(context).accentColor
-                      : Theme.of(context).accentColor;
+                      ? Theme.of(context).colorScheme.secondary
+                      : Theme.of(context).colorScheme.secondary;
                   return BorderSide(color: colors, width: 1.0);
                 }),
               ),

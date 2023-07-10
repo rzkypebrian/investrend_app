@@ -29,14 +29,14 @@ class ButtonOutlinedRounded extends StatelessWidget {
                   (Set<MaterialState> states) {
                 final Color colors =
                 states.contains(MaterialState.pressed)
-                    ? Theme.of(context).accentColor
-                    : Theme.of(context).accentColor;
+                    ? Theme.of(context).colorScheme.secondary
+                    : Theme.of(context).colorScheme.secondary;
                 return BorderSide(color: colors, width: 1.0);
               }),
         ),
         child: Text(
           text,
-          style: InvestrendTheme.of(context).small_w600_compact.copyWith(color: Theme.of(context).accentColor),
+          style: InvestrendTheme.of(context).small_w600_compact.copyWith(color: Theme.of(context).colorScheme.secondary),
         ),
         onPressed: onPressed);
   }

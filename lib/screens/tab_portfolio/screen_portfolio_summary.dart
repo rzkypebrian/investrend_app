@@ -313,7 +313,7 @@ class _ScreenPortfolioSummaryState extends BaseStateNoTabsWithParentTab<ScreenPo
 
     return RefreshIndicator(
       color: InvestrendTheme.of(context).textWhite,
-      backgroundColor: Theme.of(context).accentColor,
+      backgroundColor: Theme.of(context).colorScheme.secondary,
       onRefresh: onRefresh,
       child: ListView(
         padding: const EdgeInsets.only(top: InvestrendTheme.cardPaddingGeneral, bottom: InvestrendTheme.cardPaddingGeneral),
@@ -629,7 +629,7 @@ class _ScreenPortfolioSummaryState extends BaseStateNoTabsWithParentTab<ScreenPo
     } else {
       Color profitColor = InvestrendTheme.changeTextColor(data.totalprofit);
       TextStyle regular700 = InvestrendTheme.of(context).regular_w600_compact;
-      TextStyle more_support400 = InvestrendTheme.of(context).more_support_w400_compact;
+      TextStyle moreSupport400 = InvestrendTheme.of(context).more_support_w400_compact;
       TextStyle small400 = InvestrendTheme.of(context).small_w400_compact;
       const double padding = InvestrendTheme.cardPaddingGeneral;
       return Column(
@@ -643,7 +643,7 @@ class _ScreenPortfolioSummaryState extends BaseStateNoTabsWithParentTab<ScreenPo
           Padding(
             padding: EdgeInsets.only(left: padding, right: padding, bottom: 25.0, top: 4.0),
             child: Text(data.begindate + ' - ' + 'portfolio_summary_current_label'.tr(),
-                style: more_support400.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor)),
+                style: moreSupport400.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor)),
           ),
 
           //SizedBox(height: 20.0),

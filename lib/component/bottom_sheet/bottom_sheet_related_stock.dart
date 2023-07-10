@@ -4,7 +4,6 @@ import 'dart:math';
 import 'package:Investrend/component/component_creator.dart';
 import 'package:Investrend/objects/riverpod_change_notifier.dart';
 import 'package:Investrend/objects/iii_objects.dart';
-import 'package:Investrend/utils/connection_services.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:Investrend/utils/string_utils.dart';
 import 'package:flutter/material.dart';
@@ -73,14 +72,14 @@ class _BottomSheetRelatedStockState extends State<BottomSheetRelatedStock> {
     context.read(primaryStockChangeNotifier).addListener(stockChangeListener);
   }
 
-  List<Stock> getRelatedStock(String for_code) {
+  List<Stock> getRelatedStock(String forCode) {
     List<Stock> relatedStocks = List.empty(growable: true);
-    String mainCode = for_code;
-    int index = for_code.indexOf('-');
+    String mainCode = forCode;
+    int index = forCode.indexOf('-');
     if (index > 0) {
-      mainCode = for_code.substring(0, index);
+      mainCode = forCode.substring(0, index);
       print('getRelatedStock mainCode = $mainCode  from stock.code = ' +
-          for_code);
+          forCode);
     }
     relatedStocks.clear();
 
@@ -104,24 +103,24 @@ class _BottomSheetRelatedStockState extends State<BottomSheetRelatedStock> {
       print('mainCode = $mainCode  from stock.code = ' + newCode);
     }
     relatedStocks.clear();
-    String new_codes = '';
+    String newCodes = '';
     for (var value in InvestrendTheme.storedData.listStock) {
       if (value != null &&
           value is Stock &&
           value.code.toLowerCase().startsWith(mainCode.toLowerCase())) {
         relatedStocks.add(value);
-        if (new_codes.isEmpty) {
-          new_codes = value.code;
+        if (newCodes.isEmpty) {
+          newCodes = value.code;
         } else {
-          new_codes = new_codes + "_" + value.code;
+          newCodes = newCodes + "_" + value.code;
         }
       }
     }
 
-    if (!StringUtils.equalsIgnoreCase(new_codes, codes)) {
+    if (!StringUtils.equalsIgnoreCase(newCodes, codes)) {
       summarys.clear();
     }
-    codes = new_codes;
+    codes = newCodes;
     // InvestrendTheme.storedData.listStock.forEach((value) {
     //   if (value != null && value is Stock && value.code.toLowerCase().startsWith(mainCode.toLowerCase())) {
     //     relatedStocks.add(value);
@@ -326,9 +325,9 @@ class _BottomSheetRelatedStockState extends State<BottomSheetRelatedStock> {
     bool selected =
         StringUtils.equalsIgnoreCase(selectedStock.code, value.code);
     TextStyle titleStyle = InvestrendTheme.of(context).regular_w600_compact;
-    Color color = selected ? Theme.of(context).accentColor : titleStyle.color;
+    Color color = selected ? Theme.of(context).colorScheme.secondary : titleStyle.color;
     Color colorPrice = selected
-        ? Theme.of(context).accentColor
+        ? Theme.of(context).colorScheme.secondary
         : InvestrendTheme.of(context).greyDarkerTextColor;
     return ListTile(
       onTap: () {
@@ -351,7 +350,7 @@ class _BottomSheetRelatedStockState extends State<BottomSheetRelatedStock> {
       trailing: selected
           ? Image.asset(
               'images/icons/check.png',
-              color: Theme.of(context).accentColor,
+              color: Theme.of(context).colorScheme.secondary,
               width: 20.0,
               height: 20.0,
             )

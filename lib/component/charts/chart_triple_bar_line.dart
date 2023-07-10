@@ -1,8 +1,6 @@
 import 'package:Investrend/component/chart_series_legend.dart';
 import 'package:Investrend/component/charts/chart_color.dart';
 import 'package:Investrend/component/charts/year_value.dart';
-import 'package:Investrend/utils/investrend_theme.dart';
-import 'package:Investrend/utils/utils.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;

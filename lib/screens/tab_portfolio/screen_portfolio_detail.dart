@@ -18,7 +18,7 @@ class ScreenPortfolioDetail extends StatelessWidget {
   Widget build(BuildContext context) {
     double paddingBottom = MediaQuery.of(context).viewPadding.bottom;
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       appBar: createAppBar(context),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -154,7 +154,7 @@ class ScreenPortfolioDetail extends StatelessWidget {
   Widget createAppBar(BuildContext context) {
     return AppBar(
       elevation: 0.0,
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       title: AppBarTitleText(title),
     );
   }

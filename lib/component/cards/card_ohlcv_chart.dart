@@ -1,4 +1,3 @@
-import 'package:Investrend/component/cards/card_chart.dart';
 import 'package:Investrend/component/chart_candlestick.dart';
 import 'package:Investrend/objects/class_value_notifier.dart';
 import 'package:Investrend/objects/data_object.dart';
@@ -6,7 +5,6 @@ import 'package:Investrend/utils/callbacks.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'dart:ui' as ui;
 
 class CardOhlcvChart extends StatefulWidget {
   final ChartOhlcvNotifier ohlcvDataNotifier;
@@ -151,14 +149,14 @@ class _CardOhlcvChartState extends State<CardOhlcvChart> {
                 Color color;
                 Color colorText;
                 if (selected) {
-                  color = Theme.of(context).accentColor;
+                  color = Theme.of(context).colorScheme.secondary;
                   colorText = Colors.white;
                 } else {
                   if (enabled) {
                     color = Colors.transparent;
                     colorText = InvestrendTheme.of(context).blackAndWhiteText;
                   } else {
-                    color = Theme.of(context).backgroundColor;
+                    color = Theme.of(context).colorScheme.background;
                     colorText =
                         InvestrendTheme.of(context).greyLighterTextColor;
                   }

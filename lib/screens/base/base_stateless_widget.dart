@@ -5,7 +5,7 @@ class BaseStatelessWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: createAppBar(context),
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       body: createBody(context),
 
     );
@@ -17,7 +17,7 @@ class BaseStatelessWidget extends StatelessWidget {
   }
   Widget createAppBar(BuildContext context){
     return AppBar(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
     );
   }
 

@@ -12,7 +12,7 @@ class UnknownResponseSheet extends BaseTradeBottomSheet {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Theme.of(context).backgroundColor,
+      color: Theme.of(context).colorScheme.background,
       child: Scaffold(
         appBar: AppBar(
           elevation: 0.0,

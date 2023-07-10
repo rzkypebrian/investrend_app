@@ -87,10 +87,10 @@ class BottomSheetSelectStock extends StatelessWidget {
 
 
                 List<Widget> rows = List.empty(growable: true);
-                String code_selected = notifier.isValid() ? notifier.stock.code : '';
+                String codeSelected = notifier.isValid() ? notifier.stock.code : '';
 
-                if (!StringUtils.isEmtpy(code_selected)) {
-                  rows.add(createRow(context, code_selected, true));
+                if (!StringUtils.isEmtpy(codeSelected)) {
+                  rows.add(createRow(context, codeSelected, true));
                   rows.add(ComponentCreator.divider(context));
                 }
 
@@ -98,7 +98,7 @@ class BottomSheetSelectStock extends StatelessWidget {
                 InvestrendTheme.storedData.listFinderRecent.forEach((object) {
                   if (object is Stock) {
                     String code = object.code;
-                    if(!StringUtils.equalsIgnoreCase(code_selected, code)){
+                    if(!StringUtils.equalsIgnoreCase(codeSelected, code)){
                       rows.add(createRow(context, code, false));
                     }
                   }
@@ -173,9 +173,9 @@ class BottomSheetSelectStock extends StatelessWidget {
     Color colorIcon = Colors.transparent;
 
     if (selected) {
-      style = InvestrendTheme.of(context).regular_w600_compact.copyWith(color: Theme.of(context).accentColor);
+      style = InvestrendTheme.of(context).regular_w600_compact.copyWith(color: Theme.of(context).colorScheme.secondary);
       //colorText = Theme.of(context).accentColor;
-      colorIcon = Theme.of(context).accentColor;
+      colorIcon = Theme.of(context).colorScheme.secondary;
     }
 
     return TextButton(

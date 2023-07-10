@@ -1,8 +1,6 @@
 import 'package:Investrend/component/animation_creator.dart';
 import 'package:Investrend/component/component_creator.dart';
 import 'package:Investrend/screens/base/base_stateless_widget.dart';
-import 'package:Investrend/screens/onboarding/screen_friends_contact.dart';
-import 'package:Investrend/screens/screen_main.dart';
 import 'package:Investrend/screens/onboarding/screen_register_rdn.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:flutter/material.dart';
@@ -19,10 +17,10 @@ class ScreenLandingRDN extends BaseStatelessWidget {
     //bool lightTheme = MediaQuery.of(context).platformBrightness == Brightness.light;
     bool lightTheme = Theme.of(context).brightness == Brightness.light;
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Theme.of(context).backgroundColor,
+        backgroundColor: Theme.of(context).colorScheme.background,
         leading: Text(''),
         actions: [
           TextButton(
@@ -76,9 +74,9 @@ class ScreenLandingRDN extends BaseStatelessWidget {
               child: ComponentCreator.roundedButton(
                   context,
                   'landing_rdn_button_contact'.tr(),
-                  Theme.of(context).accentColor,
+                  Theme.of(context).colorScheme.secondary,
                   Theme.of(context).primaryColor,
-                  Theme.of(context).accentColor, () {
+                  Theme.of(context).colorScheme.secondary, () {
                 // on presss
                 //showFindFriendsPage(context);
                 showRegisterRDNPage(context);
@@ -119,20 +117,19 @@ class ScreenLandingRDN extends BaseStatelessWidget {
     Navigator.push(
       context,
       PageRouteBuilder(
-        transitionDuration: Duration(milliseconds: 1000),
-        //pageBuilder: (context, animation1, animation2) => ScreenLanding(),
-        pageBuilder: (context, animation1, animation2) => ScreenRegisterRDN(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return AnimationCreator.transitionSlideUp(
-              context, animation, secondaryAnimation, child);
-        }
-        // transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-        //     FadeTransition(
-        //   opacity: animation,
-        //   child: child,
-        // ),
-      ),
+          transitionDuration: Duration(milliseconds: 1000),
+          //pageBuilder: (context, animation1, animation2) => ScreenLanding(),
+          pageBuilder: (context, animation1, animation2) => ScreenRegisterRDN(),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return AnimationCreator.transitionSlideUp(
+                context, animation, secondaryAnimation, child);
+          }
+          // transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+          //     FadeTransition(
+          //   opacity: animation,
+          //   child: child,
+          // ),
+          ),
     );
-
   }
 }

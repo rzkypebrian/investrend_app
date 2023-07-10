@@ -3,7 +3,6 @@ import 'package:auto_size_text_field/auto_size_text_field.dart';
 import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_signaturepad/signaturepad.dart';
-import 'dart:ui' as ui;
 
 class SignaturePad extends StatefulWidget {
   @override

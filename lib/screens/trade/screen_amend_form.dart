@@ -3,19 +3,14 @@ import 'dart:async';
 import 'package:Investrend/component/button_order.dart';
 import 'package:Investrend/component/cards/card_orderbook.dart';
 import 'package:Investrend/component/component_creator.dart';
-import 'package:Investrend/component/widget_fast_orderbook.dart';
-import 'package:Investrend/component/widget_orderbook.dart';
 import 'package:Investrend/component/widget_tradebook.dart';
-import 'package:Investrend/objects/class_input_formatter.dart';
 import 'package:Investrend/objects/class_value_notifier.dart';
 import 'package:Investrend/objects/data_holder.dart';
 import 'package:Investrend/objects/data_object.dart';
 import 'package:Investrend/objects/riverpod_change_notifier.dart';
 import 'package:Investrend/objects/iii_objects.dart';
-import 'package:Investrend/screens/base/screen_aware.dart';
 import 'package:Investrend/screens/stock_detail/screen_order_queue.dart';
 import 'package:Investrend/screens/trade/trade_component.dart';
-import 'package:Investrend/utils/connection_services.dart';
 import 'package:Investrend/utils/debug_writer.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:Investrend/utils/string_utils.dart';
@@ -811,7 +806,7 @@ abstract class BaseAmendState<T extends StatefulWidget> extends VisibilityAwareS
   Widget predefineButton(int percentValue) {
     Color color = InvestrendTheme.of(context).support_w400.color;
     if (percentValue == predefineLotNotifier.value) {
-      color = Theme.of(context).accentColor;
+      color = Theme.of(context).colorScheme.secondary;
     }
     return TextButton(
         style: ButtonStyle(visualDensity: VisualDensity.compact),
@@ -883,7 +878,7 @@ abstract class BaseAmendState<T extends StatefulWidget> extends VisibilityAwareS
       if (price > 0 && usedValue > 0) {
         print('predefineLot ' + orderType.text + '  usedValue : $usedValue  price : $price  feeBuy : $feeBuy');
         //int lot = ((buyingPower * (percentage / 100)) / (price * 100 * (1.0 + (feeBuy / 100)))).toInt();
-        int lot = ((usedValue * (percentage / 100)) / (price * 100 * (1.0 + (feeBuy / 100)))).toInt();
+        int lot = (usedValue * (percentage / 100)) ~/ (price * 100 * (1.0 + (feeBuy / 100)));
 
         //int value = price * lot * fee;
         //lot = value / price / fee
@@ -1249,14 +1244,14 @@ abstract class BaseAmendState<T extends StatefulWidget> extends VisibilityAwareS
     //List<String> data = message.split('|');
     if(data != null && data.length > 5 /* && data.first == 'III' && data.elementAt(1) == 'Q'*/){
       final String HEADER       = data[0];
-      final String TYPE_SUMMARY = data[1];
+      final String typeSummary = data[1];
       final String start 	      = data[2];
       final String end 		      = data[3];
       final String stockCode    = data[4];
       final String boardCode    = data[5];
       String codeBoard = stockCode+'.'+boardCode;
       String channelData = DatafeedType.Summary.key+'.'+codeBoard;
-      if(HEADER == 'III' && TYPE_SUMMARY == DatafeedType.Summary.type && channel == channelData){
+      if(HEADER == 'III' && typeSummary == DatafeedType.Summary.type && channel == channelData){
         return true;
       }
     }

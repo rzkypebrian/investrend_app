@@ -2,13 +2,12 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:Investrend/component/animation_creator.dart';
-import 'package:Investrend/component/biometric_auth.dart';
+import 'package:Investrend/component/broker_rank.dart';
+import 'package:Investrend/component/broker_trade_summary.dart';
 import 'package:Investrend/component/charts/trading_view_chart.dart';
 import 'package:Investrend/component/component_creator.dart';
 import 'package:Investrend/component/filter/filter.dart';
-import 'package:Investrend/component/signature_pad.dart';
-import 'package:Investrend/component/sosmed/leaderboards.dart';
-import 'package:Investrend/new_component/fast_order_new.dart';
+import 'package:Investrend/component/trade_done.dart';
 import 'package:Investrend/objects/data_object.dart';
 import 'package:Investrend/objects/riverpod_change_notifier.dart';
 import 'package:Investrend/objects/iii_objects.dart';
@@ -225,7 +224,7 @@ class _ScreenLoginState extends State<ScreenLogin> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: ComponentCreator.keyboardHider(context, createBody(context)),
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
     );
   }
 
@@ -245,7 +244,7 @@ class _ScreenLoginState extends State<ScreenLogin> {
     double top = height * 0.07;
     double imageSize = width * 0.7;
     bool lightTheme = Theme.of(context).brightness == Brightness.light;
-    bool accentColorIsNull = Theme.of(context).accentColor == null;
+    bool accentColorIsNull = Theme.of(context).colorScheme.secondary == null;
     print('lightTheme : $lightTheme  accentColorIsNull : $accentColorIsNull');
 
     double spacerHeight = 10.0;
@@ -318,6 +317,24 @@ class _ScreenLoginState extends State<ScreenLogin> {
                 valueListenable: listOverViewNotifier,
               ),
             ),
+            Container(
+              child: IconButton(
+                onPressed: () {
+                  showBrokerTradePage(context);
+                },
+                icon: Icon(Icons.track_changes_rounded),
+              ),
+            ),
+            Container(
+              child: IconButton(
+                icon: Icon(
+                  Icons.radio_button_checked,
+                ),
+                onPressed: () {
+                  showBrokerRank(context);
+                },
+              ),
+            ),
             Expanded(
               child: IconButton(
                 onPressed: () {
@@ -328,14 +345,14 @@ class _ScreenLoginState extends State<ScreenLogin> {
                 ),
               ),
             ),
-            IconButton(
-              onPressed: () {
-                showBiometricLogin(context);
-              },
-              icon: Icon(
-                Icons.fingerprint,
-              ),
-            ),
+            // IconButton(
+            //   onPressed: () {
+            //     showBiometricLogin(context);
+            //   },
+            //   icon: Icon(
+            //     Icons.fingerprint,
+            //   ),
+            // ),
             IconButton(
               onPressed: () {
                 showTradingViewPage(context);
@@ -346,7 +363,7 @@ class _ScreenLoginState extends State<ScreenLogin> {
                 valueListenable: _rememberMeNotifier,
                 builder: (context, value, child) {
                   return Checkbox(
-                      activeColor: Theme.of(context).accentColor,
+                      activeColor: Theme.of(context).colorScheme.secondary,
                       value: _rememberMeNotifier.value,
                       onChanged: (value) {
                         _rememberMeNotifier.value = !_rememberMeNotifier.value;
@@ -369,9 +386,9 @@ class _ScreenLoginState extends State<ScreenLogin> {
           child: ComponentCreator.roundedButton(
               context,
               'login_button_enter'.tr(),
-              Theme.of(context).accentColor,
+              Theme.of(context).colorScheme.secondary,
               Theme.of(context).primaryColor,
-              Theme.of(context).accentColor, () {
+              Theme.of(context).colorScheme.secondary, () {
             if (_formLoginKey.currentState.validate()) {
               if (StringUtils.equalsIgnoreCase(
                       fieldPasswordController.text, 'refresh_token') &&
@@ -392,8 +409,8 @@ class _ScreenLoginState extends State<ScreenLogin> {
             ),
             TextButton(
               style: TextButton.styleFrom(
-                  animationDuration: Duration(milliseconds: 500),
                   primary: InvestrendTheme.of(context).hyperlink,
+                  animationDuration: Duration(milliseconds: 500),
                   backgroundColor: Colors.transparent,
                   textStyle: InvestrendTheme.of(context).small_w400_greyDarker),
               child: Text('login_button_register'.tr()),
@@ -409,8 +426,8 @@ class _ScreenLoginState extends State<ScreenLogin> {
           children: [
             TextButton(
               style: TextButton.styleFrom(
-                  animationDuration: Duration(milliseconds: 500),
                   primary: InvestrendTheme.of(context).hyperlink,
+                  animationDuration: Duration(milliseconds: 500),
                   backgroundColor: Colors.transparent,
                   textStyle: InvestrendTheme.of(context)
                       .small_w400_compact_greyDarker),
@@ -478,7 +495,7 @@ class _ScreenLoginState extends State<ScreenLogin> {
                     );
                   } else {
                     icon = Icon(Icons.remove_red_eye,
-                        color: Theme.of(context).accentColor);
+                        color: Theme.of(context).colorScheme.secondary);
                   }
 
                   return getTextFieldForm(
@@ -611,7 +628,7 @@ class _ScreenLoginState extends State<ScreenLogin> {
     }
   }
 
-  void refreshToken(String refresh_token) {
+  void refreshToken(String refreshToken) {
     context.read(propertiesNotifier).setNeedPinTrading(true);
 
     showLoading('loading_refresh_token_label'.tr());
@@ -619,7 +636,7 @@ class _ScreenLoginState extends State<ScreenLogin> {
     final result = InvestrendTheme.tradingHttp.refresh(
         InvestrendTheme.of(context).applicationPlatform,
         InvestrendTheme.of(context).applicationVersion,
-        refresh_token: refresh_token);
+        refresh_token: refreshToken);
     result.then((value) {
       print('refresh--------------------');
       DebugWriter.info('username = ' + value.username);
@@ -649,17 +666,16 @@ class _ScreenLoginState extends State<ScreenLogin> {
           } else if (error.isErrorTrading()) {
             InvestrendTheme.of(context).showSnackBar(context, error.message());
           } else {
-            String network_error_label = 'network_error_label'.tr();
-            network_error_label = network_error_label.replaceFirst(
-                "#CODE#", error.code.toString());
+            String networkErrorLabel = 'network_error_label'.tr();
+            networkErrorLabel =
+                networkErrorLabel.replaceFirst("#CODE#", error.code.toString());
             InvestrendTheme.of(context)
-                .showSnackBar(context, network_error_label);
+                .showSnackBar(context, networkErrorLabel);
           }
         } else if (error is TimeoutException) {
-          String network_error_time_out_label =
-              'network_error_time_out_label'.tr();
+          String networkErrorTimeOutLabel = 'network_error_time_out_label'.tr();
           InvestrendTheme.of(context)
-              .showSnackBar(context, network_error_time_out_label);
+              .showSnackBar(context, networkErrorTimeOutLabel);
         } else {
           //InvestrendTheme.of(context).showSnackBar(context, error.toString());
 
@@ -721,13 +737,13 @@ class _ScreenLoginState extends State<ScreenLogin> {
     DebugWriter.info(context.read(dataHolderChangeNotifier).user.toString());
     context.read(dataHolderChangeNotifier).isLogged = true;
     context.read(dataHolderChangeNotifier).isForeground = true;
-    String url_profile = 'https://' +
+    String urlProfile = 'https://' +
         InvestrendTheme.tradingHttp.tradingBaseUrl +
         '/getpic?username=' +
         value.username +
         '&url=&nocache=' +
         DateTime.now().toString();
-    context.read(avatarChangeNotifier).setUrl(url_profile);
+    context.read(avatarChangeNotifier).setUrl(urlProfile);
     context.read(accountChangeNotifier).setIndex(0);
 
     context.read(managerDatafeedNotifier).initiate(
@@ -805,17 +821,17 @@ class _ScreenLoginState extends State<ScreenLogin> {
               InvestrendTheme.of(context)
                   .showSnackBar(context, error.message());
             } else {
-              String network_error_label = 'network_error_label'.tr();
-              network_error_label = network_error_label.replaceFirst(
+              String networkErrorLabel = 'network_error_label'.tr();
+              networkErrorLabel = networkErrorLabel.replaceFirst(
                   "#CODE#", error.code.toString());
               InvestrendTheme.of(context)
-                  .showSnackBar(context, network_error_label);
+                  .showSnackBar(context, networkErrorLabel);
             }
           } else if (error is TimeoutException) {
-            String network_error_time_out_label =
+            String networkErrorTimeOutLabel =
                 'network_error_time_out_label'.tr();
             InvestrendTheme.of(context)
-                .showSnackBar(context, network_error_time_out_label);
+                .showSnackBar(context, networkErrorTimeOutLabel);
           } else {
             String errorText = Utils.removeServerAddress(error.toString());
             InvestrendTheme.of(context).showSnackBar(context, errorText);
@@ -910,15 +926,25 @@ class _ScreenLoginState extends State<ScreenLogin> {
         '/tradingViewChart');
   }
 
-  void showLeaderboardsPage(BuildContext context) {
-    InvestrendTheme.push(
-        context, Leaderboards(), ScreenTransition.Fade, '/leaderboards');
+  void showBrokerTradePage(BuildContext context) {
+    InvestrendTheme.push(context, BrokerTradeSummary(), ScreenTransition.Fade,
+        '/brokerTradeSummary');
   }
 
-  void showBiometricLogin(BuildContext context) {
+  void showLeaderboardsPage(BuildContext context) {
     InvestrendTheme.push(
-        context, FastOrderNew(), ScreenTransition.Fade, '/signaturepad');
+        context, TradeDone(), ScreenTransition.Fade, '/leaderboards');
   }
+
+  void showBrokerRank(BuildContext context) {
+    InvestrendTheme.push(
+        context, BrokerRank(), ScreenTransition.Fade, '/brokerRating');
+  }
+
+  // void showBiometricLogin(BuildContext context) {
+  //   InvestrendTheme.push(
+  //       context, FastOrderNew(), ScreenTransition.Fade, '/signaturepad');
+  // }
 
   void showFriendsPage(BuildContext context) {
     InvestrendTheme.pushReplacement(
@@ -951,20 +977,20 @@ class _ScreenLoginState extends State<ScreenLogin> {
     }
 
     try {
-      String md5_help_contents =
+      String md5HelpContents =
           context.read(helpNotifier).data.md5_help_contents;
-      String md5_help_menus = context.read(helpNotifier).data.md5_help_menus;
+      String md5HelpMenus = context.read(helpNotifier).data.md5_help_menus;
       final help = await InvestrendTheme.datafeedHttp.fetchHelp(
-          md5_help_contents: md5_help_contents, md5_help_menus: md5_help_menus);
+          md5_help_contents: md5HelpContents, md5_help_menus: md5HelpMenus);
       if (help != null) {
         print(routeName + ' Future help DATA : ' + help.toString());
         //_summaryNotifier.setData(stockSummary);
-        bool menusChanged = !StringUtils.equalsIgnoreCase(
-                md5_help_menus, help.md5_help_menus) &&
-            help.menus != null &&
-            help.menus.isNotEmpty;
+        bool menusChanged =
+            !StringUtils.equalsIgnoreCase(md5HelpMenus, help.md5_help_menus) &&
+                help.menus != null &&
+                help.menus.isNotEmpty;
         bool contentChanged = !StringUtils.equalsIgnoreCase(
-                md5_help_contents, help.md5_help_contents) &&
+                md5HelpContents, help.md5_help_contents) &&
             help.contents != null &&
             help.md5_help_contents.isNotEmpty;
 
@@ -1028,28 +1054,29 @@ class _ScreenLoginState extends State<ScreenLogin> {
 
             bool isMandatory = false;
             bool isMinor = false;
-            if (Utils.isVersionCodeNewer(versionCode, server.version_code)) {
-              if (Utils.isVersionCodeNewer(
-                  versionCode, server.minimum_version_code)) {
-                // mandatory
-                isMandatory = true;
-              } else {
-                // not mandatory
-                isMinor = true;
-              }
-            } else if (Utils.isVersionCodeOlder(
-                versionCode, server.version_code)) {
-              print('version isOlder');
-            } else {
-              // same version code, check version number
-              if (versionNumber < server.minimum_version_number) {
-                // mandatory
-                isMandatory = true;
-              } else if (versionNumber < server.version_number) {
-                // not mandatory
-                isMinor = true;
-              }
-            }
+
+            // if (Utils.isVersionCodeNewer(versionCode, server.version_code)) {
+            //   if (Utils.isVersionCodeNewer(
+            //       versionCode, server.minimum_version_code)) {
+            //     // mandatory
+            //     isMandatory = true;
+            //   } else {
+            //     // not mandatory
+            //     isMinor = true;
+            //   }
+            // } else if (Utils.isVersionCodeOlder(
+            //     versionCode, server.version_code)) {
+            //   print('version isOlder');
+            // } else {
+            //   // same version code, check version number
+            //   if (versionNumber < server.minimum_version_number) {
+            //     // mandatory
+            //     isMandatory = true;
+            //   } else if (versionNumber < server.version_number) {
+            //     // not mandatory
+            //     isMinor = true;
+            //   }
+            // }
 
             print('version isMandatory : $isMandatory');
             print('version isMinor : $isMinor');

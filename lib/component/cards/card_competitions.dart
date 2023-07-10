@@ -94,7 +94,7 @@ class CardCompetitions extends StatelessWidget {
                 child: Material(
                     color: Colors.transparent,
                     child: InkWell(
-                        splashColor: Theme.of(context).accentColor,
+                        splashColor: Theme.of(context).colorScheme.secondary,
                         onTap: () {
                           InvestrendTheme.of(context).showSnackBar(context, 'Action Competition detail');
                         })),
@@ -238,7 +238,7 @@ class _CardChartState extends State<CardChart> {
                     });
                   },
                   child: Container(
-                    color: selected ? Theme.of(context).accentColor : Colors.transparent,
+                    color: selected ? Theme.of(context).colorScheme.secondary : Colors.transparent,
                     child: Center(
                         child: Text(
                           _listChipRange[index],

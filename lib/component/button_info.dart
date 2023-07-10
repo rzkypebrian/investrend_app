@@ -9,7 +9,7 @@ class ButtonInfo extends StatelessWidget {
   final VoidCallback onPressed;
   final CrossAxisAlignment crossAxisAlignment;
 
-  const ButtonInfo(this.text, this.data, this.onPressed,  {this.crossAxisAlignment: CrossAxisAlignment.start, Key key}) : super(key: key);
+  const ButtonInfo(this.text, this.data, this.onPressed,  {this.crossAxisAlignment = CrossAxisAlignment.start, Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -1,12 +1,9 @@
-import 'dart:math';
 
 import 'package:Investrend/component/button_rounded.dart';
 import 'package:Investrend/component/chips_range.dart';
 import 'package:Investrend/component/component_creator.dart';
 import 'package:Investrend/objects/class_value_notifier.dart';
 import 'package:Investrend/objects/data_object.dart';
-import 'package:Investrend/screens/stock_detail/screen_stock_detail_analysis.dart';
-import 'package:Investrend/utils/callbacks.dart';
 //import 'package:Investrend/objects/riverpod_change_notifier.dart';
 //import 'package:Investrend/utils/callbacks.dart';
 import 'package:Investrend/utils/string_utils.dart';

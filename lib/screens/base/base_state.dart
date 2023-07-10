@@ -4,13 +4,10 @@ import 'package:Investrend/objects/data_object.dart';
 import 'package:Investrend/objects/riverpod_change_notifier.dart';
 import 'package:Investrend/objects/iii_objects.dart';
 import 'package:Investrend/screens/base/screen_aware.dart';
-import 'package:Investrend/screens/screen_login.dart';
 import 'package:Investrend/screens/trade/component/bottom_sheet_loading.dart';
-import 'package:Investrend/utils/callbacks.dart';
 import 'package:Investrend/utils/connection_services.dart';
 import 'package:Investrend/utils/debug_writer.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
-import 'package:Investrend/utils/string_utils.dart';
 import 'package:Investrend/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -169,9 +166,9 @@ abstract class BaseStateWithTabs<T extends StatefulWidget> extends VisibilityAwa
         } else if (error.isErrorTrading()) {
           InvestrendTheme.of(context).showSnackBar(context, error.message());
         } else {
-          String network_error_label = 'network_error_label'.tr();
-          network_error_label = network_error_label.replaceFirst("#CODE#", error.code.toString());
-          InvestrendTheme.of(context).showSnackBar(context, network_error_label);
+          String networkErrorLabel = 'network_error_label'.tr();
+          networkErrorLabel = networkErrorLabel.replaceFirst("#CODE#", error.code.toString());
+          InvestrendTheme.of(context).showSnackBar(context, networkErrorLabel);
         }
       } else {
         //InvestrendTheme.of(context).showSnackBar(context, error.toString());
@@ -288,12 +285,12 @@ abstract class BaseStateWithTabs<T extends StatefulWidget> extends VisibilityAwa
     );
     */
     Widget mainWidget = Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       appBar: createAppBar(context),
       body: DefaultTabController(
         length: tabsLength(),
         child: Scaffold(
-          backgroundColor: Theme.of(context).backgroundColor,
+          backgroundColor: Theme.of(context).colorScheme.background,
           appBar: createTabs(context),
           body: createBody(context, paddingBottom),
         ),
@@ -459,9 +456,9 @@ abstract class BaseStateNoTabs<T extends StatefulWidget> extends VisibilityAware
         } else if (error.isErrorTrading()) {
           InvestrendTheme.of(context).showSnackBar(context, error.message());
         } else {
-          String network_error_label = 'network_error_label'.tr();
-          network_error_label = network_error_label.replaceFirst("#CODE#", error.code.toString());
-          InvestrendTheme.of(context).showSnackBar(context, network_error_label);
+          String networkErrorLabel = 'network_error_label'.tr();
+          networkErrorLabel = networkErrorLabel.replaceFirst("#CODE#", error.code.toString());
+          InvestrendTheme.of(context).showSnackBar(context, networkErrorLabel);
         }
       } else {
         String errorText = Utils.removeServerAddress(error.toString());
@@ -716,7 +713,7 @@ abstract class BaseStateNoTabs<T extends StatefulWidget> extends VisibilityAware
     super.dispose();
   }
 
-  /** ASLI 2021-06-08 */
+  /// ASLI 2021-06-08
   /*
   @override
   Widget build(BuildContext context) {
@@ -837,7 +834,7 @@ abstract class BaseStateNoTabs<T extends StatefulWidget> extends VisibilityAware
     );
     */
     Widget mainWidget = Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       appBar: createAppBar(context),
       body: createBody(context, paddingBottom),
       bottomSheet: createBottomSheet(context, paddingBottom),
@@ -1026,9 +1023,9 @@ abstract class BaseStateNoTabsWithParentTab<T extends StatefulWidget> extends Vi
         } else if (error.isErrorTrading()) {
           InvestrendTheme.of(context).showSnackBar(context, error.message());
         } else {
-          String network_error_label = 'network_error_label'.tr();
-          network_error_label = network_error_label.replaceFirst("#CODE#", error.code.toString());
-          InvestrendTheme.of(context).showSnackBar(context, network_error_label);
+          String networkErrorLabel = 'network_error_label'.tr();
+          networkErrorLabel = networkErrorLabel.replaceFirst("#CODE#", error.code.toString());
+          InvestrendTheme.of(context).showSnackBar(context, networkErrorLabel);
         }
       } else {
         //InvestrendTheme.of(context).showSnackBar(context, error.toString());
@@ -1323,7 +1320,7 @@ abstract class BaseStateNoTabsWithParentTab<T extends StatefulWidget> extends Vi
     double paddingBottom = MediaQuery.of(context).viewPadding.bottom;
     return Scaffold(
       floatingActionButton: createFloatingActionButton(context),
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       appBar: createAppBar(context),
       body: createBody(context, paddingBottom),
       bottomSheet: createBottomSheet(context, paddingBottom),
@@ -1374,12 +1371,12 @@ abstract class BaseConsumerState<T extends ConsumerWidget> extends State {
   Widget build(BuildContext context) {
     double paddingBottom = MediaQuery.of(context).viewPadding.bottom;
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       appBar: createAppBar(context),
       body: DefaultTabController(
         length: tabsLength(),
         child: Scaffold(
-          backgroundColor: Theme.of(context).backgroundColor,
+          backgroundColor: Theme.of(context).colorScheme.background,
           appBar: createTabs(context),
           body: createBody(context),
         ),

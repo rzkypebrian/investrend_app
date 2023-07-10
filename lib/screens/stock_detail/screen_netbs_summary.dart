@@ -1,14 +1,12 @@
 import 'package:Investrend/component/button_rounded.dart';
 import 'package:Investrend/component/chips_range.dart';
 import 'package:Investrend/component/component_app_bar.dart';
-import 'package:Investrend/component/component_creator.dart';
 import 'package:Investrend/component/empty_label.dart';
 import 'package:Investrend/component/row_netbs_summary.dart';
 import 'package:Investrend/objects/class_value_notifier.dart';
 import 'package:Investrend/objects/data_object.dart';
 import 'package:Investrend/objects/iii_objects.dart';
 import 'package:Investrend/screens/stock_detail/screen_stock_detail_analysis.dart';
-import 'package:Investrend/utils/connection_services.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:Investrend/utils/string_utils.dart';
 import 'package:Investrend/utils/ui_helper.dart';
@@ -26,19 +24,23 @@ class ScreenNetBuySellSummary extends StatefulWidget {
   //final init_from;  // belum tentu kepakai
   //final init_to;  // belum tentu kepakai
 
-  const ScreenNetBuySellSummary(this.init_code, this.init_board, {this.init_type, this.init_data_by, this.init_range, Key key})
+  const ScreenNetBuySellSummary(this.init_code, this.init_board,
+      {this.init_type, this.init_data_by, this.init_range, Key key})
       : super(key: key);
 
   @override
-  _ScreenNetBuySellSummaryState createState() => _ScreenNetBuySellSummaryState();
+  _ScreenNetBuySellSummaryState createState() =>
+      _ScreenNetBuySellSummaryState();
 }
 
 class _ScreenNetBuySellSummaryState extends State<ScreenNetBuySellSummary> {
   final String routeName = '/netbs_summary';
   bool onProgress = false;
   ScrollController pScrollController = ScrollController();
-  NetBuySellSummaryNotifier _netbsSummaryNotifier = NetBuySellSummaryNotifier(NetBuySellSummaryData.createBasic());
-  final RangeNotifier _rangeTopBrokerNotifier = RangeNotifier(Range.createBasic());
+  NetBuySellSummaryNotifier _netbsSummaryNotifier =
+      NetBuySellSummaryNotifier(NetBuySellSummaryData.createBasic());
+  final RangeNotifier _rangeTopBrokerNotifier =
+      RangeNotifier(Range.createBasic());
   final ValueNotifier<int> marketNotifier = ValueNotifier<int>(0);
   final ValueNotifier<int> dataByNotifier = ValueNotifier<int>(0);
   final ValueNotifier<int> filterByNotifier = ValueNotifier<int>(0);
@@ -54,7 +56,11 @@ class _ScreenNetBuySellSummaryState extends State<ScreenNetBuySellSummary> {
     'data_by_net_label'.tr(),
   ];
 
-  List<String> _filter_options = ['filter_by_all_label'.tr(), 'filter_by_domestic_label'.tr(), 'filter_by_foreign_label'.tr()];
+  List<String> _filter_options = [
+    'filter_by_all_label'.tr(),
+    'filter_by_domestic_label'.tr(),
+    'filter_by_foreign_label'.tr()
+  ];
 
   String code;
 
@@ -119,7 +125,9 @@ class _ScreenNetBuySellSummaryState extends State<ScreenNetBuySellSummary> {
                 bottom: bottomPading),
             child: Text(
               displayTime,
-              style: InvestrendTheme.of(context).more_support_w400_compact.copyWith(
+              style: InvestrendTheme.of(context)
+                  .more_support_w400_compact
+                  .copyWith(
                     fontWeight: FontWeight.w500,
                     color: InvestrendTheme.of(context).greyDarkerTextColor,
                     fontStyle: FontStyle.italic,
@@ -128,30 +136,6 @@ class _ScreenNetBuySellSummaryState extends State<ScreenNetBuySellSummary> {
           ),
         );
       },
-    );
-  }
-
-  Widget _titleTopBrokerTransaction(BuildContext context) {
-    //double paddingMargin = InvestrendTheme.cardPadding + InvestrendTheme.cardMargin;
-    return Padding(
-      padding: EdgeInsets.only(
-          left: InvestrendTheme.cardPaddingGeneral,
-          right: InvestrendTheme.cardPaddingGeneral,
-          bottom: InvestrendTheme.cardPadding,
-          top: InvestrendTheme.cardPaddingVertical),
-      child: Row(
-        children: [
-          Expanded(
-            flex: 1,
-            child: ComponentCreator.subtitle(
-              context,
-              //'top_broker_transaction_title'.tr(),
-              code,
-            ),
-          ),
-          ButtonDropdown(marketNotifier, _market_options),
-        ],
-      ),
     );
   }
 
@@ -235,18 +219,29 @@ class _ScreenNetBuySellSummaryState extends State<ScreenNetBuySellSummary> {
     //   return false;
     // }
     onProgress = true;
-    print(routeName + '.doUpdate : ' + DateTime.now().toString() + "  pullToRefresh : $pullToRefresh");
+    print(routeName +
+        '.doUpdate : ' +
+        DateTime.now().toString() +
+        "  pullToRefresh : $pullToRefresh");
     String lastDate = '';
     try {
       String board = marketNotifier.value == 0 ? '*' : 'RG';
-      String data_by = _data_by_options.elementAt(dataByNotifier.value).toLowerCase();
-      String type = filterByNotifier.value == 0 ? '*' : _filter_options.elementAt(filterByNotifier.value).toString().toLowerCase();
+      String dataBy =
+          _data_by_options.elementAt(dataByNotifier.value).toLowerCase();
+      String type = filterByNotifier.value == 0
+          ? '*'
+          : _filter_options
+              .elementAt(filterByNotifier.value)
+              .toString()
+              .toLowerCase();
       //MyRange range = getRange();
       MyRange range = _rangeTopBrokerNotifier.getRange();
       // String from = '2021-12-09';
       // String to = '2021-12-09';
       //final stockTopBroker = await HttpIII.fetchStockTopBroker(stock.code, board, range.from, range.to);
-      final netbsSummary = await InvestrendTheme.datafeedHttp.fetchStockTopBrokerSummary(code, board, range.from, range.to, type, data_by);
+      final netbsSummary = await InvestrendTheme.datafeedHttp
+          .fetchStockTopBrokerSummary(
+              code, board, range.from, range.to, type, dataBy);
 
       if (mounted) {
         if (netbsSummary != null) {
@@ -310,7 +305,8 @@ class _ScreenNetBuySellSummaryState extends State<ScreenNetBuySellSummary> {
                 child: Text(
                   'Buyer',
                   textAlign: TextAlign.center,
-                  style: styleBold.copyWith(color: Theme.of(context).accentColor),
+                  style:
+                      styleBold.copyWith(color: Theme.of(context).colorScheme.secondary),
                 ),
                 flex: 1,
               ),
@@ -319,7 +315,8 @@ class _ScreenNetBuySellSummaryState extends State<ScreenNetBuySellSummary> {
                 child: Text(
                   'Seller',
                   textAlign: TextAlign.center,
-                  style: styleBold.copyWith(color: InvestrendTheme.sellTextColor),
+                  style:
+                      styleBold.copyWith(color: InvestrendTheme.sellTextColor),
                 ),
                 flex: 1,
               ),
@@ -328,12 +325,15 @@ class _ScreenNetBuySellSummaryState extends State<ScreenNetBuySellSummary> {
         ),
         Padding(
           padding: const EdgeInsets.only(
-              left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral, bottom: InvestrendTheme.cardPadding),
+              left: InvestrendTheme.cardPaddingGeneral,
+              right: InvestrendTheme.cardPaddingGeneral,
+              bottom: InvestrendTheme.cardPadding),
           child: Row(
             children: [
               SizedBox(
                 width: leftWidth * 0.3,
-                child: Text('Code', style: styleHeader, textAlign: TextAlign.left),
+                child:
+                    Text('Code', style: styleHeader, textAlign: TextAlign.left),
               ),
               SizedBox(
                 width: leftWidth * 0.3,
@@ -371,7 +371,8 @@ class _ScreenNetBuySellSummaryState extends State<ScreenNetBuySellSummary> {
               ),
               SizedBox(
                 width: rightWidth * 0.3,
-                child: Text('Code', style: styleHeader, textAlign: TextAlign.left),
+                child:
+                    Text('Code', style: styleHeader, textAlign: TextAlign.left),
               ),
               SizedBox(
                 width: rightWidth * 0.3,
@@ -429,8 +430,16 @@ class _ScreenNetBuySellSummaryState extends State<ScreenNetBuySellSummary> {
     );
   }
 
-  Widget createRow(BuildContext context, double leftWidth, double centerWidth, double rightWidth, int line, NetBuySellSummary buyer,
-      NetBuySellSummary seller, TextStyle style, TextStyle styleBroker) {
+  Widget createRow(
+      BuildContext context,
+      double leftWidth,
+      double centerWidth,
+      double rightWidth,
+      int line,
+      NetBuySellSummary buyer,
+      NetBuySellSummary seller,
+      TextStyle style,
+      TextStyle styleBroker) {
     //TextStyle style = InvestrendTheme.of(context).small_w400_compact;
 
     String buyerCode = '';
@@ -442,7 +451,7 @@ class _ScreenNetBuySellSummaryState extends State<ScreenNetBuySellSummary> {
       buyerValue = InvestrendTheme.formatValue(context, buyer.Value);
       buyerAverage = InvestrendTheme.formatComma(buyer.Average.truncate());
       //buyerColor = buyer.color;
-    }else{
+    } else {
       buyerColor = styleBroker.color;
     }
 
@@ -455,20 +464,26 @@ class _ScreenNetBuySellSummaryState extends State<ScreenNetBuySellSummary> {
       sellerValue = InvestrendTheme.formatValue(context, seller.Value);
       sellerAverage = InvestrendTheme.formatComma(seller.Average.truncate());
       //sellerColor = buyer.color;
-    }else{
+    } else {
       sellerColor = styleBroker.color;
     }
 
     bool odd = (line - 1) % 2 != 0;
     return Container(
-      color: odd ? InvestrendTheme.of(context).oddColor : Theme.of(context).backgroundColor,
-      padding: const EdgeInsets.only(left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral),
+      color: odd
+          ? InvestrendTheme.of(context).oddColor
+          : Theme.of(context).colorScheme.background,
+      padding: const EdgeInsets.only(
+          left: InvestrendTheme.cardPaddingGeneral,
+          right: InvestrendTheme.cardPaddingGeneral),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(
             width: leftWidth * 0.2,
-            child: Text(buyerCode, style: styleBroker.copyWith(color: buyerColor), textAlign: TextAlign.left),
+            child: Text(buyerCode,
+                style: styleBroker.copyWith(color: buyerColor),
+                textAlign: TextAlign.left),
           ),
           SizedBox(
             width: leftWidth * 0.4,
@@ -501,8 +516,9 @@ class _ScreenNetBuySellSummaryState extends State<ScreenNetBuySellSummary> {
               padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
               color: InvestrendTheme.of(context).greyLighterTextColor,
               child: AutoSizeText(
-                InvestrendTheme.formatNewComma(line.toDouble()) ,
-                style: style.copyWith(color: InvestrendTheme.of(context).textWhite),
+                InvestrendTheme.formatNewComma(line.toDouble()),
+                style: style.copyWith(
+                    color: InvestrendTheme.of(context).textWhite),
                 textAlign: TextAlign.center,
                 group: groupValue,
                 minFontSize: 5,
@@ -513,7 +529,9 @@ class _ScreenNetBuySellSummaryState extends State<ScreenNetBuySellSummary> {
           ),
           SizedBox(
             width: rightWidth * 0.2,
-            child: Text(sellerCode, style: styleBroker.copyWith(color: sellerColor), textAlign: TextAlign.left),
+            child: Text(sellerCode,
+                style: styleBroker.copyWith(color: sellerColor),
+                textAlign: TextAlign.left),
           ),
           SizedBox(
             width: rightWidth * 0.4,
@@ -553,13 +571,15 @@ class _ScreenNetBuySellSummaryState extends State<ScreenNetBuySellSummary> {
       builder: (BuildContext context, BoxConstraints constraints) {
         return RefreshIndicator(
           color: InvestrendTheme.of(context).textWhite,
-          backgroundColor: Theme.of(context).accentColor,
+          backgroundColor: Theme.of(context).colorScheme.secondary,
           onRefresh: onRefresh,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.only(left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral),
+                padding: const EdgeInsets.only(
+                    left: InvestrendTheme.cardPaddingGeneral,
+                    right: InvestrendTheme.cardPaddingGeneral),
                 child: Text(
                   code,
                   style: InvestrendTheme.of(context).regular_w600,
@@ -569,8 +589,12 @@ class _ScreenNetBuySellSummaryState extends State<ScreenNetBuySellSummary> {
                 height: 4.0,
               ),
               Padding(
-                padding: const EdgeInsets.only(left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral),
-                child: Text(name, style: InvestrendTheme.of(context).more_support_w400_compact_greyDarker),
+                padding: const EdgeInsets.only(
+                    left: InvestrendTheme.cardPaddingGeneral,
+                    right: InvestrendTheme.cardPaddingGeneral),
+                child: Text(name,
+                    style: InvestrendTheme.of(context)
+                        .more_support_w400_compact_greyDarker),
               ),
               SizedBox(
                 height: InvestrendTheme.cardPaddingVertical,
@@ -586,17 +610,24 @@ class _ScreenNetBuySellSummaryState extends State<ScreenNetBuySellSummary> {
                 valueListenable: _netbsSummaryNotifier,
                 builder: (context, NetBuySellSummaryData data, child) {
                   int dataCount = data != null ? data.count() : 0;
-                  TextStyle styleNo = InvestrendTheme.of(context).small_w400_compact_greyDarker;
+                  TextStyle styleNo =
+                      InvestrendTheme.of(context).small_w400_compact_greyDarker;
 
-                  TextStyle styleDarker = InvestrendTheme.of(context).small_w400_compact_greyDarker;
+                  TextStyle styleDarker =
+                      InvestrendTheme.of(context).small_w400_compact_greyDarker;
 
-                  TextStyle style = InvestrendTheme.of(context).small_w400_compact;
+                  TextStyle style =
+                      InvestrendTheme.of(context).small_w400_compact;
 
                   //double centerWidth = UIHelper.textSize('  ' + InvestrendTheme.formatNewComma(dataCount.toDouble()), style).width;
-                  double centerWidth = UIHelper.textSize(' 000 ', styleDarker).width;
-                  double availableWidth = constraints.maxWidth - (InvestrendTheme.cardPaddingGeneral * 2) - (InvestrendTheme.cardPadding * 2);
+                  double centerWidth =
+                      UIHelper.textSize(' 000 ', styleDarker).width;
+                  double availableWidth = constraints.maxWidth -
+                      (InvestrendTheme.cardPaddingGeneral * 2) -
+                      (InvestrendTheme.cardPadding * 2);
                   double leftWidth = (availableWidth - centerWidth) / 2;
-                  return createHeader(context, leftWidth, centerWidth, leftWidth);
+                  return createHeader(
+                      context, leftWidth, centerWidth, leftWidth);
                 },
               ),
 
@@ -605,11 +636,13 @@ class _ScreenNetBuySellSummaryState extends State<ScreenNetBuySellSummary> {
                 child: ValueListenableBuilder(
                     valueListenable: _netbsSummaryNotifier,
                     builder: (context, NetBuySellSummaryData data, child) {
-                      Widget noWidget = _netbsSummaryNotifier.currentState.getNoWidget(onRetry: () {
+                      Widget noWidget = _netbsSummaryNotifier.currentState
+                          .getNoWidget(onRetry: () {
                         doUpdate(pullToRefresh: true);
                       });
 
-                      if (_netbsSummaryNotifier.currentState.isNoData() && !StringUtils.isEmtpy(data.message)) {
+                      if (_netbsSummaryNotifier.currentState.isNoData() &&
+                          !StringUtils.isEmtpy(data.message)) {
                         noWidget = EmptyLabel(
                           text: data.message,
                         );
@@ -618,7 +651,10 @@ class _ScreenNetBuySellSummaryState extends State<ScreenNetBuySellSummary> {
                         return ListView(
                           children: [
                             Padding(
-                              padding: EdgeInsets.only(top: MediaQuery.of(context).size.width / 4, left: 20.0, right: 20.0),
+                              padding: EdgeInsets.only(
+                                  top: MediaQuery.of(context).size.width / 4,
+                                  left: 20.0,
+                                  right: 20.0),
                               child: Center(
                                 child: noWidget,
                               ),
@@ -628,16 +664,22 @@ class _ScreenNetBuySellSummaryState extends State<ScreenNetBuySellSummary> {
                       }
 
                       int dataCount = data != null ? data.count() : 0;
-                      TextStyle styleNo = InvestrendTheme.of(context).small_w400_compact_greyDarker;
+                      TextStyle styleNo = InvestrendTheme.of(context)
+                          .small_w400_compact_greyDarker;
 
-                      TextStyle styleDarker = InvestrendTheme.of(context).small_w400_compact_greyDarker;
-                      TextStyle styleValue = InvestrendTheme.of(context).small_w400_compact;
+                      TextStyle styleDarker = InvestrendTheme.of(context)
+                          .small_w400_compact_greyDarker;
+                      TextStyle styleValue =
+                          InvestrendTheme.of(context).small_w400_compact;
 
-                      TextStyle style = InvestrendTheme.of(context).small_w500_compact;
+                      TextStyle style =
+                          InvestrendTheme.of(context).small_w500_compact;
 
-                      double centerWidth = UIHelper.textSize(' 000 ', styleDarker).width;
-                      double availableWidth =
-                          constraints.maxWidth - (InvestrendTheme.cardPaddingGeneral * 2) - (InvestrendTheme.cardPadding * 2);
+                      double centerWidth =
+                          UIHelper.textSize(' 000 ', styleDarker).width;
+                      double availableWidth = constraints.maxWidth -
+                          (InvestrendTheme.cardPaddingGeneral * 2) -
+                          (InvestrendTheme.cardPadding * 2);
                       double leftWidth = (availableWidth - centerWidth) / 2;
 
                       return ListView.separated(
@@ -650,7 +692,7 @@ class _ScreenNetBuySellSummaryState extends State<ScreenNetBuySellSummary> {
                             // }
                             return Container(
                               //padding: EdgeInsets.only(left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral),
-                              color: Theme.of(context).backgroundColor,
+                              color: Theme.of(context).colorScheme.background,
                               height: 1.0,
                               //child: ComponentCreator.divider(context)
                             );
@@ -662,7 +704,13 @@ class _ScreenNetBuySellSummaryState extends State<ScreenNetBuySellSummary> {
 
                             int line = index + 1;
                             //return createRow(context, leftWidth, centerWidth, leftWidth, line, buyer, seller, styleDarker, style);
-                            return RowNetBSSummary(leftWidth, centerWidth, leftWidth, styleDarker, style, line: line, buyer: buyer,seller: seller,selectedLineNotifier: selectedLineNotifier,styleValue:styleValue);
+                            return RowNetBSSummary(leftWidth, centerWidth,
+                                leftWidth, styleDarker, style,
+                                line: line,
+                                buyer: buyer,
+                                seller: seller,
+                                selectedLineNotifier: selectedLineNotifier,
+                                styleValue: styleValue);
                           });
                     }),
               ),
@@ -690,11 +738,11 @@ class _ScreenNetBuySellSummaryState extends State<ScreenNetBuySellSummary> {
     }
 
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       //floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
       //floatingActionButton: createFloatingActionButton(context),
       appBar: AppBar(
-        backgroundColor: Theme.of(context).backgroundColor,
+        backgroundColor: Theme.of(context).colorScheme.background,
         centerTitle: true,
         shadowColor: shadowColor,
         elevation: elevation,

@@ -1,5 +1,4 @@
 
-import 'package:Investrend/objects/data_object.dart';
 import 'package:Investrend/utils/string_utils.dart';
 import 'package:Investrend/utils/utils.dart';
 import 'package:xml/xml.dart';
@@ -417,9 +416,9 @@ class HomeNews {
   factory HomeNews.fromXml(XmlElement element) {
      String title = element.findElements('title').single.text;
      String description = element.findElements('description').single.text;
-     String url_tumbnail = StringUtils.between(description, '<img src=\"', '\"');
+     String urlTumbnail = StringUtils.between(description, '<img src=\"', '\"');
 
-     String url_news = element.findElements('link').single.text;
+     String urlNews = element.findElements('link').single.text;
      String time = element.findElements('pubDate').single.text;
      
      int indexStart = description.indexOf('>');
@@ -432,7 +431,7 @@ class HomeNews {
          String category = 'general';
      int commentCount = 3;
      int likedCount = 6;
-    return HomeNews(title, description,url_news, url_tumbnail, time, category, commentCount, likedCount);
+    return HomeNews(title, description,urlNews, urlTumbnail, time, category, commentCount, likedCount);
   }
 
 
@@ -476,13 +475,13 @@ class HomeNews {
     }
     description = description.trim();
 
-    String url_tumbnail = element.findElements('media:content').toString();
-    url_tumbnail = StringUtils.between(url_tumbnail, 'url=\"', '\"');
-    int index = url_tumbnail.indexOf('?');
+    String urlTumbnail = element.findElements('media:content').toString();
+    urlTumbnail = StringUtils.between(urlTumbnail, 'url=\"', '\"');
+    int index = urlTumbnail.indexOf('?');
     if(index != -1){
-      url_tumbnail = url_tumbnail.substring(0, index);
+      urlTumbnail = urlTumbnail.substring(0, index);
     }
-    String url_news = element.findElements('link').single.text;
+    String urlNews = element.findElements('link').single.text;
     String time = element.findElements('pubDate').single.text;
 
     int indexStart = description.indexOf('>');
@@ -495,7 +494,7 @@ class HomeNews {
     String category = 'general';
     int commentCount = 0;
     int likedCount = 0;
-    return HomeNews(title, description,url_news, url_tumbnail, time, category, commentCount, likedCount);
+    return HomeNews(title, description,urlNews, urlTumbnail, time, category, commentCount, likedCount);
   }
 }
 

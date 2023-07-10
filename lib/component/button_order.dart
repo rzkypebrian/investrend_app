@@ -1,6 +1,7 @@
 import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+
 enum OrderType { Buy, Sell, AmendBuy, AmendSell, Unknown }
 
 extension OrderTypeExtension on OrderType {
@@ -18,6 +19,7 @@ extension OrderTypeExtension on OrderType {
         return '#unknown_routeName';
     }
   }
+
   String get shortSymbol {
     switch (this) {
       case OrderType.Buy:
@@ -32,10 +34,12 @@ extension OrderTypeExtension on OrderType {
         return '-';
     }
   }
-  bool isBuyOrAmendBuy(){
+
+  bool isBuyOrAmendBuy() {
     return this == OrderType.Buy || this == OrderType.AmendBuy;
   }
-  bool isSellOrAmendSell(){
+
+  bool isSellOrAmendSell() {
     return this == OrderType.Sell || this == OrderType.AmendSell;
   }
 
@@ -68,7 +72,8 @@ extension OrderTypeExtension on OrderType {
         return '#unkown_button';
     }
   }
-  Color get color{
+
+  Color get color {
     switch (this) {
       case OrderType.Buy:
         return InvestrendTheme.buyColor;
@@ -82,7 +87,8 @@ extension OrderTypeExtension on OrderType {
         return Colors.orangeAccent;
     }
   }
-  Color get colorDisabled{
+
+  Color get colorDisabled {
     switch (this) {
       case OrderType.Buy:
         return InvestrendTheme.buyColor.withOpacity(0.3);
@@ -97,6 +103,7 @@ extension OrderTypeExtension on OrderType {
     }
   }
 }
+
 class ButtonOrder extends StatelessWidget {
   final String label;
 
@@ -105,16 +112,25 @@ class ButtonOrder extends StatelessWidget {
   final OrderType orderType;
   final VoidCallback onPressed;
 
-  ButtonOrder( this.orderType, this.onPressed, {Key key, this.label,}) : super(key: key);
+  ButtonOrder(
+    this.orderType,
+    this.onPressed, {
+    Key key,
+    this.label,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     //bool isBuy = orderType == OrderType.Buy;
-    Color color = orderType.isBuyOrAmendBuy() ? Theme.of(context).accentColor : InvestrendTheme.sellColor;
-    Color borderColor = orderType.isBuyOrAmendBuy() ? Theme.of(context).accentColor : InvestrendTheme.sellColor;
+    Color color = orderType.isBuyOrAmendBuy()
+        ? Theme.of(context).colorScheme.secondary
+        : InvestrendTheme.sellColor;
+    Color borderColor = orderType.isBuyOrAmendBuy()
+        ? Theme.of(context).colorScheme.secondary
+        : InvestrendTheme.sellColor;
     Color textColor = InvestrendTheme.of(context).textWhite;
     String text;
-    if(label == null){
+    if (label == null) {
       text = orderType.textButton;
       /*
       if(orderType == OrderType.Buy){
@@ -130,7 +146,8 @@ class ButtonOrder extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         child: MaterialButton(
-          padding: EdgeInsets.only(left: 24.0, right: 24.0, top: 12.0, bottom: 12.0),
+          padding:
+              EdgeInsets.only(left: 24.0, right: 24.0, top: 12.0, bottom: 12.0),
           elevation: 0,
           highlightElevation: 0,
           focusElevation: 0,
@@ -142,7 +159,11 @@ class ButtonOrder extends StatelessWidget {
           color: color,
           //textColor: Theme.of(context).primaryColor,
           textColor: textColor,
-          child: Text(text, style: Theme.of(context).textTheme.button.copyWith(color: textColor)),
+          child: Text(text,
+              style: Theme.of(context)
+                  .textTheme
+                  .button
+                  .copyWith(color: textColor)),
           shape: RoundedRectangleBorder(
             borderRadius: new BorderRadius.circular(16.0),
             side: BorderSide(
@@ -157,7 +178,6 @@ class ButtonOrder extends StatelessWidget {
   }
 }
 
-
 class ButtonOrderOutlined extends StatelessWidget {
   final String label;
 
@@ -166,16 +186,25 @@ class ButtonOrderOutlined extends StatelessWidget {
   final OrderType orderType;
   final VoidCallback onPressed;
 
-  ButtonOrderOutlined( this.orderType, this.onPressed, {Key key, this.label,}) : super(key: key);
+  ButtonOrderOutlined(
+    this.orderType,
+    this.onPressed, {
+    Key key,
+    this.label,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     //bool isBuy = orderType == OrderType.Buy;
-    Color color = orderType.isBuyOrAmendBuy() ? Theme.of(context).accentColor : InvestrendTheme.sellColor;
-    Color borderColor = orderType.isBuyOrAmendBuy() ? Theme.of(context).accentColor : InvestrendTheme.sellColor;
+    Color color = orderType.isBuyOrAmendBuy()
+        ? Theme.of(context).colorScheme.secondary
+        : InvestrendTheme.sellColor;
+    Color borderColor = orderType.isBuyOrAmendBuy()
+        ? Theme.of(context).colorScheme.secondary
+        : InvestrendTheme.sellColor;
     Color textColor = InvestrendTheme.of(context).textWhite;
     String text;
-    if(label == null){
+    if (label == null) {
       text = orderType.textButton;
       /*
       if(orderType == OrderType.Buy){
@@ -191,7 +220,8 @@ class ButtonOrderOutlined extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         child: MaterialButton(
-          padding: EdgeInsets.only(left: 24.0, right: 24.0, top: 12.0, bottom: 12.0),
+          padding:
+              EdgeInsets.only(left: 24.0, right: 24.0, top: 12.0, bottom: 12.0),
           elevation: 0,
           highlightElevation: 0,
           focusElevation: 0,
@@ -204,7 +234,8 @@ class ButtonOrderOutlined extends StatelessWidget {
           //textColor: Theme.of(context).primaryColor,
           textColor: color,
           //child: Text(text, style: Theme.of(context).textTheme.button.copyWith(color: textColor)),
-          child: Text(text, style: Theme.of(context).textTheme.button.copyWith(color: color)),
+          child: Text(text,
+              style: Theme.of(context).textTheme.button.copyWith(color: color)),
           shape: RoundedRectangleBorder(
             borderRadius: new BorderRadius.circular(16.0),
             side: BorderSide(
@@ -223,7 +254,11 @@ class ButtonCancel extends StatelessWidget {
   final String label;
   final VoidCallback onPressed;
 
-  ButtonCancel(  this.onPressed, {Key key,this.label,}) : super(key: key);
+  ButtonCancel(
+    this.onPressed, {
+    Key key,
+    this.label,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -232,14 +267,15 @@ class ButtonCancel extends StatelessWidget {
     Color borderColor = InvestrendTheme.cancelColor;
     Color textColor = Theme.of(context).primaryColor;
     String text;
-    if(label == null){
+    if (label == null) {
       text = 'button_cancel'.tr();
     }
     return Material(
       color: Colors.transparent,
       child: InkWell(
         child: MaterialButton(
-          padding: EdgeInsets.only(left: 24.0, right: 24.0, top: 12.0, bottom: 12.0),
+          padding:
+              EdgeInsets.only(left: 24.0, right: 24.0, top: 12.0, bottom: 12.0),
           elevation: 0,
           highlightElevation: 0,
           focusElevation: 0,
@@ -251,7 +287,11 @@ class ButtonCancel extends StatelessWidget {
           color: color,
           //textColor: Theme.of(context).primaryColor,
           textColor: textColor,
-          child: Text(text, style: Theme.of(context).textTheme.button.copyWith(color: textColor)),
+          child: Text(text,
+              style: Theme.of(context)
+                  .textTheme
+                  .button
+                  .copyWith(color: textColor)),
 
           shape: RoundedRectangleBorder(
             borderRadius: new BorderRadius.circular(16.0),

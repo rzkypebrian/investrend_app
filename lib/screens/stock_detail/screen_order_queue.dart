@@ -5,12 +5,10 @@ import 'package:Investrend/component/empty_label.dart';
 import 'package:Investrend/objects/class_value_notifier.dart';
 import 'package:Investrend/objects/data_object.dart';
 import 'package:Investrend/objects/iii_objects.dart';
-import 'package:Investrend/utils/connection_services.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:Investrend/utils/string_utils.dart';
 import 'package:Investrend/utils/ui_helper.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:visibility_aware_state/visibility_aware_state.dart';
 
@@ -289,11 +287,11 @@ class _ScreenOrderQueueState extends VisibilityAwareState<ScreenOrderQueue> {
     }
 
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       //floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
       //floatingActionButton: createFloatingActionButton(context),
       appBar: AppBar(
-        backgroundColor: Theme.of(context).backgroundColor,
+        backgroundColor: Theme.of(context).colorScheme.background,
         centerTitle: true,
         shadowColor: shadowColor,
         elevation: elevation,
@@ -306,7 +304,7 @@ class _ScreenOrderQueueState extends VisibilityAwareState<ScreenOrderQueue> {
           () {
             Navigator.of(context).pop();
           },
-          color: Theme.of(context).accentColor,
+          color: Theme.of(context).colorScheme.secondary,
         ),
       ),
       body: createBody(context, paddingBottom),
@@ -556,7 +554,7 @@ class _ScreenOrderQueueState extends VisibilityAwareState<ScreenOrderQueue> {
 
     return RefreshIndicator(
       color: InvestrendTheme.of(context).textWhite,
-      backgroundColor: Theme.of(context).accentColor,
+      backgroundColor: Theme.of(context).colorScheme.secondary,
       onRefresh: onRefresh,
       child: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
@@ -610,7 +608,7 @@ class _ScreenOrderQueueState extends VisibilityAwareState<ScreenOrderQueue> {
                             // }
                             return Container(
                                 padding: EdgeInsets.only(left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral),
-                                color: Theme.of(context).backgroundColor,
+                                color: Theme.of(context).colorScheme.background,
                                 child: ComponentCreator.divider(context));
                           },
                           itemBuilder: (BuildContext context, int index) {
@@ -630,7 +628,7 @@ class _ScreenOrderQueueState extends VisibilityAwareState<ScreenOrderQueue> {
                             Color colorDivider = Theme.of(context).dividerColor;
                             String status = 'Open';
                             if (gp.volume != gp.remaining) {
-                              colorDivider = Theme.of(context).accentColor;
+                              colorDivider = Theme.of(context).colorScheme.secondary;
                               status = 'Partial';
                             }
 
@@ -949,7 +947,7 @@ class _ScreenOrderQueueState extends VisibilityAwareState<ScreenOrderQueue> {
             width: 0.15 * widthAvailable,
             child: AutoSizeText(
               gp.broker,
-              style: gp.brokerIsEmpty() ? darker : InvestrendTheme.of(context).small_w600_compact.copyWith(color: Theme.of(context).accentColor),
+              style: gp.brokerIsEmpty() ? darker : InvestrendTheme.of(context).small_w600_compact.copyWith(color: Theme.of(context).colorScheme.secondary),
               textAlign: TextAlign.center,
               maxLines: 1,
               minFontSize: 6.0,

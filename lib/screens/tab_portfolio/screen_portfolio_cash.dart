@@ -1,9 +1,7 @@
 
 
-import 'package:Investrend/component/button_banner_open_account.dart';
 import 'package:Investrend/component/cards/card_activity_rdn.dart';
 import 'package:Investrend/component/component_creator.dart';
-import 'package:Investrend/component/empty_label.dart';
 import 'package:Investrend/component/tapable_widget.dart';
 import 'package:Investrend/component/widget_buying_power.dart';
 import 'package:Investrend/objects/class_value_notifier.dart';
@@ -12,7 +10,6 @@ import 'package:Investrend/objects/home_objects.dart';
 import 'package:Investrend/objects/riverpod_change_notifier.dart';
 import 'package:Investrend/screens/base/base_state.dart';
 import 'package:Investrend/screens/screen_main.dart';
-import 'package:Investrend/screens/screen_no_account.dart';
 import 'package:Investrend/utils/debug_writer.dart';
 import 'package:flutter/material.dart';
 
@@ -360,7 +357,7 @@ class _ScreenPortfolioCashState extends BaseStateNoTabsWithParentTab<ScreenPortf
 
     return RefreshIndicator(
       color: InvestrendTheme.of(context).textWhite,
-      backgroundColor: Theme.of(context).accentColor,
+      backgroundColor: Theme.of(context).colorScheme.secondary,
       onRefresh: onRefresh,
       child: ListView.builder(
           shrinkWrap: false,

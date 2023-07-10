@@ -1,21 +1,11 @@
-import 'package:Investrend/component/cards/card_earning_pershare.dart';
-import 'package:Investrend/component/cards/card_general_price.dart';
-import 'package:Investrend/component/cards/card_label_value.dart';
-import 'package:Investrend/component/cards/card_local_foreign.dart';
-import 'package:Investrend/component/cards/card_performance.dart';
 import 'package:Investrend/component/component_creator.dart';
-import 'package:Investrend/component/empty_label.dart';
 import 'package:Investrend/component/group_title.dart';
 import 'package:Investrend/component/rows/row_general_price.dart';
-import 'package:Investrend/component/text_button_retry.dart';
 import 'package:Investrend/objects/class_value_notifier.dart';
 import 'package:Investrend/objects/data_object.dart';
 import 'package:Investrend/objects/home_objects.dart';
-import 'package:Investrend/objects/riverpod_change_notifier.dart';
-import 'package:Investrend/objects/iii_objects.dart';
 import 'package:Investrend/screens/base/base_state.dart';
 import 'package:Investrend/screens/screen_main.dart';
-import 'package:Investrend/utils/connection_services.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -96,7 +86,7 @@ class _ScreenSearchCurrencyState extends BaseStateNoTabsWithParentTab<ScreenSear
       color: InvestrendTheme.of(context).textWhite,
       backgroundColor: Theme
           .of(context)
-          .accentColor,
+          .colorScheme.secondary,
       onRefresh: onRefresh,
       child:ValueListenableBuilder<GroupedData>(
           valueListenable: _groupedNotifier,

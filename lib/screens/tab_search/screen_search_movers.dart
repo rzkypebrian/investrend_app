@@ -5,21 +5,16 @@ import 'package:Investrend/component/button_order.dart';
 import 'package:Investrend/component/button_rounded.dart';
 
 import 'package:Investrend/component/chips_range.dart';
-import 'package:Investrend/component/empty_label.dart';
 import 'package:Investrend/component/rows/row_general_price.dart';
 import 'package:Investrend/component/rows/row_watchlist.dart';
 import 'package:Investrend/component/slide_action_button.dart';
-import 'package:Investrend/component/text_button_retry.dart';
 import 'package:Investrend/objects/class_value_notifier.dart';
 import 'package:Investrend/objects/data_object.dart';
 import 'package:Investrend/objects/riverpod_change_notifier.dart';
 import 'package:Investrend/objects/iii_objects.dart';
 import 'package:Investrend/screens/base/base_state.dart';
 import 'package:Investrend/screens/screen_main.dart';
-import 'package:Investrend/screens/trade/screen_trade.dart';
-import 'package:Investrend/utils/connection_services.dart';
 import 'package:Investrend/utils/string_utils.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -179,15 +174,15 @@ class _ScreenSearchMoversState
         final topStocks =
             await InvestrendTheme.datafeedHttp.fetchTopStock(type);
         if (topStocks != null && !topStocks.isEmpty()) {
-          String current_type =
+          String currentType =
               _movers_types.elementAt(_moversTypeNotifier.value);
-          String current_range = _movers_ranges.elementAt(_rangeNotifier.value);
+          String currentRange = _movers_ranges.elementAt(_rangeNotifier.value);
 
-          bool valid_type =
-              StringUtils.equalsIgnoreCase(current_type, topStocks.type);
-          bool valid_range =
-              StringUtils.equalsIgnoreCase(current_range, topStocks.range);
-          if (valid_type && valid_range) {
+          bool validType =
+              StringUtils.equalsIgnoreCase(currentType, topStocks.type);
+          bool validRange =
+              StringUtils.equalsIgnoreCase(currentRange, topStocks.range);
+          if (validType && validRange) {
             GeneralPriceData dataMovers = GeneralPriceData();
 
             topStocks.datas.forEach((mover) {
@@ -233,9 +228,9 @@ class _ScreenSearchMoversState
             }
           } else {
             print(routeName +
-                ' Future movers IGNORED valid_type : $valid_type  valid_range : $valid_range   current_type : $current_type  topStocks.type : ' +
+                ' Future movers IGNORED valid_type : $validType  valid_range : $validRange   current_type : $currentType  topStocks.type : ' +
                 topStocks.type +
-                '  current_range : $current_range  topStocks.range : ' +
+                '  current_range : $currentRange  topStocks.range : ' +
                 topStocks.range);
           }
         } else {
@@ -255,15 +250,15 @@ class _ScreenSearchMoversState
             .fetchTopStockHistorical(type, range);
         if (topStocks != null && !topStocks.isEmpty()) {
           GeneralPriceData dataMovers = GeneralPriceData();
-          String current_type =
+          String currentType =
               _movers_types.elementAt(_moversTypeNotifier.value);
-          String current_range = _movers_ranges.elementAt(_rangeNotifier.value);
+          String currentRange = _movers_ranges.elementAt(_rangeNotifier.value);
 
-          bool valid_type =
-              StringUtils.equalsIgnoreCase(current_type, topStocks.type);
-          bool valid_range =
-              StringUtils.equalsIgnoreCase(current_range, topStocks.range);
-          if (valid_type && valid_range) {
+          bool validType =
+              StringUtils.equalsIgnoreCase(currentType, topStocks.type);
+          bool validRange =
+              StringUtils.equalsIgnoreCase(currentRange, topStocks.range);
+          if (validType && validRange) {
             topStocks.datas.forEach((mover) {
               Stock stock = InvestrendTheme.storedData.findStock(mover.code);
               String name = stock != null ? stock.name : '-';
@@ -323,9 +318,9 @@ class _ScreenSearchMoversState
             }
           } else {
             print(routeName +
-                ' Future movers IGNORED valid_type : $valid_type  valid_range : $valid_range   current_type : $current_type  topStocks.type : ' +
+                ' Future movers IGNORED valid_type : $validType  valid_range : $validRange   current_type : $currentType  topStocks.type : ' +
                 topStocks.type +
-                '  current_range : $current_range  topStocks.range : ' +
+                '  current_range : $currentRange  topStocks.range : ' +
                 topStocks.range);
           }
         } else {
@@ -355,11 +350,11 @@ class _ScreenSearchMoversState
 
   @override
   Widget createBody2(BuildContext context, double paddingBottom) {
-    List<Widget> pre_childs = List.empty(growable: true);
-    pre_childs.add(_options(context));
-    pre_childs.add(ChipsRange(_listChipRange, _rangeNotifier,
+    List<Widget> preChilds = List.empty(growable: true);
+    preChilds.add(_options(context));
+    preChilds.add(ChipsRange(_listChipRange, _rangeNotifier,
         paddingLeftRight: InvestrendTheme.cardPaddingGeneral));
-    pre_childs.add(SizedBox(height: 8.0));
+    preChilds.add(SizedBox(height: 8.0));
     /*
     pre_childs.add(ValueListenableBuilder(
       valueListenable: _moversDataNotifier,
@@ -464,7 +459,7 @@ class _ScreenSearchMoversState
 
     return RefreshIndicator(
       color: InvestrendTheme.of(context).textWhite,
-      backgroundColor: Theme.of(context).accentColor,
+      backgroundColor: Theme.of(context).colorScheme.secondary,
       onRefresh: onRefresh,
       child: Padding(
         padding: EdgeInsets.only(
@@ -482,10 +477,10 @@ class _ScreenSearchMoversState
                 return ListView.builder(
                     shrinkWrap: false,
                     padding: const EdgeInsets.all(8),
-                    itemCount: pre_childs.length + 1,
+                    itemCount: preChilds.length + 1,
                     itemBuilder: (BuildContext context, int index) {
-                      if (index < pre_childs.length) {
-                        return pre_childs.elementAt(index);
+                      if (index < preChilds.length) {
+                        return preChilds.elementAt(index);
                       } else {
                         return noWidget;
                       }
@@ -495,12 +490,12 @@ class _ScreenSearchMoversState
               return ListView.builder(
                   shrinkWrap: false,
                   padding: const EdgeInsets.all(8),
-                  itemCount: pre_childs.length + data.count(),
+                  itemCount: preChilds.length + data.count(),
                   itemBuilder: (BuildContext context, int index) {
-                    if (index < pre_childs.length) {
-                      return pre_childs.elementAt(index);
-                    } else if (index < (pre_childs.length + data.count())) {
-                      int indexData = index - pre_childs.length;
+                    if (index < preChilds.length) {
+                      return preChilds.elementAt(index);
+                    } else if (index < (preChilds.length + data.count())) {
+                      int indexData = index - preChilds.length;
                       GeneralPrice gp = data.datas.elementAt(indexData);
                       return createRow(context, gp, indexData);
                     }
@@ -571,7 +566,7 @@ class _ScreenSearchMoversState
             tag: 'button_sell',
           ),
           CancelSlideAction(
-              'button_cancel'.tr(), Theme.of(context).backgroundColor, () {
+              'button_cancel'.tr(), Theme.of(context).colorScheme.background, () {
             InvestrendTheme.of(context).showSnackBar(context, 'cancel');
           }),
         ],
@@ -770,7 +765,7 @@ class _ScreenSearchMoversState
 
     return RefreshIndicator(
       color: InvestrendTheme.of(context).textWhite,
-      backgroundColor: Theme.of(context).accentColor,
+      backgroundColor: Theme.of(context).colorScheme.secondary,
       onRefresh: onRefresh,
       child: Padding(
         padding: const EdgeInsets.only(

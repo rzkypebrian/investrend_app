@@ -1,20 +1,14 @@
 import 'dart:io';
-import 'dart:math';
 
-import 'package:Investrend/component/avatar.dart';
 import 'package:Investrend/component/bottom_sheet/bottom_sheet_alert.dart';
 import 'package:Investrend/component/button_order.dart';
 import 'package:Investrend/component/buttons_attention.dart';
 import 'package:Investrend/component/component_creator.dart';
 import 'package:Investrend/component/component_app_bar.dart';
-import 'package:Investrend/component/tab_bar_trade.dart';
-import 'package:Investrend/objects/class_value_notifier.dart';
 import 'package:Investrend/objects/data_holder.dart';
 import 'package:Investrend/objects/data_object.dart';
 import 'package:Investrend/objects/riverpod_change_notifier.dart';
-import 'package:Investrend/objects/iii_objects.dart';
 import 'package:Investrend/screens/base/base_state.dart';
-import 'package:Investrend/screens/screen_login.dart';
 import 'package:Investrend/screens/screen_main.dart';
 import 'package:Investrend/screens/tab_transaction/screen_transaction.dart';
 import 'package:Investrend/screens/trade/component/bottom_sheet_error.dart';
@@ -23,8 +17,6 @@ import 'package:Investrend/screens/trade/component/bottom_sheet_unknown_response
 import 'package:Investrend/screens/trade/screen_amend_buy.dart';
 import 'package:Investrend/screens/trade/screen_amend_sell.dart';
 import 'package:Investrend/screens/trade/screen_order_detail.dart';
-import 'package:Investrend/screens/trade/screen_trade_buy.dart';
-import 'package:Investrend/screens/trade/screen_trade_sell.dart';
 import 'package:Investrend/screens/trade/trade_component.dart';
 import 'package:Investrend/utils/connection_services.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
@@ -32,7 +24,6 @@ import 'package:Investrend/utils/string_utils.dart';
 import 'package:Investrend/utils/ui_helper.dart';
 import 'package:Investrend/utils/utils.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -45,10 +36,12 @@ class ScreenAmend extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ScreenAmendState createState() => _ScreenAmendState(amendData.orderType, amendData);
+  _ScreenAmendState createState() =>
+      _ScreenAmendState(amendData.orderType, amendData);
 }
 
-class _ScreenAmendState extends BaseStateNoTabs<ScreenAmend> with SingleTickerProviderStateMixin {
+class _ScreenAmendState extends BaseStateNoTabs<ScreenAmend>
+    with SingleTickerProviderStateMixin {
   String timeCreation = '-';
   OrderType _initialOrderType;
   final BuySell amendData;
@@ -68,24 +61,37 @@ class _ScreenAmendState extends BaseStateNoTabs<ScreenAmend> with SingleTickerPr
     timeCreation = DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.now());
 
     runPostFrame(() {
-      int index = context.read(dataHolderChangeNotifier).user.getIndexAccountByCode(amendData.brokerCode, amendData.accountCode);
-      print(routeName + ' initState amend got indexAccount : $index  for ' + amendData.accountCode);
+      int index = context
+          .read(dataHolderChangeNotifier)
+          .user
+          .getIndexAccountByCode(amendData.brokerCode, amendData.accountCode);
+      print(routeName +
+          ' initState amend got indexAccount : $index  for ' +
+          amendData.accountCode);
       if (index >= 0) {
         context.read(accountChangeNotifier).setIndex(index);
-        Account account = context.read(dataHolderChangeNotifier).user.getAccountByCode(amendData.brokerCode, amendData.accountCode);
+        Account account = context
+            .read(dataHolderChangeNotifier)
+            .user
+            .getAccountByCode(amendData.brokerCode, amendData.accountCode);
 
         if (account != null) {
-          AccountStockPosition info = context.read(accountsInfosNotifier).getInfo(amendData.accountCode);
+          AccountStockPosition info = context
+              .read(accountsInfosNotifier)
+              .getInfo(amendData.accountCode);
           if (info != null) {
-            double buying_power = info.outstandingLimit; // harus diisi
+            double buyingPower = info.outstandingLimit; // harus diisi
             //double rdnBalance = info.rdnBalance;
             double cashBalance = info.cashBalance;
             //context.read(buyRdnBuyingPowerChangeNotifier).update(buying_power, cashBalance);
-            context.read(buyRdnBuyingPowerChangeNotifier).update(buying_power, info.availableCash, info.creditLimit);
+            context
+                .read(buyRdnBuyingPowerChangeNotifier)
+                .update(buyingPower, info.availableCash, info.creditLimit);
           }
         }
       } else {
-        InvestrendTheme.of(context).showSnackBar(context, 'Can not find account in list Account [index]');
+        InvestrendTheme.of(context).showSnackBar(
+            context, 'Can not find account in list Account [index]');
         return;
       }
     });
@@ -96,7 +102,8 @@ class _ScreenAmendState extends BaseStateNoTabs<ScreenAmend> with SingleTickerPr
     super.didChangeDependencies();
 
     bool keyboardShowed = MediaQuery.of(context).viewInsets.bottom > 0;
-    print('ScreenAmend.didChangeDependencies   keyboardShowed : $keyboardShowed');
+    print(
+        'ScreenAmend.didChangeDependencies   keyboardShowed : $keyboardShowed');
     _keyboardNotifier.value = keyboardShowed;
     _bottomSheetNotifier.value = !keyboardShowed;
   }
@@ -158,25 +165,34 @@ class _ScreenAmendState extends BaseStateNoTabs<ScreenAmend> with SingleTickerPr
         return Center(child: CircularProgressIndicator());
       }
 
-
       TextStyle styleAttention = InvestrendTheme.of(context).headline3;
       Size textSize = UIHelper.textSize('ABCD', styleAttention);
-      attentionCodes = context.read(remark2Notifier).getSpecialNotationCodes(notifier.stock.code);
-      notation = context.read(remark2Notifier).getSpecialNotation(notifier.stock.code);
-      status = context.read(remark2Notifier).getSpecialNotationStatus(notifier.stock.code);
-      suspendStock = context.read(suspendedStockNotifier).getSuspended(notifier.stock.code, notifier.stock.defaultBoard);
-      if(suspendStock != null){
+      attentionCodes = context
+          .read(remark2Notifier)
+          .getSpecialNotationCodes(notifier.stock.code);
+      notation =
+          context.read(remark2Notifier).getSpecialNotation(notifier.stock.code);
+      status = context
+          .read(remark2Notifier)
+          .getSpecialNotationStatus(notifier.stock.code);
+      suspendStock = context
+          .read(suspendedStockNotifier)
+          .getSuspended(notifier.stock.code, notifier.stock.defaultBoard);
+      if (suspendStock != null) {
         status = StockInformationStatus.Suspended;
       }
       VoidCallback onImportantInformation;
-      if(notation.isNotEmpty || suspendStock != null){
-        onImportantInformation = () => onPressedButtonImportantInformation(context, notation, suspendStock);
+      if (notation.isNotEmpty || suspendStock != null) {
+        onImportantInformation = () => onPressedButtonImportantInformation(
+            context, notation, suspendStock);
       }
-      corporateAction = context.read(corporateActionEventNotifier).getEvent(notifier.stock.code);
+      corporateAction = context
+          .read(corporateActionEventNotifier)
+          .getEvent(notifier.stock.code);
       corporateActionColor = CorporateActionEvent.getColor(corporateAction);
       VoidCallback onPressedCorporateAction;
-      if((corporateAction != null && corporateAction.isNotEmpty)){
-        onPressedCorporateAction = ()=> onPressedButtonCorporateAction();
+      if ((corporateAction != null && corporateAction.isNotEmpty)) {
+        onPressedCorporateAction = () => onPressedButtonCorporateAction();
       }
       /*
       return Column(
@@ -200,29 +216,34 @@ class _ScreenAmendState extends BaseStateNoTabs<ScreenAmend> with SingleTickerPr
           ),
           Text(
             InvestrendTheme.formatPrice(notifier.summary.close),
-            style: InvestrendTheme.of(context).support_w400_compact.copyWith(color: Theme.of(context).accentColor),
+            style: InvestrendTheme.of(context)
+                .support_w400_compact
+                .copyWith(color: Theme.of(context).colorScheme.secondary),
           ),
         ],
       );
 
       List<Widget> list = List.empty(growable: true);
-      if (onImportantInformation != null && (!StringUtils.isEmtpy(attentionCodes) || status == StockInformationStatus.Suspended)) {
-        list.add(ButtonTextAttentionMozaic(attentionCodes, textSize.height -3 , status, onImportantInformation));
+      if (onImportantInformation != null &&
+          (!StringUtils.isEmtpy(attentionCodes) ||
+              status == StockInformationStatus.Suspended)) {
+        list.add(ButtonTextAttentionMozaic(attentionCodes, textSize.height - 3,
+            status, onImportantInformation));
       }
-      if((corporateAction != null && corporateAction.isNotEmpty)){
-        list.add(ButtonCorporateAction(textSize.height,  corporateActionColor, onPressedButtonCorporateAction));
+      if ((corporateAction != null && corporateAction.isNotEmpty)) {
+        list.add(ButtonCorporateAction(textSize.height, corporateActionColor,
+            onPressedButtonCorporateAction));
       }
 
-      if(list.isNotEmpty){
+      if (list.isNotEmpty) {
         list.insert(0, codePriceWidget);
         return Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: list,
         );
-      }else{
+      } else {
         return codePriceWidget;
       }
-
 
       /*
       if (onImportantInformation != null && (!StringUtils.isEmtpy(attentionCodes) || status == StockInformationStatus.Suspended)) {
@@ -255,7 +276,7 @@ class _ScreenAmendState extends BaseStateNoTabs<ScreenAmend> with SingleTickerPr
        */
     });
     return AppBar(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       elevation: elevation,
       shadowColor: shadowColor,
       centerTitle: true,
@@ -313,7 +334,6 @@ class _ScreenAmendState extends BaseStateNoTabs<ScreenAmend> with SingleTickerPr
     );
   }
 
-
   void onPressedButtonCorporateAction() {
     print('onPressedButtonCorporateAction : ' + corporateAction.toString());
 
@@ -328,23 +348,25 @@ class _ScreenAmendState extends BaseStateNoTabs<ScreenAmend> with SingleTickerPr
         }
       });
 
-      showAlert(context, childs, childsHeight: (childs.length * 50).toDouble(), title: 'Corporate Action');
+      showAlert(context, childs,
+          childsHeight: (childs.length * 50).toDouble(),
+          title: 'Corporate Action');
     }
   }
-  void onPressedButtonImportantInformation(BuildContext context, List<Remark2Mapping> notation, SuspendStock suspendStock) {
+
+  void onPressedButtonImportantInformation(BuildContext context,
+      List<Remark2Mapping> notation, SuspendStock suspendStock) {
     List<Widget> childs = List.empty(growable: true);
     int count = notation == null ? 0 : notation.length;
 
     double height = 0;
-    if(suspendStock != null){
-
-
+    if (suspendStock != null) {
       String infoSuspend = 'suspended_time_info'.tr();
 
       DateFormat dateFormatter = DateFormat('EEEE, dd/MM/yyyy', 'id');
       DateFormat dateParser = DateFormat('yyyy-MM-dd');
       DateTime dateTime = dateParser.parseUtc(suspendStock.date);
-      print('dateTime : '+dateTime.toString());
+      print('dateTime : ' + dateTime.toString());
       //print('indexSummary.date : '+data.date+' '+data.time);
       String formatedDate = dateFormatter.format(dateTime);
       //String formatedTime = timeFormatter.format(dateTime);
@@ -355,70 +377,88 @@ class _ScreenAmendState extends BaseStateNoTabs<ScreenAmend> with SingleTickerPr
       height += 25.0;
       childs.add(Padding(
         padding: const EdgeInsets.only(bottom: 5.0),
-        child: Text('Suspended '+suspendStock.board, style: InvestrendTheme.of(context).small_w600,),
+        child: Text(
+          'Suspended ' + suspendStock.board,
+          style: InvestrendTheme.of(context).small_w600,
+        ),
       ));
 
       height += 50.0;
       childs.add(Padding(
         padding: const EdgeInsets.only(bottom: 15.0),
         child: RichText(
-          text: TextSpan(text:  '•  ', style: InvestrendTheme.of(context).small_w600, children: [
-            TextSpan(
-              text: infoSuspend,
-              style: InvestrendTheme.of(context).small_w400,
-            ),
-          ]),
+          text: TextSpan(
+              text: '•  ',
+              style: InvestrendTheme.of(context).small_w600,
+              children: [
+                TextSpan(
+                  text: infoSuspend,
+                  style: InvestrendTheme.of(context).small_w400,
+                ),
+              ]),
         ),
       ));
     }
     bool titleSpecialNotation = true;
-    for(int i = 0; i < count; i++){
+    for (int i = 0; i < count; i++) {
       Remark2Mapping remark2 = notation.elementAt(i);
-      if(remark2 != null){
-        if(remark2.isSurveilance()) {
+      if (remark2 != null) {
+        if (remark2.isSurveilance()) {
           height += 35.0;
           childs.add(Padding(
             padding: const EdgeInsets.only(bottom: 15.0),
-            child: Text(remark2.code+' : '+remark2.value, style: InvestrendTheme.of(context).small_w600,),
+            child: Text(
+              remark2.code + ' : ' + remark2.value,
+              style: InvestrendTheme.of(context).small_w600,
+            ),
           ));
-        }else {
-          if(titleSpecialNotation){
+        } else {
+          if (titleSpecialNotation) {
             titleSpecialNotation = false;
             height += 25.0;
             childs.add(Padding(
               padding: const EdgeInsets.only(bottom: 5.0),
-              child: Text('bottom_sheet_alert_title'.tr(), style: InvestrendTheme.of(context).small_w600,),
+              child: Text(
+                'bottom_sheet_alert_title'.tr(),
+                style: InvestrendTheme.of(context).small_w600,
+              ),
             ));
           }
           height += 40.0;
           childs.add(Padding(
             padding: const EdgeInsets.only(bottom: 5.0),
             child: RichText(
-              text: TextSpan(text: /*remark2.code + " : "*/ '•  ', style: InvestrendTheme.of(context).small_w600, children: [
-                TextSpan(
-                  text: remark2.code,
+              text: TextSpan(
+                  text: /*remark2.code + " : "*/ '•  ',
                   style: InvestrendTheme.of(context).small_w600,
-                ),
-                TextSpan(
-                  text: ' : '+remark2.value,
-                  style: InvestrendTheme.of(context).small_w400,
-                )
-              ]),
+                  children: [
+                    TextSpan(
+                      text: remark2.code,
+                      style: InvestrendTheme.of(context).small_w600,
+                    ),
+                    TextSpan(
+                      text: ' : ' + remark2.value,
+                      style: InvestrendTheme.of(context).small_w400,
+                    )
+                  ]),
             ),
           ));
         }
       }
     }
-    if(childs.isNotEmpty){
+    if (childs.isNotEmpty) {
       //showAlert(context, childs, childsHeight: (childs.length * 40).toDouble(), title: ' ');
       showAlert(context, childs, childsHeight: height, title: ' ');
     }
   }
-  void showAlert(BuildContext context, List<Widget> childs, {String title, double childsHeight = 0}) {
+
+  void showAlert(BuildContext context, List<Widget> childs,
+      {String title, double childsHeight = 0}) {
     showModalBottomSheet(
         isScrollControlled: true,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(topLeft: Radius.circular(24.0), topRight: Radius.circular(24.0)),
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(24.0), topRight: Radius.circular(24.0)),
         ),
         //backgroundColor: Colors.transparent,
         context: context,
@@ -503,7 +543,7 @@ class _ScreenAmendState extends BaseStateNoTabs<ScreenAmend> with SingleTickerPr
       valueListenable: _bottomSheetNotifier,
       builder: (context, value, child) {
         if (!value) {
-          if(Platform.isIOS){
+          if (Platform.isIOS) {
             return Container(
               //color: Colors.green,
               width: double.maxFinite,
@@ -514,24 +554,32 @@ class _ScreenAmendState extends BaseStateNoTabs<ScreenAmend> with SingleTickerPr
                 alignment: Alignment.centerRight,
                 child: TextButton(
                   style: TextButton.styleFrom(
-                      padding: EdgeInsets.only(left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral),
-                      visualDensity: VisualDensity.comfortable
+                      padding: EdgeInsets.only(
+                          left: InvestrendTheme.cardPaddingGeneral,
+                          right: InvestrendTheme.cardPaddingGeneral),
+                      visualDensity: VisualDensity.comfortable),
+                  child: Text(
+                    'button_done'.tr(),
+                    style: InvestrendTheme.of(context)
+                        .small_w500_compact
+                        .copyWith(
+                            color: Theme.of(context).colorScheme.secondary),
                   ),
-                  child: Text('button_done'.tr(),style: InvestrendTheme.of(context).small_w500_compact.copyWith(color: Theme.of(context).accentColor),),
-                  onPressed: (){
+                  onPressed: () {
                     hideKeyboard(context: context);
                   },
                 ),
               ),
             );
-          }else{
+          } else {
             return SizedBox(
               width: 1.0,
             );
           }
         } else {
           return Padding(
-            padding: EdgeInsets.only(top: 8.0, bottom: paddingBottom > 0 ? paddingBottom : 8.0),
+            padding: EdgeInsets.only(
+                top: 8.0, bottom: paddingBottom > 0 ? paddingBottom : 8.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -546,9 +594,10 @@ class _ScreenAmendState extends BaseStateNoTabs<ScreenAmend> with SingleTickerPr
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-
                           Text(
-                            _initialOrderType.isBuyOrAmendBuy() ? 'trade_total_buy_label'.tr() : 'trade_total_sell_label'.tr(),
+                            _initialOrderType.isBuyOrAmendBuy()
+                                ? 'trade_total_buy_label'.tr()
+                                : 'trade_total_sell_label'.tr(),
                             style: InvestrendTheme.of(context).small_w400,
                           ),
                           Consumer(builder: (context, watch, child) {
@@ -559,11 +608,11 @@ class _ScreenAmendState extends BaseStateNoTabs<ScreenAmend> with SingleTickerPr
                             int value = data.normalTotalValue;
 
                             return Text(
-                              InvestrendTheme.formatMoney(value, prefixRp: true),
+                              InvestrendTheme.formatMoney(value,
+                                  prefixRp: true),
                               style: InvestrendTheme.of(context).medium_w600,
                             );
                           }),
-
                         ],
                       ),
                     ),
@@ -583,13 +632,16 @@ class _ScreenAmendState extends BaseStateNoTabs<ScreenAmend> with SingleTickerPr
                         FocusScope.of(context).requestFocus(new FocusNode());
 
                         if (!canTap) {
-                          InvestrendTheme.of(context).showSnackBar(context, 'Trade canTap : $canTap waiting for Future.delayed 500ms');
+                          InvestrendTheme.of(context).showSnackBar(context,
+                              'Trade canTap : $canTap waiting for Future.delayed 500ms');
                           return;
                         }
                         canTap = false;
                         _updateDataNotifier.value = !_updateDataNotifier.value;
                         Future.delayed(Duration(milliseconds: 500), () {
-                          BuySell data = context.read(amendChangeNotifier).getData(_initialOrderType);
+                          BuySell data = context
+                              .read(amendChangeNotifier)
+                              .getData(_initialOrderType);
                           BuySell newData = data.clone();
 
                           logs.insertAll(0, [
@@ -616,10 +668,14 @@ class _ScreenAmendState extends BaseStateNoTabs<ScreenAmend> with SingleTickerPr
                           // logs.add(newData.toString());
                           // logs.add('--------------');
 
-                          Account account =
-                              context.read(dataHolderChangeNotifier).user.getAccountByCode(amendData.brokerCode, amendData.accountCode);
+                          Account account = context
+                              .read(dataHolderChangeNotifier)
+                              .user
+                              .getAccountByCode(
+                                  amendData.brokerCode, amendData.accountCode);
                           if (account == null) {
-                            InvestrendTheme.of(context).showSnackBar(context, 'error_no_account_selected'.tr());
+                            InvestrendTheme.of(context).showSnackBar(
+                                context, 'error_no_account_selected'.tr());
                             canTap = true;
                             return;
                           }
@@ -629,25 +685,32 @@ class _ScreenAmendState extends BaseStateNoTabs<ScreenAmend> with SingleTickerPr
                           showModalBottomSheet(
                               isScrollControlled: true,
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(topLeft: Radius.circular(24.0), topRight: Radius.circular(24.0)),
+                                borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(24.0),
+                                    topRight: Radius.circular(24.0)),
                               ),
                               //backgroundColor: Colors.transparent,
                               context: context,
                               builder: (context) {
-                                return ConfirmationBottomSheet(amendData, _initialOrderType, newData, reffID, _loadingNotifier);
+                                return ConfirmationBottomSheet(
+                                    amendData,
+                                    _initialOrderType,
+                                    newData,
+                                    reffID,
+                                    _loadingNotifier);
                               }).then((value) {
-                            bool finished = value != null && value is String && StringUtils.equalsIgnoreCase(value, 'FINISHED');
+                            bool finished = value != null &&
+                                value is String &&
+                                StringUtils.equalsIgnoreCase(value, 'FINISHED');
                             if (finished) {
                               Navigator.pop(context, 'FINISHED');
                             }
                           });
                         });
-
                       },
                     ),
                   ),
                 ),
-
               ],
             ),
           );
@@ -953,7 +1016,9 @@ class AmendFinishedBottomSheet extends BaseTradeBottomSheet {
     double width = MediaQuery.of(context).size.width;
     double minHeight = height * 0.2;
     double maxHeight = height * 0.5;
-    double heightRowReguler = UIHelper.textSize('WgjLl', InvestrendTheme.of(context).regular_w600_compact).height;
+    double heightRowReguler = UIHelper.textSize(
+            'WgjLl', InvestrendTheme.of(context).regular_w600_compact)
+        .height;
 
     double contentHeight = 0.0;
     contentHeight += 30.0 + 24.0 + 20.0;
@@ -969,7 +1034,8 @@ class AmendFinishedBottomSheet extends BaseTradeBottomSheet {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Expanded(
-          child: TradeComponentCreator.popupTitle(context, 'amend_finished_title'.tr()),
+          child: TradeComponentCreator.popupTitle(
+              context, 'amend_finished_title'.tr()),
           // child: Text(
           //   confirmationTitle,
           //   style: InvestrendTheme.of(context).regular_w700_compact.copyWith(color: InvestrendTheme.of(context).blackAndWhiteText),
@@ -1013,8 +1079,12 @@ class AmendFinishedBottomSheet extends BaseTradeBottomSheet {
     list.add(
       Center(
           child: Text(
-        (data.isBuy() ? 'amend_finished_order_buy_sent_label'.tr() : 'amend_finished_order_sell_sent_label'.tr()),
-        style: InvestrendTheme.of(context).regular_w400_compact.copyWith(color: Color(0xFF25B792)),
+        (data.isBuy()
+            ? 'amend_finished_order_buy_sent_label'.tr()
+            : 'amend_finished_order_sell_sent_label'.tr()),
+        style: InvestrendTheme.of(context)
+            .regular_w400_compact
+            .copyWith(color: Color(0xFF25B792)),
       )),
     );
     list.add(Spacer(
@@ -1040,7 +1110,9 @@ class AmendFinishedBottomSheet extends BaseTradeBottomSheet {
       child: TextButton(
           child: Text(
             'amend_finished_button_close'.tr(),
-            style: InvestrendTheme.of(context).small_w600_compact.copyWith(color: Theme.of(context).buttonColor),
+            style: InvestrendTheme.of(context)
+                .small_w600_compact
+                .copyWith(color: Theme.of(context).buttonColor),
           ),
           onPressed: () {
             print('closed clicked');
@@ -1060,7 +1132,8 @@ class AmendFinishedBottomSheet extends BaseTradeBottomSheet {
       ),
       child: Container(
         // color: Colors.orangeAccent,
-        padding: const EdgeInsets.only(top: 30.0, bottom: 24.0, left: 24.0, right: 24.0),
+        padding: const EdgeInsets.only(
+            top: 30.0, bottom: 24.0, left: 24.0, right: 24.0),
         width: double.maxFinite,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -1080,7 +1153,10 @@ class ConfirmationBottomSheet extends BaseTradeBottomSheet {
   final String reff;
   final ValueNotifier<bool> loadingNotifier;
 
-  const ConfirmationBottomSheet(this.initialAmendData, this.orderType, this.data, this.reff, this.loadingNotifier, {Key key}) : super(key: key);
+  const ConfirmationBottomSheet(this.initialAmendData, this.orderType,
+      this.data, this.reff, this.loadingNotifier,
+      {Key key})
+      : super(key: key);
 
   /*
   void buttonConfirmClicked(BuildContext context, BuySell data) {
@@ -1188,14 +1264,16 @@ class ConfirmationBottomSheet extends BaseTradeBottomSheet {
     });
   }
   */
-  void buttonConfirmClicked(BuildContext context, BuySell oldData, BuySell newData) {
+  void buttonConfirmClicked(
+      BuildContext context, BuySell oldData, BuySell newData) {
     String loadingText = 'loading_submiting_amend_label'.tr();
     showModalBottomSheet(
         isScrollControlled: true,
         isDismissible: false,
         enableDrag: false,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(topLeft: Radius.circular(24.0), topRight: Radius.circular(24.0)),
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(24.0), topRight: Radius.circular(24.0)),
         ),
         //backgroundColor: Colors.transparent,
         context: context,
@@ -1228,7 +1306,9 @@ class ConfirmationBottomSheet extends BaseTradeBottomSheet {
         showModalBottomSheet(
             isScrollControlled: true,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(topLeft: Radius.circular(24.0), topRight: Radius.circular(24.0)),
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(24.0),
+                  topRight: Radius.circular(24.0)),
             ),
             //backgroundColor: Colors.transparent,
             context: context,
@@ -1272,9 +1352,10 @@ class ConfirmationBottomSheet extends BaseTradeBottomSheet {
           InvestrendTheme.of(context).showSnackBar(context, error.message());
           return;
         } else {
-          String network_error_label = 'network_error_label'.tr();
-          network_error_label = network_error_label.replaceFirst("#CODE#", error.code.toString());
-          InvestrendTheme.of(context).showSnackBar(context, network_error_label);
+          String networkErrorLabel = 'network_error_label'.tr();
+          networkErrorLabel =
+              networkErrorLabel.replaceFirst("#CODE#", error.code.toString());
+          InvestrendTheme.of(context).showSnackBar(context, networkErrorLabel);
           return;
         }
       } else {
@@ -1284,7 +1365,8 @@ class ConfirmationBottomSheet extends BaseTradeBottomSheet {
   }
 
   void showNextPage(BuildContext context, Widget pageNext, String routeNext) {
-    InvestrendTheme.push(context, pageNext, ScreenTransition.SlideUp, routeNext).then((value) {
+    InvestrendTheme.push(context, pageNext, ScreenTransition.SlideUp, routeNext)
+        .then((value) {
       if (value == null) {
         print('Order Finished value : NULL  clearData : true');
         context.read(clearOrderChangeNotifier).mustNotifyListener();
@@ -1295,7 +1377,8 @@ class ConfirmationBottomSheet extends BaseTradeBottomSheet {
         print('Order Finished value : BuySell  pop');
         Navigator.pop(context);
         print('Order Finished value : BuySell  push order detail');
-        InvestrendTheme.push(context, ScreenOrderDetail(value, null), ScreenTransition.SlideDown, '/order_detail');
+        InvestrendTheme.push(context, ScreenOrderDetail(value, null),
+            ScreenTransition.SlideDown, '/order_detail');
 
         // WidgetsBinding.instance.addPostFrameCallback((_) {
         //
@@ -1305,16 +1388,20 @@ class ConfirmationBottomSheet extends BaseTradeBottomSheet {
         if (value is String) {
           if (StringUtils.equalsIgnoreCase(value, 'KEEP')) {
             Navigator.pop(context);
-          } else if (StringUtils.equalsIgnoreCase(value, 'SHOW_TRANSACTION_INTRADAY')) {
+          } else if (StringUtils.equalsIgnoreCase(
+              value, 'SHOW_TRANSACTION_INTRADAY')) {
             context.read(clearOrderChangeNotifier).mustNotifyListener();
             Navigator.popUntil(context, (route) {
               print('popUntil : ' + route.toString());
-              if (StringUtils.equalsIgnoreCase(route?.settings?.name, '/main')) {
+              if (StringUtils.equalsIgnoreCase(
+                  route?.settings?.name, '/main')) {
                 return true;
               }
               return route.isFirst;
             });
-            context.read(mainMenuChangeNotifier).setActive(Tabs.Transaction, TabsTransaction.Intraday.index);
+            context
+                .read(mainMenuChangeNotifier)
+                .setActive(Tabs.Transaction, TabsTransaction.Intraday.index);
           } else {
             print('Amend Finished value : $value  clearData : true');
             context.read(clearOrderChangeNotifier).mustNotifyListener();
@@ -1338,8 +1425,10 @@ class ConfirmationBottomSheet extends BaseTradeBottomSheet {
 
     //BuySell data = context.read(amendChangeNotifier).getData(orderType);
 
-    data.setAccount(initialAmendData.accountName, initialAmendData.accountType, initialAmendData.accountCode, initialAmendData.brokerCode);
-    data.setOrderInformation(initialAmendData.orderid, initialAmendData.orderdate);
+    data.setAccount(initialAmendData.accountName, initialAmendData.accountType,
+        initialAmendData.accountCode, initialAmendData.brokerCode);
+    data.setOrderInformation(
+        initialAmendData.orderid, initialAmendData.orderdate);
     //data.setStock(initialAmendData.stock_code, initialAmendData.stock_name);
 
     print('CONFIRMATION AMEND for data --> ' + data.toString());
@@ -1353,30 +1442,46 @@ class ConfirmationBottomSheet extends BaseTradeBottomSheet {
 
     bool fastMode = data.fastMode;
     int tradingLimitUsage = data.tradingLimitUsage;
-    int total_value = data.fastMode ? data.fastTotalValue : data.normalTotalValue;
+    int totalValue =
+        data.fastMode ? data.fastTotalValue : data.normalTotalValue;
     //OrderType orderType = odc.orderType;
-    String orderTypeText = orderType.isBuyOrAmendBuy() ? 'buy_text'.tr() : 'sell_text'.tr();
-    String confirmationTitle = orderType.isBuyOrAmendBuy() ? 'amend_confirmation_buy_label'.tr() : 'amend_confirmation_sell_label'.tr();
+    String orderTypeText =
+        orderType.isBuyOrAmendBuy() ? 'buy_text'.tr() : 'sell_text'.tr();
+    String confirmationTitle = orderType.isBuyOrAmendBuy()
+        ? 'amend_confirmation_buy_label'.tr()
+        : 'amend_confirmation_sell_label'.tr();
 
     List<Widget> list = List.empty(growable: true);
 
     double heightListView = 0.0;
-    double heightRowSmallPlusPadding = 20.0 + UIHelper.textSize('WgjLl', InvestrendTheme.of(context).small_w400_compact).height;
-    double heightRowReguler = UIHelper.textSize('WgjLl', InvestrendTheme.of(context).regular_w600_compact).height;
+    double heightRowSmallPlusPadding = 20.0 +
+        UIHelper.textSize(
+                'WgjLl', InvestrendTheme.of(context).small_w400_compact)
+            .height;
+    double heightRowReguler = UIHelper.textSize(
+            'WgjLl', InvestrendTheme.of(context).regular_w600_compact)
+        .height;
 
-    list.add(TradeComponentCreator.popupRow(context, 'amend_confirmation_account_label'.tr(), accountName + ' - ' + accountType));
+    list.add(TradeComponentCreator.popupRow(
+        context,
+        'amend_confirmation_account_label'.tr(),
+        accountName + ' - ' + accountType));
     heightListView += heightRowSmallPlusPadding;
-    list.add(TradeComponentCreator.popupRow(context, 'amend_confirmation_stock_code_label'.tr(), code));
+    list.add(TradeComponentCreator.popupRow(
+        context, 'amend_confirmation_stock_code_label'.tr(), code));
     heightListView += heightRowSmallPlusPadding;
-    list.add(TradeComponentCreator.popupRow(context, 'amend_confirmation_stock_name_label'.tr(), name));
+    list.add(TradeComponentCreator.popupRow(
+        context, 'amend_confirmation_stock_name_label'.tr(), name));
     heightListView += heightRowSmallPlusPadding;
-    list.add(TradeComponentCreator.popupRow(context, 'amend_confirmation_order_type_label'.tr(), orderTypeText));
+    list.add(TradeComponentCreator.popupRow(
+        context, 'amend_confirmation_order_type_label'.tr(), orderTypeText));
     heightListView += heightRowSmallPlusPadding;
     if (fastMode) {
       List<PriceLot> listPriceLot = data.listFastPriceLot;
       int count = listPriceLot != null ? listPriceLot.length : 0;
       if (count == 0) {
-        list.add(TradeComponentCreator.popupRow(context, 'amend_confirmation_fast_mode_lot_price_label'.tr(), '-  |  -'));
+        list.add(TradeComponentCreator.popupRow(context,
+            'amend_confirmation_fast_mode_lot_price_label'.tr(), '-  |  -'));
         heightListView += heightRowSmallPlusPadding;
       } else {
         bool first = true;
@@ -1384,18 +1489,27 @@ class ConfirmationBottomSheet extends BaseTradeBottomSheet {
           PriceLot pl = listPriceLot.elementAt(i);
           if (pl != null) {
             if (first) {
-              list.add(TradeComponentCreator.popupRow(context, 'amend_confirmation_fast_mode_lot_price_label'.tr(),
-                  InvestrendTheme.formatComma(pl.lot) + '   |   ' + InvestrendTheme.formatMoney(pl.price, prefixRp: true)));
+              list.add(TradeComponentCreator.popupRow(
+                  context,
+                  'amend_confirmation_fast_mode_lot_price_label'.tr(),
+                  InvestrendTheme.formatComma(pl.lot) +
+                      '   |   ' +
+                      InvestrendTheme.formatMoney(pl.price, prefixRp: true)));
               first = false;
             } else {
               list.add(TradeComponentCreator.popupRow(
-                  context, '  ', InvestrendTheme.formatComma(pl.lot) + '   |   ' + InvestrendTheme.formatMoney(pl.price, prefixRp: true)));
+                  context,
+                  '  ',
+                  InvestrendTheme.formatComma(pl.lot) +
+                      '   |   ' +
+                      InvestrendTheme.formatMoney(pl.price, prefixRp: true)));
             }
             heightListView += heightRowSmallPlusPadding;
           }
         }
         if (first) {
-          list.add(TradeComponentCreator.popupRow(context, 'amend_confirmation_fast_mode_lot_price_label'.tr(), '-  |  -'));
+          list.add(TradeComponentCreator.popupRow(context,
+              'amend_confirmation_fast_mode_lot_price_label'.tr(), '-  |  -'));
           heightListView += heightRowSmallPlusPadding;
         }
       }
@@ -1404,26 +1518,46 @@ class ConfirmationBottomSheet extends BaseTradeBottomSheet {
       PriceLot oldPriceLot = initialAmendData.normalPriceLot;
       if (newPriceLot != null) {
         list.add(TradeComponentCreator.popupRow(
-            context, 'amend_confirmation_price_old_label'.tr(), InvestrendTheme.formatMoney(oldPriceLot.price, prefixRp: true)));
-        heightListView += heightRowSmallPlusPadding;
-        list.add(TradeComponentCreator.popupRow(context, 'amend_confirmation_lot_old_label'.tr(), InvestrendTheme.formatComma(oldPriceLot.lot)));
+            context,
+            'amend_confirmation_price_old_label'.tr(),
+            InvestrendTheme.formatMoney(oldPriceLot.price, prefixRp: true)));
         heightListView += heightRowSmallPlusPadding;
         list.add(TradeComponentCreator.popupRow(
-            context, 'amend_confirmation_price_new_label'.tr(), InvestrendTheme.formatMoney(newPriceLot.price, prefixRp: true)));
+            context,
+            'amend_confirmation_lot_old_label'.tr(),
+            InvestrendTheme.formatComma(oldPriceLot.lot)));
         heightListView += heightRowSmallPlusPadding;
-        list.add(TradeComponentCreator.popupRow(context, 'amend_confirmation_lot_new_label'.tr(), InvestrendTheme.formatComma(newPriceLot.lot)));
+        list.add(TradeComponentCreator.popupRow(
+            context,
+            'amend_confirmation_price_new_label'.tr(),
+            InvestrendTheme.formatMoney(newPriceLot.price, prefixRp: true)));
+        heightListView += heightRowSmallPlusPadding;
+        list.add(TradeComponentCreator.popupRow(
+            context,
+            'amend_confirmation_lot_new_label'.tr(),
+            InvestrendTheme.formatComma(newPriceLot.lot)));
         heightListView += heightRowSmallPlusPadding;
       } else {
-        list.add(
-            TradeComponentCreator.popupRow(context, 'amend_confirmation_price_old_label'.tr(), InvestrendTheme.formatMoney(0, prefixRp: true)));
+        list.add(TradeComponentCreator.popupRow(
+            context,
+            'amend_confirmation_price_old_label'.tr(),
+            InvestrendTheme.formatMoney(0, prefixRp: true)));
         heightListView += heightRowSmallPlusPadding;
-        list.add(TradeComponentCreator.popupRow(context, 'amend_confirmation_lot_old_label'.tr(), InvestrendTheme.formatComma(0)));
+        list.add(TradeComponentCreator.popupRow(
+            context,
+            'amend_confirmation_lot_old_label'.tr(),
+            InvestrendTheme.formatComma(0)));
         heightListView += heightRowSmallPlusPadding;
 
-        list.add(
-            TradeComponentCreator.popupRow(context, 'amend_confirmation_price_new_label'.tr(), InvestrendTheme.formatMoney(0, prefixRp: true)));
+        list.add(TradeComponentCreator.popupRow(
+            context,
+            'amend_confirmation_price_new_label'.tr(),
+            InvestrendTheme.formatMoney(0, prefixRp: true)));
         heightListView += heightRowSmallPlusPadding;
-        list.add(TradeComponentCreator.popupRow(context, 'amend_confirmation_lot_new_label'.tr(), InvestrendTheme.formatComma(0)));
+        list.add(TradeComponentCreator.popupRow(
+            context,
+            'amend_confirmation_lot_new_label'.tr(),
+            InvestrendTheme.formatComma(0)));
         heightListView += heightRowSmallPlusPadding;
       }
     }
@@ -1439,12 +1573,14 @@ class ConfirmationBottomSheet extends BaseTradeBottomSheet {
         children: [
           Text(
             'trade_confirmation_total_label'.tr(),
-            style: InvestrendTheme.of(context).regular_w600_compact.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor),
+            style: InvestrendTheme.of(context).regular_w600_compact.copyWith(
+                color: InvestrendTheme.of(context).greyLighterTextColor),
           ),
           Expanded(
             child: Text(
-              InvestrendTheme.formatMoney(total_value, prefixRp: true),
-              style: InvestrendTheme.of(context).regular_w600_compact.copyWith(color: InvestrendTheme.of(context).blackAndWhiteText),
+              InvestrendTheme.formatMoney(totalValue, prefixRp: true),
+              style: InvestrendTheme.of(context).regular_w600_compact.copyWith(
+                  color: InvestrendTheme.of(context).blackAndWhiteText),
               textAlign: TextAlign.right,
             ),
             flex: 1,
@@ -1471,7 +1607,8 @@ class ConfirmationBottomSheet extends BaseTradeBottomSheet {
         maxWidth: width,
       ),
       child: Container(
-        padding: const EdgeInsets.only(top: 30.0, bottom: 24.0, left: 24.0, right: 10.0),
+        padding: const EdgeInsets.only(
+            top: 30.0, bottom: 24.0, left: 24.0, right: 10.0),
         width: double.maxFinite,
         child: Column(
           // children: list,
@@ -1480,7 +1617,8 @@ class ConfirmationBottomSheet extends BaseTradeBottomSheet {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Expanded(
-                  child: TradeComponentCreator.popupTitle(context, confirmationTitle),
+                  child: TradeComponentCreator.popupTitle(
+                      context, confirmationTitle),
                   // child: Text(
                   //   confirmationTitle,
                   //   style: InvestrendTheme.of(context).regular_w700_compact.copyWith(color: InvestrendTheme.of(context).blackAndWhiteText),
@@ -1504,7 +1642,7 @@ class ConfirmationBottomSheet extends BaseTradeBottomSheet {
             Expanded(
                 flex: 1,
                 child: Scrollbar(
-                  isAlwaysShown: true,
+                  thumbVisibility: true,
                   child: ListView(
                     shrinkWrap: true,
                     padding: EdgeInsets.only(right: 14.0),
@@ -1529,10 +1667,12 @@ class ConfirmationBottomSheet extends BaseTradeBottomSheet {
                       buttonConfirmClicked(context, initialAmendData, data);
                     }),
                   ),
-                  SizedBox(width: InvestrendTheme.cardPaddingGeneral,),
+                  SizedBox(
+                    width: InvestrendTheme.cardPaddingGeneral,
+                  ),
                   Expanded(
                     flex: 1,
-                    child: ButtonCancel((){
+                    child: ButtonCancel(() {
                       Navigator.pop(context);
                     }),
                   ),
@@ -1549,5 +1689,4 @@ class ConfirmationBottomSheet extends BaseTradeBottomSheet {
       ),
     );
   }
-
 }

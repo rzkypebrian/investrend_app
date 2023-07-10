@@ -22,7 +22,6 @@ import 'package:Investrend/utils/string_utils.dart';
 import 'package:Investrend/utils/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:visibility_aware_state/visibility_aware_state.dart';
@@ -281,7 +280,7 @@ abstract class BaseTradeState<T extends StatefulWidget>
         data.length >
             5 /* && data.first == 'III' && data.elementAt(1) == 'Q'*/) {
       final String HEADER = data[0];
-      final String TYPE_SUMMARY = data[1];
+      final String typeSummary = data[1];
       final String start = data[2];
       final String end = data[3];
       final String stockCode = data[4];
@@ -289,7 +288,7 @@ abstract class BaseTradeState<T extends StatefulWidget>
       String codeBoard = stockCode + '.' + boardCode;
       String channelData = DatafeedType.Summary.key + '.' + codeBoard;
       if (HEADER == 'III' &&
-          TYPE_SUMMARY == DatafeedType.Summary.type &&
+          typeSummary == DatafeedType.Summary.type &&
           channel == channelData) {
         return true;
       }
@@ -471,19 +470,19 @@ abstract class BaseTradeState<T extends StatefulWidget>
     // container.read(primaryStockChangeNotifier).addListener(stockChangeListener);
 
     tabController.addListener(() {
-      bool is_active = tabController.index == orderType.index;
+      bool isActive = tabController.index == orderType.index;
 
       print(orderType.routeName +
           '.tabController changed : ' +
           tabController.index.toString() +
-          "  is_active : $is_active   _active : $_active");
+          "  is_active : $isActive   _active : $_active");
       if (_active) {
-        if (is_active) {
+        if (isActive) {
         } else {
           onInactive();
         }
       } else {
-        if (is_active) {
+        if (isActive) {
           onActive();
         } else {}
       }
@@ -1113,11 +1112,11 @@ abstract class BaseTradeState<T extends StatefulWidget>
             onProgress = false;
             return;
           } else {
-            String network_error_label = 'network_error_label'.tr();
-            network_error_label =
-                network_error_label.replaceFirst("#CODE#", e.code.toString());
+            String networkErrorLabel = 'network_error_label'.tr();
+            networkErrorLabel =
+                networkErrorLabel.replaceFirst("#CODE#", e.code.toString());
             InvestrendTheme.of(context)
-                .showSnackBar(context, network_error_label);
+                .showSnackBar(context, networkErrorLabel);
             onProgress = false;
             return false;
           }
@@ -1306,9 +1305,8 @@ abstract class BaseTradeState<T extends StatefulWidget>
             '  usedValue : $usedValue  price : $price  feeBuy : $feeBuy');
 
         //int lot = ( (buyingPower * (percentage / 100)) / ( price * 100 * loop * (1.0 + (feeBuy / 100)) ) ).toInt();
-        int lot = ((usedValue * (percentage / 100)) /
-                (price * 100 * loop * (1.0 + (feeBuy / 100))))
-            .toInt();
+        int lot = (usedValue * (percentage / 100)) ~/
+                (price * 100 * loop * (1.0 + (feeBuy / 100)));
 
         //int lot = ((buyingPower / price * 100) / feeBuy).toInt();
         //int value = price * lot * fee;
@@ -2002,7 +2000,7 @@ abstract class BaseTradeState<T extends StatefulWidget>
       color: InvestrendTheme.of(context).textWhite,
       //backgroundColor: orderType.color,
       backgroundColor:
-          Theme.of(context).accentColor, // putri minta warna disamain ama buy
+          Theme.of(context).colorScheme.secondary, // putri minta warna disamain ama buy
       onRefresh: onRefresh,
       child: ListView(
         controller: scrollController,

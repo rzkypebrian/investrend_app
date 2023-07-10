@@ -4,11 +4,9 @@ import 'package:Investrend/component/component_creator.dart';
 import 'package:Investrend/component/tapable_widget.dart';
 import 'package:Investrend/objects/class_value_notifier.dart';
 import 'package:Investrend/objects/data_object.dart';
-import 'package:Investrend/objects/home_objects.dart';
 import 'package:Investrend/objects/riverpod_change_notifier.dart';
 import 'package:Investrend/screens/base/base_state.dart';
 import 'package:Investrend/screens/help/screen_help.dart';
-import 'package:Investrend/utils/connection_services.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:Investrend/utils/string_utils.dart';
 import 'package:flutter/cupertino.dart';
@@ -126,7 +124,7 @@ class _ScreenEIPOState extends BaseStateWithTabs<ScreenEIPO> {
 
     return RefreshIndicator(
       color: InvestrendTheme.of(context).textWhite,
-      backgroundColor: Theme.of(context).accentColor,
+      backgroundColor: Theme.of(context).colorScheme.secondary,
       onRefresh: onRefresh,
       child:ValueListenableBuilder<ContentEIPO>(
           valueListenable: _contentNotifier,
@@ -270,7 +268,7 @@ class _ScreenEIPOState extends BaseStateWithTabs<ScreenEIPO> {
                 SizedBox(width: 24.0,),
                 Expanded(
                     flex: 1,
-                    child: ComponentCreator.roundedButton(context, 'eipo_enter_button'.tr(), Theme.of(context).accentColor, Theme.of(context).primaryColor, Theme.of(context).accentColor, () => launchURL(context, value.action_enter_eipo)))
+                    child: ComponentCreator.roundedButton(context, 'eipo_enter_button'.tr(), Theme.of(context).colorScheme.secondary, Theme.of(context).primaryColor, Theme.of(context).colorScheme.secondary, () => launchURL(context, value.action_enter_eipo)))
               ],
             ),
           );
@@ -338,7 +336,7 @@ class _ScreenEIPOState extends BaseStateWithTabs<ScreenEIPO> {
       Text('eipo_website'.tr(), style: styleLabel,),
       TapableWidget(
         onTap: ()=>launchURL(context, ipo.company_website),
-          child: Text(ipo.company_website, style: styleContent.copyWith(color: Theme.of(context).accentColor),)),
+          child: Text(ipo.company_website, style: styleContent.copyWith(color: Theme.of(context).colorScheme.secondary),)),
       SizedBox(height: paddingContent,),
 
       Text('eipo_shared_offered'.tr(), style: styleLabel,),

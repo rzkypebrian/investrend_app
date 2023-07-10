@@ -1,7 +1,6 @@
 //import 'dart:math';
 
 //import 'package:Investrend/component/component_creator.dart';
-import 'package:Investrend/component/chart_candlestick.dart';
 import 'package:Investrend/objects/class_value_notifier.dart';
 import 'package:Investrend/objects/data_object.dart';
 import 'package:Investrend/utils/callbacks.dart';
@@ -9,7 +8,6 @@ import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'dart:ui' as ui;
 
 import '../chart_line.dart';
 
@@ -211,7 +209,7 @@ class _CardChartState extends State<CardChart> {
                         },
                         child: Container(
                           color: selected
-                              ? Theme.of(context).accentColor
+                              ? Theme.of(context).colorScheme.secondary
                               : Colors.transparent,
                           child: Center(
                               child: Text(

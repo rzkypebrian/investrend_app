@@ -1,5 +1,4 @@
 import 'package:Investrend/utils/string_utils.dart';
-import 'package:Investrend/utils/utils.dart';
 import 'dart:convert';
 import 'package:crypto/crypto.dart';
 
@@ -435,9 +434,9 @@ class Post extends KeysNeeded {
 
     var listTopComments = parsedJson['top_comments'] as List;
     print(listTopComments.runtimeType);
-    List<PostComment> top_comments;
+    List<PostComment> topComments;
     if (listTopComments != null) {
-      top_comments = listTopComments.map((i) => PostComment.fromJson(i)).toList();
+      topComments = listTopComments.map((i) => PostComment.fromJson(i)).toList();
     }
 
     String type = parsedJson['type'];
@@ -487,7 +486,7 @@ class Post extends KeysNeeded {
         parsedJson['liked'],
         parsedJson['voted'],
         polls,
-        top_comments,
+        topComments,
         attachments
     );
   }
@@ -1129,15 +1128,15 @@ class ResultLike {
     // print(id);
     // String created_at = parsedJson['created_at'];
     // print(created_at);
-    String post_id = parsedJson['post_id'].toString();
-    print(post_id);
+    String postId = parsedJson['post_id'].toString();
+    print(postId);
     // String updated_at = parsedJson['updated_at'];
     // print(updated_at);
-    int user_id = parsedJson['user_id'];
-    print(user_id);
+    int userId = parsedJson['user_id'];
+    print(userId);
 
     //return ResultLike(id, post_id, user_id, created_at, updated_at);
-    return ResultLike(post_id, user_id);
+    return ResultLike(postId, userId);
   }
 
   @override
@@ -1176,16 +1175,16 @@ class ResultVote {
     }
     int id = parsedJson['id'];
     print(id);
-    String created_at = parsedJson['created_at'];
-    print(created_at);
-    String post_poll_id = parsedJson['post_poll_id'].toString();
-    print(post_poll_id);
-    String updated_at = parsedJson['updated_at'];
-    print(updated_at);
-    int user_id = parsedJson['user_id'];
-    print(user_id);
+    String createdAt = parsedJson['created_at'];
+    print(createdAt);
+    String postPollId = parsedJson['post_poll_id'].toString();
+    print(postPollId);
+    String updatedAt = parsedJson['updated_at'];
+    print(updatedAt);
+    int userId = parsedJson['user_id'];
+    print(userId);
 
-    return ResultVote(id, post_poll_id, user_id, created_at, updated_at);
+    return ResultVote(id, postPollId, userId, createdAt, updatedAt);
   }
 
   @override

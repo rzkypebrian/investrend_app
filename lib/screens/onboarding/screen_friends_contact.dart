@@ -2,7 +2,6 @@ import 'package:Investrend/component/avatar.dart';
 import 'package:Investrend/component/component_creator.dart';
 import 'package:Investrend/screens/base/base_stateless_widget.dart';
 import 'package:Investrend/screens/onboarding/screen_landing_rdn.dart';
-import 'package:Investrend/screens/screen_main.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -20,7 +19,7 @@ class ScreenFriendsContact extends BaseStatelessWidget {
     //bool lightTheme = MediaQuery.of(context).platformBrightness == Brightness.light;
     bool lightTheme = Theme.of(context).brightness == Brightness.light;
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       body: Container(
         //alignment: Alignment.topCenter,
         //padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 40.0, bottom: 16.0),
@@ -44,10 +43,8 @@ class ScreenFriendsContact extends BaseStatelessWidget {
                   ),
                   TextButton(
                     child: Text('friends_contact_button_follow_all'.tr(),
-                        style: Theme.of(context)
-                            .textTheme
-                            .button
-                            .copyWith(color: Theme.of(context).accentColor)),
+                        style: Theme.of(context).textTheme.button.copyWith(
+                            color: Theme.of(context).colorScheme.secondary)),
                     onPressed: () {
                       // pressed
                       final snackBar = SnackBar(
@@ -118,9 +115,9 @@ class ScreenFriendsContact extends BaseStatelessWidget {
               child: ComponentCreator.roundedButton(
                   context,
                   'friends_contact_button_finish'.tr(),
-                  Theme.of(context).accentColor,
+                  Theme.of(context).colorScheme.secondary,
                   Theme.of(context).primaryColor,
-                  Theme.of(context).accentColor, () {
+                  Theme.of(context).colorScheme.secondary, () {
                 // pressed
                 //showMainPage(context);
                 showLandingRDNPage(context);
@@ -180,8 +177,8 @@ class ScreenFriendsContact extends BaseStatelessWidget {
           ComponentCreator.roundedButtonHollow(
               context,
               'friends_contact_button_follow'.tr(),
-              Theme.of(context).backgroundColor,
-              Theme.of(context).accentColor, () {
+              Theme.of(context).colorScheme.background,
+              Theme.of(context).colorScheme.secondary, () {
             // pressed
             final snackBar = SnackBar(
                 content:
@@ -207,7 +204,7 @@ class ScreenFriendsContact extends BaseStatelessWidget {
               width: 50,
               height: 50,
               alignment: Alignment.center,
-              color: Theme.of(context).accentColor,
+              color: Theme.of(context).colorScheme.secondary,
               child: Text(
                 symbol,
                 style: Theme.of(context)
@@ -232,8 +229,8 @@ class ScreenFriendsContact extends BaseStatelessWidget {
           ComponentCreator.roundedButtonHollow(
               context,
               'friends_contact_button_invite'.tr(),
-              Theme.of(context).backgroundColor,
-              Theme.of(context).accentColor, () {
+              Theme.of(context).colorScheme.background,
+              Theme.of(context).colorScheme.secondary, () {
             //pressed
             final snackBar = SnackBar(
                 content:

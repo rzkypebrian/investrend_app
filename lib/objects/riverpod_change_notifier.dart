@@ -1,14 +1,10 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:Investrend/component/button_order.dart';
 import 'package:Investrend/component/empty_label.dart';
 import 'package:Investrend/component/text_button_retry.dart';
-import 'package:Investrend/objects/datafeed_type.dart';
-import 'package:Investrend/objects/class_value_notifier.dart';
 import 'package:Investrend/objects/data_holder.dart';
 import 'package:Investrend/objects/data_object.dart';
-import 'package:Investrend/objects/home_objects.dart';
 import 'package:Investrend/objects/serializeable.dart';
 import 'package:Investrend/objects/sosmed_object.dart';
 import 'package:Investrend/objects/iii_objects.dart';
@@ -24,7 +20,6 @@ import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:Investrend/utils/string_utils.dart';
 import 'package:Investrend/utils/utils.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:easy_localization/easy_localization.dart';
 
@@ -243,9 +238,9 @@ class TransactionFilterIntradayChangeNotifier extends ChangeNotifier {
   int index_transaction = 0;
   int index_status = 0;
 
-  void setIndex(int _index_transaction, int _index_status) {
-    this.index_transaction = _index_transaction;
-    this.index_status = _index_status;
+  void setIndex(int IndexTransaction, int IndexStatus) {
+    this.index_transaction = IndexTransaction;
+    this.index_status = IndexStatus;
     notifyListeners();
   }
 
@@ -268,9 +263,9 @@ class TransactionFilterHistoricalChangeNotifier extends ChangeNotifier {
   int index_transaction = 0;
   int index_period = 0;
 
-  void setIndex(int _index_transaction, int _index_period) {
-    this.index_transaction = _index_transaction;
-    this.index_period = _index_period;
+  void setIndex(int IndexTransaction, int IndexPeriod) {
+    this.index_transaction = IndexTransaction;
+    this.index_period = IndexPeriod;
     notifyListeners();
   }
 
@@ -554,19 +549,19 @@ class StatusRefreshNotifier extends ChangeNotifier {
   String trade_no         = '';
   void setData(
     String time,
-    String refresh_type,
-    String account_code,
-    String parent_order_id,
-    String child_order_id,
-    String trade_no
+    String refreshType,
+    String accountCode,
+    String parentOrderId,
+    String childOrderId,
+    String tradeNo
 
       ){
     this.time = time;
-    this.refresh_type     = refresh_type;
-    this.account_code     = account_code;
-    this.parent_order_id  = parent_order_id;
-    this.child_order_id   = child_order_id;
-    this.trade_no         = trade_no;
+    this.refresh_type     = refreshType;
+    this.account_code     = accountCode;
+    this.parent_order_id  = parentOrderId;
+    this.child_order_id   = childOrderId;
+    this.trade_no         = tradeNo;
     notifyListeners();
   }
 }
@@ -1016,7 +1011,7 @@ class ManagerDatafeed extends ChangeNotifier implements RedisConnectionListener,
     });
     if (!StringUtils.isEmtpy(gets)) {
       String getsSubs = '$gets\r\n$subs';
-      await connector.writeToServer(getsSubs);
+      connector.writeToServer(getsSubs);
     }
   }
 
@@ -1100,10 +1095,10 @@ class ManagerDatafeed extends ChangeNotifier implements RedisConnectionListener,
       DebugWriter.info('gets : $gets');
       DebugWriter.info('subs : $subs');
       if(!StringUtils.isEmtpy(unsubs)){
-        await connector.writeToServer(unsubs);
+        connector.writeToServer(unsubs);
       }
-      await connector.writeToServer(gets);
-      await connector.writeToServer(subs);
+      connector.writeToServer(gets);
+      connector.writeToServer(subs);
     }
   }
 
@@ -1759,8 +1754,8 @@ class AppPropertiesNotifier extends ChangeNotifier {
       timer = Timer.periodic(durationCheck, (timer) {
         print('Timer.PIN ' + timer.tick.toString() + '  _needPinTrading : $_needPinTrading');
         if (!_needPinTrading) {
-          int pin_timeout_index = properties.getInt(ROUTE_SETTINGS, PROP_SELECTED_PIN_TIMEOUT, TradingTimeoutDuration.FifteenMinutes.index);
-          TradingTimeoutDuration timeoutDuration = TradingTimeoutDuration.values.elementAt(pin_timeout_index);
+          int pinTimeoutIndex = properties.getInt(ROUTE_SETTINGS, PROP_SELECTED_PIN_TIMEOUT, TradingTimeoutDuration.FifteenMinutes.index);
+          TradingTimeoutDuration timeoutDuration = TradingTimeoutDuration.values.elementAt(pinTimeoutIndex);
 
           DateTime now = DateTime.now();
 
@@ -2178,7 +2173,7 @@ class Remark2ChangeNotifier extends ChangeNotifier {
         }
       }
     }
-    String result = null;
+    String result;
     for (int i = 0; i < notation.length; i++) {
       if (StringUtils.isEmtpy(result)) {
         result = notation.elementAt(i);

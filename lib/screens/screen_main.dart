@@ -1,15 +1,11 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:Investrend/component/animation_creator.dart';
 import 'package:Investrend/component/avatar.dart';
 import 'package:Investrend/component/button_account.dart';
-import 'package:Investrend/component/button_order.dart';
 import 'package:Investrend/component/charts/trading_view_chart.dart';
 import 'package:Investrend/component/component_creator.dart';
 import 'package:Investrend/component/component_app_bar.dart';
-import 'package:Investrend/component/spinnies.dart';
-import 'package:Investrend/main_application.dart';
 import 'package:Investrend/message.dart';
 import 'package:Investrend/objects/class_value_notifier.dart';
 import 'package:Investrend/objects/data_object.dart';
@@ -19,16 +15,11 @@ import 'package:Investrend/objects/iii_objects.dart';
 import 'package:Investrend/screens/base/base_state.dart';
 import 'package:Investrend/screens/profiles/screen_profile.dart';
 import 'package:Investrend/screens/tab_community/screen_community.dart';
-import 'package:Investrend/screens/screen_finder.dart';
 import 'package:Investrend/screens/tab_home/screen_home.dart';
 import 'package:Investrend/screens/tab_home/screen_notification.dart';
 import 'package:Investrend/screens/tab_portfolio/screen_portfolio.dart';
 import 'package:Investrend/screens/tab_search/screen_search.dart';
-import 'package:Investrend/screens/stock_detail/screen_stock_detail.dart';
 import 'package:Investrend/screens/tab_transaction/screen_transaction.dart';
-import 'package:Investrend/screens/trade/component/bottom_sheet_account.dart';
-import 'package:Investrend/screens/trade/screen_trade.dart';
-import 'package:Investrend/utils/connection_services.dart';
 import 'package:Investrend/utils/debug_writer.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:Investrend/utils/string_utils.dart';
@@ -36,7 +27,6 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -575,7 +565,7 @@ class _ScreenMainState extends BaseStateNoTabs<
 
         String time = '';
         String type = '';
-        String body_lenght = '';
+        String bodyLenght = '';
         String recipient = '';
         if (message.data != null && message.data.isNotEmpty) {
           if (message.data.containsKey('time')) {
@@ -588,59 +578,59 @@ class _ScreenMainState extends BaseStateNoTabs<
             type = message.data['type'];
           }
           if (message.data.containsKey('body_lenght')) {
-            body_lenght = message.data['body_lenght'];
+            bodyLenght = message.data['body_lenght'];
           }
         }
 
-        String created_at = StringUtils.noNullString(time);
-        String sent_at = '';
-        String fcm_title = StringUtils.noNullString(notification.title);
-        String fcm_body = StringUtils.noNullString(notification.body);
-        String fcm_image_url =
+        String createdAt = StringUtils.noNullString(time);
+        String sentAt = '';
+        String fcmTitle = StringUtils.noNullString(notification.title);
+        String fcmBody = StringUtils.noNullString(notification.body);
+        String fcmImageUrl =
             StringUtils.noNullString(notification.android.imageUrl);
-        String fcm_android_color = StringUtils.noNullString(android.color);
-        String fcm_android_channel_id =
+        String fcmAndroidColor = StringUtils.noNullString(android.color);
+        String fcmAndroidChannelId =
             StringUtils.noNullString(android.channelId);
-        String fcm_data_keys = '';
-        String fcm_data_values = '';
+        String fcmDataKeys = '';
+        String fcmDataValues = '';
         if (message.data != null && message.data.isNotEmpty) {
-          fcm_data_keys = message.data.keys.join('|');
-          fcm_data_values = message.data.values.join('|');
+          fcmDataKeys = message.data.keys.join('|');
+          fcmDataValues = message.data.values.join('|');
         }
-        String fcm_message_id = StringUtils.noNullString(message.messageId);
-        int read_count = 0;
+        String fcmMessageId = StringUtils.noNullString(message.messageId);
+        int readCount = 0;
 
         BaseMessage baseMessage;
         if (StringUtils.equalsIgnoreCase(type, "INBOX")) {
           baseMessage = InboxMessage(
               '-',
               recipient,
-              created_at,
-              sent_at,
-              fcm_title,
-              fcm_body,
-              fcm_image_url,
-              fcm_android_color,
-              fcm_android_channel_id,
-              fcm_data_keys,
-              fcm_data_values,
-              fcm_message_id,
-              read_count);
+              createdAt,
+              sentAt,
+              fcmTitle,
+              fcmBody,
+              fcmImageUrl,
+              fcmAndroidColor,
+              fcmAndroidChannelId,
+              fcmDataKeys,
+              fcmDataValues,
+              fcmMessageId,
+              readCount);
         } else if (StringUtils.equalsIgnoreCase(type, "BROADCAST")) {
           baseMessage = BroadcastMessage(
               '-',
               recipient,
-              created_at,
-              sent_at,
-              fcm_title,
-              fcm_body,
-              fcm_image_url,
-              fcm_android_color,
-              fcm_android_channel_id,
-              fcm_data_keys,
-              fcm_data_values,
-              fcm_message_id,
-              read_count);
+              createdAt,
+              sentAt,
+              fcmTitle,
+              fcmBody,
+              fcmImageUrl,
+              fcmAndroidColor,
+              fcmAndroidChannelId,
+              fcmDataKeys,
+              fcmDataValues,
+              fcmMessageId,
+              readCount);
         }
 
         /**
@@ -734,13 +724,13 @@ class _ScreenMainState extends BaseStateNoTabs<
     await myDevice.load();
     try {
       String username = context.read(dataHolderChangeNotifier).user.username;
-      String device_id = myDevice.unique_id;
-      String device_platform = InvestrendTheme.of(context).applicationPlatform;
-      String fcm_token = token;
-      String application_version =
+      String deviceId = myDevice.unique_id;
+      String devicePlatform = InvestrendTheme.of(context).applicationPlatform;
+      String fcmToken = token;
+      String applicationVersion =
           InvestrendTheme.of(context).applicationVersion;
       final result = await InvestrendTheme.datafeedHttp.registerDevice(
-          username, device_id, device_platform, fcm_token, application_version);
+          username, deviceId, devicePlatform, fcmToken, applicationVersion);
       if (result != null) {
         print('registerDevice result : $result');
       } else {
@@ -1352,7 +1342,7 @@ class _ScreenMainState extends BaseStateNoTabs<
     }
 
     AppBar appBar = AppBar(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       elevation: elevation,
       shadowColor: shadowColor,
       centerTitle: true,
@@ -1485,7 +1475,7 @@ class _ScreenMainState extends BaseStateNoTabs<
     }
 
     return AppBar(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       elevation: elevation,
       shadowColor: shadowColor,
       centerTitle: true,
@@ -1585,7 +1575,7 @@ class _ScreenMainState extends BaseStateNoTabs<
       shadowColor = Colors.red;
     }
     return AppBar(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       elevation: elevation,
       shadowColor: shadowColor,
       centerTitle: true,
@@ -1712,7 +1702,7 @@ class _ScreenMainState extends BaseStateNoTabs<
       shadowColor = Colors.red;
     }
     return AppBar(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       elevation: elevation,
       shadowColor: shadowColor,
       centerTitle: true,
@@ -1721,7 +1711,7 @@ class _ScreenMainState extends BaseStateNoTabs<
         tag: 'finder_field',
         child: Material(
           child: Container(
-            color: Theme.of(context).backgroundColor,
+            color: Theme.of(context).colorScheme.background,
             alignment: Alignment.center,
             height: InvestrendTheme.appBarHeight,
             child: ComponentCreator.textFieldSearch(context),
@@ -2188,15 +2178,15 @@ class _ScreenMainState extends BaseStateNoTabs<
             String tokenExisting =
                 context.read(dataHolderChangeNotifier).user.token.access_token;
             if (!StringUtils.equalsIgnoreCase(tokenNew, tokenExisting)) {
-              String default_message = 'single_sign_on_message'.tr();
-              String default_title = 'single_sign_on_title'.tr();
+              String defaultMessage = 'single_sign_on_message'.tr();
+              String defaultTitle = 'single_sign_on_title'.tr();
 
-              information = default_message + '\n\n' + information;
+              information = defaultMessage + '\n\n' + information;
               // Future.delayed(Duration(seconds: 1),(){
               //
               // });
               InvestrendTheme.of(context).showDialogInvalidSession(context,
-                  message: information, title: default_title);
+                  message: information, title: defaultTitle);
             } else {
               String tokenNew = message[3];
               String information = message[4];
@@ -2212,18 +2202,18 @@ class _ScreenMainState extends BaseStateNoTabs<
             //[BOT, STATUS, 20220210-10:43:50, ORDER, E108, 13]
             //[BOT, STATUS, 20220210-10:51:30, TRADE, E108, 13, 13, 000000605285]
 
-            String refresh_type = message[3];
-            String account_code = message[4];
-            String parent_order_id = message[5];
-            String child_order_id = message.length >= 7 ? message[6] : '';
-            String trade_no = message.length >= 8 ? message[7] : '';
+            String refreshType = message[3];
+            String accountCode = message[4];
+            String parentOrderId = message[5];
+            String childOrderId = message.length >= 7 ? message[6] : '';
+            String tradeNo = message.length >= 8 ? message[7] : '';
 
             //print(routeName + ' got STATUS refresh  $channel  time $time :   $refresh_type  order_id : $order_id  $account_code' );
             print(routeName +
-                ' got STATUS on $channel  refresh_type : $refresh_type  $account_code time : $time   parent_order_id : $parent_order_id  child_order_id : $child_order_id  trade_no : $trade_no');
+                ' got STATUS on $channel  refresh_type : $refreshType  $accountCode time : $time   parent_order_id : $parentOrderId  child_order_id : $childOrderId  trade_no : $tradeNo');
 
-            context.read(statusRefreshNotifier).setData(time, refresh_type,
-                account_code, parent_order_id, child_order_id, trade_no);
+            context.read(statusRefreshNotifier).setData(time, refreshType,
+                accountCode, parentOrderId, childOrderId, tradeNo);
           }
         }
       }
@@ -2265,7 +2255,7 @@ class _ScreenMainState extends BaseStateNoTabs<
         ) {
       final String HEADER = data[0]; // BOT
       final String TYPE = data[1];
-      ; // EXIT
+// EXIT
 
       if (HEADER == 'BOT' && TYPE == 'EXIT') {
         return true;

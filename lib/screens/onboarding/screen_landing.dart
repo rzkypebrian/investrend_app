@@ -1,4 +1,3 @@
-import 'package:Investrend/component/animation_creator.dart';
 import 'package:Investrend/component/component_creator.dart';
 import 'package:Investrend/screens/screen_login.dart';
 import 'package:Investrend/screens/onboarding/screen_register.dart';
@@ -6,14 +5,15 @@ import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:easy_localization/easy_localization.dart';
-import '../screen_main.dart';
 
 class ScreenLanding extends StatelessWidget {
   final _selectedCarouselNotifier = ValueNotifier(0);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(backgroundColor: Theme.of(context).backgroundColor, body: createBody(context));
+    return Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.background,
+        body: createBody(context));
   }
 
   Widget createBody(BuildContext context) {
@@ -23,12 +23,16 @@ class ScreenLanding extends StatelessWidget {
     double top = height * 0.07;
     double imageSize = width * 0.7;
     double imagePadding = (width - imageSize) / 2;
-    const carousel_images = ['images/landing_01.png', 'images/landing_02.png', 'images/landing_03.png'];
-    double dot_selected_width = 20;
-    double dot_width = 10;
-    double dot_height = 5;
+    const carousel_images = [
+      'images/landing_01.png',
+      'images/landing_02.png',
+      'images/landing_03.png'
+    ];
+    double dotSelectedWidth = 20;
+    double dotWidth = 10;
+    double dotHeight = 5;
     bool lightTheme = Theme.of(context).brightness == Brightness.light;
-    bool accentColorIsNull = Theme.of(context).accentColor == null;
+    bool accentColorIsNull = Theme.of(context).colorScheme.secondary == null;
     print('lightTheme : $lightTheme  accentColorIsNull : $accentColorIsNull');
     return Container(
       height: double.maxFinite,
@@ -40,7 +44,10 @@ class ScreenLanding extends StatelessWidget {
             height: top,
           ),
           //Center(child: Image.asset('images/icons/ic_launcher.png')),
-          Center(child: Image.asset(InvestrendTheme.of(context).ic_launcher, )),
+          Center(
+              child: Image.asset(
+            InvestrendTheme.of(context).ic_launcher,
+          )),
           Spacer(
             flex: 1,
           ),
@@ -94,18 +101,23 @@ class ScreenLanding extends StatelessWidget {
             flex: 1,
           ),
 
-          SizedBox(height: 10.0,),
+          SizedBox(
+            height: 10.0,
+          ),
 
           FractionallySizedBox(
             widthFactor: 0.8,
-            child: ComponentCreator.roundedButton(context, 'landing_button_register'.tr(), Theme.of(context).accentColor,
-                Theme.of(context).primaryColor, Theme.of(context).accentColor, () {
+            child: ComponentCreator.roundedButton(
+                context,
+                'landing_button_register'.tr(),
+                Theme.of(context).colorScheme.secondary,
+                Theme.of(context).primaryColor,
+                Theme.of(context).colorScheme.secondary, () {
               // on presss
               //EasyLocalization.of(context).setLocale(Locale('en'));
               showRegisterPage(context);
             }),
           ),
-
 
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -118,14 +130,14 @@ class ScreenLanding extends StatelessWidget {
               ),
               TextButton(
                 style: TextButton.styleFrom(
+                    primary: InvestrendTheme.of(context).hyperlink,
                     padding: EdgeInsets.all(0.0),
                     //visualDensity: VisualDensity.compact,
                     animationDuration: Duration(milliseconds: 500),
-                    //primary: Theme.of(context).accentColor,
-                    primary: InvestrendTheme.of(context).hyperlink,
                     backgroundColor: Colors.transparent,
                     //textStyle: Theme.of(context).textTheme.bodyText2
-                    textStyle: InvestrendTheme.of(context).small_w400_greyDarker),
+                    textStyle:
+                        InvestrendTheme.of(context).small_w400_greyDarker),
                 child: Text('landing_button_enter'.tr()),
                 onPressed: () {
                   print('pressed');
@@ -170,7 +182,8 @@ class ScreenLanding extends StatelessWidget {
     //Navigator.pushReplacementNamed(context, '/login');
     //Navigator.pushReplacementNamed(context, '/landing');
 
-    InvestrendTheme.pushReplacement(context, ScreenLogin(), ScreenTransition.SlideLeft,'/login');
+    InvestrendTheme.pushReplacement(
+        context, ScreenLogin(), ScreenTransition.SlideLeft, '/login');
 
     // Navigator.pushReplacement(
     //   context,
@@ -195,46 +208,47 @@ class ScreenLanding extends StatelessWidget {
   void showRegisterPage(BuildContext context) {
     //Navigator.pushReplacementNamed(context, '/login');
     //Navigator.pushReplacementNamed(context, '/landing');
-    InvestrendTheme.push(context, ScreenRegister(), ScreenTransition.SlideUp,'/register');
+    InvestrendTheme.push(
+        context, ScreenRegister(), ScreenTransition.SlideUp, '/register');
 
- //    Navigator.push(
- //      context,
- //      PageRouteBuilder(
- //        transitionDuration: Duration(milliseconds: 1000),
- //        //pageBuilder: (context, animation1, animation2) => ScreenLanding(),
- //
- //        pageBuilder: (context, animation1, animation2) => ScreenRegister(),
- //        transitionsBuilder: (context, animation, secondaryAnimation, child) {
- //          return AnimationCreator.transitionSlideUp(context, animation, secondaryAnimation, child);
- //        }
- //        /*
- //      transitionsBuilder: (context, animation, secondaryAnimation, child) {
- //        var begin = Offset(0.0, 1.0);
- //        var end = Offset.zero;
- //        var curve = Curves.ease;
- //
- //        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
- //
- //        return SlideTransition(
- //          position: animation.drive(tween),
- //          child: child,
- //        );
- //
- //
- //  }
- // */
- //        ,
- //
- //        /*
- //      transitionsBuilder:
- //          (context, animation, secondaryAnimation, child) =>
- //
- //          FadeTransition(
- //            opacity: animation,
- //            child: child,
- //          ),*/
- //      ),
- //    );
+    //    Navigator.push(
+    //      context,
+    //      PageRouteBuilder(
+    //        transitionDuration: Duration(milliseconds: 1000),
+    //        //pageBuilder: (context, animation1, animation2) => ScreenLanding(),
+    //
+    //        pageBuilder: (context, animation1, animation2) => ScreenRegister(),
+    //        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+    //          return AnimationCreator.transitionSlideUp(context, animation, secondaryAnimation, child);
+    //        }
+    //        /*
+    //      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+    //        var begin = Offset(0.0, 1.0);
+    //        var end = Offset.zero;
+    //        var curve = Curves.ease;
+    //
+    //        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+    //
+    //        return SlideTransition(
+    //          position: animation.drive(tween),
+    //          child: child,
+    //        );
+    //
+    //
+    //  }
+    // */
+    //        ,
+    //
+    //        /*
+    //      transitionsBuilder:
+    //          (context, animation, secondaryAnimation, child) =>
+    //
+    //          FadeTransition(
+    //            opacity: animation,
+    //            child: child,
+    //          ),*/
+    //      ),
+    //    );
 
 /*
     Navigator.pushReplacement(

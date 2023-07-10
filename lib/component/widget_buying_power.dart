@@ -1,4 +1,3 @@
-import 'package:Investrend/component/tapable_widget.dart';
 import 'package:Investrend/objects/data_object.dart';
 import 'package:Investrend/objects/riverpod_change_notifier.dart';
 import 'package:Investrend/screens/screen_fund_out.dart';
@@ -71,7 +70,7 @@ class _WidgetBuyingPowerState extends State<WidgetBuyingPower> {
       elevation: 0.0,
       // minWidth: tileWidth,
       //height: tileHeight,
-      color: Theme.of(context).accentColor,
+      color: Theme.of(context).colorScheme.secondary,
       splashColor: InvestrendTheme.of(context).tileSplashColor,
       padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0, bottom: 8.0),
       shape: RoundedRectangleBorder(
@@ -172,7 +171,7 @@ class _WidgetBuyingPowerState extends State<WidgetBuyingPower> {
       //height: 50,
       padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0, bottom: 8.0),
       decoration: BoxDecoration(
-        color: Theme.of(context).accentColor,
+        color: Theme.of(context).colorScheme.secondary,
         shape: BoxShape.rectangle,
         borderRadius: BorderRadius.all(Radius.circular(10.0)),
       ),

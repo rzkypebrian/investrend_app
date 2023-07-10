@@ -2,14 +2,12 @@ import 'package:Investrend/component/component_creator.dart';
 import 'package:Investrend/objects/class_value_notifier.dart';
 import 'package:Investrend/objects/data_object.dart';
 import 'package:Investrend/objects/home_objects.dart';
-import 'package:Investrend/screens/screen_coming_soon.dart';
 import 'package:Investrend/screens/tab_portfolio/screen_portfolio_estatement.dart';
 
 //import 'package:Investrend/utils/callbacks.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 class CardMutationHistorical extends StatelessWidget {
@@ -19,9 +17,9 @@ class CardMutationHistorical extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool coming_soon = true;
+    bool comingSoon = true;
     Widget title;
-    if(coming_soon){
+    if(comingSoon){
       title = ComponentCreator.subtitleNoButtonMore(context, 'card_cash_mutation_historical_title'.tr(), );
     }else{
       title = ComponentCreator.subtitleButtonMore(context, 'card_cash_mutation_historical_title'.tr(), (){
@@ -162,7 +160,7 @@ class CardCashMutationHistorical extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool coming_soon = false;
+    bool comingSoon = false;
     return Container(
       //color: Colors.lightBlueAccent,
       //margin: EdgeInsets.only(top: InvestrendTheme.cardPaddingGeneral, bottom: InvestrendTheme.cardPaddingGeneral),
@@ -174,7 +172,7 @@ class CardCashMutationHistorical extends StatelessWidget {
             padding: const EdgeInsets.only(left: InvestrendTheme.cardPaddingGeneral),
 
             child: ComponentCreator.subtitleButtonMore(context, 'card_cash_mutation_historical_title'.tr(), (){
-              if(coming_soon){
+              if(comingSoon){
                 InvestrendTheme.of(context).showSnackBar(context, 'coming_soon_label'.tr());
               }else{
                 Navigator.push(context, CupertinoPageRoute(
@@ -193,7 +191,7 @@ class CardCashMutationHistorical extends StatelessWidget {
                 valueListenable: notifier,
                 builder: (context, ResultMutasi data, child) {
                   return Text(
-                    coming_soon ? ' - ' : (data.month ?? '-'),
+                    comingSoon ? ' - ' : (data.month ?? '-'),
                     style: InvestrendTheme.of(context).support_w400_compact.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor),
                   );
                 }),

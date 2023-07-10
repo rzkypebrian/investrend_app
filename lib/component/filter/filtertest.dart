@@ -1,6 +1,5 @@
 import 'package:Investrend/component/type_util.dart';
 import 'package:Investrend/screens/tab_portfolio/screen_portfolio_detail.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:reorderables/reorderables.dart';
 

@@ -17,7 +17,6 @@ import 'package:Investrend/objects/iii_objects.dart';
 import 'package:Investrend/screens/base/base_state.dart';
 import 'package:Investrend/screens/screen_main.dart';
 import 'package:Investrend/screens/tab_community/screen_community.dart';
-import 'package:Investrend/screens/tab_community/screen_create_post.dart';
 import 'package:Investrend/screens/tab_transaction/screen_transaction.dart';
 import 'package:Investrend/screens/trade/component/bottom_sheet_account.dart';
 import 'package:Investrend/screens/trade/component/bottom_sheet_error.dart';
@@ -203,7 +202,7 @@ class _ScreenTradeState
   Widget build(BuildContext context) {
     double paddingBottom = MediaQuery.of(context).viewPadding.bottom;
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       appBar: createAppBarNew(context),
       body: createBody(context, paddingBottom),
       bottomSheet: createBottomSheet(context, paddingBottom),
@@ -266,11 +265,11 @@ class _ScreenTradeState
             InvestrendTheme.of(context).showSnackBar(context, e.message());
             return;
           } else {
-            String network_error_label = 'network_error_label'.tr();
-            network_error_label =
-                network_error_label.replaceFirst("#CODE#", e.code.toString());
+            String networkErrorLabel = 'network_error_label'.tr();
+            networkErrorLabel =
+                networkErrorLabel.replaceFirst("#CODE#", e.code.toString());
             InvestrendTheme.of(context)
-                .showSnackBar(context, network_error_label);
+                .showSnackBar(context, networkErrorLabel);
             return;
           }
         } else {
@@ -343,11 +342,11 @@ class _ScreenTradeState
           } else if (error.isErrorTrading()) {
             InvestrendTheme.of(context).showSnackBar(context, error.message());
           } else {
-            String network_error_label = 'network_error_label'.tr();
-            network_error_label = network_error_label.replaceFirst(
+            String networkErrorLabel = 'network_error_label'.tr();
+            networkErrorLabel = networkErrorLabel.replaceFirst(
                 "#CODE#", error.code.toString());
             InvestrendTheme.of(context)
-                .showSnackBar(context, network_error_label);
+                .showSnackBar(context, networkErrorLabel);
             return;
           }
         } else {
@@ -451,7 +450,7 @@ class _ScreenTradeState
                   InvestrendTheme.formatPrice(notifier.summary.close),
                   style: InvestrendTheme.of(context)
                       .support_w400_compact
-                      .copyWith(color: Theme.of(context).accentColor),
+                      .copyWith(color: Theme.of(context).colorScheme.secondary),
                 ),
               ],
             ),
@@ -463,7 +462,7 @@ class _ScreenTradeState
     }
 
     return AppBar(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       elevation: elevation,
       shadowColor: shadowColor,
       centerTitle: true,
@@ -778,7 +777,7 @@ class _ScreenTradeState
               InvestrendTheme.formatPrice(notifier.summary.close),
               style: InvestrendTheme.of(context)
                   .support_w400_compact
-                  .copyWith(color: Theme.of(context).accentColor),
+                  .copyWith(color: Theme.of(context).colorScheme.secondary),
             ),
           ],
         );
@@ -836,7 +835,7 @@ class _ScreenTradeState
       });
     }
     return AppBar(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       elevation: elevation,
       shadowColor: shadowColor,
       centerTitle: true,
@@ -1112,7 +1111,7 @@ class _ScreenTradeState
                     'button_done'.tr(),
                     style: InvestrendTheme.of(context)
                         .small_w500_compact
-                        .copyWith(color: Theme.of(context).accentColor),
+                        .copyWith(color: Theme.of(context).colorScheme.secondary),
                   ),
                   onPressed: () {
                     _bottomSheetNotifier.value = true;
@@ -1929,12 +1928,12 @@ class OrderFinishedFullscreenBottomSheet extends BaseTradeBottomSheet {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Theme.of(context).backgroundColor,
+      color: Theme.of(context).colorScheme.background,
       child: SafeArea(
         child: Scaffold(
-          backgroundColor: Theme.of(context).backgroundColor,
+          backgroundColor: Theme.of(context).colorScheme.background,
           appBar: AppBar(
-            backgroundColor: Theme.of(context).backgroundColor,
+            backgroundColor: Theme.of(context).colorScheme.background,
             elevation: 0.0,
             leading: IconButton(
                 icon: Image.asset('images/icons/action_clear.png',
@@ -2139,9 +2138,9 @@ class OrderFinishedBottomSheet extends BaseTradeBottomSheet {
       child: ComponentCreator.roundedButton(
           context,
           'trade_finished_button_show_order'.tr(),
-          Theme.of(context).accentColor,
+          Theme.of(context).colorScheme.secondary,
           InvestrendTheme.of(context).whiteColor,
-          Theme.of(context).accentColor, () {
+          Theme.of(context).colorScheme.secondary, () {
         print('lihat order clicked');
         Navigator.pop(context, data.clone()); // clear data
       }),
@@ -2551,7 +2550,7 @@ class ConfirmationBottomSheet extends BaseTradeBottomSheet {
     String name = data.stock_name;
     bool fastMode = data.fastMode;
     int tradingLimitUsage = data.tradingLimitUsage;
-    int total_value =
+    int totalValue =
         data.fastMode ? data.fastTotalValue : data.normalTotalValue;
 
     //OrderType orderType = odc.orderType;
@@ -2686,7 +2685,7 @@ class ConfirmationBottomSheet extends BaseTradeBottomSheet {
           ),
           Expanded(
             child: Text(
-              InvestrendTheme.formatMoney(total_value, prefixRp: true),
+              InvestrendTheme.formatMoney(totalValue, prefixRp: true),
               style: InvestrendTheme.of(context).regular_w600_compact.copyWith(
                   color: InvestrendTheme.of(context).blackAndWhiteText),
               textAlign: TextAlign.right,
@@ -2740,7 +2739,7 @@ class ConfirmationBottomSheet extends BaseTradeBottomSheet {
             Expanded(
                 flex: 1,
                 child: Scrollbar(
-                  isAlwaysShown: true,
+                  thumbVisibility: true,
                   child: ListView(
                     shrinkWrap: true,
                     padding: EdgeInsets.only(right: 14.0),

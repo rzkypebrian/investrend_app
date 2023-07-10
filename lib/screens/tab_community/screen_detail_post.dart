@@ -1,4 +1,3 @@
-import 'dart:math';
 
 import 'package:Investrend/component/avatar.dart';
 import 'package:Investrend/component/cards/card_social_media.dart';
@@ -9,7 +8,6 @@ import 'package:Investrend/component/tapable_widget.dart';
 import 'package:Investrend/objects/sosmed_object.dart';
 import 'package:Investrend/screens/base/base_state.dart';
 import 'package:Investrend/screens/trade/component/bottom_sheet_loading.dart';
-import 'package:Investrend/utils/connection_services.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:Investrend/utils/string_utils.dart';
 import 'package:Investrend/utils/utils.dart';
@@ -69,10 +67,10 @@ class _ScreenDetailPostState extends BaseStateNoTabs<ScreenDetailPost> {
     }
     print('reach the bottom');
 
-    String next_page_url = context.read(sosmedCommentChangeNotifier).next_page_url;
-    int current_page = context.read(sosmedCommentChangeNotifier).current_page;
-    int last_page = context.read(sosmedCommentChangeNotifier).last_page;
-    if(current_page >= last_page){
+    String nextPageUrl = context.read(sosmedCommentChangeNotifier).next_page_url;
+    int currentPage = context.read(sosmedCommentChangeNotifier).current_page;
+    int lastPage = context.read(sosmedCommentChangeNotifier).last_page;
+    if(currentPage >= lastPage){
       if(showedLastPageInfo){
         return;
       }
@@ -84,8 +82,8 @@ class _ScreenDetailPostState extends BaseStateNoTabs<ScreenDetailPost> {
       return;
     }
     context.read(sosmedCommentChangeNotifier).showLoadingBottom(true);
-    int next_page = current_page + 1;
-    final result = doUpdate(nextPage: next_page);
+    int nextPage = currentPage + 1;
+    final result = doUpdate(nextPage: nextPage);
   }
   
   @override
@@ -94,14 +92,14 @@ class _ScreenDetailPostState extends BaseStateNoTabs<ScreenDetailPost> {
     double paddingBottomFake = 0;
     return Container(
       //color: Colors.red,
-      color: Theme.of(context).backgroundColor,
+      color: Theme.of(context).colorScheme.background,
       height: double.maxFinite,
       width: double.maxFinite,
       child: Stack(
         children: [
           SafeArea(
             child: ComponentCreator.keyboardHider(context, Scaffold(
-              backgroundColor: Theme.of(context).backgroundColor,
+              backgroundColor: Theme.of(context).colorScheme.background,
               appBar: createAppBar(context),
               body: createBody(context, paddingBottomFake),
               bottomSheet: createBottomSheet(context, paddingBottomFake),
@@ -175,7 +173,7 @@ class _ScreenDetailPostState extends BaseStateNoTabs<ScreenDetailPost> {
 
     return AppBar(
       elevation: 0.0,
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       title: AppBarTitleText('sosmed_detail_post_title'.tr()),
       leading: AppBarActionIcon(
         'images/icons/action_back.png',
@@ -408,7 +406,7 @@ class _ScreenDetailPostState extends BaseStateNoTabs<ScreenDetailPost> {
   @override
   Widget createBody(BuildContext context, double paddingBottom) {
 
-    List<Widget> pre_childs = [
+    List<Widget> preChilds = [
       topWidget(context),
       Padding(
         padding: const EdgeInsets.only(left: 12.0, right: 12.0, bottom: 16.0),
@@ -428,15 +426,15 @@ class _ScreenDetailPostState extends BaseStateNoTabs<ScreenDetailPost> {
       ComponentCreator.divider(context),
       //commentWidget(context),
     ];
-    List<Widget> pre_childs_loading = List.from(pre_childs);
-    pre_childs_loading.add(Padding(
+    List<Widget> preChildsLoading = List.from(preChilds);
+    preChildsLoading.add(Padding(
       padding: const EdgeInsets.only(top: 16.0),
-      child: Center(child: CircularProgressIndicator(color: Theme.of(context).accentColor, backgroundColor: Theme.of(context).accentColor.withOpacity(0.2),)),
+      child: Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.secondary, backgroundColor: Theme.of(context).colorScheme.secondary.withOpacity(0.2),)),
     ));
 
     return RefreshIndicator(
       color: InvestrendTheme.of(context).textWhite,
-      backgroundColor: Theme.of(context).accentColor,
+      backgroundColor: Theme.of(context).colorScheme.secondary,
       onRefresh: onRefresh,
       child: Consumer(builder: (context, watch, child) {
         final notifier = watch(sosmedCommentChangeNotifier);
@@ -444,11 +442,11 @@ class _ScreenDetailPostState extends BaseStateNoTabs<ScreenDetailPost> {
 
           return ListView(
             padding: const EdgeInsets.all(InvestrendTheme.cardMargin),
-            children: showLoadingFirstTime ? pre_childs_loading : pre_childs,
+            children: showLoadingFirstTime ? preChildsLoading : preChilds,
           );
         }
 
-        int totalCount = notifier.countData() + pre_childs.length;
+        int totalCount = notifier.countData() + preChilds.length;
         if(notifier.loadingBottom || notifier.retryBottom){
           totalCount  = totalCount + 1;
         }
@@ -459,11 +457,11 @@ class _ScreenDetailPostState extends BaseStateNoTabs<ScreenDetailPost> {
             //itemCount: notifier.countPost() + pre_childs.length ,
             itemCount:totalCount,
             itemBuilder: (BuildContext context, int index) {
-              if(index < pre_childs.length){
-                return pre_childs.elementAt(index);
-              }else if(index < (pre_childs.length + notifier.countData())){
+              if(index < preChilds.length){
+                return preChilds.elementAt(index);
+              }else if(index < (preChilds.length + notifier.countData())){
 
-                int indexPost = index - pre_childs.length;
+                int indexPost = index - preChilds.length;
                 PostComment comment = notifier.datas().elementAt(indexPost);
 
                 if(comment != null){
@@ -474,9 +472,9 @@ class _ScreenDetailPostState extends BaseStateNoTabs<ScreenDetailPost> {
 
               }else{
                 if(notifier.loadingBottom){
-                  return Center(child: CircularProgressIndicator(color: Theme.of(context).accentColor, backgroundColor: Theme.of(context).accentColor.withOpacity(0.2),));
+                  return Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.secondary, backgroundColor: Theme.of(context).colorScheme.secondary.withOpacity(0.2),));
                 }else if(notifier.retryBottom){
-                  return Center(child: TextButton(child: Text('button_retry'.tr(), style: InvestrendTheme.of(context).small_w400_compact.copyWith(color: Theme.of(context).accentColor),), onPressed: (){
+                  return Center(child: TextButton(child: Text('button_retry'.tr(), style: InvestrendTheme.of(context).small_w400_compact.copyWith(color: Theme.of(context).colorScheme.secondary),), onPressed: (){
                     fetchNextPage();
                   },));
                 }else{
@@ -613,7 +611,7 @@ class _ScreenDetailPostState extends BaseStateNoTabs<ScreenDetailPost> {
                   enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.transparent, width: 0.0)),
                   errorBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.transparent, width: 0.0)),
                   focusedErrorBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.transparent, width: 0.0)),
-                  focusColor: Theme.of(context).accentColor,
+                  focusColor: Theme.of(context).colorScheme.secondary,
                 ),
               ),
             ),

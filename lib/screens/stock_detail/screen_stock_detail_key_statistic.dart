@@ -1,14 +1,11 @@
 import 'package:Investrend/component/cards/card_earning_pershare.dart';
 import 'package:Investrend/component/cards/card_label_value.dart';
-import 'package:Investrend/component/cards/card_local_foreign.dart';
-import 'package:Investrend/component/cards/card_performance.dart';
 import 'package:Investrend/component/component_creator.dart';
 import 'package:Investrend/objects/class_value_notifier.dart';
 import 'package:Investrend/objects/data_object.dart';
 import 'package:Investrend/objects/riverpod_change_notifier.dart';
 import 'package:Investrend/objects/iii_objects.dart';
 import 'package:Investrend/screens/base/base_state.dart';
-import 'package:Investrend/utils/connection_services.dart';
 import 'package:Investrend/utils/string_utils.dart';
 import 'package:flutter/material.dart';
 
@@ -205,7 +202,7 @@ class _ScreenStockDetailKeyStatisticState extends BaseStateNoTabsWithParentTab<S
 
     return RefreshIndicator(
       color: InvestrendTheme.of(context).textWhite,
-      backgroundColor: Theme.of(context).accentColor,
+      backgroundColor: Theme.of(context).colorScheme.secondary,
       onRefresh: onRefresh,
       child: ListView(
         controller: pScrollController,

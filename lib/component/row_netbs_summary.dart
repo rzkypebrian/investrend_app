@@ -192,7 +192,7 @@ class _RowNetBSSummaryState extends State<RowNetBSSummary> {
 
     bool odd = (line - 1) % 2 != 0;
     return Container(
-      color: odd ? InvestrendTheme.of(context).oddColor : Theme.of(context).backgroundColor,
+      color: odd ? InvestrendTheme.of(context).oddColor : Theme.of(context).colorScheme.background,
       padding: const EdgeInsets.only(left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -314,7 +314,7 @@ class _RowNetBSSummaryState extends State<RowNetBSSummary> {
 
     bool odd = (line - 1) % 2 != 0;
     return Container(
-      color: odd ? InvestrendTheme.of(context).oddColor : Theme.of(context).backgroundColor,
+      color: odd ? InvestrendTheme.of(context).oddColor : Theme.of(context).colorScheme.background,
       padding: const EdgeInsets.only(left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,

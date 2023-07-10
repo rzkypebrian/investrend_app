@@ -22,7 +22,7 @@ class CircleButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    imageColor = imageColor?? Theme.of(context).accentColor;
+    imageColor = imageColor?? Theme.of(context).colorScheme.secondary;
     imagePadding = imagePadding?? EdgeInsets.all(4.0);
     backgroundColor = backgroundColor ?? Theme.of(context).primaryColor;
     splashColor = splashColor ?? Theme.of(context).splashColor;

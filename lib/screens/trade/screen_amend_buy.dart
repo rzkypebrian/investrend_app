@@ -399,9 +399,9 @@ class _ScreenAmendBuyState extends BaseAmendState<ScreenAmendBuy>
             onProgressAccount = false;
             return false;
           }else{
-            String network_error_label = 'network_error_label'.tr();
-            network_error_label = network_error_label.replaceFirst("#CODE#", e.code.toString());
-            InvestrendTheme.of(context).showSnackBar(context, network_error_label);
+            String networkErrorLabel = 'network_error_label'.tr();
+            networkErrorLabel = networkErrorLabel.replaceFirst("#CODE#", e.code.toString());
+            InvestrendTheme.of(context).showSnackBar(context, networkErrorLabel);
             onProgressAccount = false;
             return false;
           }

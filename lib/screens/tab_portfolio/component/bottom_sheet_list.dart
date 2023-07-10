@@ -133,9 +133,9 @@ class ListBottomSheet extends StatelessWidget {
     Color colorIcon = Colors.transparent;
 
     if (selected) {
-      style = InvestrendTheme.of(context).regular_w600_compact.copyWith(color: Theme.of(context).accentColor);
+      style = InvestrendTheme.of(context).regular_w600_compact.copyWith(color: Theme.of(context).colorScheme.secondary);
       //colorText = Theme.of(context).accentColor;
-      colorIcon = Theme.of(context).accentColor;
+      colorIcon = Theme.of(context).colorScheme.secondary;
     }
 
     Widget textWidget;

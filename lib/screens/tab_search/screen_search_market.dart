@@ -1,10 +1,10 @@
 import 'dart:async';
 
+import 'package:Investrend/component/cards/card_broker_rank.dart';
 import 'package:Investrend/component/cards/card_chart.dart';
 import 'package:Investrend/component/cards/card_local_foreign.dart';
 import 'package:Investrend/component/cards/card_ohlcv_chart.dart';
 import 'package:Investrend/component/cards/card_performance.dart';
-import 'package:Investrend/component/chart_candlestick.dart';
 import 'package:Investrend/component/component_creator.dart';
 import 'package:Investrend/component/sort_and_filter_popup.dart';
 import 'package:Investrend/component/widget_price.dart';
@@ -13,13 +13,10 @@ import 'package:Investrend/objects/data_object.dart';
 import 'package:Investrend/objects/iii_objects.dart';
 import 'package:Investrend/objects/riverpod_change_notifier.dart';
 import 'package:Investrend/screens/base/base_state.dart';
-import 'package:Investrend/screens/base/screen_aware.dart';
 import 'package:Investrend/screens/screen_detail_list.dart';
 import 'package:Investrend/screens/screen_main.dart';
 import 'package:Investrend/screens/stock_detail/screen_stock_detail_analysis.dart';
 import 'package:Investrend/screens/tab_portfolio/screen_portfolio_detail.dart';
-import 'package:Investrend/utils/callbacks.dart';
-import 'package:Investrend/utils/connection_services.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:Investrend/utils/string_utils.dart';
 import 'package:Investrend/utils/ui_helper.dart';
@@ -164,6 +161,9 @@ class _ScreenSearchMarketState extends BaseStateNoTabsWithParentTab<
     //   height: 10.0,
     // ));
     childs.add(ComponentCreator.dividerCard(context));
+    //brokerrank
+    childs.add(CardBrokerRank());
+    childs.add(ComponentCreator.dividerCard(context));
     childs.add(createCardSector(context));
     childs.add(SizedBox(
       height: paddingBottom + 80,
@@ -171,7 +171,7 @@ class _ScreenSearchMarketState extends BaseStateNoTabsWithParentTab<
 
     return RefreshIndicator(
       color: InvestrendTheme.of(context).textWhite,
-      backgroundColor: Theme.of(context).accentColor,
+      backgroundColor: Theme.of(context).colorScheme.secondary,
       onRefresh: onRefresh,
       child: ListView(
         shrinkWrap: false,

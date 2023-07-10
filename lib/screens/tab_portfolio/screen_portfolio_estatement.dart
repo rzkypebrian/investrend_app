@@ -1,18 +1,11 @@
-import 'package:Investrend/component/button_account.dart';
 import 'package:Investrend/component/component_app_bar.dart';
 import 'package:Investrend/component/component_creator.dart';
-import 'package:Investrend/component/empty_label.dart';
-import 'package:Investrend/component/info_detail_widget.dart';
-import 'package:Investrend/objects/class_value_notifier.dart';
 import 'package:Investrend/objects/data_object.dart';
 import 'package:Investrend/objects/riverpod_change_notifier.dart';
 import 'package:Investrend/screens/base/base_state.dart';
-import 'package:Investrend/utils/connection_services.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
-import 'package:Investrend/utils/string_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -155,7 +148,7 @@ class _ScreenESatementState extends BaseStateNoTabs<ScreenESatement> {
   Widget createAppBar(BuildContext context) {
     // TODO: implement createAppBar
     return AppBar(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       elevation: 0.0,
       title: AppBarTitleText('e_statement_title'.tr()),
       leading: AppBarActionIcon('images/icons/action_back.png', () {
@@ -178,9 +171,9 @@ class _ScreenESatementState extends BaseStateNoTabs<ScreenESatement> {
         children: [
           Image.asset('images/icons/statement.png', height: 24.0, width: 24.0,),
           SizedBox(width: InvestrendTheme.cardPaddingGeneral,),
-          Text(date??'-', style: InvestrendTheme.of(context).small_w400_compact.copyWith(color: Theme.of(context).accentColor),),
+          Text(date??'-', style: InvestrendTheme.of(context).small_w400_compact.copyWith(color: Theme.of(context).colorScheme.secondary),),
           Spacer(flex: 1,),
-          TextButton(child: Text('button_see'.tr(), style: InvestrendTheme.of(context).small_w600_compact.copyWith(color: Theme.of(context).accentColor),),onPressed: ()=> launchURL(context, url),),
+          TextButton(child: Text('button_see'.tr(), style: InvestrendTheme.of(context).small_w600_compact.copyWith(color: Theme.of(context).colorScheme.secondary),),onPressed: ()=> launchURL(context, url),),
         ],
       ),
     );
@@ -213,7 +206,7 @@ class _ScreenESatementState extends BaseStateNoTabs<ScreenESatement> {
   Widget createBody(BuildContext context, double paddingBottom) {
     return RefreshIndicator(
       color: InvestrendTheme.of(context).textWhite,
-      backgroundColor: Theme.of(context).accentColor,
+      backgroundColor: Theme.of(context).colorScheme.secondary,
       onRefresh: onRefresh,
       child: ListView(
         children: [

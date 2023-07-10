@@ -469,7 +469,8 @@ class TopCommentsWidget extends StatelessWidget {
               style: InvestrendTheme.of(context)
                   .more_support_w600_compact
                   .copyWith(
-                      color: Theme.of(context).accentColor, fontSize: 12.0),
+                      color: Theme.of(context).colorScheme.secondary,
+                      fontSize: 12.0),
             )
           ],
         ),
@@ -738,7 +739,8 @@ class CommentsWidgetOld extends StatelessWidget {
               style: InvestrendTheme.of(context)
                   .more_support_w600_compact
                   .copyWith(
-                      color: Theme.of(context).accentColor, fontSize: 12.0),
+                      color: Theme.of(context).colorScheme.secondary,
+                      fontSize: 12.0),
             )
           ],
         ),
@@ -2236,10 +2238,11 @@ class _PollWidgetState extends State<PollWidget> {
         style: OutlinedButton.styleFrom(
           //visualDensity: VisualDensity.comfortable,
           //padding: EdgeInsets.all(0.0),
-          primary: Theme.of(context).accentColor,
+          primary: Theme.of(context).colorScheme.secondary,
           minimumSize: Size(50.0, 40.0),
-          side: BorderSide(color: Theme.of(context).accentColor, width: 1.0),
-          backgroundColor: Theme.of(context).backgroundColor,
+          side: BorderSide(
+              color: Theme.of(context).colorScheme.secondary, width: 1.0),
+          backgroundColor: Theme.of(context).colorScheme.background,
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(24.0))),
         ),
@@ -2250,7 +2253,7 @@ class _PollWidgetState extends State<PollWidget> {
           vote.text,
           style: InvestrendTheme.of(context)
               .small_w400_compact
-              .copyWith(color: Theme.of(context).accentColor),
+              .copyWith(color: Theme.of(context).colorScheme.secondary),
         ),
       ),
     );
@@ -2266,7 +2269,7 @@ class _PollWidgetState extends State<PollWidget> {
       padding: EdgeInsets.all(1.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(24)),
-        color: Theme.of(context).accentColor,
+        color: Theme.of(context).colorScheme.secondary,
       ),
       child: Stack(
         alignment: Alignment.center,
@@ -2327,12 +2330,14 @@ class _PollWidgetState extends State<PollWidget> {
                       vote.text,
                       style: InvestrendTheme.of(context)
                           .small_w400_compact
-                          .copyWith(color: Theme.of(context).accentColor),
+                          .copyWith(
+                              color: Theme.of(context).colorScheme.secondary),
                     )),
                 Text(vote.count.toString(),
                     style: InvestrendTheme.of(context)
                         .small_w400_compact
-                        .copyWith(color: Theme.of(context).accentColor)),
+                        .copyWith(
+                            color: Theme.of(context).colorScheme.secondary)),
               ],
             ),
           ),
@@ -2578,10 +2583,11 @@ class _VoteWidgetState extends State<VoteWidget> {
         style: OutlinedButton.styleFrom(
           //visualDensity: VisualDensity.comfortable,
           //padding: EdgeInsets.all(0.0),
-          primary: Theme.of(context).accentColor,
+          primary: Theme.of(context).colorScheme.secondary,
           minimumSize: Size(50.0, 40.0),
-          side: BorderSide(color: Theme.of(context).accentColor, width: 1.0),
-          backgroundColor: Theme.of(context).backgroundColor,
+          side: BorderSide(
+              color: Theme.of(context).colorScheme.secondary, width: 1.0),
+          backgroundColor: Theme.of(context).colorScheme.background,
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(24.0))),
         ),
@@ -2592,7 +2598,7 @@ class _VoteWidgetState extends State<VoteWidget> {
           vote.code,
           style: InvestrendTheme.of(context)
               .small_w400_compact
-              .copyWith(color: Theme.of(context).accentColor),
+              .copyWith(color: Theme.of(context).colorScheme.secondary),
         ),
       ),
     );
@@ -2603,7 +2609,7 @@ class _VoteWidgetState extends State<VoteWidget> {
       padding: EdgeInsets.all(1.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(24)),
-        color: Theme.of(context).accentColor,
+        color: Theme.of(context).colorScheme.secondary,
       ),
       child: Stack(
         alignment: Alignment.center,
@@ -2628,12 +2634,14 @@ class _VoteWidgetState extends State<VoteWidget> {
                       vote.code,
                       style: InvestrendTheme.of(context)
                           .small_w400_compact
-                          .copyWith(color: Theme.of(context).accentColor),
+                          .copyWith(
+                              color: Theme.of(context).colorScheme.secondary),
                     )),
                 Text(vote.count.toString(),
                     style: InvestrendTheme.of(context)
                         .small_w400_compact
-                        .copyWith(color: Theme.of(context).accentColor)),
+                        .copyWith(
+                            color: Theme.of(context).colorScheme.secondary)),
               ],
             ),
           ),
@@ -2988,7 +2996,8 @@ class CardSocialTextImages extends StatelessWidget {
                         '+' + more.toString(),
                         style: InvestrendTheme.of(context)
                             .small_w600_compact
-                            .copyWith(color: Theme.of(context).accentColor),
+                            .copyWith(
+                                color: Theme.of(context).colorScheme.secondary),
                       ))
                   : SizedBox(
                       width: 1.0,
@@ -3196,11 +3205,11 @@ class NewCardSocialTextImages extends StatelessWidget {
         width: 1.0,
       );
     } else if (post.attachments.length == 1) {
-      String url_image = post.attachments.first.attachment_list;
+      String urlImage = post.attachments.first.attachment_list;
       imageWidget = AspectRatio(
         aspectRatio: 2 / 1,
-        child: !StringUtils.isEmtpy(url_image)
-            ? ComponentCreator.imageNetwork(url_image, fit: BoxFit.cover)
+        child: !StringUtils.isEmtpy(urlImage)
+            ? ComponentCreator.imageNetwork(urlImage, fit: BoxFit.cover)
             : Container(
                 child: EmptyLabel(text: 'no_image_label'.tr()),
               ),
@@ -3324,7 +3333,8 @@ class NewCardSocialTextImages extends StatelessWidget {
                         '+' + more.toString(),
                         style: InvestrendTheme.of(context)
                             .small_w600_compact
-                            .copyWith(color: Theme.of(context).accentColor),
+                            .copyWith(
+                                color: Theme.of(context).colorScheme.secondary),
                       ))
                   : SizedBox(
                       width: 1.0,
@@ -3541,11 +3551,19 @@ class LikeCommentShareWidget extends StatelessWidget {
             circleColor:
                 //CircleColor(start: Color(0xff00ddff), end: Color(0xff0099cc)),
                 CircleColor(
-                    start: Theme.of(context).accentColor.withOpacity(0.2),
-                    end: Theme.of(context).accentColor.withOpacity(0.4)),
+                    start: Theme.of(context)
+                        .colorScheme
+                        .secondary
+                        .withOpacity(0.2),
+                    end: Theme.of(context)
+                        .colorScheme
+                        .secondary
+                        .withOpacity(0.4)),
             bubblesColor: BubblesColor(
-              dotPrimaryColor: Theme.of(context).accentColor.withOpacity(0.3),
-              dotSecondaryColor: Theme.of(context).accentColor.withOpacity(0.6),
+              dotPrimaryColor:
+                  Theme.of(context).colorScheme.secondary.withOpacity(0.3),
+              dotSecondaryColor:
+                  Theme.of(context).colorScheme.secondary.withOpacity(0.6),
             ),
             likeBuilder: (bool isLiked) {
               return Image.asset(
@@ -3553,7 +3571,7 @@ class LikeCommentShareWidget extends StatelessWidget {
                 height: 24.0,
                 width: 24.0,
                 color: isLiked
-                    ? Theme.of(context).accentColor
+                    ? Theme.of(context).colorScheme.secondary
                     : InvestrendTheme.of(context).greyLighterTextColor,
               );
             },
@@ -3753,8 +3771,9 @@ class NewPredictionWidget extends StatelessWidget {
                     primary: Theme.of(context).primaryColor,
                     minimumSize: Size(50.0, 36.0),
                     side: BorderSide(
-                        color: Theme.of(context).accentColor, width: 1.0),
-                    backgroundColor: Theme.of(context).accentColor,
+                        color: Theme.of(context).colorScheme.secondary,
+                        width: 1.0),
+                    backgroundColor: Theme.of(context).colorScheme.secondary,
                     shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(16.0))),
                   ),
@@ -3947,11 +3966,12 @@ class PredictionWidget extends StatelessWidget {
                 ),
                 OutlinedButton(
                   style: OutlinedButton.styleFrom(
-                    primary: Theme.of(context).accentColor,
+                    primary: Theme.of(context).colorScheme.secondary,
                     minimumSize: Size(50.0, 36.0),
                     side: BorderSide(
-                        color: Theme.of(context).accentColor, width: 1.0),
-                    backgroundColor: Theme.of(context).accentColor,
+                        color: Theme.of(context).colorScheme.secondary,
+                        width: 1.0),
+                    backgroundColor: Theme.of(context).colorScheme.secondary,
                     shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(16.0))),
                   ),

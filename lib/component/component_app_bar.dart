@@ -69,7 +69,7 @@ class AppBarConnectionStatus extends StatelessWidget {
                   //   style: BorderStyle.none,
                   // ),
                   borderRadius: BorderRadius.circular(4.0),
-                  color: Theme.of(context).backgroundColor,
+                  color: Theme.of(context).colorScheme.background,
                   // color: Colors.black,
                 ),
                 child: Icon(Icons.circle, color: notifier.statusColor, size: 6.0,),

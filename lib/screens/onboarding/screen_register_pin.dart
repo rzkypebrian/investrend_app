@@ -1,7 +1,6 @@
 import 'package:Investrend/component/component_app_bar.dart';
 import 'package:Investrend/component/component_creator.dart';
 import 'package:Investrend/screens/screen_login.dart';
-import 'package:Investrend/screens/screen_main.dart';
 import 'package:Investrend/utils/connection_services.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:Investrend/utils/string_utils.dart';
@@ -103,9 +102,9 @@ class _ScreenRegisterPinState extends State<ScreenRegisterPin> {
         }else if(error.isErrorTrading()){
           InvestrendTheme.of(context).showSnackBar(context, error.message());
         }else{
-          String network_error_label = 'network_error_label'.tr();
-          network_error_label = network_error_label.replaceFirst("#CODE#", error.code.toString());
-          InvestrendTheme.of(context).showSnackBar(context, network_error_label);
+          String networkErrorLabel = 'network_error_label'.tr();
+          networkErrorLabel = networkErrorLabel.replaceFirst("#CODE#", error.code.toString());
+          InvestrendTheme.of(context).showSnackBar(context, networkErrorLabel);
         }
       }else{
         InvestrendTheme.of(context).showSnackBar(context, error.toString());
@@ -174,7 +173,7 @@ class _ScreenRegisterPinState extends State<ScreenRegisterPin> {
           disabledColor: Colors.transparent);
     } else {
       button = ComponentCreator.roundedButton(
-          context, buttonText, Theme.of(context).accentColor, InvestrendTheme.of(context).whiteColor, Theme.of(context).accentColor, () {
+          context, buttonText, Theme.of(context).colorScheme.secondary, InvestrendTheme.of(context).whiteColor, Theme.of(context).colorScheme.secondary, () {
         if (showConfirmPin) {
           if (!StringUtils.equalsIgnoreCase(pin, confirmPin)) {
             InvestrendTheme.of(context).showSnackBar(context, 'register_create_pin_error_label'.tr());
@@ -203,13 +202,13 @@ class _ScreenRegisterPinState extends State<ScreenRegisterPin> {
     return Container(
       width: double.maxFinite,
       height: double.maxFinite,
-      color: Theme.of(context).backgroundColor,
+      color: Theme.of(context).colorScheme.background,
       //   color:Colors.blueAccent,
       child: SafeArea(
         child: Scaffold(
-          backgroundColor: Theme.of(context).backgroundColor,
+          backgroundColor: Theme.of(context).colorScheme.background,
           appBar: AppBar(
-            backgroundColor: Theme.of(context).backgroundColor,
+            backgroundColor: Theme.of(context).colorScheme.background,
             elevation: 0.0,
             leading: backButton,
           ),

@@ -1,5 +1,3 @@
-import 'package:Investrend/component/animation_creator.dart';
-import 'package:Investrend/objects/data_object.dart';
 import 'package:Investrend/objects/riverpod_change_notifier.dart';
 import 'package:Investrend/screens/onboarding/screen_register_rdn.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
@@ -54,7 +52,7 @@ class BannerOpenAccount extends StatelessWidget {
         ),
       ),
       padding: EdgeInsets.zero,
-      color: Theme.of(context).accentColor,
+      color: Theme.of(context).colorScheme.secondary,
       splashColor: InvestrendTheme.of(context).tileSplashColor,
     );
   }

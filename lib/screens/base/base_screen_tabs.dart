@@ -1,14 +1,4 @@
-import 'package:Investrend/component/avatar.dart';
-import 'package:Investrend/component/component_creator.dart';
-import 'package:Investrend/component/component_app_bar.dart';
-import 'package:Investrend/component/tab_bar_trade.dart';
-import 'package:Investrend/objects/data_object.dart';
-import 'package:Investrend/objects/iii_objects.dart';
-import 'package:Investrend/screens/base/base_state.dart';
-import 'package:Investrend/utils/investrend_theme.dart';
-import 'package:Investrend/utils/string_utils.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/material.dart';
 /*
 class ScreenTrade extends StatefulWidget {
   const ScreenTrade({Key key}) : super(key: key);

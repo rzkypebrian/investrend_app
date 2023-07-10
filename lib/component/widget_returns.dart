@@ -1,5 +1,3 @@
-import 'package:Investrend/component/flexible_text.dart';
-import 'package:Investrend/component/component_creator.dart';
 import 'package:Investrend/objects/group_style.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:Investrend/utils/ui_helper.dart';
@@ -130,12 +128,12 @@ class WidgetReturns extends StatelessWidget {
     double leftWidth = widthAvailable * 0.4;
     double rightWidth = widthAvailable - leftWidth;
 
-    String returns_todays_return_label = 'returns_todays_return_label'.tr();
-    String returns_total_return_label = 'returns_total_return_label'.tr();
+    String returnsTodaysReturnLabel = 'returns_todays_return_label'.tr();
+    String returnsTotalReturnLabel = 'returns_total_return_label'.tr();
 
     TextStyle styleLabel = InvestrendTheme.of(context).support_w400_compact.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor);
-    styleLabel = useFontSize(context, styleLabel, leftWidth, returns_todays_return_label);
-    styleLabel = useFontSize(context, styleLabel, leftWidth, returns_total_return_label);
+    styleLabel = useFontSize(context, styleLabel, leftWidth, returnsTodaysReturnLabel);
+    styleLabel = useFontSize(context, styleLabel, leftWidth, returnsTotalReturnLabel);
 
     String todayValueText = InvestrendTheme.formatMoney(todayReturnValue, prefixPlus: true, prefixRp: true);
     String todayPercentageText = ' (' + InvestrendTheme.formatPercentChange(todayReturnPercentage, sufixPercent: true) + ')';
@@ -177,7 +175,7 @@ class WidgetReturns extends StatelessWidget {
             Container(
               // color: Colors.amber,
               width: leftWidth,
-              child: cellLabelNew(context, returns_todays_return_label, styleLabel),
+              child: cellLabelNew(context, returnsTodaysReturnLabel, styleLabel),
             ),
             Container(
               // color: Colors.deepPurple,
@@ -191,7 +189,7 @@ class WidgetReturns extends StatelessWidget {
             Container(
               // color: Colors.cyan,
               width: leftWidth,
-              child: cellLabelNew(context, returns_total_return_label, styleLabel),
+              child: cellLabelNew(context, returnsTotalReturnLabel, styleLabel),
             ),
             Container(
               // color: Colors.grey,
@@ -209,11 +207,11 @@ class WidgetReturns extends StatelessWidget {
           0: FractionColumnWidth(.4)
         }, children: [
           TableRow(children: [
-            cellLabelNew(context, returns_todays_return_label, styleLabel),
+            cellLabelNew(context, returnsTodaysReturnLabel, styleLabel),
             cellValueNew(context, todayValueText, todayPercentageText, groupStyle.style_1, groupStyle.style_2, color: colorToday),
           ]),
           TableRow(children: [
-            cellLabelNew(context, returns_total_return_label, styleLabel),
+            cellLabelNew(context, returnsTotalReturnLabel, styleLabel),
             cellValueNew(context, totalValueText, totalPercentageText, groupStyle.style_1, groupStyle.style_2, color: colorTotal),
           ]),
         ]);

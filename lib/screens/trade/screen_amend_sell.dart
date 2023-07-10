@@ -1,29 +1,18 @@
 import 'dart:async';
 
 import 'package:Investrend/component/button_order.dart';
-import 'package:Investrend/component/component_creator.dart';
-import 'package:Investrend/component/widget_fast_orderbook.dart';
-import 'package:Investrend/component/widget_orderbook.dart';
-import 'package:Investrend/component/widget_tradebook.dart';
-import 'package:Investrend/objects/class_input_formatter.dart';
-import 'package:Investrend/objects/class_value_notifier.dart';
 import 'package:Investrend/objects/data_holder.dart';
 import 'package:Investrend/objects/data_object.dart';
 import 'package:Investrend/objects/riverpod_change_notifier.dart';
 import 'package:Investrend/objects/iii_objects.dart';
-import 'package:Investrend/screens/base/screen_aware.dart';
 import 'package:Investrend/screens/trade/screen_amend_form.dart';
-import 'package:Investrend/screens/trade/screen_trade_form.dart';
 import 'package:Investrend/utils/connection_services.dart';
 import 'package:Investrend/utils/debug_writer.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
-import 'package:Investrend/utils/string_utils.dart';
-import 'package:Investrend/utils/utils.dart';
 import 'package:flutter/material.dart';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'dart:math';
 
 class ScreenAmendSell extends StatefulWidget {
 
@@ -161,9 +150,9 @@ class _ScreenAmendSellState extends BaseAmendState<ScreenAmendSell>
             onProgressAccount = false;
             return false;
           }else{
-            String network_error_label = 'network_error_label'.tr();
-            network_error_label = network_error_label.replaceFirst("#CODE#", e.code.toString());
-            InvestrendTheme.of(context).showSnackBar(context, network_error_label);
+            String networkErrorLabel = 'network_error_label'.tr();
+            networkErrorLabel = networkErrorLabel.replaceFirst("#CODE#", e.code.toString());
+            InvestrendTheme.of(context).showSnackBar(context, networkErrorLabel);
             onProgressAccount = false;
             return false;
           }

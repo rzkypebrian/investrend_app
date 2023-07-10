@@ -1,10 +1,7 @@
-import 'package:Investrend/component/cards/card_local_foreign.dart';
-import 'package:Investrend/component/cards/card_performance.dart';
 import 'package:Investrend/component/component_creator.dart';
 import 'package:Investrend/objects/class_value_notifier.dart';
 import 'package:Investrend/objects/data_object.dart';
 import 'package:Investrend/screens/base/base_state.dart';
-import 'package:Investrend/utils/callbacks.dart';
 import 'package:flutter/material.dart';
 
 class ScreenSampleNoTabWithParentTabs extends StatefulWidget {

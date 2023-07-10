@@ -3,7 +3,6 @@ import 'package:Investrend/objects/data_object.dart';
 import 'package:Investrend/screens/onboarding/screen_register_pin.dart';
 import 'package:Investrend/screens/screen_content.dart';
 import 'package:Investrend/screens/screen_login.dart';
-import 'package:Investrend/screens/screen_main.dart';
 import 'package:Investrend/utils/connection_services.dart';
 import 'package:Investrend/utils/string_utils.dart';
 import 'package:Investrend/utils/utils.dart';
@@ -35,7 +34,8 @@ class _ScreenRegisterState extends State<ScreenRegister> {
   final fieldReferralCodeController = TextEditingController();
 
   final ValueNotifier<bool> _hidePasswordNotifier = ValueNotifier<bool>(true);
-  final ValueNotifier<bool> _hidePasswordConfirmNotifier = ValueNotifier<bool>(true);
+  final ValueNotifier<bool> _hidePasswordConfirmNotifier =
+      ValueNotifier<bool>(true);
 
   final ValueNotifier<bool> _agreeTnCNotifier = ValueNotifier<bool>(false);
 
@@ -57,9 +57,9 @@ class _ScreenRegisterState extends State<ScreenRegister> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
-        backgroundColor: Theme.of(context).backgroundColor,
+        backgroundColor: Theme.of(context).colorScheme.background,
         //titleTextStyle: Theme.of(context).appBarTheme.titleTextStyle,
         leading: IconButton(
           icon: Image.asset('images/icons/action_back.png'),
@@ -75,7 +75,8 @@ class _ScreenRegisterState extends State<ScreenRegister> {
           //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
           // },
         ),
-        title: Text('register_title'.tr(), style: Theme.of(context).appBarTheme.titleTextStyle),
+        title: Text('register_title'.tr(),
+            style: Theme.of(context).appBarTheme.titleTextStyle),
         centerTitle: true,
         elevation: 0,
       ),
@@ -199,7 +200,8 @@ class _ScreenRegisterState extends State<ScreenRegister> {
                     color: InvestrendTheme.of(context).greyLighterTextColor,
                   );
                 } else {
-                  icon = Icon(Icons.remove_red_eye, color: Theme.of(context).accentColor);
+                  icon = Icon(Icons.remove_red_eye,
+                      color: Theme.of(context).colorScheme.secondary);
                 }
 
                 return getTextFieldForm(
@@ -257,7 +259,8 @@ class _ScreenRegisterState extends State<ScreenRegister> {
                     color: InvestrendTheme.of(context).greyLighterTextColor,
                   );
                 } else {
-                  icon = Icon(Icons.remove_red_eye, color: Theme.of(context).accentColor);
+                  icon = Icon(Icons.remove_red_eye,
+                      color: Theme.of(context).colorScheme.secondary);
                 }
 
                 return getTextFieldForm(
@@ -272,16 +275,19 @@ class _ScreenRegisterState extends State<ScreenRegister> {
                   obscureText: value,
                   validator: (value) {
                     // cek first password
-                    String error = Utils.isPasswordCompliant(fieldPasswordController.text, 8);
+                    String error = Utils.isPasswordCompliant(
+                        fieldPasswordController.text, 8);
                     if (!StringUtils.isEmtpy(error)) {
                       return null; // first password error, biarin diisi dulu ampe bener :)
                     } else {
                       if (value == null || value.isEmpty) {
-                        return 'register_field_password_2_validation_error'.tr();
+                        return 'register_field_password_2_validation_error'
+                            .tr();
                       }
                       //String error = Utils.isPasswordCompliant(value, 8);
                       //if (/*StringUtils.isEmtpy(error) &&*/ value != fieldPasswordController.text) {
-                      if (fieldPasswordController.text != fieldPasswordConfirmController.text) {
+                      if (fieldPasswordController.text !=
+                          fieldPasswordConfirmController.text) {
                         return 'error_password_confirm'.tr();
                       }
                       return error;
@@ -319,9 +325,6 @@ class _ScreenRegisterState extends State<ScreenRegister> {
   void submitRegister() {
     // Validate returns true if the form is valid, or false otherwise.
 
-
-
-
     if (_formRegisterKey.currentState.validate()) {
       // If the form is valid, display a snackbar. In the real world,
       // you'd often call a server or save the information in a database.
@@ -340,8 +343,9 @@ class _ScreenRegisterState extends State<ScreenRegister> {
           fieldReferralCodeController.text;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(dataText)));
       */
-      if(!_agreeTnCNotifier.value){
-        InvestrendTheme.of(context).showSnackBar(context, 'register_agreement_error'.tr());
+      if (!_agreeTnCNotifier.value) {
+        InvestrendTheme.of(context)
+            .showSnackBar(context, 'register_agreement_error'.tr());
         return;
       }
 
@@ -369,10 +373,15 @@ class _ScreenRegisterState extends State<ScreenRegister> {
           reply.then((value) {
             if (value != null) {
               if (value.isSuccess()) {
-                InvestrendTheme.pushReplacement(context, ScreenRegisterPin(value.username, value.email, fieldPasswordController.text, 'login'),
-                    ScreenTransition.SlideLeft, '/register_pin');
+                InvestrendTheme.pushReplacement(
+                    context,
+                    ScreenRegisterPin(value.username, value.email,
+                        fieldPasswordController.text, 'login'),
+                    ScreenTransition.SlideLeft,
+                    '/register_pin');
               } else {
-                InvestrendTheme.of(context).showSnackBar(context, value.message);
+                InvestrendTheme.of(context)
+                    .showSnackBar(context, value.message);
               }
             }
           }).onError((error, stackTrace) {
@@ -380,14 +389,18 @@ class _ScreenRegisterState extends State<ScreenRegister> {
               if (error.isUnauthorized()) {
                 InvestrendTheme.of(context).showDialogInvalidSession(context);
               } else if (error.isErrorTrading()) {
-                InvestrendTheme.of(context).showSnackBar(context, error.message());
+                InvestrendTheme.of(context)
+                    .showSnackBar(context, error.message());
               } else {
-                String network_error_label = 'network_error_label'.tr();
-                network_error_label = network_error_label.replaceFirst("#CODE#", error.code.toString());
-                InvestrendTheme.of(context).showSnackBar(context, network_error_label);
+                String networkErrorLabel = 'network_error_label'.tr();
+                networkErrorLabel = networkErrorLabel.replaceFirst(
+                    "#CODE#", error.code.toString());
+                InvestrendTheme.of(context)
+                    .showSnackBar(context, networkErrorLabel);
               }
             } else {
-              InvestrendTheme.of(context).showSnackBar(context, error.toString());
+              InvestrendTheme.of(context)
+                  .showSnackBar(context, error.toString());
             }
           });
         }).onError((error, stackTrace) {
@@ -408,8 +421,12 @@ class _ScreenRegisterState extends State<ScreenRegister> {
         reply.then((value) {
           if (value != null) {
             if (value.isSuccess()) {
-              InvestrendTheme.pushReplacement(context, ScreenRegisterPin(value.username, value.email, fieldPasswordController.text, 'login'),
-                  ScreenTransition.SlideLeft, '/register_pin');
+              InvestrendTheme.pushReplacement(
+                  context,
+                  ScreenRegisterPin(value.username, value.email,
+                      fieldPasswordController.text, 'login'),
+                  ScreenTransition.SlideLeft,
+                  '/register_pin');
             } else {
               InvestrendTheme.of(context).showSnackBar(context, value.message);
             }
@@ -419,11 +436,14 @@ class _ScreenRegisterState extends State<ScreenRegister> {
             if (error.isUnauthorized()) {
               InvestrendTheme.of(context).showDialogInvalidSession(context);
             } else if (error.isErrorTrading()) {
-              InvestrendTheme.of(context).showSnackBar(context, error.message());
+              InvestrendTheme.of(context)
+                  .showSnackBar(context, error.message());
             } else {
-              String network_error_label = 'network_error_label'.tr();
-              network_error_label = network_error_label.replaceFirst("#CODE#", error.code.toString());
-              InvestrendTheme.of(context).showSnackBar(context, network_error_label);
+              String networkErrorLabel = 'network_error_label'.tr();
+              networkErrorLabel = networkErrorLabel.replaceFirst(
+                  "#CODE#", error.code.toString());
+              InvestrendTheme.of(context)
+                  .showSnackBar(context, networkErrorLabel);
             }
           } else {
             InvestrendTheme.of(context).showSnackBar(context, error.toString());
@@ -475,8 +495,13 @@ class _ScreenRegisterState extends State<ScreenRegister> {
         getTermAndConditionText(),
         FractionallySizedBox(
           widthFactor: 0.8,
-          child: ComponentCreator.roundedButton(context, 'register_button_register'.tr(), Theme.of(context).accentColor,
-              Theme.of(context).primaryColor, Theme.of(context).accentColor, submitRegister),
+          child: ComponentCreator.roundedButton(
+              context,
+              'register_button_register'.tr(),
+              Theme.of(context).colorScheme.secondary,
+              Theme.of(context).primaryColor,
+              Theme.of(context).colorScheme.secondary,
+              submitRegister),
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -487,8 +512,8 @@ class _ScreenRegisterState extends State<ScreenRegister> {
             ),
             TextButton(
               style: TextButton.styleFrom(
-                  animationDuration: Duration(milliseconds: 500),
                   primary: InvestrendTheme.of(context).hyperlink,
+                  animationDuration: Duration(milliseconds: 500),
                   backgroundColor: Colors.transparent,
                   textStyle: InvestrendTheme.of(context).small_w500),
               child: Text('landing_button_enter'.tr()),
@@ -507,22 +532,22 @@ class _ScreenRegisterState extends State<ScreenRegister> {
   }
 
   Widget getTermAndConditionText() {
-
     return Padding(
-      padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 15.0, bottom: 20.0),
+      padding:
+          const EdgeInsets.only(left: 8.0, right: 8.0, top: 15.0, bottom: 20.0),
       child: Row(
         children: [
           ValueListenableBuilder<bool>(
-              valueListenable: _agreeTnCNotifier,
-              builder: (context, value, child) {
-                return Checkbox(
-                    activeColor: Theme.of(context).accentColor,
-                    value: _agreeTnCNotifier.value,
-                    onChanged: (value) {
-                      _agreeTnCNotifier.value = !_agreeTnCNotifier.value;
-                      //print('remember '+_rememeberMeNotifier.value+' $value');
-                    });
-              },
+            valueListenable: _agreeTnCNotifier,
+            builder: (context, value, child) {
+              return Checkbox(
+                  activeColor: Theme.of(context).colorScheme.secondary,
+                  value: _agreeTnCNotifier.value,
+                  onChanged: (value) {
+                    _agreeTnCNotifier.value = !_agreeTnCNotifier.value;
+                    //print('remember '+_rememeberMeNotifier.value+' $value');
+                  });
+            },
           ),
           Flexible(
             child: RichText(
@@ -530,13 +555,22 @@ class _ScreenRegisterState extends State<ScreenRegister> {
               softWrap: true,
               text: TextSpan(
                 children: [
-                  TextSpan(text: 'register_description_1'.tr(), style: InvestrendTheme.of(context).support_w400),
-
-                  createButtonTextSpan(context, 'settings_tnc'.tr() + ' , ' + 'settings_disclaimer'.tr() + 'register_description_3'.tr() + 'settings_privacy_policy'.tr(), () {
+                  TextSpan(
+                      text: 'register_description_1'.tr(),
+                      style: InvestrendTheme.of(context).support_w400),
+                  createButtonTextSpan(
+                      context,
+                      'settings_tnc'.tr() +
+                          ' , ' +
+                          'settings_disclaimer'.tr() +
+                          'register_description_3'.tr() +
+                          'settings_privacy_policy'.tr(), () {
                     print('tnc_content pressed');
                     String content = 'tnc_content'.tr();
-                    String applicationName = InvestrendTheme.of(context).applicationName;
-                    content = content.replaceAll('<APP_NAME/>', applicationName);
+                    String applicationName =
+                        InvestrendTheme.of(context).applicationName;
+                    content =
+                        content.replaceAll('<APP_NAME/>', applicationName);
                     Navigator.push(
                         context,
                         CupertinoPageRoute(
@@ -586,7 +620,9 @@ class _ScreenRegisterState extends State<ScreenRegister> {
                       builder: (_) => ScreenContent(title: 'settings_privacy_policy'.tr(), content: content,), settings: RouteSettings(name: '/content'),));
                   }),
                   */
-                  TextSpan(text: 'register_description_5'.tr(), style: InvestrendTheme.of(context).support_w400),
+                  TextSpan(
+                      text: 'register_description_5'.tr(),
+                      style: InvestrendTheme.of(context).support_w400),
                 ],
               ),
             ),
@@ -595,16 +631,18 @@ class _ScreenRegisterState extends State<ScreenRegister> {
       ),
     );
 
-
     return Padding(
-      padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 15.0, bottom: 20.0),
+      padding:
+          const EdgeInsets.only(left: 8.0, right: 8.0, top: 15.0, bottom: 20.0),
       child: FractionallySizedBox(
         widthFactor: 0.9,
         child: RichText(
           textAlign: TextAlign.center,
           text: TextSpan(
             children: [
-              TextSpan(text: 'register_description_1'.tr(), style: InvestrendTheme.of(context).support_w400),
+              TextSpan(
+                  text: 'register_description_1'.tr(),
+                  style: InvestrendTheme.of(context).support_w400),
               TextSpan(
                   text: 'register_description_2'.tr(),
                   recognizer: new TapGestureRecognizer()
@@ -615,24 +653,29 @@ class _ScreenRegisterState extends State<ScreenRegister> {
                       // and use it to show a SnackBar.
                       ScaffoldMessenger.of(context).showSnackBar(snackBar);
                     },
-                  style: InvestrendTheme.of(context)
-                      .support_w400
-                      .copyWith(color: InvestrendTheme.of(context).hyperlink, decoration: TextDecoration.underline)),
-              TextSpan(text: 'register_description_3'.tr(), style: InvestrendTheme.of(context).support_w400),
+                  style: InvestrendTheme.of(context).support_w400.copyWith(
+                      color: InvestrendTheme.of(context).hyperlink,
+                      decoration: TextDecoration.underline)),
+              TextSpan(
+                  text: 'register_description_3'.tr(),
+                  style: InvestrendTheme.of(context).support_w400),
               TextSpan(
                   text: 'register_description_4'.tr(),
                   recognizer: new TapGestureRecognizer()
                     ..onTap = () {
                       //launch('https://docs.flutter.io/flutter/services/UrlLauncher-class.html');
-                      final snackBar = SnackBar(content: Text('Show Terms and Agreement'));
+                      final snackBar =
+                          SnackBar(content: Text('Show Terms and Agreement'));
                       // Find the ScaffoldMessenger in the widget tree
                       // and use it to show a SnackBar.
                       ScaffoldMessenger.of(context).showSnackBar(snackBar);
                     },
-                  style: InvestrendTheme.of(context)
-                      .support_w400
-                      .copyWith(color: InvestrendTheme.of(context).hyperlink, decoration: TextDecoration.underline)),
-              TextSpan(text: 'register_description_5'.tr(), style: InvestrendTheme.of(context).support_w400),
+                  style: InvestrendTheme.of(context).support_w400.copyWith(
+                      color: InvestrendTheme.of(context).hyperlink,
+                      decoration: TextDecoration.underline)),
+              TextSpan(
+                  text: 'register_description_5'.tr(),
+                  style: InvestrendTheme.of(context).support_w400),
             ],
           ),
         ),
@@ -640,16 +683,17 @@ class _ScreenRegisterState extends State<ScreenRegister> {
     );
   }
 
-  TextSpan createButtonTextSpan(BuildContext context, String text, VoidCallback onPressed){
+  TextSpan createButtonTextSpan(
+      BuildContext context, String text, VoidCallback onPressed) {
     return TextSpan(
-        text: text,
-        recognizer: new TapGestureRecognizer()
-          ..onTap = onPressed,
-        style: InvestrendTheme.of(context)
-            .support_w400
-            .copyWith(color: InvestrendTheme.of(context).hyperlink, decoration: TextDecoration.underline),
+      text: text,
+      recognizer: new TapGestureRecognizer()..onTap = onPressed,
+      style: InvestrendTheme.of(context).support_w400.copyWith(
+          color: InvestrendTheme.of(context).hyperlink,
+          decoration: TextDecoration.underline),
     );
   }
+
   void showLoginPage(BuildContext context) {
     //Navigator.pushReplacementNamed(context, '/login');
     //Navigator.pushReplacementNamed(context, '/landing');
@@ -661,7 +705,8 @@ class _ScreenRegisterState extends State<ScreenRegister> {
         transitionDuration: Duration(milliseconds: 1000),
         //pageBuilder: (context, animation1, animation2) => ScreenLanding(),
         pageBuilder: (context, animation1, animation2) => ScreenLogin(),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) => FadeTransition(
+        transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+            FadeTransition(
           opacity: animation,
           child: child,
         ),

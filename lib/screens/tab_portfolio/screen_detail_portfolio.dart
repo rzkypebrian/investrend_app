@@ -1,4 +1,3 @@
-
 import 'package:Investrend/component/bottom_sheet/bottom_sheet_alert.dart';
 import 'package:Investrend/component/bottom_sheet/bottom_sheet_transaction_filter.dart';
 import 'package:Investrend/component/button_order.dart';
@@ -47,10 +46,16 @@ class ScreenDetailPortfolio extends StatefulWidget {
   final bool init_historical;
 
   const ScreenDetailPortfolio(
-      this.init_portfolio,this.init_stock_code, this.init_stock_name, this.init_account_info
-      , this.init_account, this.init_user, this.init_broker
-      , {Key key, this.init_historical=false}) : super(key: key);
-
+      this.init_portfolio,
+      this.init_stock_code,
+      this.init_stock_name,
+      this.init_account_info,
+      this.init_account,
+      this.init_user,
+      this.init_broker,
+      {Key key,
+      this.init_historical = false})
+      : super(key: key);
 
   //const ScreenDetailPortfolio(this.init_account,this.init_code, this.init_name, this.init_portfolio, {Key key}) : super(key: key);
 
@@ -58,15 +63,18 @@ class ScreenDetailPortfolio extends StatefulWidget {
   _ScreenDetailPortfolioState createState() => _ScreenDetailPortfolioState();
 }
 
-class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortfolio> {
+class _ScreenDetailPortfolioState
+    extends VisibilityAwareState<ScreenDetailPortfolio> {
   final String routeName = '/detail_portfolio';
   bool onProgress = false;
   bool active = false;
   final AutoSizeGroup groupBest = AutoSizeGroup();
   SingleWatchlistPriceNotifier _watchlistNotifier;
   SinglePortfolioNotifier _portfolioNotifier;
-  ReportStockHistNotifier _reportStockHistNotifier = ReportStockHistNotifier(ReportStockHistData());
-  OrderStatusNotifier _orderStatusNotifier = OrderStatusNotifier(OrderStatusData());
+  ReportStockHistNotifier _reportStockHistNotifier =
+      ReportStockHistNotifier(ReportStockHistData());
+  OrderStatusNotifier _orderStatusNotifier =
+      OrderStatusNotifier(OrderStatusData());
   final SlidableController slidableController = SlidableController();
   static const String PIN_SUCCESS = 'pin_success';
   // ScrollController pScrollController = ScrollController();
@@ -89,9 +97,9 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
   //
   // List<String> _filter_options = ['filter_by_all_label'.tr(), 'filter_by_domestic_label'.tr(), 'filter_by_foreign_label'.tr()];
   //
-  String stock_code ='-';
-  String stock_name ='-';
-  String account_info='-';
+  String stock_code = '-';
+  String stock_name = '-';
+  String account_info = '-';
   String account = '-';
   String user = '-';
   String broker = '-';
@@ -102,7 +110,6 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
   // final String init_account;
   // final String init_user;
   // final String init_broker;
-
 
   //
   // String data_by; // belum tentu kepakai
@@ -123,7 +130,8 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
         break;
       case WidgetVisibility.GONE:
         // Like Android's Activity.onDestroy()
-        print('*** ScreenVisibility.GONE: ${this.routeName}   mounted : $mounted');
+        print(
+            '*** ScreenVisibility.GONE: ${this.routeName}   mounted : $mounted');
         // _onInactiveBase(caller: 'onVisibilityChanged.GONE');
         break;
     }
@@ -159,7 +167,8 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
     unsubscribe(context, 'onActive');
 
     Stock stock = InvestrendTheme.storedData.findStock(stock_code);
-    if (!StringUtils.equalsIgnoreCase(stock.code, context.read(stockSummaryChangeNotifier).summary.code)) {
+    if (!StringUtils.equalsIgnoreCase(
+        stock.code, context.read(stockSummaryChangeNotifier).summary.code)) {
       context.read(stockSummaryChangeNotifier).setStock(stock);
     }
     subscribe(context, stock, 'onActive');
@@ -180,10 +189,14 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
     if (subscribeSummary != null) {
       print(routeName + ' unsubscribe : ' + subscribeSummary.channel);
       if (context != null) {
-        context.read(managerDatafeedNotifier).unsubscribe(subscribeSummary, routeName + '.' + caller);
+        context
+            .read(managerDatafeedNotifier)
+            .unsubscribe(subscribeSummary, routeName + '.' + caller);
       } else {
         final container = ProviderContainer();
-        container.read(managerDatafeedNotifier).unsubscribe(subscribeSummary, routeName + '.' + caller);
+        container
+            .read(managerDatafeedNotifier)
+            .unsubscribe(subscribeSummary, routeName + '.' + caller);
       }
 
       subscribeSummary = null;
@@ -196,34 +209,43 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
 
     context.read(stockSummaryChangeNotifier).setStock(stock);
 
-    subscribeSummary = SubscribeAndHGET(channel, DatafeedType.Summary.collection, codeBoard, listener: (message) {
+    subscribeSummary =
+        SubscribeAndHGET(channel, DatafeedType.Summary.collection, codeBoard,
+            listener: (message) {
       print(routeName + ' got : ' + message.elementAt(1));
       print(message);
       if (mounted) {
         StockSummary stockSummary = StockSummary.fromStreaming(message);
-        FundamentalCache cache = context.read(fundamentalCacheNotifier).getCache(stockSummary.code);
+        FundamentalCache cache =
+            context.read(fundamentalCacheNotifier).getCache(stockSummary.code);
         stockSummary.updateCache(context, cache);
-        context.read(stockSummaryChangeNotifier).setData(stockSummary, check: true);
+        context
+            .read(stockSummaryChangeNotifier)
+            .setData(stockSummary, check: true);
 
         _watchlistNotifier.updateFromSummary(stockSummary, context);
       }
     }, validator: validatorSummary);
     print(routeName + ' subscribe : $codeBoard');
-    context.read(managerDatafeedNotifier).subscribe(subscribeSummary, routeName + '.' + caller);
+    context
+        .read(managerDatafeedNotifier)
+        .subscribe(subscribeSummary, routeName + '.' + caller);
   }
 
   bool validatorSummary(List<String> data, String channel) {
     //List<String> data = message.split('|');
-    if (data != null && data.length > 5 /* && data.first == 'III' && data.elementAt(1) == 'Q'*/) {
+    if (data != null &&
+        data.length >
+            5 /* && data.first == 'III' && data.elementAt(1) == 'Q'*/) {
       final String HEADER = data[0];
-      final String TYPE_SUMMARY = data[1];
+      final String typeSummary = data[1];
       final String start = data[2];
       final String end = data[3];
       final String stockCode = data[4];
       final String boardCode = data[5];
       String codeBoard = stockCode + '.' + boardCode;
       String channelData = DatafeedType.Summary.key + '.' + codeBoard;
-      if (HEADER == 'III' && TYPE_SUMMARY == 'Q' && channel == channelData) {
+      if (HEADER == 'III' && typeSummary == 'Q' && channel == channelData) {
         return true;
       }
     }
@@ -363,9 +385,10 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
     this.user = widget.init_user;
     this.broker = widget.init_broker;
 
-
-    _watchlistNotifier = SingleWatchlistPriceNotifier(WatchlistPrice(this.stock_code, 0, 0, 0.0, this.stock_name));
-    _portfolioNotifier = SinglePortfolioNotifier(StockPositionDetail.createBasic());
+    _watchlistNotifier = SingleWatchlistPriceNotifier(
+        WatchlistPrice(this.stock_code, 0, 0, 0.0, this.stock_name));
+    _portfolioNotifier =
+        SinglePortfolioNotifier(StockPositionDetail.createBasic());
     _portfolioNotifier.setValue(widget.init_portfolio);
     /*
     //this.board = widget.init_board;
@@ -415,11 +438,17 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
 
   Future doUpdate({bool pullToRefresh = false}) async {
     if (!mounted) {
-      print(routeName + '.doUpdate Aborted : ' + DateTime.now().toString() + "  mounted : $mounted  pullToRefresh : $pullToRefresh");
+      print(routeName +
+          '.doUpdate Aborted : ' +
+          DateTime.now().toString() +
+          "  mounted : $mounted  pullToRefresh : $pullToRefresh");
       return false;
     }
     onProgress = true;
-    print(routeName + '.doUpdate : ' + DateTime.now().toString() + "  pullToRefresh : $pullToRefresh");
+    print(routeName +
+        '.doUpdate : ' +
+        DateTime.now().toString() +
+        "  pullToRefresh : $pullToRefresh");
 
     /*
     bool hasAccount = context.read(dataHolderChangeNotifier).user.accountSize() > 0;
@@ -453,10 +482,12 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
           InvestrendTheme.of(context).applicationVersion,
           stock: this.stock_code);
       //DebugWriter.info(routeName + ' Got stockPosition ' + stockPosition.accountcode + '   stockList.size : ' + stockPosition.stockListSize().toString());
-      DebugWriter.information(routeName + ' Got stockPosition ' + stockPosition.toString());
+      DebugWriter.information(
+          routeName + ' Got stockPosition ' + stockPosition.toString());
       if (stockPosition != null) {
         if (mounted) {
-          StockPositionDetail detail = stockPosition.getStockPositionDetailByCode(this.stock_code);
+          StockPositionDetail detail =
+              stockPosition.getStockPositionDetailByCode(this.stock_code);
           _portfolioNotifier.setValue(detail);
         }
       } else {
@@ -465,7 +496,8 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
         }
       }
     } catch (e) {
-      DebugWriter.information(routeName + ' stockPosition Exception : ' + e.toString());
+      DebugWriter.information(
+          routeName + ' stockPosition Exception : ' + e.toString());
       if (mounted) {
         _portfolioNotifier.setError(message: e.toString());
       }
@@ -474,38 +506,41 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
       handleNetworkError(context, e);
     }
 
-
     try {
       print(routeName + ' try orderStatus');
-      final orderStatus = await InvestrendTheme.tradingHttp.orderStatus(broker, account, user,
-          InvestrendTheme.of(context).applicationPlatform, InvestrendTheme.of(context).applicationVersion, stock: this.stock_code);
+      final orderStatus = await InvestrendTheme.tradingHttp.orderStatus(
+          broker,
+          account,
+          user,
+          InvestrendTheme.of(context).applicationPlatform,
+          InvestrendTheme.of(context).applicationVersion,
+          stock: this.stock_code);
       int orderStatusCount = orderStatus != null ? orderStatus.length : 0;
       print('Got orderStatus : ' + orderStatusCount.toString());
 
       if (orderStatus != null) {
-
-        if(mounted){
+        if (mounted) {
           OrderStatusData result = OrderStatusData();
           orderStatus.forEach((status) {
-            if (
-            StringUtils.equalsIgnoreCase(status.stockCode, this.stock_code)
-                && (status.isFilterValid(FilterTransaction.All.index, FilterStatus.Open.index)
-                || status.isFilterValid(FilterTransaction.All.index, FilterStatus.New.index))
-            ) {
+            if (StringUtils.equalsIgnoreCase(
+                    status.stockCode, this.stock_code) &&
+                (status.isFilterValid(
+                        FilterTransaction.All.index, FilterStatus.Open.index) ||
+                    status.isFilterValid(
+                        FilterTransaction.All.index, FilterStatus.New.index))) {
               result.datas.add(status);
             }
           });
           _orderStatusNotifier.setValue(result);
         }
-
-      }else{
+      } else {
         if (mounted) {
           _orderStatusNotifier.setNoData();
         }
       }
-
     } catch (e) {
-      DebugWriter.information(routeName + ' orderStatus Exception : ' + e.toString());
+      DebugWriter.information(
+          routeName + ' orderStatus Exception : ' + e.toString());
       if (mounted) {
         _orderStatusNotifier.setError(message: e.toString());
       }
@@ -514,18 +549,21 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
 
     try {
       print(routeName + ' try report stock today');
-      final report_stock_today = await InvestrendTheme.tradingHttp.report_stock_today(
-          broker,
-          account,
-          user,
-          this.stock_code,
-          InvestrendTheme.of(context).applicationPlatform,
-          InvestrendTheme.of(context).applicationVersion);
+      final reportStockToday = await InvestrendTheme.tradingHttp
+          .report_stock_today(
+              broker,
+              account,
+              user,
+              this.stock_code,
+              InvestrendTheme.of(context).applicationPlatform,
+              InvestrendTheme.of(context).applicationVersion);
       //DebugWriter.info(routeName + ' Got stockPosition ' + stockPosition.accountcode + '   stockList.size : ' + stockPosition.stockListSize().toString());
-      DebugWriter.information(routeName + ' Got report_stock_today : ' + report_stock_today.size().toString());
-      if (report_stock_today != null && !report_stock_today.isEmpty()) {
+      DebugWriter.information(routeName +
+          ' Got report_stock_today : ' +
+          reportStockToday.size().toString());
+      if (reportStockToday != null && !reportStockToday.isEmpty()) {
         if (mounted) {
-          _reportStockHistNotifier.setValue(report_stock_today);
+          _reportStockHistNotifier.setValue(reportStockToday);
         }
       } else {
         if (mounted) {
@@ -533,13 +571,13 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
         }
       }
     } catch (e) {
-      DebugWriter.information(routeName + ' stockPosition Exception : ' + e.toString());
+      DebugWriter.information(
+          routeName + ' stockPosition Exception : ' + e.toString());
       if (mounted) {
         _reportStockHistNotifier.setError(message: e.toString());
       }
       handleNetworkError(context, e);
     }
-
 
     print(routeName + '.doUpdate finished. pullToRefresh : $pullToRefresh');
     onProgress = false;
@@ -559,9 +597,11 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
         } else if (error.isErrorTrading()) {
           InvestrendTheme.of(context).showSnackBar(context, error.message());
         } else {
-          String network_error_label = 'network_error_label'.tr();
-          network_error_label = network_error_label.replaceFirst("#CODE#", error.code.toString());
-          InvestrendTheme.of(context).showSnackBar(context, network_error_label);
+          String networkErrorLabel = 'network_error_label'.tr();
+          networkErrorLabel =
+              networkErrorLabel.replaceFirst("#CODE#", error.code.toString());
+          InvestrendTheme.of(context)
+              .showSnackBar(context, networkErrorLabel);
         }
       } else {
         //InvestrendTheme.of(context).showSnackBar(context, error.toString());
@@ -607,7 +647,8 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
                 child: Text(
                   'Buyer',
                   textAlign: TextAlign.center,
-                  style: styleBold.copyWith(color: Theme.of(context).accentColor),
+                  style:
+                      styleBold.copyWith(color: Theme.of(context).colorScheme.secondary),
                 ),
                 flex: 1,
               ),
@@ -616,7 +657,8 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
                 child: Text(
                   'Seller',
                   textAlign: TextAlign.center,
-                  style: styleBold.copyWith(color: InvestrendTheme.sellTextColor),
+                  style:
+                      styleBold.copyWith(color: InvestrendTheme.sellTextColor),
                 ),
                 flex: 1,
               ),
@@ -625,12 +667,15 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
         ),
         Padding(
           padding: const EdgeInsets.only(
-              left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral, bottom: InvestrendTheme.cardPadding),
+              left: InvestrendTheme.cardPaddingGeneral,
+              right: InvestrendTheme.cardPaddingGeneral,
+              bottom: InvestrendTheme.cardPadding),
           child: Row(
             children: [
               SizedBox(
                 width: leftWidth * 0.3,
-                child: Text('Code', style: styleHeader, textAlign: TextAlign.left),
+                child:
+                    Text('Code', style: styleHeader, textAlign: TextAlign.left),
               ),
               SizedBox(
                 width: leftWidth * 0.3,
@@ -668,7 +713,8 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
               ),
               SizedBox(
                 width: rightWidth * 0.3,
-                child: Text('Code', style: styleHeader, textAlign: TextAlign.left),
+                child:
+                    Text('Code', style: styleHeader, textAlign: TextAlign.left),
               ),
               SizedBox(
                 width: rightWidth * 0.3,
@@ -699,8 +745,16 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
     );
   }
 
-  Widget createRow(BuildContext context, double leftWidth, double centerWidth, double rightWidth, int line, NetBuySellSummary buyer,
-      NetBuySellSummary seller, TextStyle style, TextStyle styleBroker) {
+  Widget createRow(
+      BuildContext context,
+      double leftWidth,
+      double centerWidth,
+      double rightWidth,
+      int line,
+      NetBuySellSummary buyer,
+      NetBuySellSummary seller,
+      TextStyle style,
+      TextStyle styleBroker) {
     //TextStyle style = InvestrendTheme.of(context).small_w400_compact;
 
     String buyerCode = '';
@@ -723,14 +777,19 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
 
     bool odd = (line - 1) % 2 != 0;
     return Container(
-      color: odd ? InvestrendTheme.of(context).oddColor : Theme.of(context).backgroundColor,
-      padding: const EdgeInsets.only(left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral),
+      color: odd
+          ? InvestrendTheme.of(context).oddColor
+          : Theme.of(context).colorScheme.background,
+      padding: const EdgeInsets.only(
+          left: InvestrendTheme.cardPaddingGeneral,
+          right: InvestrendTheme.cardPaddingGeneral),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(
             width: leftWidth * 0.2,
-            child: Text(buyerCode, style: styleBroker, textAlign: TextAlign.left),
+            child:
+                Text(buyerCode, style: styleBroker, textAlign: TextAlign.left),
           ),
           SizedBox(
             width: leftWidth * 0.4,
@@ -764,7 +823,8 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
               color: InvestrendTheme.of(context).greyLighterTextColor,
               child: AutoSizeText(
                 InvestrendTheme.formatNewComma(line.toDouble()),
-                style: style.copyWith(color: InvestrendTheme.of(context).textWhite),
+                style: style.copyWith(
+                    color: InvestrendTheme.of(context).textWhite),
                 textAlign: TextAlign.center,
                 group: groupValue,
                 minFontSize: 5,
@@ -775,7 +835,8 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
           ),
           SizedBox(
             width: rightWidth * 0.2,
-            child: Text(sellerCode, style: styleBroker, textAlign: TextAlign.left),
+            child:
+                Text(sellerCode, style: styleBroker, textAlign: TextAlign.left),
           ),
           SizedBox(
             width: rightWidth * 0.4,
@@ -805,12 +866,11 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
   }
 
   Widget createBody(BuildContext context, double paddingBottom) {
-
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         return RefreshIndicator(
           color: InvestrendTheme.of(context).textWhite,
-          backgroundColor: Theme.of(context).accentColor,
+          backgroundColor: Theme.of(context).colorScheme.secondary,
           onRefresh: onRefresh,
           child: ListView(
             //padding: const EdgeInsets.only(left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral),
@@ -821,7 +881,8 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
                 builder: (context, gp, child) {
                   return Container(
                     margin: const EdgeInsets.only(
-                        left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral,
+                        left: InvestrendTheme.cardPaddingGeneral,
+                        right: InvestrendTheme.cardPaddingGeneral,
                         top: InvestrendTheme.cardPadding),
                     decoration: BoxDecoration(
                       color: InvestrendTheme.of(context).tileBackground,
@@ -833,17 +894,22 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
                       groupBest: groupBest,
                       firstRow: true,
                       onTap: () {
-                        print('clicked code : ' + gp.code);
+                        print('clicked code : ' + gp.brokerCode);
                         // if (canTapRow) {
                         //   canTapRow = false;
 
-                        Stock stock = InvestrendTheme.storedData.findStock(gp.code);
+                        Stock stock =
+                            InvestrendTheme.storedData.findStock(gp.brokerCode);
                         if (stock == null) {
-                          print('clicked code : ' + gp.code + ' aborted, not find stock on StockStorer');
+                          print('clicked code : ' +
+                              gp.brokerCode +
+                              ' aborted, not find stock on StockStorer');
                           // canTapRow = true;
                           return;
                         }
-                        context.read(primaryStockChangeNotifier).setStock(stock);
+                        context
+                            .read(primaryStockChangeNotifier)
+                            .setStock(stock);
 
                         // Future.delayed(Duration(milliseconds: 200), () {
                         // canTapRow = true;
@@ -852,13 +918,16 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
                         // }
                       },
                       paddingLeftRight: InvestrendTheme.cardPaddingGeneral,
-                      onPressedButtonCorporateAction: () => onPressedButtonCorporateAction(context, gp.corporateAction),
+                      onPressedButtonCorporateAction: () =>
+                          onPressedButtonCorporateAction(
+                              context, gp.corporateAction),
                       //onPressedButtonSpecialNotation: ()=> onPressedButtonSpecialNotation(context, gp.notation),
-                      onPressedButtonSpecialNotation: () => onPressedButtonImportantInformation(context, gp.notation, gp.suspendStock),
+                      onPressedButtonSpecialNotation: () =>
+                          onPressedButtonImportantInformation(
+                              context, gp.notation, gp.suspendStock),
                       stockInformationStatus: gp.status,
                       widthRight: _watchlistNotifier.widthRight,
                     ),
-
                   );
                 },
               ),
@@ -866,21 +935,37 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
               SizedBox(
                 height: InvestrendTheme.cardPaddingVertical,
               ),
-              createLabelValue('accounts_lobel'.tr(), this.account_info,),
+              createLabelValue(
+                'accounts_lobel'.tr(),
+                this.account_info,
+              ),
               ValueListenableBuilder(
                   valueListenable: _portfolioNotifier,
                   builder: (context, StockPositionDetail value, child) {
                     return Column(
                       children: [
-                        createLabelValue('portfolio_detail_total_value'.tr(), InvestrendTheme.formatMoneyDouble(value.marketVal, prefixRp: true),
-                            valueStyle: InvestrendTheme.of(context).medium_w600_compact),
-                        createLabelValue('portfolio_detail_invested'.tr(), InvestrendTheme.formatMoneyDouble(value.stockVal, prefixRp: true)),
                         createLabelValue(
-                            'portfolio_detail_return'.tr(), InvestrendTheme.formatMoneyDouble(value.stockGL, prefixPlus: true, prefixRp: true),
-                            valueColor: InvestrendTheme.changeTextColor(widget.init_portfolio.stockGL)),
+                            'portfolio_detail_total_value'.tr(),
+                            InvestrendTheme.formatMoneyDouble(value.marketVal,
+                                prefixRp: true),
+                            valueStyle: InvestrendTheme.of(context)
+                                .medium_w600_compact),
                         createLabelValue(
-                            'portfolio_detail_percentage_return'.tr(), InvestrendTheme.formatPercent(value.stockGLPct, prefixPlus: true),
-                            valueColor: InvestrendTheme.changeTextColor(widget.init_portfolio.stockGL)),
+                            'portfolio_detail_invested'.tr(),
+                            InvestrendTheme.formatMoneyDouble(value.stockVal,
+                                prefixRp: true)),
+                        createLabelValue(
+                            'portfolio_detail_return'.tr(),
+                            InvestrendTheme.formatMoneyDouble(value.stockGL,
+                                prefixPlus: true, prefixRp: true),
+                            valueColor: InvestrendTheme.changeTextColor(
+                                widget.init_portfolio.stockGL)),
+                        createLabelValue(
+                            'portfolio_detail_percentage_return'.tr(),
+                            InvestrendTheme.formatPercent(value.stockGLPct,
+                                prefixPlus: true),
+                            valueColor: InvestrendTheme.changeTextColor(
+                                widget.init_portfolio.stockGL)),
                       ],
                     );
                   }),
@@ -890,7 +975,9 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
               // createLabelValue('portfolio_detail_percentage_return'.tr(), InvestrendTheme.formatPercent(widget.init_portfolio.stockGLPct, prefixPlus: true), valueColor: InvestrendTheme.changeTextColor(widget.init_portfolio.stockGL)),
 
               Padding(
-                padding: const EdgeInsets.only(left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral),
+                padding: const EdgeInsets.only(
+                    left: InvestrendTheme.cardPaddingGeneral,
+                    right: InvestrendTheme.cardPaddingGeneral),
                 child: ComponentCreator.divider(context),
               ),
               SizedBox(
@@ -901,8 +988,14 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
                   builder: (context, StockPositionDetail value, child) {
                     return Column(
                       children: [
-                        createLabelValue('portfolio_detail_owned_lot'.tr(), InvestrendTheme.formatPrice(value.netBalance.toInt())),
-                        createLabelValue('portfolio_detail_average_price'.tr(), InvestrendTheme.formatPrice(value.avgPrice.toInt())),
+                        createLabelValue(
+                            'portfolio_detail_owned_lot'.tr(),
+                            InvestrendTheme.formatPrice(
+                                value.netBalance.toInt())),
+                        createLabelValue(
+                            'portfolio_detail_average_price'.tr(),
+                            InvestrendTheme.formatPrice(
+                                value.avgPrice.toInt())),
                       ],
                     );
                   }),
@@ -913,7 +1006,9 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
               ValueListenableBuilder(
                   valueListenable: _watchlistNotifier,
                   builder: (context, WatchlistPrice value, child) {
-                    return createLabelValue('portfolio_detail_market_price'.tr(), InvestrendTheme.formatPrice(value.price.toInt()));
+                    return createLabelValue(
+                        'portfolio_detail_market_price'.tr(),
+                        InvestrendTheme.formatPrice(value.price.toInt()));
                   }),
               SizedBox(
                 height: InvestrendTheme.cardPadding,
@@ -937,20 +1032,26 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
                     //     }),
                     //   ));
                     // } else {
-                      childs.add(Padding(
-                        padding: const EdgeInsets.only(left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral),
-                        child: ComponentCreator.subtitleNoButtonMore(context, 'portfolio_detail_order_open'.tr()),
-                      ));
+                    childs.add(Padding(
+                      padding: const EdgeInsets.only(
+                          left: InvestrendTheme.cardPaddingGeneral,
+                          right: InvestrendTheme.cardPaddingGeneral),
+                      child: ComponentCreator.subtitleNoButtonMore(
+                          context, 'portfolio_detail_order_open'.tr()),
+                    ));
                     // }
 
-                    Widget noWidget = _orderStatusNotifier.currentState.getNoWidget(onRetry: () {
+                    Widget noWidget = _orderStatusNotifier.currentState
+                        .getNoWidget(onRetry: () {
                       doUpdate(pullToRefresh: true);
                     });
 
                     childs.add(createHeaderOpen(context));
                     if (noWidget != null) {
                       childs.add(Padding(
-                        padding: EdgeInsets.only(top: InvestrendTheme.cardPaddingVertical, bottom: InvestrendTheme.cardPaddingVertical),
+                        padding: EdgeInsets.only(
+                            top: InvestrendTheme.cardPaddingVertical,
+                            bottom: InvestrendTheme.cardPaddingVertical),
                         child: Center(child: noWidget),
                       ));
                     } else {
@@ -959,12 +1060,16 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
                       for (int i = 0; i < loop; i++) {
                         if (i > 0) {
                           childs.add(Padding(
-                            padding: const EdgeInsets.only(left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral),
-                            child: ComponentCreator.divider(context, thickness: 0.5),
+                            padding: const EdgeInsets.only(
+                                left: InvestrendTheme.cardPaddingGeneral,
+                                right: InvestrendTheme.cardPaddingGeneral),
+                            child: ComponentCreator.divider(context,
+                                thickness: 0.5),
                           ));
                         }
                         //childs.add(createRowOpen(context, value.datas.elementAt(i)));
-                        childs.add(createSlidableRowAmendWithdraw(context, value.datas.elementAt(i)));
+                        childs.add(createSlidableRowAmendWithdraw(
+                            context, value.datas.elementAt(i)));
                       }
                     }
 
@@ -983,30 +1088,41 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
                     // int max_showed = 2;
                     List<Widget> childs = List.empty(growable: true);
                     // if (value.size() > max_showed) {
-                      childs.add(Padding(
-                        padding: const EdgeInsets.only(left: InvestrendTheme.cardPaddingGeneral),
-                        child: ComponentCreator.subtitleButtonMore(context, 'portfolio_detail_order_done'.tr(), () {
-                          Navigator.push(
-                              context,
-                              CupertinoPageRoute(
-                                //builder: (_) => ScreenDetailPortfolio(accountInfo,stock.code, stock.name, gp),
-                                builder: (_) => ScreenDetailPortfolioHistorical(stock_code, stock_name, account, user, broker),
-                                settings: RouteSettings(name: '/detail_portfolio_historical'),
-                              ));
-                        }, textButton: 'historical_text'.tr()),
-                      ));
+                    childs.add(Padding(
+                      padding: const EdgeInsets.only(
+                          left: InvestrendTheme.cardPaddingGeneral),
+                      child: ComponentCreator.subtitleButtonMore(
+                          context, 'portfolio_detail_order_done'.tr(), () {
+                        Navigator.push(
+                            context,
+                            CupertinoPageRoute(
+                              //builder: (_) => ScreenDetailPortfolio(accountInfo,stock.code, stock.name, gp),
+                              builder: (_) => ScreenDetailPortfolioHistorical(
+                                  stock_code,
+                                  stock_name,
+                                  account,
+                                  user,
+                                  broker),
+                              settings: RouteSettings(
+                                  name: '/detail_portfolio_historical'),
+                            ));
+                      }, textButton: 'historical_text'.tr()),
+                    ));
                     // } else {
                     //   childs.add(ComponentCreator.subtitle(context, 'portfolio_detail_order_done'.tr()));
                     // }
 
-                    Widget noWidget = _reportStockHistNotifier.currentState.getNoWidget(onRetry: () {
+                    Widget noWidget = _reportStockHistNotifier.currentState
+                        .getNoWidget(onRetry: () {
                       doUpdate(pullToRefresh: true);
                     });
 
                     childs.add(createHeaderMatched(context));
                     if (noWidget != null) {
                       childs.add(Padding(
-                        padding: EdgeInsets.only(top: InvestrendTheme.cardPaddingVertical, bottom: InvestrendTheme.cardPaddingVertical),
+                        padding: EdgeInsets.only(
+                            top: InvestrendTheme.cardPaddingVertical,
+                            bottom: InvestrendTheme.cardPaddingVertical),
                         child: Center(child: noWidget),
                       ));
                     } else {
@@ -1015,11 +1131,15 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
                       for (int i = 0; i < loop; i++) {
                         if (i > 0) {
                           childs.add(Padding(
-                            padding: const EdgeInsets.only(left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral),
-                            child: ComponentCreator.divider(context, thickness: 0.5),
+                            padding: const EdgeInsets.only(
+                                left: InvestrendTheme.cardPaddingGeneral,
+                                right: InvestrendTheme.cardPaddingGeneral),
+                            child: ComponentCreator.divider(context,
+                                thickness: 0.5),
                           ));
                         }
-                        childs.add(createRowMatched(context, value.datas.elementAt(i)));
+                        childs.add(createRowMatched(
+                            context, value.datas.elementAt(i)));
                       }
                     }
 
@@ -1079,13 +1199,13 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
     List<Widget> listActions = List.empty(growable: true);
     bool isBuy = StringUtils.equalsIgnoreCase(os.bs, 'B');
     if (os.canAmend()) {
-      String button_amend = 'button_amend'.tr();
-      Color buySellColor = isBuy ? InvestrendTheme.buyColor : InvestrendTheme.sellColor;
+      String buttonAmend = 'button_amend'.tr();
+      Color buySellColor =
+          isBuy ? InvestrendTheme.buyColor : InvestrendTheme.sellColor;
       listActions.add(TradeSlideAction(
-        button_amend,
+        buttonAmend,
         buySellColor,
-
-            () {
+        () {
           print('amend clicked code : ' + os.stockCode);
           // Stock stock = InvestrendTheme.storedData.findStock(os.stockCode);
           // if (stock == null) {
@@ -1095,7 +1215,6 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
 
           //context.read(primaryStockChangeNotifier).setStock(stock);
           showScreenAmend(context, os);
-
 
           // bool hasAccount = context.read(dataHolderChangeNotifier).user.accountSize() > 0;
           // InvestrendTheme.pushScreenTrade(
@@ -1113,7 +1232,7 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
       listActions.add(TradeSlideAction(
         'button_withdraw'.tr(),
         Colors.orange,
-            () {
+        () {
           print('withdraw clicked code : ' + os.stockCode);
           executeCancel(context, os);
           // Stock stock = InvestrendTheme.storedData.findStock(os.stockCode);
@@ -1166,7 +1285,9 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
             showModalBottomSheet(
                 isScrollControlled: true,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(topLeft: Radius.circular(24.0), topRight: Radius.circular(24.0)),
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(24.0),
+                      topRight: Radius.circular(24.0)),
                 ),
                 //backgroundColor: Colors.transparent,
                 context: context,
@@ -1181,7 +1302,9 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
       showModalBottomSheet(
           isScrollControlled: true,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(topLeft: Radius.circular(24.0), topRight: Radius.circular(24.0)),
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(24.0),
+                topRight: Radius.circular(24.0)),
           ),
           //backgroundColor: Colors.transparent,
           context: context,
@@ -1193,8 +1316,10 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
   }
 
   void showScreenAmend(BuildContext context, OrderStatus os) {
-
-    Account account = context.read(dataHolderChangeNotifier).user.getAccountByCode(os.brokercode, os.accountcode);
+    Account account = context
+        .read(dataHolderChangeNotifier)
+        .user
+        .getAccountByCode(os.brokercode, os.accountcode);
     if (account != null) {
       OrderType orderType;
       if (StringUtils.equalsIgnoreCase(os.bs, 'B')) {
@@ -1233,17 +1358,21 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
             InvestrendTheme.of(context).showDialogInvalidSession(context);
           } else if (value is String) {
             if (StringUtils.equalsIgnoreCase(value, PIN_SUCCESS)) {
-              InvestrendTheme.push(context, ScreenAmend(data.cloneAsAmend()), ScreenTransition.SlideLeft, '/amend').then((value) {
+              InvestrendTheme.push(context, ScreenAmend(data.cloneAsAmend()),
+                      ScreenTransition.SlideLeft, '/amend')
+                  .then((value) {
                 if (value != null && value is String) {
                   if (StringUtils.equalsIgnoreCase(value, 'FINISHED')) {
                     Navigator.popUntil(context, (route) {
                       print('popUntil : ' + route.toString());
-                      if (StringUtils.equalsIgnoreCase(route?.settings?.name, '/main')) {
+                      if (StringUtils.equalsIgnoreCase(
+                          route?.settings?.name, '/main')) {
                         return true;
                       }
                       return route.isFirst;
                     });
-                    context.read(mainMenuChangeNotifier).setActive(Tabs.Transaction, TabsTransaction.Intraday.index);
+                    context.read(mainMenuChangeNotifier).setActive(
+                        Tabs.Transaction, TabsTransaction.Intraday.index);
                   }
                 }
               });
@@ -1251,30 +1380,38 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
           }
         });
       } else {
-        InvestrendTheme.push(context, ScreenAmend(data.cloneAsAmend()), ScreenTransition.SlideLeft, '/amend').then((value) {
+        InvestrendTheme.push(context, ScreenAmend(data.cloneAsAmend()),
+                ScreenTransition.SlideLeft, '/amend')
+            .then((value) {
           if (value != null && value is String) {
             if (StringUtils.equalsIgnoreCase(value, 'FINISHED')) {
               Navigator.popUntil(context, (route) {
                 print('popUntil : ' + route.toString());
-                if (StringUtils.equalsIgnoreCase(route?.settings?.name, '/main')) {
+                if (StringUtils.equalsIgnoreCase(
+                    route?.settings?.name, '/main')) {
                   return true;
                 }
                 return route.isFirst;
               });
-              context.read(mainMenuChangeNotifier).setActive(Tabs.Transaction, TabsTransaction.Intraday.index);
+              context
+                  .read(mainMenuChangeNotifier)
+                  .setActive(Tabs.Transaction, TabsTransaction.Intraday.index);
             }
           }
         });
       }
-    }else{
-      InvestrendTheme.of(context).showSnackBar(context, 'Can\'t find order information locally.');
+    } else {
+      InvestrendTheme.of(context)
+          .showSnackBar(context, 'Can\'t find order information locally.');
       print('Can\'t find order information locally.');
     }
   }
 
-
-  void showOrderDetail(BuildContext context, OrderStatus os){
-    Account account = context.read(dataHolderChangeNotifier).user.getAccountByCode(os.brokercode, os.accountcode);
+  void showOrderDetail(BuildContext context, OrderStatus os) {
+    Account account = context
+        .read(dataHolderChangeNotifier)
+        .user
+        .getAccountByCode(os.brokercode, os.accountcode);
     if (account != null) {
       OrderType orderType;
       if (StringUtils.equalsIgnoreCase(os.bs, 'B')) {
@@ -1307,30 +1444,35 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
           context,
           CupertinoPageRoute(
               builder: (_) => ScreenOrderDetail(
-                data,
-                os,
-                historicalMode: false,
-              ),
+                    data,
+                    os,
+                    historicalMode: false,
+                  ),
               settings: RouteSettings(name: '/order_detail')));
     } else {
       String error = 'validation_account_not_related_to_user'.tr();
       error = error.replaceAll('#account#', os.accountcode);
-      error = error.replaceAll('#user#', context.read(dataHolderChangeNotifier).user.username);
+      error = error.replaceAll(
+          '#user#', context.read(dataHolderChangeNotifier).user.username);
       InvestrendTheme.of(context).showSnackBar(context, error);
     }
   }
 
   Widget createRowOpen(BuildContext context, OrderStatus data) {
     TextStyle styleTop = InvestrendTheme.of(context).regular_w500_compact;
-    TextStyle styleBottom = InvestrendTheme.of(context).small_w400_compact_greyDarker;
+    TextStyle styleBottom =
+        InvestrendTheme.of(context).small_w400_compact_greyDarker;
 
-    int order_lot = data.orderQty ~/ 100;
+    int orderLot = data.orderQty ~/ 100;
     int value = data.price * data.orderQty;
     return TapableWidget(
-      onTap: ()=>showOrderDetail(context, data),
+      onTap: () => showOrderDetail(context, data),
       child: Padding(
-
-        padding: EdgeInsets.only(top: InvestrendTheme.cardPadding, bottom: InvestrendTheme.cardPadding,left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral),
+        padding: EdgeInsets.only(
+            top: InvestrendTheme.cardPadding,
+            bottom: InvestrendTheme.cardPadding,
+            left: InvestrendTheme.cardPaddingGeneral,
+            right: InvestrendTheme.cardPaddingGeneral),
         child: Column(
           children: [
             Row(
@@ -1338,7 +1480,8 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
                 Expanded(
                     flex: 1,
                     child: Container(
-                        padding: EdgeInsets.only(left: 4.0, right: 4.0, top: 4.0, bottom: 4.0),
+                        padding: EdgeInsets.only(
+                            left: 4.0, right: 4.0, top: 4.0, bottom: 4.0),
                         //color: data.backgroundColor(context),
                         decoration: BoxDecoration(
                           color: data.backgroundColor(context),
@@ -1346,7 +1489,9 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
                         ),
                         child: AutoSizeText(
                           data.orderStatus,
-                          style: styleTop.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor),
+                          style: styleTop.copyWith(
+                              color: InvestrendTheme.of(context)
+                                  .greyDarkerTextColor),
                           textAlign: TextAlign.left,
                           maxLines: 1,
                           minFontSize: 5.0,
@@ -1356,7 +1501,8 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
                     flex: 1,
                     child: AutoSizeText(
                       translateBuySell(data.bs),
-                      style: styleTop.copyWith(color: colorBuySell(context, data.bs)),
+                      style: styleTop.copyWith(
+                          color: colorBuySell(context, data.bs)),
                       textAlign: TextAlign.center,
                       maxLines: 1,
                       minFontSize: 5.0,
@@ -1392,7 +1538,7 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
                 Expanded(
                     flex: 1,
                     child: AutoSizeText(
-                      InvestrendTheme.formatPrice(order_lot),
+                      InvestrendTheme.formatPrice(orderLot),
                       style: styleBottom,
                       textAlign: TextAlign.center,
                       maxLines: 1,
@@ -1419,9 +1565,14 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
 
   Widget createRowMatched(BuildContext context, ReportStockHist data) {
     TextStyle styleTop = InvestrendTheme.of(context).regular_w500_compact;
-    TextStyle styleBottom = InvestrendTheme.of(context).small_w400_compact_greyDarker;
+    TextStyle styleBottom =
+        InvestrendTheme.of(context).small_w400_compact_greyDarker;
     return Padding(
-      padding: EdgeInsets.only(top: InvestrendTheme.cardPadding, bottom: InvestrendTheme.cardPadding, left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral),
+      padding: EdgeInsets.only(
+          top: InvestrendTheme.cardPadding,
+          bottom: InvestrendTheme.cardPadding,
+          left: InvestrendTheme.cardPaddingGeneral,
+          right: InvestrendTheme.cardPaddingGeneral),
       child: Column(
         children: [
           Row(
@@ -1440,7 +1591,8 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
                   flex: 1,
                   child: AutoSizeText(
                     translateBuySell(data.bs),
-                    style: styleTop.copyWith(color: colorBuySell(context, data.bs)),
+                    style: styleTop.copyWith(
+                        color: colorBuySell(context, data.bs)),
                     textAlign: TextAlign.center,
                     maxLines: 1,
                     minFontSize: 5.0,
@@ -1503,8 +1655,11 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
   Widget createHeaderMatched(BuildContext context) {
     TextStyle styleHeader = InvestrendTheme.of(context).small_w500_compact;
     return Padding(
-
-      padding: EdgeInsets.only(top: InvestrendTheme.cardPadding, bottom: InvestrendTheme.cardPadding, left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral),
+      padding: EdgeInsets.only(
+          top: InvestrendTheme.cardPadding,
+          bottom: InvestrendTheme.cardPadding,
+          left: InvestrendTheme.cardPaddingGeneral,
+          right: InvestrendTheme.cardPaddingGeneral),
       child: Row(
         children: [
           Expanded(
@@ -1545,8 +1700,11 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
   Widget createHeaderOpen(BuildContext context) {
     TextStyle styleHeader = InvestrendTheme.of(context).small_w500_compact;
     return Padding(
-
-      padding: EdgeInsets.only(top: InvestrendTheme.cardPadding, bottom: InvestrendTheme.cardPadding, left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral),
+      padding: EdgeInsets.only(
+          top: InvestrendTheme.cardPadding,
+          bottom: InvestrendTheme.cardPadding,
+          left: InvestrendTheme.cardPaddingGeneral,
+          right: InvestrendTheme.cardPaddingGeneral),
       child: Row(
         children: [
           Expanded(
@@ -1584,7 +1742,8 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
     );
   }
 
-  Widget createLabelValue(String label, String value, {Color valueColor, TextStyle labelStyle, TextStyle valueStyle}) {
+  Widget createLabelValue(String label, String value,
+      {Color valueColor, TextStyle labelStyle, TextStyle valueStyle}) {
     if (labelStyle == null) {
       labelStyle = InvestrendTheme.of(context).small_w400_compact.copyWith(
             color: InvestrendTheme.of(context).greyDarkerTextColor,
@@ -1598,7 +1757,10 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
       valueStyle = valueStyle.copyWith(color: valueColor);
     }
     return Padding(
-      padding: const EdgeInsets.only(left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral, bottom: InvestrendTheme.cardPaddingGeneral),
+      padding: const EdgeInsets.only(
+          left: InvestrendTheme.cardPaddingGeneral,
+          right: InvestrendTheme.cardPaddingGeneral,
+          bottom: InvestrendTheme.cardPaddingGeneral),
       //padding: const EdgeInsets.only(bottom: InvestrendTheme.cardPaddingGeneral),
       child: Row(
         children: [
@@ -1609,7 +1771,8 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
               maxLines: 5,
               softWrap: true,
               style: labelStyle,
-              textHeightBehavior: TextHeightBehavior(applyHeightToFirstAscent: false),
+              textHeightBehavior:
+                  TextHeightBehavior(applyHeightToFirstAscent: false),
             ),
           ),
           SizedBox(
@@ -1625,7 +1788,8 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
     );
   }
 
-  void onPressedButtonCorporateAction(BuildContext context, List<CorporateActionEvent> corporateAction) {
+  void onPressedButtonCorporateAction(
+      BuildContext context, List<CorporateActionEvent> corporateAction) {
     print('onPressedButtonCorporateAction : ' + corporateAction.toString());
 
     List<Widget> childs = List.empty(growable: true);
@@ -1639,14 +1803,18 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
         }
       });
 
-      showAlert(context, childs, childsHeight: (childs.length * 50).toDouble(), title: 'Corporate Action');
+      showAlert(context, childs,
+          childsHeight: (childs.length * 50).toDouble(),
+          title: 'Corporate Action');
     }
   }
 
-  void onPressedButtonImportantInformation(BuildContext context, List<Remark2Mapping> notation, SuspendStock suspendStock) {
+  void onPressedButtonImportantInformation(BuildContext context,
+      List<Remark2Mapping> notation, SuspendStock suspendStock) {
     int count = notation == null ? 0 : notation.length;
     if (count == 0 && suspendStock == null) {
-      print(routeName + '.onPressedButtonImportantInformation not showing anything');
+      print(routeName +
+          '.onPressedButtonImportantInformation not showing anything');
       return;
     }
     print(routeName + '.onPressedButtonImportantInformation');
@@ -1680,12 +1848,15 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
       childs.add(Padding(
         padding: const EdgeInsets.only(bottom: 15.0),
         child: RichText(
-          text: TextSpan(text: '•  ', style: InvestrendTheme.of(context).small_w600, children: [
-            TextSpan(
-              text: infoSuspend,
-              style: InvestrendTheme.of(context).small_w400,
-            )
-          ]),
+          text: TextSpan(
+              text: '•  ',
+              style: InvestrendTheme.of(context).small_w600,
+              children: [
+                TextSpan(
+                  text: infoSuspend,
+                  style: InvestrendTheme.of(context).small_w400,
+                )
+              ]),
         ),
       ));
     }
@@ -1753,16 +1924,19 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
           childs.add(Padding(
             padding: const EdgeInsets.only(bottom: 5.0),
             child: RichText(
-              text: TextSpan(text: /*remark2.code + " : "*/ '•  ', style: InvestrendTheme.of(context).small_w600, children: [
-                TextSpan(
-                  text: remark2.code,
+              text: TextSpan(
+                  text: /*remark2.code + " : "*/ '•  ',
                   style: InvestrendTheme.of(context).small_w600,
-                ),
-                TextSpan(
-                  text: ' : ' + remark2.value,
-                  style: InvestrendTheme.of(context).small_w400,
-                )
-              ]),
+                  children: [
+                    TextSpan(
+                      text: remark2.code,
+                      style: InvestrendTheme.of(context).small_w600,
+                    ),
+                    TextSpan(
+                      text: ' : ' + remark2.value,
+                      style: InvestrendTheme.of(context).small_w400,
+                    )
+                  ]),
             ),
           ));
         }
@@ -1773,11 +1947,13 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
     }
   }
 
-  void showAlert(BuildContext context, List<Widget> childs, {String title, double childsHeight = 0}) {
+  void showAlert(BuildContext context, List<Widget> childs,
+      {String title, double childsHeight = 0}) {
     showModalBottomSheet(
         isScrollControlled: true,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(topLeft: Radius.circular(24.0), topRight: Radius.circular(24.0)),
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(24.0), topRight: Radius.circular(24.0)),
         ),
         //backgroundColor: Colors.transparent,
         context: context,
@@ -1805,11 +1981,11 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
     }
 
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       //floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
       //floatingActionButton: createFloatingActionButton(context),
       appBar: AppBar(
-        backgroundColor: Theme.of(context).backgroundColor,
+        backgroundColor: Theme.of(context).colorScheme.background,
         centerTitle: true,
         shadowColor: shadowColor,
         elevation: elevation,
@@ -1837,14 +2013,13 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
   }
 
   Widget createBottomSheet(BuildContext context, double paddingBottom) {
-
     Widget codeWidget;
-    if(widget.init_historical){
+    if (widget.init_historical) {
       codeWidget = Text(
         widget.init_stock_code,
         style: InvestrendTheme.of(context).small_w400,
       );
-    }else{
+    } else {
       codeWidget = Consumer(builder: (context, watch, child) {
         final notifier = watch(primaryStockChangeNotifier);
         if (notifier.invalid()) {
@@ -1857,7 +2032,8 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
       });
     }
     return Padding(
-      padding: EdgeInsets.only(top: 8.0, bottom: paddingBottom > 0 ? paddingBottom : 8.0),
+      padding: EdgeInsets.only(
+          top: 8.0, bottom: paddingBottom > 0 ? paddingBottom : 8.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -1873,7 +2049,6 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-
                     Consumer(builder: (context, watch, child) {
                       final notifier = watch(primaryStockChangeNotifier);
                       if (notifier.invalid()) {
@@ -1896,13 +2071,11 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
                         style: InvestrendTheme.of(context).medium_w600,
                       );
                     }),
-
                   ],
                 ),
               ),
             ),
           ),
-
           Hero(
             tag: 'button_buy',
             child: Padding(
@@ -1912,18 +2085,21 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
               ),
               child: ButtonOrder(
                 OrderType.Buy,
-                    () {
+                () {
+                  int close =
+                      context.read(stockSummaryChangeNotifier).summary.close;
 
-                  int close = context.read(stockSummaryChangeNotifier).summary.close;
-
-                  bool hasAccount = context.read(dataHolderChangeNotifier).user.accountSize() > 0;
-                  InvestrendTheme.pushScreenTrade(context, hasAccount, type: OrderType.Buy, initialPriceLot: PriceLot(close, 0));
-
+                  bool hasAccount = context
+                          .read(dataHolderChangeNotifier)
+                          .user
+                          .accountSize() >
+                      0;
+                  InvestrendTheme.pushScreenTrade(context, hasAccount,
+                      type: OrderType.Buy, initialPriceLot: PriceLot(close, 0));
                 },
               ),
             ),
           ),
-
           Hero(
             tag: 'button_sell',
             child: Padding(
@@ -1931,16 +2107,22 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
               child: ValueListenableBuilder(
                   valueListenable: _portfolioNotifier,
                   builder: (context, StockPositionDetail value, child) {
-
-
                     VoidCallback onPressed;
-                    if(value.netBalance.toInt() > 0){
+                    if (value.netBalance.toInt() > 0) {
                       onPressed = () {
-                        int close = context.read(stockSummaryChangeNotifier).summary.close;
+                        int close = context
+                            .read(stockSummaryChangeNotifier)
+                            .summary
+                            .close;
 
-                        bool hasAccount = context.read(dataHolderChangeNotifier).user.accountSize() > 0;
-                        InvestrendTheme.pushScreenTrade(context, hasAccount, type: OrderType.Sell, initialPriceLot: PriceLot(close, 0));
-
+                        bool hasAccount = context
+                                .read(dataHolderChangeNotifier)
+                                .user
+                                .accountSize() >
+                            0;
+                        InvestrendTheme.pushScreenTrade(context, hasAccount,
+                            type: OrderType.Sell,
+                            initialPriceLot: PriceLot(close, 0));
                       };
                     }
                     return ButtonOrder(OrderType.Sell, onPressed);
@@ -1965,7 +2147,6 @@ class _ScreenDetailPortfolioState extends VisibilityAwareState<ScreenDetailPortf
               */
             ),
           ),
-
         ],
       ),
     );

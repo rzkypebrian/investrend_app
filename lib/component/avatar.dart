@@ -152,7 +152,7 @@ class AvatarIconStocks extends StatelessWidget {
               width: size,
               height: size,
               alignment: Alignment.center,
-              color: Theme.of(context).accentColor,
+              color: Theme.of(context).colorScheme.secondary,
               child: Text(
                 label,
                 //style: Theme.of(context).textTheme.button.copyWith(color: Theme.of(context).primaryColor),
@@ -173,7 +173,7 @@ class AvatarIconStocks extends StatelessWidget {
               width: size,
               height: size,
               alignment: Alignment.center,
-              color: Theme.of(context).accentColor,
+              color: Theme.of(context).colorScheme.secondary,
               child: Text(
                 label,
                 //style: Theme.of(context).textTheme.button.copyWith(color: Theme.of(context).primaryColor),
@@ -236,7 +236,7 @@ class AvatarProfileButton extends StatelessWidget {
           minFontSize: 5.0,
         ),
       ),
-      backgroundColor: Theme.of(context).accentColor,
+      backgroundColor: Theme.of(context).colorScheme.secondary,
       radius: size / 2,
     );
     if (onPressed == null) {
@@ -296,7 +296,7 @@ class AvatarIconProfile extends StatelessWidget {
               width: size,
               height: size,
               alignment: Alignment.center,
-              color: Theme.of(context).accentColor,
+              color: Theme.of(context).colorScheme.secondary,
               child: AutoSizeText(
                 label,
                 //style: Theme.of(context).textTheme.button.copyWith(color: Theme.of(context).primaryColor),
@@ -318,7 +318,7 @@ class AvatarIconProfile extends StatelessWidget {
               width: size,
               height: size,
               alignment: Alignment.center,
-              color: Theme.of(context).accentColor,
+              color: Theme.of(context).colorScheme.secondary,
               child: AutoSizeText(
                 label,
                 //style: Theme.of(context).textTheme.button.copyWith(color: Theme.of(context).primaryColor),

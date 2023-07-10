@@ -49,43 +49,43 @@ class _CardPerformanceState extends State<CardPerformance> {
               */
 
               Performance today = data.getPerformance('TODAY');
-              double intraday_change          = today?.change;
-              double intraday_percent_change  = today?.percentChange;
+              double intradayChange          = today?.change;
+              double intradayPercentChange  = today?.percentChange;
 
               Performance week = data.getPerformance('1_WEEK');
-              double week_change          = week?.change;
-              double week_percent_change  = week?.percentChange;
+              double weekChange          = week?.change;
+              double weekPercentChange  = week?.percentChange;
 
               Performance month = data.getPerformance('1_MONTH');
-              double month_1_change          = month?.change;
-              double month_1_percent_change  = month?.percentChange;
+              double month1Change          = month?.change;
+              double month1PercentChange  = month?.percentChange;
 
               Performance month3 = data.getPerformance('3_MONTH');
-              double month_3_change          = month3?.change;
-              double month_3_percent_change  = month3?.percentChange;
+              double month3Change          = month3?.change;
+              double month3PercentChange  = month3?.percentChange;
 
               Performance month6 = data.getPerformance('6_MONTH');
-              double month_6_change          = month6?.change;
-              double month_6_percent_change  = month6?.percentChange;
+              double month6Change          = month6?.change;
+              double month6PercentChange  = month6?.percentChange;
 
               Performance year = data.getPerformance('1_YEAR');
-              double year_1_change          = year?.change;
-              double year_1_percent_change  = year?.percentChange;
+              double year1Change          = year?.change;
+              double year1PercentChange  = year?.percentChange;
 
               Performance year5 = data.getPerformance('5_YEAR');
-              double year_5_change          = year5?.change;
-              double year_5_percent_change  = year5?.percentChange;
+              double year5Change          = year5?.change;
+              double year5PercentChange  = year5?.percentChange;
 
               return Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  progressPerformance(context, 'card_performance_intraday'.tr(), intraday_change, intraday_percent_change, paddingBottom: 0,paddingTop: 0),
-                  progressPerformance(context, 'card_performance_week'.tr(), week_change, week_percent_change, paddingBottom: 0),
-                  progressPerformance(context, 'card_performance_month_1'.tr(), month_1_change, month_1_percent_change, paddingBottom: 0),
-                  progressPerformance(context, 'card_performance_month_3'.tr(), month_3_change, month_3_percent_change, paddingBottom: 0),
-                  progressPerformance(context, 'card_performance_month_6'.tr(), month_6_change, month_6_percent_change, paddingBottom: 0),
-                  progressPerformance(context, 'card_performance_year_1'.tr(), year_1_change, year_1_percent_change, paddingBottom: 0),
-                  progressPerformance(context, 'card_performance_year_5'.tr(), year_5_change, year_5_percent_change, paddingBottom: 0),
+                  progressPerformance(context, 'card_performance_intraday'.tr(), intradayChange, intradayPercentChange, paddingBottom: 0,paddingTop: 0),
+                  progressPerformance(context, 'card_performance_week'.tr(), weekChange, weekPercentChange, paddingBottom: 0),
+                  progressPerformance(context, 'card_performance_month_1'.tr(), month1Change, month1PercentChange, paddingBottom: 0),
+                  progressPerformance(context, 'card_performance_month_3'.tr(), month3Change, month3PercentChange, paddingBottom: 0),
+                  progressPerformance(context, 'card_performance_month_6'.tr(), month6Change, month6PercentChange, paddingBottom: 0),
+                  progressPerformance(context, 'card_performance_year_1'.tr(), year1Change, year1PercentChange, paddingBottom: 0),
+                  progressPerformance(context, 'card_performance_year_5'.tr(), year5Change, year5PercentChange, paddingBottom: 0),
                 ],
               );
             },

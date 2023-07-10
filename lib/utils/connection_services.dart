@@ -712,7 +712,7 @@ class TradingHttp {
   //"https://dev.buanacapital.com:8888/setserverstatus?server=${name}&port=${port}&connection=${count}"
   // live ada 2 port
   //TODO: LIVE AND PRODUCTION
-  final String _tradingBaseUrl = 'olt1.buanacapital.com:8888';
+  final String _tradingBaseUrl = 'ws1.buanacapital.com:8888';
   final bool _is_production = true;
 
   // String _tradingBaseUrl = 'investrend-prod.teltics.in:8888';
@@ -771,7 +771,7 @@ class TradingHttp {
   // Sosmed Start =======================================================
   // ====================================================================
 
-  Future<FetchComment> sosmedFetchComment(String filter_post_id,
+  Future<FetchComment> sosmedFetchComment(String filterPostId,
       /*String access_token,*/ String platform, String version,
       {int page, String language = ''}) async {
     String path = 'api/post-comments';
@@ -780,7 +780,7 @@ class TradingHttp {
     if (page != null) {
       parameters = {
         'access_token': token.access_token,
-        'filter_post_id': filter_post_id,
+        'filter_post_id': filterPostId,
         'page': page.toString(),
         'language': language,
         'platform': platform,
@@ -789,7 +789,7 @@ class TradingHttp {
     } else {
       parameters = {
         'access_token': token.access_token,
-        'filter_post_id': filter_post_id,
+        'filter_post_id': filterPostId,
         'language': language,
         'platform': platform,
         'version': version,
@@ -913,14 +913,14 @@ class TradingHttp {
   }
 
   Future<SubmitBasic> sosmedFollow(
-      int user_id, bool flag, String platform, String version,
+      int userId, bool flag, String platform, String version,
       {String language = ''}) async {
     String path = 'api/users/follow';
     DebugWriter.info('path = $_sosmedBaseUrl/$path');
 
     var parameters = {
       'access_token': token.access_token,
-      'user_id': user_id.toString(),
+      'user_id': userId.toString(),
       'state': flag ? '1' : '0',
       'language': language,
       'platform': platform,
@@ -946,7 +946,7 @@ class TradingHttp {
     }
   }
 
-  Future<SubmitLike> sosmedLike(bool flag, /*String access_token,*/ int post_id,
+  Future<SubmitLike> sosmedLike(bool flag, /*String access_token,*/ int postId,
       String platform, String version,
       {String language = ''}) async {
     String path = 'api/posts/like';
@@ -954,7 +954,7 @@ class TradingHttp {
 
     var parameters = {
       'access_token': token.access_token,
-      'post_id': post_id.toString(),
+      'post_id': postId.toString(),
       //'flag': flag.toString(),
       'state': flag ? '1' : '0',
 
@@ -994,14 +994,14 @@ class TradingHttp {
   }
 
   Future<SubmitVote> sosmedVote(
-      /*String access_token,*/ int poll_id, String platform, String version,
+      /*String access_token,*/ int pollId, String platform, String version,
       {String language = ''}) async {
     String path = 'api/posts/vote';
     DebugWriter.info('path = $_sosmedBaseUrl/$path');
 
     var parameters = {
       'access_token': token.access_token,
-      'post_poll_id': poll_id.toString(),
+      'post_poll_id': pollId.toString(),
       'language': language,
       'platform': platform,
       'version': version,
@@ -1050,7 +1050,7 @@ class TradingHttp {
   }
 
   Future<SubmitCreateComment> sosmedCreateComment(
-      /*String access_token,*/ int post_id,
+      /*String access_token,*/ int postId,
       String text,
       String platform,
       String version,
@@ -1060,7 +1060,7 @@ class TradingHttp {
 
     var parameters = {
       'access_token': access_token,
-      'post_id': post_id.toString(),
+      'post_id': postId.toString(),
       'text': text,
       'language': language,
       'platform': platform,
@@ -1334,13 +1334,13 @@ class TradingHttp {
 
   Future<SubmitCreateTransaction> sosmedCreatePostTransaction(
       String code,
-      String transaction_type,
-      int buy_price,
-      int sell_price,
+      String transactionType,
+      int buyPrice,
+      int sellPrice,
       String text,
-      String order_id,
-      String publish_time,
-      String order_date,
+      String orderId,
+      String publishTime,
+      String orderDate,
       String platform,
       String version,
       {String language = ''}) async {
@@ -1351,14 +1351,14 @@ class TradingHttp {
       'access_token': access_token,
       'type': 'TRANSACTION',
       'code': code,
-      'start_price': buy_price.toString(),
-      'transaction_type': transaction_type, // BUY  or SELL
+      'start_price': buyPrice.toString(),
+      'transaction_type': transactionType, // BUY  or SELL
       'text': text,
-      'sell_price': sell_price.toString(),
+      'sell_price': sellPrice.toString(),
 
-      'publish_time': publish_time, // NOW  or PENDING
-      'order_id': order_id,
-      'order_date': order_date,
+      'publish_time': publishTime, // NOW  or PENDING
+      'order_id': orderId,
+      'order_date': orderDate,
 
       'language': language,
       'platform': platform,
@@ -1412,7 +1412,7 @@ class TradingHttp {
   Future<SubmitCreatePolls> sosmedCreatePostPoll(
       String text,
       List<String> polls,
-      String expire_at,
+      String expireAt,
       /*String access_token,*/ String platform,
       String version,
       {String language = ''}) async {
@@ -1423,7 +1423,7 @@ class TradingHttp {
       'access_token': access_token,
       'type': 'POLL',
       'text': text,
-      'expired_at': expire_at,
+      'expired_at': expireAt,
       'polls': polls.join(','),
       'language': language,
       'platform': platform,
@@ -1486,12 +1486,12 @@ class TradingHttp {
   }
 
   Future<SubmitCreatePrediction> sosmedCreatePostPrediction(
-      String transaction_type,
+      String transactionType,
       String text,
       String code,
-      int start_price,
-      int target_price,
-      String expire_at,
+      int startPrice,
+      int targetPrice,
+      String expireAt,
       /*String access_token,*/
       String platform,
       String version,
@@ -1504,10 +1504,10 @@ class TradingHttp {
       'type': 'PREDICTION',
       'text': text,
       'code': code,
-      'transaction_type': transaction_type,
-      'target_price': target_price.toString(),
-      'start_price': start_price.toString(),
-      'expired_at': expire_at,
+      'transaction_type': transactionType,
+      'target_price': targetPrice.toString(),
+      'start_price': startPrice.toString(),
+      'expired_at': expireAt,
       'language': language,
       'platform': platform,
       'version': version,
@@ -1882,9 +1882,9 @@ class TradingHttp {
 
       User user = User.fromJson(jsonDecode(response.body));
 
-      String _access_token = user.token.access_token;
-      String _refresh_token = user.token.refresh_token;
-      token.update(_access_token, _refresh_token);
+      String AccessToken = user.token.access_token;
+      String RefreshToken = user.token.refresh_token;
+      token.update(AccessToken, RefreshToken);
       token.save();
       return user;
     } else {
@@ -1928,9 +1928,9 @@ class TradingHttp {
       DebugWriter.info('refresh --> ' + response.body);
 
       User user = User.fromJson(jsonDecode(response.body));
-      String _access_token = user.token.access_token;
-      String _refresh_token = user.token.refresh_token;
-      token.update(_access_token, _refresh_token);
+      String AccessToken = user.token.access_token;
+      String RefreshToken = user.token.refresh_token;
+      token.update(AccessToken, RefreshToken);
       token.save();
       return user;
     } else {
@@ -3720,7 +3720,7 @@ class HttpIII {
             String date = StringUtils.noNullString(parsedJson['date']);
             String time = StringUtils.noNullString(parsedJson['time']);
             String timezone = StringUtils.noNullString(parsedJson['timezone']);
-            String updated_at =
+            String updatedAt =
                 StringUtils.noNullString(parsedJson['updated_at']);
 
             GeneralDetailPrice global = GeneralDetailPrice(
@@ -3736,7 +3736,7 @@ class HttpIII {
                 date,
                 time,
                 timezone,
-                updated_at);
+                updatedAt);
             DebugWriter.info(global.toString());
             groupedData.addData(group, global);
           });
@@ -3825,7 +3825,7 @@ class HttpIII {
             String date = StringUtils.noNullString(parsedJson['date']);
             String time = StringUtils.noNullString(parsedJson['time']);
             String timezone = StringUtils.noNullString(parsedJson['timezone']);
-            String updated_at =
+            String updatedAt =
                 StringUtils.noNullString(parsedJson['updated_at']);
 
             GeneralDetailPrice global = GeneralDetailPrice(
@@ -3841,7 +3841,7 @@ class HttpIII {
                 date,
                 time,
                 timezone,
-                updated_at);
+                updatedAt);
             DebugWriter.info(global?.toString());
             groupedData.addData(group, global);
           });
@@ -4045,24 +4045,24 @@ class HttpIII {
             String code = StringUtils.noNullString(parsedJson['code']);
             String name = StringUtils.noNullString(parsedJson['name']);
             double price = Utils.safeDouble(parsedJson['price']);
-            double percent_change_1h =
+            double percentChange1h =
                 Utils.safeDouble(parsedJson['percent_change_1h']);
-            double percent_change_24h =
+            double percentChange24h =
                 Utils.safeDouble(parsedJson['percent_change_24h']);
-            double percent_change_7d =
+            double percentChange7d =
                 Utils.safeDouble(parsedJson['percent_change_7d']);
-            double percent_change_30d =
+            double percentChange30d =
                 Utils.safeDouble(parsedJson['percent_change_30d']);
-            double percent_change_60d =
+            double percentChange60d =
                 Utils.safeDouble(parsedJson['percent_change_60d']);
-            double percent_change_90d =
+            double percentChange90d =
                 Utils.safeDouble(parsedJson['percent_change_90d']);
             double volume_24h = Utils.safeDouble(parsedJson['volume_24h']);
-            double market_cap = Utils.safeDouble(parsedJson['market_cap']);
-            String icon_url = StringUtils.noNullString(parsedJson['icon_url']);
-            String last_updated =
+            double marketCap = Utils.safeDouble(parsedJson['market_cap']);
+            String iconUrl = StringUtils.noNullString(parsedJson['icon_url']);
+            String lastUpdated =
                 StringUtils.noNullString(parsedJson['last_updated']);
-            String updated_at =
+            String updatedAt =
                 StringUtils.noNullString(parsedJson['updated_at']);
 
             CryptoPrice cp = CryptoPrice(
@@ -4070,17 +4070,17 @@ class HttpIII {
                 code,
                 name,
                 price,
-                percent_change_1h,
-                percent_change_24h,
-                percent_change_7d,
-                percent_change_30d,
-                percent_change_60d,
-                percent_change_90d,
+                percentChange1h,
+                percentChange24h,
+                percentChange7d,
+                percentChange30d,
+                percentChange60d,
+                percentChange90d,
                 volume_24h,
-                market_cap,
-                icon_url,
-                last_updated,
-                updated_at);
+                marketCap,
+                iconUrl,
+                lastUpdated,
+                updatedAt);
             DebugWriter.info(cp?.toString());
             groupedData.addData(group, cp);
           });
@@ -4322,7 +4322,7 @@ class HttpIII {
             String date = StringUtils.noNullString(parsedJson['date']);
             String time = StringUtils.noNullString(parsedJson['time']);
             String timezone = StringUtils.noNullString(parsedJson['timezone']);
-            String updated_at =
+            String updatedAt =
                 StringUtils.noNullString(parsedJson['updated_at']);
 
             GeneralDetailPrice global = GeneralDetailPrice(
@@ -4338,7 +4338,7 @@ class HttpIII {
                 date,
                 time,
                 timezone,
-                updated_at);
+                updatedAt);
             DebugWriter.info(global.toString());
             groupedData.addData(group, global);
           });
@@ -4498,7 +4498,7 @@ class HttpIII {
             String date = StringUtils.noNullString(parsedJson['date']);
             String time = StringUtils.noNullString(parsedJson['time']);
             String timezone = StringUtils.noNullString(parsedJson['timezone']);
-            String updated_at =
+            String updatedAt =
                 StringUtils.noNullString(parsedJson['updated_at']);
 
             GeneralPrice global =
@@ -4830,8 +4830,8 @@ class HttpIII {
           result.ipo_amount = dataHistory['ipo_amount'];
           String underwriter = dataHistory['underwriter'];
           result.underwriter_list = underwriter.split('|');
-          String share_registrar = dataHistory['share_registrar'];
-          result.share_registrar_list = share_registrar.split('|');
+          String shareRegistrar = dataHistory['share_registrar'];
+          result.share_registrar_list = shareRegistrar.split('|');
           DebugWriter.info('dataHistory ok');
 
           var dataShareholders = datas['dataShareholders'];
@@ -4849,24 +4849,23 @@ class HttpIII {
           DebugWriter.info('dataShareholders ok');
 
           var dataCommisioners = datas['dataCommisioners'];
-          String president_commissioner =
+          String presidentCommissioner =
               dataCommisioners['president_commissioner'];
-          String vice_president_commissioner =
+          String vicePresidentCommissioner =
               dataCommisioners['vice_president_commissioner'];
           String commissioner = dataCommisioners['commissioner'];
-          String president_director = dataCommisioners['president_director'];
-          String vice_president_director =
+          String presidentDirector = dataCommisioners['president_director'];
+          String vicePresidentDirector =
               dataCommisioners['vice_president_director'];
           String director = dataCommisioners['director'];
 
-          result.president_commissioner_list =
-              president_commissioner.split('|');
+          result.president_commissioner_list = presidentCommissioner.split('|');
           result.vice_president_commissioner_list =
-              vice_president_commissioner.split('|');
+              vicePresidentCommissioner.split('|');
           result.commissioner_list = commissioner.split('|');
-          result.president_director_list = president_director.split('|');
+          result.president_director_list = presidentDirector.split('|');
           result.vice_president_director_list =
-              vice_president_director.split('|');
+              vicePresidentDirector.split('|');
           result.director_list = director.split('|');
           DebugWriter.info('dataCommisioners ok');
         }
@@ -4886,7 +4885,7 @@ class HttpIII {
     }
   }
 
-  Future fetchFinancialChart(String code, String type, String show_as) async {
+  Future fetchFinancialChart(String code, String type, String showAs) async {
     String path = 'm_financial_chart.php';
     //print('path = $baseUrlLocalhost/$path');
 
@@ -4894,7 +4893,7 @@ class HttpIII {
       'code': code,
       'type':
           type, // INCOME_STATEMENT or  BALANCE_SHEET or CASH_FLOW or EARNING_PER_SHARE
-      'show_as': show_as,
+      'show_as': showAs,
     };
     DebugWriter.info(parameters);
     final response = await http
@@ -4913,20 +4912,20 @@ class HttpIII {
         String message = parsedJson['message'];
         String code = StringUtils.noNullString(parsedJson['code']);
         String type = StringUtils.noNullString(parsedJson['type']);
-        String show_as = StringUtils.noNullString(parsedJson['show_as']);
+        String showAs = StringUtils.noNullString(parsedJson['show_as']);
         //var datas = parsedJson['datas'] as List;
         var datas = parsedJson['datas'];
         if (datas != null) {
           if (StringUtils.equalsIgnoreCase(type, 'INCOME_STATEMENT')) {
             result =
-                DataChartIncomeStatement.fromJson(datas, code, type, show_as);
+                DataChartIncomeStatement.fromJson(datas, code, type, showAs);
           } else if (StringUtils.equalsIgnoreCase(type, 'BALANCE_SHEET')) {
-            result = DataChartBalanceSheet.fromJson(datas, code, type, show_as);
+            result = DataChartBalanceSheet.fromJson(datas, code, type, showAs);
           } else if (StringUtils.equalsIgnoreCase(type, 'CASH_FLOW')) {
-            result = DataChartCashFlow.fromJson(datas, code, type, show_as);
+            result = DataChartCashFlow.fromJson(datas, code, type, showAs);
           } else if (StringUtils.equalsIgnoreCase(type, 'EARNING_PER_SHARE')) {
             result =
-                DataChartEarningPerShare.fromJson(datas, code, type, show_as);
+                DataChartEarningPerShare.fromJson(datas, code, type, showAs);
           }
         }
       }
@@ -5759,11 +5758,11 @@ class HttpIII {
           result.type = StringUtils.noNullString(parameters['type']);
         }
         // Map<String, dynamic> additional_data = parsedJson['additional_data'] as Map;
-        var additional_data = parsedJson['additional_data'];
-        if (additional_data != null && additional_data is Map) {
-          result.total_volume = Utils.safeInt(additional_data['total_volume']);
+        var additionalData = parsedJson['additional_data'];
+        if (additionalData != null && additionalData is Map) {
+          result.total_volume = Utils.safeInt(additionalData['total_volume']);
           result.total_remaining_volume =
-              Utils.safeInt(additional_data['total_remaining_volume']);
+              Utils.safeInt(additionalData['total_remaining_volume']);
         }
 
         var datas = parsedJson['datas'] as List;
@@ -5832,21 +5831,17 @@ class HttpIII {
     }
   }
 
-  Future<String> registerDevice(
-      String username,
-      String device_id,
-      String device_platform,
-      String fcm_token,
-      String application_version) async {
+  Future<String> registerDevice(String username, String deviceId,
+      String devicePlatform, String fcmToken, String applicationVersion) async {
     String path = 'n_device_registration.php';
     //print('path = $baseUrlLocalhost/$path');
     //username=AAA&device_id=1234&device_platform=Web&fcm_token=abctoken&application_version=0.01
     var parameters = {
       'username': username, // GAINERS LOSERS ACTIVE VOLUME VALUE
-      'device_id': device_id,
-      'device_platform': device_platform,
-      'fcm_token': fcm_token,
-      'application_version': application_version,
+      'device_id': deviceId,
+      'device_platform': devicePlatform,
+      'fcm_token': fcmToken,
+      'application_version': applicationVersion,
     };
     DebugWriter.info(parameters);
     final response =
@@ -5876,13 +5871,13 @@ class HttpIII {
   Future<ResultInbox> fetchInbox(
       String username,
       String
-          date_start /*, String device_id, String device_platform, String application_version*/) async {
+          dateStart /*, String device_id, String device_platform, String application_version*/) async {
     String path = 'n_inbox.php';
     //print('path = $baseUrlLocalhost/$path');
     //username=AAA&device_id=1234&device_platform=Web&fcm_token=abctoken&application_version=0.01
     var parameters = {
       'username': username,
-      'date_start': date_start,
+      'date_start': dateStart,
       'limit': '10',
       // 'device_id': device_id,
       // 'device_platform': device_platform,
@@ -5963,15 +5958,15 @@ class HttpIII {
   }
 
   Future<String> reportNotification(
-      String notif_type, String notif_id, String device_id,
+      String notifType, String notifId, String deviceId,
       {String action = ''}) async {
     String path = 'n_report_notification.php';
     //print('path = $baseUrlLocalhost/$path');
     //n_report_notification.php?notif_type=INBOX&notif_id=1&device_id=H0Gxo_2021-11-08%2022:18:19.155940&action=read
     var parameters = {
-      'notif_type': notif_type,
-      'notif_id': notif_id,
-      'device_id': device_id,
+      'notif_type': notifType,
+      'notif_id': notifId,
+      'device_id': deviceId,
       'action': action,
     };
     DebugWriter.info(parameters);
@@ -6001,11 +5996,11 @@ class HttpIII {
 
       if (parsedJson != null) {
         String message = StringUtils.noNullString(parsedJson['message']);
-        String action_performed =
+        String actionPerformed =
             StringUtils.noNullString(parsedJson['action_performed']);
-        result = action_performed;
+        result = actionPerformed;
         DebugWriter.info('reportNotification action_performed : ' +
-            action_performed +
+            actionPerformed +
             '  message : ' +
             message);
       }
@@ -6159,7 +6154,7 @@ class HttpIII {
   }
 
   Future<NetBuySellSummaryData> fetchStockTopBrokerSummary(String code,
-      String board, String from, String to, String type, String data_by) async {
+      String board, String from, String to, String type, String dataBy) async {
     String path = 'm_stock_top_broker_summary.php';
     DebugWriter.info('path = $baseUrlLocalhost/$path');
 
@@ -6169,7 +6164,7 @@ class HttpIII {
       'from': from,
       'to': to,
       'type': type,
-      'data_by': data_by,
+      'data_by': dataBy,
     };
     DebugWriter.info('fetchStockTopBrokerSummary parameters');
     DebugWriter.info(parameters);
@@ -6662,7 +6657,6 @@ class HttpIII {
           // maps['brokers'] = listBroker;
           // maps['stocks'] = listStock;
           // maps['indexs'] = listIndex;
-
         }
       }
       return maps;
@@ -7000,7 +6994,6 @@ class HttpIII {
   // }
 
 //static ConnectionServices of(BuildContext context) => context.dependOnInheritedWidgetOfExactType<ConnectionServices>();
-
 }
 
 // class InvestrendCustomTheme {

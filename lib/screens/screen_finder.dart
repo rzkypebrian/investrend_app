@@ -1,6 +1,5 @@
 import 'package:Investrend/component/avatar.dart';
 import 'package:Investrend/component/component_creator.dart';
-import 'package:Investrend/objects/data_object.dart';
 import 'package:Investrend/objects/riverpod_change_notifier.dart';
 import 'package:Investrend/objects/serializeable.dart';
 import 'package:Investrend/objects/iii_objects.dart';
@@ -11,7 +10,6 @@ import 'package:Investrend/utils/string_utils.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 class ScreenFinder extends StatefulWidget {
   final bool showStockOnly;
@@ -76,7 +74,7 @@ class _ScreenFinderState extends BaseStateWithTabs<ScreenFinder> {
   Widget build(BuildContext context) {
     double paddingBottom = MediaQuery.of(context).viewPadding.bottom;
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       appBar: createAppBar(context),
       body: showStockOnly
           ? buildBaseResultStockOnly(context, paddingBottom)
@@ -93,7 +91,7 @@ class _ScreenFinderState extends BaseStateWithTabs<ScreenFinder> {
     return DefaultTabController(
       length: tabsLength(),
       child: Scaffold(
-        backgroundColor: Theme.of(context).backgroundColor,
+        backgroundColor: Theme.of(context).colorScheme.background,
         appBar: createTabs(context),
         body: createBody(context, paddingBottom),
       ),
@@ -312,7 +310,7 @@ class _ScreenFinderState extends BaseStateWithTabs<ScreenFinder> {
     }
 
     return AppBar(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
 
       elevation: elevation,
       shadowColor: shadowColor,
@@ -324,7 +322,7 @@ class _ScreenFinderState extends BaseStateWithTabs<ScreenFinder> {
         tag: 'finder_field',
         child: Material(
           child: Container(
-            color: Theme.of(context).backgroundColor,
+            color: Theme.of(context).colorScheme.background,
             alignment: Alignment.center,
             height: InvestrendTheme.appBarHeight,
             child: TextField(

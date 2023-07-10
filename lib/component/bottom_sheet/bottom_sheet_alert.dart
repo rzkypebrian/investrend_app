@@ -8,11 +8,12 @@ class BottomSheetAlert extends StatelessWidget {
   final List<Widget> childs;
   final String title;
   final double childsHeight;
-  const BottomSheetAlert(this.childs, {this.title,Key key, this.childsHeight=0}) : super(key: key);
+  const BottomSheetAlert(this.childs,
+      {this.title, Key key, this.childsHeight = 0})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     double padding = 24.0;
@@ -41,26 +42,28 @@ class BottomSheetAlert extends StatelessWidget {
               margin: EdgeInsets.only(bottom: 16.0),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(2.0),
-                color:const Color(0xFFE0E0E0),
+                color: const Color(0xFFE0E0E0),
               ),
             ),
-
             SizedBox(
               height: 40.0,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Expanded(
-                    flex: 1,
-                      child: Text(title?? 'bottom_sheet_alert_title'.tr(), style: InvestrendTheme.of(context).regular_w600_compact,)
-                  ),
+                      flex: 1,
+                      child: Text(
+                        title ?? 'bottom_sheet_alert_title'.tr(),
+                        style: InvestrendTheme.of(context).regular_w600_compact,
+                      )),
                   Align(
                     alignment: Alignment.centerRight,
                     child: IconButton(
-                      //icon: Icon(Icons.clear),
+                        //icon: Icon(Icons.clear),
                         icon: Image.asset(
                           'images/icons/action_clear.png',
-                          color: InvestrendTheme.of(context).greyLighterTextColor,
+                          color:
+                              InvestrendTheme.of(context).greyLighterTextColor,
                           width: 12.0,
                           height: 12.0,
                         ),
@@ -82,8 +85,6 @@ class BottomSheetAlert extends StatelessWidget {
           ],
         ),
       ),
-
     );
   }
-
 }

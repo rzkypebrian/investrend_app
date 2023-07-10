@@ -4,7 +4,6 @@ import 'package:Investrend/objects/data_object.dart';
 
 //import 'package:Investrend/objects/class_value_notifier.dart';
 //import 'package:Investrend/objects/data_object.dart';
-import 'package:Investrend/objects/home_objects.dart';
 import 'package:Investrend/objects/riverpod_change_notifier.dart';
 import 'package:Investrend/screens/help/screen_help.dart';
 import 'package:Investrend/screens/screen_eipo.dart';

@@ -168,17 +168,17 @@ class Utils {
     return (((endValue - startValue) / startValue) * 100).toDouble();
   }
 
-  static String displayTimingDays(String created_at, String expire_at) {
-    if (StringUtils.isEmtpy(created_at)) {
+  static String displayTimingDays(String createdAt, String expireAt) {
+    if (StringUtils.isEmtpy(createdAt)) {
       return ' ';
     }
-    if (StringUtils.isEmtpy(expire_at)) {
+    if (StringUtils.isEmtpy(expireAt)) {
       return ' ';
     }
     print('displayTimingDays 1');
-    DateTime created = _sosmedFormatData.parseUtc(created_at);
+    DateTime created = _sosmedFormatData.parseUtc(createdAt);
     print('displayTimingDays 2');
-    DateTime expired = _sosmedFormatData.parseUtc(expire_at);
+    DateTime expired = _sosmedFormatData.parseUtc(expireAt);
     print('displayTimingDays 3');
     int days = expired.difference(created).inDays;
     print('displayTimingDays 4');
@@ -190,8 +190,8 @@ class Utils {
     return days.toString() + 'sosmed_label_expire_day'.tr();
   }
 
-  static String displayPostDate(String post_created) {
-    if (StringUtils.isEmtpy(post_created)) {
+  static String displayPostDate(String postCreated) {
+    if (StringUtils.isEmtpy(postCreated)) {
       return ' ';
     }
 
@@ -204,7 +204,7 @@ class Utils {
     "sosmed_label_seconds_ago": " detik lalu",
     "sosmed_label_a_moment_ago": "baru saja",
     */
-    DateTime created = _sosmedFormatData.parseUtc(post_created);
+    DateTime created = _sosmedFormatData.parseUtc(postCreated);
     DateTime now = DateTime.now().toUtc();
     print('now UTC : ' +
         now.toString() +
@@ -250,8 +250,8 @@ class Utils {
     return 'sosmed_label_a_moment_ago'.tr();
   }
 
-  static String displayPostDateDetail(String post_created) {
-    if (StringUtils.isEmtpy(post_created)) {
+  static String displayPostDateDetail(String postCreated) {
+    if (StringUtils.isEmtpy(postCreated)) {
       return ' ';
     }
 
@@ -275,7 +275,7 @@ class Utils {
     "sosmed_label_seconds_ago": " detik lalu",
     "sosmed_label_a_moment_ago": "baru saja",
     */
-    DateTime created = _sosmedFormatData.parseUtc(post_created);
+    DateTime created = _sosmedFormatData.parseUtc(postCreated);
     DateTime now = DateTime.now().toUtc();
     print('now UTC : ' +
         now.toString() +
@@ -364,8 +364,8 @@ class Utils {
     return 'sosmed_label_a_moment_ago'.tr();
   }
 
-  static String displayExpireDate(String post_expired) {
-    if (StringUtils.isEmtpy(post_expired)) {
+  static String displayExpireDate(String postExpired) {
+    if (StringUtils.isEmtpy(postExpired)) {
       return ' ';
     }
     /*
@@ -377,7 +377,7 @@ class Utils {
     "sosmed_label_expire_minute": " menit",
     "sosmed_label_expire_minutes": " menit",
     */
-    DateTime expired = _sosmedFormatData.parseUTC(post_expired);
+    DateTime expired = _sosmedFormatData.parseUTC(postExpired);
     DateTime now = DateTime.now().toUtc();
     int days = expired.difference(now).inDays;
     if (days > 0) {

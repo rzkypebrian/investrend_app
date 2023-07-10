@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 class ScreenChangePassword extends StatefulWidget {
   const ScreenChangePassword({Key key}) : super(key: key);
 
@@ -27,7 +28,8 @@ class _ScreenChangePasswordState extends State<ScreenChangePassword> {
 
   final ValueNotifier<bool> _hideOldNotifier = ValueNotifier<bool>(true);
   final ValueNotifier<bool> _hideNewNotifier = ValueNotifier<bool>(true);
-  final ValueNotifier<bool> _hideNewConfirmationNotifier = ValueNotifier<bool>(true);
+  final ValueNotifier<bool> _hideNewConfirmationNotifier =
+      ValueNotifier<bool>(true);
 
   @override
   void dispose() {
@@ -61,11 +63,11 @@ class _ScreenChangePasswordState extends State<ScreenChangePassword> {
     }
     bool lightTheme = Theme.of(context).brightness == Brightness.light;
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       //floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
       //floatingActionButton: createFloatingActionButton(context),
       appBar: AppBar(
-        backgroundColor: Theme.of(context).backgroundColor,
+        backgroundColor: Theme.of(context).colorScheme.background,
         centerTitle: true,
         shadowColor: shadowColor,
         elevation: elevation,
@@ -79,10 +81,11 @@ class _ScreenChangePasswordState extends State<ScreenChangePassword> {
             FocusScope.of(context).requestFocus(new FocusNode());
             Navigator.of(context).pop();
           },
-          color: Theme.of(context).accentColor,
+          color: Theme.of(context).colorScheme.secondary,
         ),
       ),
-      body: ComponentCreator.keyboardHider(context, createBody(context, paddingBottom)),
+      body: ComponentCreator.keyboardHider(
+          context, createBody(context, paddingBottom)),
       bottomSheet: createBottomSheet(context, paddingBottom),
     );
   }
@@ -120,39 +123,50 @@ class _ScreenChangePasswordState extends State<ScreenChangePassword> {
           getForm(context, lightTheme),
 
           //Spacer(flex: 1,),
-          SizedBox(height: 20.0,),
+          SizedBox(
+            height: 20.0,
+          ),
           FractionallySizedBox(
             widthFactor: 0.7,
             child: ComponentCreator.roundedButton(
-                context, 'change_password_button'.tr(), Theme.of(context).accentColor, Theme.of(context).primaryColor, Theme.of(context).accentColor,
-                    () {
-                  // on presss
-                  //EasyLocalization.of(context).setLocale(Locale('en'));
-                  //showRegisterPage(context);
-                  if (_formChangePasswordKey.currentState.validate()) {
-                    //onLoginClicked(context);
-                    //print('form change pin sesuai');
-                    changePasswrod();
-                  }
-                }),
+                context,
+                'change_password_button'.tr(),
+                Theme.of(context).colorScheme.secondary,
+                Theme.of(context).primaryColor,
+                Theme.of(context).colorScheme.secondary, () {
+              // on presss
+              //EasyLocalization.of(context).setLocale(Locale('en'));
+              //showRegisterPage(context);
+              if (_formChangePasswordKey.currentState.validate()) {
+                //onLoginClicked(context);
+                //print('form change pin sesuai');
+                changePasswrod();
+              }
+            }),
           ),
           //Spacer(flex: 9,),
-          SizedBox(height: 20.0,),
+          SizedBox(
+            height: 20.0,
+          ),
           TextButton(
             style: TextButton.styleFrom(
-                animationDuration: Duration(milliseconds: 500),
                 primary: InvestrendTheme.of(context).hyperlink,
+                animationDuration: Duration(milliseconds: 500),
                 backgroundColor: Colors.transparent,
-                textStyle: InvestrendTheme.of(context).small_w400_compact_greyDarker),
+                textStyle:
+                    InvestrendTheme.of(context).small_w400_compact_greyDarker),
             child: Text('login_button_forgot_password'.tr()),
             onPressed: () {
               print('forgot_password pressed');
               //showLoginPage(context);
               //showRegisterPage(context);
-              launchURL(context, 'https://olt1.buanacapital.com:8888/manageaccount');
+              launchURL(
+                  context, 'https://olt1.buanacapital.com:8888/manageaccount');
             },
           ),
-          Spacer(flex: 1,),
+          Spacer(
+            flex: 1,
+          ),
         ],
       ),
     );
@@ -175,7 +189,8 @@ class _ScreenChangePasswordState extends State<ScreenChangePassword> {
                     color: InvestrendTheme.of(context).greyLighterTextColor,
                   );
                 } else {
-                  icon = Icon(Icons.remove_red_eye, color: Theme.of(context).accentColor);
+                  icon = Icon(Icons.remove_red_eye,
+                      color: Theme.of(context).colorScheme.secondary);
                 }
 
                 return getTextFieldForm(
@@ -204,7 +219,6 @@ class _ScreenChangePasswordState extends State<ScreenChangePassword> {
                 );
               },
             ),
-
             ValueListenableBuilder<bool>(
               valueListenable: _hideNewNotifier,
               builder: (context, value, child) {
@@ -215,7 +229,8 @@ class _ScreenChangePasswordState extends State<ScreenChangePassword> {
                     color: InvestrendTheme.of(context).greyLighterTextColor,
                   );
                 } else {
-                  icon = Icon(Icons.remove_red_eye, color: Theme.of(context).accentColor);
+                  icon = Icon(Icons.remove_red_eye,
+                      color: Theme.of(context).colorScheme.secondary);
                 }
 
                 return getTextFieldForm(
@@ -243,7 +258,6 @@ class _ScreenChangePasswordState extends State<ScreenChangePassword> {
                 );
               },
             ),
-
             ValueListenableBuilder<bool>(
               valueListenable: _hideNewConfirmationNotifier,
               builder: (context, value, child) {
@@ -254,7 +268,8 @@ class _ScreenChangePasswordState extends State<ScreenChangePassword> {
                     color: InvestrendTheme.of(context).greyLighterTextColor,
                   );
                 } else {
-                  icon = Icon(Icons.remove_red_eye, color: Theme.of(context).accentColor);
+                  icon = Icon(Icons.remove_red_eye,
+                      color: Theme.of(context).colorScheme.secondary);
                 }
 
                 return getTextFieldForm(
@@ -268,8 +283,10 @@ class _ScreenChangePasswordState extends State<ScreenChangePassword> {
                   textInputAction: TextInputAction.done,
                   obscureText: value,
                   validator: (value) {
-                    if (!StringUtils.equalsIgnoreCase(fieldNewConfirmation.text, fieldNew.text)) {
-                      return 'change_password_new_confirmation_validation_error'.tr();
+                    if (!StringUtils.equalsIgnoreCase(
+                        fieldNewConfirmation.text, fieldNew.text)) {
+                      return 'change_password_new_confirmation_validation_error'
+                          .tr();
                     }
 
                     //return Utils.isPasswordCompliant(value, 8);
@@ -289,13 +306,15 @@ class _ScreenChangePasswordState extends State<ScreenChangePassword> {
   }
 
   Future changePasswrod() {
-
-    Future reply = InvestrendTheme.tradingHttp.changePassword(context.read(dataHolderChangeNotifier).user.username, fieldOld.text, fieldNew.text,
-        InvestrendTheme.of(context).applicationPlatform, InvestrendTheme.of(context).applicationVersion);
+    Future reply = InvestrendTheme.tradingHttp.changePassword(
+        context.read(dataHolderChangeNotifier).user.username,
+        fieldOld.text,
+        fieldNew.text,
+        InvestrendTheme.of(context).applicationPlatform,
+        InvestrendTheme.of(context).applicationVersion);
     reply.then((value) {
       if (value != null) {
         if (value.isSuccess()) {
-
           InvestrendTheme.of(context).showSnackBar(context, value.message);
           fieldOld.text = '';
           fieldNew.text = '';
@@ -312,18 +331,18 @@ class _ScreenChangePasswordState extends State<ScreenChangePassword> {
         }
       }
     }).onError((error, stackTrace) {
-
-      if(error is TradingHttpException){
-        if(error.isUnauthorized()){
+      if (error is TradingHttpException) {
+        if (error.isUnauthorized()) {
           InvestrendTheme.of(context).showDialogInvalidSession(context);
-        }else if(error.isErrorTrading()){
+        } else if (error.isErrorTrading()) {
           InvestrendTheme.of(context).showSnackBar(context, error.message());
-        }else{
-          String network_error_label = 'network_error_label'.tr();
-          network_error_label = network_error_label.replaceFirst("#CODE#", error.code.toString());
-          InvestrendTheme.of(context).showSnackBar(context, network_error_label);
+        } else {
+          String networkErrorLabel = 'network_error_label'.tr();
+          networkErrorLabel =
+              networkErrorLabel.replaceFirst("#CODE#", error.code.toString());
+          InvestrendTheme.of(context).showSnackBar(context, networkErrorLabel);
         }
-      }else{
+      } else {
         InvestrendTheme.of(context).showSnackBar(context, error.toString());
       }
     });
@@ -366,13 +385,14 @@ class _ScreenChangePasswordState extends State<ScreenChangePassword> {
       onTap,
       focusNode,
       suffixIcon,
-
     );
   }
 
   void launchURL(BuildContext context, String _url) async {
     try {
-      await canLaunch(_url) ? await launch(_url) : throw 'Could not launch $_url';
+      await canLaunch(_url)
+          ? await launch(_url)
+          : throw 'Could not launch $_url';
     } catch (error) {
       InvestrendTheme.of(context).showSnackBar(context, error.toString());
     }

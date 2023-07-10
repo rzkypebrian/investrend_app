@@ -4,19 +4,17 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-
-
 class TradeSlideAction extends ClosableSlideAction {
   final String text;
   final String tag;
   final AutoSizeGroup autoGroup;
   TradeSlideAction(
-      this.text,
-      Color color,
-      VoidCallback onTap, {
-        this.autoGroup,
-        this.tag,
-      }) : super(onTap: onTap, color: color, closeOnTap: true);
+    this.text,
+    Color color,
+    VoidCallback onTap, {
+    this.autoGroup,
+    this.tag,
+  }) : super(onTap: onTap, color: color, closeOnTap: true);
 
   void _handleCloseAfterTap(BuildContext context) {
     onTap?.call();
@@ -62,18 +60,22 @@ class TradeSlideAction extends ClosableSlideAction {
   @override
   Widget buildAction(BuildContext context) {
     Widget textWidget;
-    if(autoGroup != null){
+    if (autoGroup != null) {
       textWidget = AutoSizeText(
         text,
         group: autoGroup,
         minFontSize: 8.0,
         maxLines: 1,
-        style: InvestrendTheme.of(context).small_w600_compact.copyWith(color: InvestrendTheme.of(context).textWhite),
+        style: InvestrendTheme.of(context)
+            .small_w600_compact
+            .copyWith(color: InvestrendTheme.of(context).textWhite),
       );
-    }else{
+    } else {
       textWidget = Text(
         text,
-        style: InvestrendTheme.of(context).small_w600_compact.copyWith(color: InvestrendTheme.of(context).textWhite),
+        style: InvestrendTheme.of(context)
+            .small_w600_compact
+            .copyWith(color: InvestrendTheme.of(context).textWhite),
       );
     }
     return Container(
@@ -87,7 +89,8 @@ class TradeSlideAction extends ClosableSlideAction {
 class CancelSlideAction extends ClosableSlideAction {
   final String text;
 
-  CancelSlideAction(this.text, Color color, VoidCallback onTap) : super(onTap: onTap, color: color, closeOnTap: true);
+  CancelSlideAction(this.text, Color color, VoidCallback onTap)
+      : super(onTap: onTap, color: color, closeOnTap: true);
 
   @override
   Widget buildAction(BuildContext context) {
@@ -95,7 +98,9 @@ class CancelSlideAction extends ClosableSlideAction {
       child: Center(
         child: Text(
           text,
-          style: InvestrendTheme.of(context).small_w600_compact.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor),
+          style: InvestrendTheme.of(context)
+              .small_w600_compact
+              .copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor),
         ),
       ),
     );

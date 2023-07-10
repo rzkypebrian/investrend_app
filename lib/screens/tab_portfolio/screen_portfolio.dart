@@ -4,7 +4,6 @@ import 'package:Investrend/screens/screen_main.dart';
 import 'package:Investrend/screens/screen_no_account.dart';
 import 'package:Investrend/screens/tab_portfolio/screen_portfolio_cash.dart';
 import 'package:Investrend/screens/tab_portfolio/screen_portfolio_realized.dart';
-import 'package:Investrend/screens/tab_portfolio/screen_portfolio_return.dart';
 import 'package:Investrend/screens/tab_portfolio/screen_portfolio_stocks.dart';
 import 'package:Investrend/screens/tab_portfolio/screen_portfolio_summary.dart';
 import 'package:Investrend/utils/investrend_theme.dart';

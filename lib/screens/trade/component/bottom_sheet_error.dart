@@ -19,7 +19,7 @@ class ErrorBottomSheet extends BaseTradeBottomSheet {
     // double width = MediaQuery.of(context).size.width;
 
     return Container(
-      color: Theme.of(context).backgroundColor,
+      color: Theme.of(context).colorScheme.background,
       child: SafeArea(
         child: Scaffold(
           //backgroundColor: Theme.of(context).backgroundColor,

@@ -961,10 +961,10 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
     List<Widget> listActions = List.empty(growable: true);
     bool isBuy = StringUtils.equalsIgnoreCase(os.bs, 'B');
     if (os.canAmend()) {
-      String button_amend = 'button_amend'.tr();
+      String buttonAmend = 'button_amend'.tr();
       Color buySellColor = isBuy ? InvestrendTheme.buyColor : InvestrendTheme.sellColor;
       listActions.add(TradeSlideAction(
-        button_amend,
+        buttonAmend,
         buySellColor,
 
         () {
@@ -1437,7 +1437,7 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
 
     return RefreshIndicator(
       color: InvestrendTheme.of(context).textWhite,
-      backgroundColor: Theme.of(context).accentColor,
+      backgroundColor: Theme.of(context).colorScheme.secondary,
       onRefresh: onRefresh,
       child: ValueListenableBuilder<int>(
           valueListenable: _valueNotifier,

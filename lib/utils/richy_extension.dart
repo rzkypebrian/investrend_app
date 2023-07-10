@@ -1,5 +1,4 @@
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 extension ColorExtension on String {
@@ -31,7 +30,7 @@ extension ImageExtension on Image{
         // You can use LinearProgressIndicator or CircularProgressIndicator instead
       },
       errorBuilder: (context, error, stackTrace) =>
-          Center(child: Icon(Icons.error_outline, color: Theme.of(context).errorColor,)),
+          Center(child: Icon(Icons.error_outline, color: Theme.of(context).colorScheme.error,)),
 
     );
   }

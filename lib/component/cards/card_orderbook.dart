@@ -222,8 +222,8 @@ class CardOrderbook extends StatelessWidget {
 
   double useFontSize(BuildContext context, double fontSize, double widthSection, OrderBook value, {int offset = 0}) {
     print('WidgetOrderbook[$owner].useFontSize try fontSize  : $fontSize  offset : $offset');
-    TextStyle small_w400 = InvestrendTheme.of(context).small_w400.copyWith(fontSize: fontSize);
-    TextStyle small_w500 = InvestrendTheme.of(context).small_w500.copyWith(fontSize: fontSize);
+    TextStyle smallW400 = InvestrendTheme.of(context).small_w400.copyWith(fontSize: fontSize);
+    TextStyle smallW500 = InvestrendTheme.of(context).small_w500.copyWith(fontSize: fontSize);
     const double font_step = 1.0;
     int count = min(maxShowLevel, value.countBids());
     print('WidgetOrderbook[$owner].useFontSize count  : $count');
@@ -241,8 +241,8 @@ class CardOrderbook extends StatelessWidget {
 
       String leftText = bidQueue + bidLot + bidPrice;
       String righText = offerPrice + offerLot + offerQueue;
-      double widthSectionTextLeft = _textSize(leftText, small_w400).width;
-      double widthSectionTextRight = _textSize(righText, small_w500).width;
+      double widthSectionTextLeft = _textSize(leftText, smallW400).width;
+      double widthSectionTextRight = _textSize(righText, smallW500).width;
 
       bool reduceFontSize = widthSectionTextLeft > widthSection || widthSectionTextRight > widthSection;
       // print(' useFontSize widthSection  : $widthSection   widthSectionTextLeft : $widthSectionTextLeft   widthSectionTextRight : $widthSectionTextRight  reduceFontSize : $reduceFontSize');

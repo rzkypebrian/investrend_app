@@ -1,9 +1,5 @@
 import 'package:Investrend/component/component_app_bar.dart';
-import 'package:Investrend/component/component_creator.dart';
 import 'package:Investrend/objects/riverpod_change_notifier.dart';
-import 'package:Investrend/screens/screen_login.dart';
-import 'package:Investrend/screens/screen_main.dart';
-import 'package:Investrend/screens/trade/component/bottom_sheet_loading.dart';
 import 'package:Investrend/utils/connection_services.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:Investrend/utils/string_utils.dart';
@@ -39,6 +35,7 @@ class _ScreenLoginPinState extends State<ScreenLoginPin> {
     alreadyDisposed = true;
     super.dispose();
   }
+
   bool alreadyDisposed = false;
 
   @override
@@ -48,8 +45,9 @@ class _ScreenLoginPinState extends State<ScreenLoginPin> {
     fieldPinController.text = '';
     fieldPinController.addListener(() {
       String pin = fieldPinController.text;
-      print(DateTime.now().toString()+' fieldPinController  pin : $pin  mounted : $mounted  alreadyDisposed : $alreadyDisposed  onProgress : $onProgress');
-      if(!mounted || alreadyDisposed){
+      print(DateTime.now().toString() +
+          ' fieldPinController  pin : $pin  mounted : $mounted  alreadyDisposed : $alreadyDisposed  onProgress : $onProgress');
+      if (!mounted || alreadyDisposed) {
         return;
       }
 
@@ -122,8 +120,10 @@ class _ScreenLoginPinState extends State<ScreenLoginPin> {
     //focusNode.unfocus();
     //showLoading('loading_submit_pin'.tr());
     _loadingNotifier.value = true;
-    Future reply = InvestrendTheme.tradingHttp
-        .loginPin(pin, InvestrendTheme.of(context).applicationPlatform, InvestrendTheme.of(context).applicationVersion);
+    Future reply = InvestrendTheme.tradingHttp.loginPin(
+        pin,
+        InvestrendTheme.of(context).applicationPlatform,
+        InvestrendTheme.of(context).applicationVersion);
     reply.then((value) {
       //closeLoading();
       //_loadingNotifier.value = false;
@@ -141,7 +141,6 @@ class _ScreenLoginPinState extends State<ScreenLoginPin> {
         InvestrendTheme.of(context).showSnackBar(context, value.message);
         //focusNode.requestFocus();
       }
-
 
       /*
       Future.delayed(Duration(milliseconds: 700), () {
@@ -178,9 +177,10 @@ class _ScreenLoginPinState extends State<ScreenLoginPin> {
           fieldPinController.text = '';
           InvestrendTheme.of(context).showSnackBar(context, error.message());
         } else {
-          String network_error_label = 'network_error_label'.tr();
-          network_error_label = network_error_label.replaceFirst("#CODE#", error.code.toString());
-          InvestrendTheme.of(context).showSnackBar(context, network_error_label);
+          String networkErrorLabel = 'network_error_label'.tr();
+          networkErrorLabel =
+              networkErrorLabel.replaceFirst("#CODE#", error.code.toString());
+          InvestrendTheme.of(context).showSnackBar(context, networkErrorLabel);
         }
       } else {
         pin = '';
@@ -236,7 +236,8 @@ class _ScreenLoginPinState extends State<ScreenLoginPin> {
     buttonText = 'button_continue'.tr();
 
     fieldPinController.text = value;
-    fieldPinController.selection = TextSelection(baseOffset: value.length, extentOffset: value.length);
+    fieldPinController.selection =
+        TextSelection(baseOffset: value.length, extentOffset: value.length);
     /*
     if (StringUtils.isEmtpy(value) || value.length < 4) {
       button = ComponentCreator.roundedButton(context, ' ', Colors.transparent, Colors.transparent, Colors.transparent, null,
@@ -261,13 +262,13 @@ class _ScreenLoginPinState extends State<ScreenLoginPin> {
     return Container(
       width: double.maxFinite,
       height: double.maxFinite,
-      color: Theme.of(context).backgroundColor,
+      color: Theme.of(context).colorScheme.background,
       //   color:Colors.blueAccent,
       child: SafeArea(
         child: Scaffold(
-          backgroundColor: Theme.of(context).backgroundColor,
+          backgroundColor: Theme.of(context).colorScheme.background,
           appBar: AppBar(
-            backgroundColor: Theme.of(context).backgroundColor,
+            backgroundColor: Theme.of(context).colorScheme.background,
             elevation: elevation,
             shadowColor: shadowColor,
             leading: backButton,
@@ -278,7 +279,9 @@ class _ScreenLoginPinState extends State<ScreenLoginPin> {
               Spacer(
                 flex: 1,
               ),
-              Text(labelText.tr(), style: InvestrendTheme.of(context).regular_w600, textAlign: TextAlign.center),
+              Text(labelText.tr(),
+                  style: InvestrendTheme.of(context).regular_w600,
+                  textAlign: TextAlign.center),
               SizedBox(
                 height: 24.0,
               ),
@@ -302,17 +305,25 @@ class _ScreenLoginPinState extends State<ScreenLoginPin> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           value.length > 0
-                              ? Image.asset('images/icons/dot_purple.png', width: 20.0, height: 20.0)
-                              : Image.asset('images/icons/dot_gray.png', width: 20.0, height: 20.0),
+                              ? Image.asset('images/icons/dot_purple.png',
+                                  width: 20.0, height: 20.0)
+                              : Image.asset('images/icons/dot_gray.png',
+                                  width: 20.0, height: 20.0),
                           value.length > 1
-                              ? Image.asset('images/icons/dot_purple.png', width: 20.0, height: 20.0)
-                              : Image.asset('images/icons/dot_gray.png', width: 20.0, height: 20.0),
+                              ? Image.asset('images/icons/dot_purple.png',
+                                  width: 20.0, height: 20.0)
+                              : Image.asset('images/icons/dot_gray.png',
+                                  width: 20.0, height: 20.0),
                           value.length > 2
-                              ? Image.asset('images/icons/dot_purple.png', width: 20.0, height: 20.0)
-                              : Image.asset('images/icons/dot_gray.png', width: 20.0, height: 20.0),
+                              ? Image.asset('images/icons/dot_purple.png',
+                                  width: 20.0, height: 20.0)
+                              : Image.asset('images/icons/dot_gray.png',
+                                  width: 20.0, height: 20.0),
                           value.length > 3
-                              ? Image.asset('images/icons/dot_purple.png', width: 20.0, height: 20.0)
-                              : Image.asset('images/icons/dot_gray.png', width: 20.0, height: 20.0),
+                              ? Image.asset('images/icons/dot_purple.png',
+                                  width: 20.0, height: 20.0)
+                              : Image.asset('images/icons/dot_gray.png',
+                                  width: 20.0, height: 20.0),
                         ],
                       );
                     },
@@ -337,21 +348,39 @@ class _ScreenLoginPinState extends State<ScreenLoginPin> {
                   ),*/
                   TextField(
                     focusNode: focusNode,
-
                     decoration: InputDecoration(
-                      border: UnderlineInputBorder(borderSide: BorderSide(color: Colors.transparent, width: 1.0)),
-                      focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.transparent, width: 2.0)),
+                      border: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                              color: Colors.transparent, width: 1.0)),
+                      focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                              color: Colors.transparent, width: 2.0)),
                       focusColor: Colors.transparent,
-                      focusedErrorBorder:  UnderlineInputBorder(borderSide: BorderSide(color: Colors.transparent, width: 2.0)),
-                      errorBorder:  UnderlineInputBorder(borderSide: BorderSide(color: Colors.transparent, width: 2.0)),
-                      enabledBorder:  UnderlineInputBorder(borderSide: BorderSide(color: Colors.transparent, width: 2.0)),
-                      disabledBorder:  UnderlineInputBorder(borderSide: BorderSide(color: Colors.transparent, width: 2.0)),
-
+                      focusedErrorBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                              color: Colors.transparent, width: 2.0)),
+                      errorBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                              color: Colors.transparent, width: 2.0)),
+                      enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                              color: Colors.transparent, width: 2.0)),
+                      disabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                              color: Colors.transparent, width: 2.0)),
                       labelStyle: TextStyle(color: Colors.transparent),
-                      prefixStyle: InvestrendTheme.of(context).inputPrefixStyle.copyWith(color: Colors.transparent),
-                      hintStyle: InvestrendTheme.of(context).inputHintStyle.copyWith(color: Colors.transparent),
-                      helperStyle: InvestrendTheme.of(context).inputHelperStyle.copyWith(color: Colors.transparent),
-                      errorStyle: InvestrendTheme.of(context).inputErrorStyle.copyWith(color: Colors.transparent),
+                      prefixStyle: InvestrendTheme.of(context)
+                          .inputPrefixStyle
+                          .copyWith(color: Colors.transparent),
+                      hintStyle: InvestrendTheme.of(context)
+                          .inputHintStyle
+                          .copyWith(color: Colors.transparent),
+                      helperStyle: InvestrendTheme.of(context)
+                          .inputHelperStyle
+                          .copyWith(color: Colors.transparent),
+                      errorStyle: InvestrendTheme.of(context)
+                          .inputErrorStyle
+                          .copyWith(color: Colors.transparent),
                       fillColor: Colors.transparent,
                       hoverColor: Colors.transparent,
                       counter: SizedBox(
@@ -377,10 +406,14 @@ class _ScreenLoginPinState extends State<ScreenLoginPin> {
                   ValueListenableBuilder<bool>(
                     valueListenable: _loadingNotifier,
                     builder: (context, value, child) {
-                      if(value){
-                        return Center(child: CircularProgressIndicator(),);
-                      }else{
-                        return SizedBox(width: 1.0,);
+                      if (value) {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      } else {
+                        return SizedBox(
+                          width: 1.0,
+                        );
                       }
                     },
                   ),
@@ -394,16 +427,18 @@ class _ScreenLoginPinState extends State<ScreenLoginPin> {
                 children: [
                   TextButton(
                     style: TextButton.styleFrom(
-                        animationDuration: Duration(milliseconds: 500),
                         primary: InvestrendTheme.of(context).hyperlink,
+                        animationDuration: Duration(milliseconds: 500),
                         backgroundColor: Colors.transparent,
-                        textStyle: InvestrendTheme.of(context).small_w400_compact_greyDarker),
+                        textStyle: InvestrendTheme.of(context)
+                            .small_w400_compact_greyDarker),
                     child: Text('login_button_forgot_pin'.tr()),
                     onPressed: () {
                       print('forgot_pin pressed');
                       //showLoginPage(context);
                       //showRegisterPage(context);
-                      launchURL(context, 'https://olt1.buanacapital.com:8888/manageaccount');
+                      launchURL(context,
+                          'https://olt1.buanacapital.com:8888/manageaccount');
                     },
                   ),
                 ],
@@ -423,9 +458,12 @@ class _ScreenLoginPinState extends State<ScreenLoginPin> {
       ),
     );
   }
+
   void launchURL(BuildContext context, String _url) async {
     try {
-      await canLaunch(_url) ? await launch(_url) : throw 'Could not launch $_url';
+      await canLaunch(_url)
+          ? await launch(_url)
+          : throw 'Could not launch $_url';
     } catch (error) {
       //InvestrendTheme.of(context).showSnackBar(context, error.toString());
     }

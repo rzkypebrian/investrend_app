@@ -66,7 +66,7 @@ class _RowStockPositionsState extends State<RowStockPositions> {
 
   Widget row(BuildContext context) {
     TextStyle regular700 = InvestrendTheme.of(context).regular_w600_compact;
-    TextStyle more_support400 = InvestrendTheme.of(context).more_support_w400_compact;
+    TextStyle moreSupport400 = InvestrendTheme.of(context).more_support_w400_compact;
 
     Color gainLossColor = InvestrendTheme.changeTextColor(widget.portfolio.stockGL);
     String gainLossText = InvestrendTheme.formatMoneyDouble(widget.portfolio.stockGL, prefixPlus: true, prefixRp: true);
@@ -193,11 +193,11 @@ class _RowStockPositionsState extends State<RowStockPositions> {
                           SizedBox(
                             height: 5.0,
                           ),
-                          AutoSizeText(gainLossText, style: more_support400.copyWith(color: gainLossColor)),
+                          AutoSizeText(gainLossText, style: moreSupport400.copyWith(color: gainLossColor)),
                           SizedBox(
                             height: 5.0,
                           ),
-                          Text(lotAverage, style: more_support400.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor)),
+                          Text(lotAverage, style: moreSupport400.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor)),
                         ],
                       ),
                     ),
@@ -229,7 +229,7 @@ class _RowStockPositionsState extends State<RowStockPositions> {
                         fit: BoxFit.scaleDown,
                         child: Text(
                           changeText,
-                          style: more_support400.copyWith(color: marketColor),
+                          style: moreSupport400.copyWith(color: marketColor),
                           maxLines: 1,
                         )),
                   ],
@@ -247,7 +247,7 @@ class _RowStockPositionsState extends State<RowStockPositions> {
 
   Widget rowProfile(BuildContext context) {
     TextStyle regular700 = InvestrendTheme.of(context).regular_w600_compact;
-    TextStyle more_support400 = InvestrendTheme.of(context).more_support_w400_compact;
+    TextStyle moreSupport400 = InvestrendTheme.of(context).more_support_w400_compact;
 
     Color gainLossColor = InvestrendTheme.changeTextColor(widget.portfolio.stockGL);
     String gainLossText = InvestrendTheme.formatMoneyDouble(widget.portfolio.stockGL, prefixPlus: true, prefixRp: true);
@@ -309,7 +309,7 @@ class _RowStockPositionsState extends State<RowStockPositions> {
                         fit: BoxFit.scaleDown,
                         child: Text(
                           changeText,
-                          style: more_support400.copyWith(color: marketColor),
+                          style: moreSupport400.copyWith(color: marketColor),
                           maxLines: 1,
                         )),
                   ],

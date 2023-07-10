@@ -80,11 +80,11 @@ class ScreenContent extends StatelessWidget {
     }
 
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       //floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
       //floatingActionButton: createFloatingActionButton(context),
       appBar: AppBar(
-        backgroundColor: Theme.of(context).backgroundColor,
+        backgroundColor: Theme.of(context).colorScheme.background,
         centerTitle: true,
         shadowColor: shadowColor,
         elevation: elevation,
@@ -97,7 +97,7 @@ class ScreenContent extends StatelessWidget {
           () {
             Navigator.of(context).pop();
           },
-          color: Theme.of(context).accentColor,
+          color: Theme.of(context).colorScheme.secondary,
         ),
       ),
       body: createBody(context, paddingBottom),

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:Investrend/component/button_banner_open_account.dart';
@@ -21,7 +20,6 @@ import 'package:Investrend/utils/string_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/painting.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info/package_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -298,19 +296,19 @@ class _ScreenSettingsState extends BaseStateNoTabs<ScreenSettings> {
     });
     */
 
-    int pin_timeout_index = context.read(propertiesNotifier).properties.getInt(
+    int pinTimeoutIndex = context.read(propertiesNotifier).properties.getInt(
         routeName,
         PROP_SELECTED_PIN_TIMEOUT,
         TradingTimeoutDuration.FifteenMinutes.index);
-    if (pin_timeout_index < 0 ||
-        pin_timeout_index >= TradingTimeoutDuration.values.length) {
-      pin_timeout_index = 0; //reset ke 0
+    if (pinTimeoutIndex < 0 ||
+        pinTimeoutIndex >= TradingTimeoutDuration.values.length) {
+      pinTimeoutIndex = 0; //reset ke 0
       context
           .read(propertiesNotifier)
           .properties
-          .saveInt(routeName, PROP_SELECTED_PIN_TIMEOUT, pin_timeout_index);
+          .saveInt(routeName, PROP_SELECTED_PIN_TIMEOUT, pinTimeoutIndex);
     }
-    timeoutNotifier.value = pin_timeout_index;
+    timeoutNotifier.value = pinTimeoutIndex;
   }
 
   Future<bool> saveTheme(int index) async {
@@ -328,7 +326,7 @@ class _ScreenSettingsState extends BaseStateNoTabs<ScreenSettings> {
       shadowColor = Colors.red;
     }
     return AppBar(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       elevation: elevation,
       shadowColor: shadowColor,
       //title: AppBarTitleText('settings'.tr().toUpperCase()),
@@ -910,7 +908,7 @@ class _ScreenSettingsState extends BaseStateNoTabs<ScreenSettings> {
     // TODO: implement onInactive
   }
 
-  void refreshToken(String refresh_token) {
+  void refreshToken(String refreshToken) {
     //showLoading('loading_refresh_token_label'.tr());
 
     // final result = InvestrendTheme.tradingHttp.refresh(
@@ -918,7 +916,7 @@ class _ScreenSettingsState extends BaseStateNoTabs<ScreenSettings> {
     //     refresh_token: refresh_token, device: 'website');
     final result = InvestrendTheme.tradingHttp.refresh(
         'website', InvestrendTheme.of(context).applicationVersion,
-        refresh_token: refresh_token);
+        refresh_token: refreshToken);
 
     result.then((value) {
       //loadingNotifier.value = true;
@@ -958,13 +956,13 @@ class _ScreenSettingsState extends BaseStateNoTabs<ScreenSettings> {
           value.r_port);
       print(context.read(dataHolderChangeNotifier).user.toString());
 
-      String url_profile = 'https://' +
+      String urlProfile = 'https://' +
           InvestrendTheme.tradingHttp.tradingBaseUrl +
           '/getpic?username=' +
           value.username +
           '&url=&nocache=' +
           DateTime.now().toString();
-      context.read(avatarChangeNotifier).setUrl(url_profile);
+      context.read(avatarChangeNotifier).setUrl(urlProfile);
       context.read(accountChangeNotifier).setIndex(0);
       reloadAccountNotifier.value =
           value.accounts.length.toString() + ' ' + 'accounts_lobel'.tr();
@@ -1000,17 +998,16 @@ class _ScreenSettingsState extends BaseStateNoTabs<ScreenSettings> {
           } else if (error.isErrorTrading()) {
             InvestrendTheme.of(context).showSnackBar(context, error.message());
           } else {
-            String network_error_label = 'network_error_label'.tr();
-            network_error_label = network_error_label.replaceFirst(
-                "#CODE#", error.code.toString());
+            String networkErrorLabel = 'network_error_label'.tr();
+            networkErrorLabel =
+                networkErrorLabel.replaceFirst("#CODE#", error.code.toString());
             InvestrendTheme.of(context)
-                .showSnackBar(context, network_error_label);
+                .showSnackBar(context, networkErrorLabel);
           }
         } else if (error is TimeoutException) {
-          String network_error_time_out_label =
-              'network_error_time_out_label'.tr();
+          String networkErrorTimeOutLabel = 'network_error_time_out_label'.tr();
           InvestrendTheme.of(context)
-              .showSnackBar(context, network_error_time_out_label);
+              .showSnackBar(context, networkErrorTimeOutLabel);
         } else {
           InvestrendTheme.of(context).showSnackBar(context, error.toString());
         }

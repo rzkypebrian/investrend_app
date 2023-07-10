@@ -5,6 +5,7 @@ import 'package:Investrend/component/button_order.dart';
 import 'package:Investrend/component/chart_candlestick.dart';
 import 'package:Investrend/component/component_app_bar.dart';
 import 'package:Investrend/message.dart';
+import 'package:Investrend/new_component/custom_scroll_behaviour.dart';
 import 'package:Investrend/objects/data_holder.dart';
 import 'package:Investrend/objects/riverpod_change_notifier.dart';
 import 'package:Investrend/screen_test.dart';
@@ -12,7 +13,6 @@ import 'package:Investrend/screens/onboarding/screen_friends.dart';
 import 'package:Investrend/screens/onboarding/screen_friends_contact.dart';
 import 'package:Investrend/screens/onboarding/screen_landing.dart';
 import 'package:Investrend/screens/onboarding/screen_landing_rdn.dart';
-import 'package:Investrend/screens/onboarding/screen_invitation.dart';
 import 'package:Investrend/screens/screen_agreement.dart';
 import 'package:Investrend/screens/tab_community/screen_create_post.dart';
 import 'package:Investrend/screens/screen_login.dart';
@@ -181,7 +181,6 @@ Accent: F4F2F9
             FontFeature.stylisticSet(2)
           ],
         ),
-
         //Button        font-size: 14px;    font-weight: bold;  line-height: 20px;  text-transform: capitalize;
         button: ThemeData.light().textTheme.button.copyWith(
           color: textColorLightTheme,
@@ -455,18 +454,13 @@ Accent: F4F2F9
     //fontFamily: 'LobsterTwo',
 
     brightness: Brightness.light,
-    primarySwatch: materialInvestrendPurple,
     primaryColor: Color(0xFFFAFAFA),
-    accentColor: Color(0xFF5414DB),
-    backgroundColor: Color(0xFFFAFAFA),
     // splashColor: Colors.red,
     focusColor: Color(0xFF5414DB),
-    buttonColor: Color(0xFF5414DB),
     checkboxTheme: ThemeData.light().checkboxTheme,
     disabledColor: Color(0xFFC8BAF0),
     shadowColor: ThemeData.light().shadowColor,
     primaryIconTheme: IconThemeData(color: Colors.grey),
-    accentIconTheme: IconThemeData(color: Color(0xFF5414DB)),
     //bottomAppBarColor: Colors.blue,
     // splashColor: Color(0xFF8f4bff),
     bottomSheetTheme: ThemeData.light()
@@ -523,6 +517,9 @@ Accent: F4F2F9
         ),
     //inputDecorationTheme: ThemeData.light().inputDecorationTheme,
     textTheme: textThemeLight,
+    colorScheme: ColorScheme.fromSwatch(primarySwatch: materialInvestrendPurple)
+        .copyWith(secondary: Color(0xFF5414DB))
+        .copyWith(background: Color(0xFFFAFAFA)),
   );
 
   static final ThemeData themeDark = ThemeData(
@@ -531,21 +528,13 @@ Accent: F4F2F9
     // fontFamily: 'LobsterTwo',
 
     brightness: Brightness.dark,
-    primarySwatch: materialInvestrendWhite,
     primaryColor: Color(0xFFFAFAFA),
-    accentColor: Color(0xFF5414DB),
-    //backgroundColor: Color(0xFF010000),
-    //backgroundColor: Color(0xFF242424),
-    backgroundColor: Color(0xFF141414), //
-
-    buttonColor: Color(0xFF5414DB),
     // splashColor: Colors.green,
     focusColor: Color(0xFF5414DB),
     disabledColor: Color(0xFFC8BAF0),
     shadowColor: Colors.grey,
     checkboxTheme: ThemeData.light().checkboxTheme,
     primaryIconTheme: IconThemeData(color: Colors.grey[300]),
-    accentIconTheme: IconThemeData(color: Color(0xFF5414DB)),
     // bottomAppBarColor: Colors.yellow,
     // splashColor: Color(0xFF8f4bff),`
     bottomSheetTheme: ThemeData.light()
@@ -604,6 +593,9 @@ Accent: F4F2F9
         ),
     //inputDecorationTheme: ThemeData.dark().inputDecorationTheme,
     textTheme: textThemeDark,
+    colorScheme: ColorScheme.fromSwatch(primarySwatch: materialInvestrendWhite)
+        .copyWith(secondary: Color(0xFF5414DB))
+        .copyWith(background: Color(0xFF141414)),
   );
   static final RouteObserver<PageRoute> routeObserver =
       RouteObserver<PageRoute>();
@@ -876,12 +868,12 @@ class _MainApplicationState extends State<MainApplication> {
       appBar: AppBar(
         elevation: elevation,
         shadowColor: shadowColor,
-        backgroundColor: Theme.of(context).backgroundColor,
+        backgroundColor: Theme.of(context).colorScheme.background,
         title: AppBarTitleText('Initialize Error'),
         automaticallyImplyLeading: false,
       ),
       body: Container(
-        color: Theme.of(context).backgroundColor,
+        color: Theme.of(context).colorScheme.background,
         width: double.maxFinite,
         height: double.maxFinite,
         child: Center(
@@ -926,12 +918,12 @@ class _MainApplicationState extends State<MainApplication> {
       appBar: AppBar(
         elevation: elevation,
         shadowColor: shadowColor,
-        backgroundColor: Theme.of(context).backgroundColor,
+        backgroundColor: Theme.of(context).colorScheme.background,
         title: AppBarTitleText('Initializing'),
         automaticallyImplyLeading: false,
       ),
       body: Container(
-        color: Theme.of(context).backgroundColor,
+        color: Theme.of(context).colorScheme.background,
         width: double.maxFinite,
         height: double.maxFinite,
         child: Center(child: CircularProgressIndicator()),
@@ -960,6 +952,7 @@ class _MainApplicationState extends State<MainApplication> {
       print('themeModeNotifier build : ' + themeMode.index.toString());
       keyInvestrend = Key('IVST_theme_' + themeMode.index.toString());
       return MaterialApp(
+        scrollBehavior: CustomScrollBehaviour(),
         //key: Key('themeMode_'+themeMode.index.toString()),
         // debugShowCheckedModeBanner: false,
         title: title,

@@ -1,13 +1,11 @@
 
 
 import 'package:Investrend/component/component_app_bar.dart';
-import 'package:Investrend/component/component_creator.dart';
 import 'package:Investrend/component/empty_label.dart';
 import 'package:Investrend/message.dart';
 import 'package:Investrend/objects/data_object.dart';
 import 'package:Investrend/objects/riverpod_change_notifier.dart';
 import 'package:Investrend/screens/base/base_state.dart';
-import 'package:Investrend/utils/connection_services.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:Investrend/utils/string_utils.dart';
 import 'package:flutter/cupertino.dart';
@@ -42,7 +40,7 @@ class _ScreenNotificationState extends BaseStateNoTabs<ScreenNotification> {
       elevation: elevation,
       shadowColor: shadowColor,
       centerTitle: true,
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       title: AppBarTitleText('notification_title'.tr()),
     );
   }
@@ -86,8 +84,8 @@ class _ScreenNotificationState extends BaseStateNoTabs<ScreenNotification> {
     // int current_page = context.read(sosmedFeedChangeNotifier).current_page;
     // int last_page = context.read(sosmedFeedChangeNotifier).last_page;
     // if(current_page == last_page){
-    String date_next = context.read(inboxChangeNotifier).date_next;
-    if(StringUtils.isEmtpy(date_next)){
+    String dateNext = context.read(inboxChangeNotifier).date_next;
+    if(StringUtils.isEmtpy(dateNext)){
       if(showedLastPageInfo){
         return;
       }
@@ -100,7 +98,7 @@ class _ScreenNotificationState extends BaseStateNoTabs<ScreenNotification> {
     }
     context.read(sosmedFeedChangeNotifier).showLoadingBottom(true);
     //int next_page = current_page + 1;
-    final result = doUpdate(date_next: date_next);
+    final result = doUpdate(date_next: dateNext);
 
   }
   Future doUpdate({bool pullToRefresh = false, String date_next=''}) async {
@@ -150,7 +148,7 @@ class _ScreenNotificationState extends BaseStateNoTabs<ScreenNotification> {
   Widget createBody(BuildContext context, double paddingBottom) {
     return RefreshIndicator(
       color: InvestrendTheme.of(context).textWhite,
-      backgroundColor: Theme.of(context).accentColor,
+      backgroundColor: Theme.of(context).colorScheme.secondary,
       onRefresh: onRefresh,
       child: Consumer(builder: (context, watch, child) {
         final notifier = watch(inboxChangeNotifier);
@@ -237,14 +235,14 @@ class _ScreenNotificationState extends BaseStateNoTabs<ScreenNotification> {
                   if(index == 0){
                     return Padding(
                       padding:  EdgeInsets.only(top: MediaQuery.of(context).size.width / 4),
-                      child: Center(child: CircularProgressIndicator(color: Theme.of(context).accentColor, backgroundColor: Theme.of(context).accentColor.withOpacity(0.2),)),
+                      child: Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.secondary, backgroundColor: Theme.of(context).colorScheme.secondary.withOpacity(0.2),)),
                     );
                   }else{
-                    return Center(child: CircularProgressIndicator(color: Theme.of(context).accentColor, backgroundColor: Theme.of(context).accentColor.withOpacity(0.2),));
+                    return Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.secondary, backgroundColor: Theme.of(context).colorScheme.secondary.withOpacity(0.2),));
                   }
 
                 }else if(notifier.retryBottom){
-                  return Center(child: TextButton(child: Text('button_retry'.tr(), style: InvestrendTheme.of(context).small_w400_compact.copyWith(color: Theme.of(context).accentColor),), onPressed: (){
+                  return Center(child: TextButton(child: Text('button_retry'.tr(), style: InvestrendTheme.of(context).small_w400_compact.copyWith(color: Theme.of(context).colorScheme.secondary),), onPressed: (){
                     fetchNextPage();
                   },));
                 }else{
@@ -258,8 +256,8 @@ class _ScreenNotificationState extends BaseStateNoTabs<ScreenNotification> {
     );
   }
   Widget listTile(BuildContext context, BaseMessage message /* String date, String title, Image titleIcon, String message*/, {bool selected=false}){
-    TextStyle more_support_400 = InvestrendTheme.of(context).more_support_w400.copyWith(fontSize:11.0,letterSpacing: -0.2, color: InvestrendTheme.of(context).greyLighterTextColor);
-    TextStyle more_support_400_darker = more_support_400.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor);
+    TextStyle moreSupport400 = InvestrendTheme.of(context).more_support_w400.copyWith(fontSize:11.0,letterSpacing: -0.2, color: InvestrendTheme.of(context).greyLighterTextColor);
+    TextStyle moreSupport400Darker = moreSupport400.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor);
     return ListTile(
       selectedTileColor: InvestrendTheme.of(context).oddColor,
       contentPadding: EdgeInsets.only(left: 12.0, right: 12.0, top: 8.0,bottom: 8.0),
@@ -276,7 +274,7 @@ class _ScreenNotificationState extends BaseStateNoTabs<ScreenNotification> {
       },
       title: Text(
         message.created_at,
-        style: more_support_400,
+        style: moreSupport400,
       ),
       subtitle: RichText(
         maxLines: 3,
@@ -287,7 +285,7 @@ class _ScreenNotificationState extends BaseStateNoTabs<ScreenNotification> {
             // WidgetSpan(
             //   child: Icon(icon, size: 14),
             // ),
-            TextSpan(text: '\n'+message.fcm_body, style: more_support_400_darker,)
+            TextSpan(text: '\n'+message.fcm_body, style: moreSupport400Darker,)
 
           ],
         ),

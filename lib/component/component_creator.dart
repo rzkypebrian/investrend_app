@@ -22,16 +22,16 @@ extension Utility on BuildContext {
 class ComponentCreator {
   static Widget dotsIndicator(BuildContext context, int size,
       int defaultSelectedIndex, ValueNotifier<int> notifier) {
-    double dot_selected_width = 20;
-    double dot_width = 10;
-    double dot_height = 5;
-    double dot_space_between = 5;
+    double dotSelectedWidth = 20;
+    double dotWidth = 10;
+    double dotHeight = 5;
+    double dotSpaceBetween = 5;
     List<Widget> dots = List.empty(growable: true);
     for (int i = 0; i < size; i++) {
       if (i > 0) {
         // space between dots
         dots.add(SizedBox(
-          width: dot_space_between,
+          width: dotSpaceBetween,
         ));
       }
       Widget dot = ValueListenableBuilder<int>(
@@ -39,18 +39,18 @@ class ComponentCreator {
           builder: (context, value, child) {
             bool selected = notifier.value == i;
             return AnimatedContainer(
-                width: selected ? dot_selected_width : dot_width,
-                height: dot_height,
+                width: selected ? dotSelectedWidth : dotWidth,
+                height: dotHeight,
                 //color: selected ? Colors.cyan : Colors.grey,
                 decoration: BoxDecoration(
                   color: selected
-                      ? Theme.of(context).accentColor
+                      ? Theme.of(context).colorScheme.secondary
                       : Colors.grey[300],
                   border: Border.all(
                       color: selected
-                          ? Theme.of(context).accentColor
+                          ? Theme.of(context).colorScheme.secondary
                           : Colors.grey[300],
-                      width: selected ? dot_selected_width : dot_width),
+                      width: selected ? dotSelectedWidth : dotWidth),
                   // added
                   borderRadius: BorderRadius.circular(2.0),
                 ),
@@ -239,8 +239,9 @@ class ComponentCreator {
                 //padding: const EdgeInsets.only(left: 3.0, right: 10.0),
                 width: double.maxFinite,
                 height: validatorError ? 1.0 : 1.0,
-                color:
-                    validatorError ? Theme.of(context).errorColor : Colors.grey,
+                color: validatorError
+                    ? Theme.of(context).colorScheme.error
+                    : Colors.grey,
               ),
             ),
             Padding(
@@ -251,7 +252,7 @@ class ComponentCreator {
                 //style: Theme.of(context).textTheme.caption.copyWith(color: validatorError ? Theme.of(context).errorColor : Colors.transparent),
                 style: InvestrendTheme.of(context).inputErrorStyle.copyWith(
                     color: validatorError
-                        ? Theme.of(context).errorColor
+                        ? Theme.of(context).colorScheme.error
                         : Colors.transparent),
               ),
             ),
@@ -556,7 +557,7 @@ class ComponentCreator {
       style: InvestrendTheme.of(context).inputStyle,
       onTap: onTap,
       focusNode: focusNode,
-      cursorColor: Theme.of(context).accentColor,
+      cursorColor: Theme.of(context).colorScheme.secondary,
       textInputAction: textInputAction,
       obscureText: obscureText,
       validator: validator,
@@ -575,11 +576,11 @@ class ComponentCreator {
         border: UnderlineInputBorder(
             borderSide: BorderSide(color: Colors.grey, width: 1.0)),
         focusedBorder: UnderlineInputBorder(
-            borderSide:
-                BorderSide(color: Theme.of(context).accentColor, width: 2.0)),
+            borderSide: BorderSide(
+                color: Theme.of(context).colorScheme.secondary, width: 2.0)),
         disabledBorder: UnderlineInputBorder(
             borderSide: BorderSide(color: Colors.grey, width: 1.0)),
-        focusColor: Theme.of(context).accentColor,
+        focusColor: Theme.of(context).colorScheme.secondary,
         prefixStyle: InvestrendTheme.of(context).inputPrefixStyle,
         prefixText: prefixText,
         hintStyle: InvestrendTheme.of(context).inputHintStyle,
@@ -975,7 +976,7 @@ class ComponentCreator {
 
             onTap: onTap,
             focusNode: focusNode,
-            cursorColor: Theme.of(context).accentColor,
+            cursorColor: Theme.of(context).colorScheme.secondary,
             textInputAction: textInputAction,
             obscureText: obscureText,
             decoration: InputDecoration(
@@ -985,8 +986,9 @@ class ComponentCreator {
                   borderSide: BorderSide(color: Colors.grey, width: 1.0)),
               focusedBorder: UnderlineInputBorder(
                   borderSide: BorderSide(
-                      color: Theme.of(context).accentColor, width: 2.0)),
-              focusColor: Theme.of(context).accentColor,
+                      color: Theme.of(context).colorScheme.secondary,
+                      width: 2.0)),
+              focusColor: Theme.of(context).colorScheme.secondary,
               prefixStyle: InvestrendTheme.of(context).inputPrefixStyle,
               // prefixStyle: TextStyle(
               //   fontSize: Theme.of(context).textTheme.bodyText1.fontSize,
@@ -1055,7 +1057,7 @@ class ComponentCreator {
                 //prefixStyle: InvestrendTheme.of(context).small_w500,
                 //style: Theme.of(context).textTheme.bodyText2,
                 // The validator receives the text that the user has entered.
-                cursorColor: Theme.of(context).accentColor,
+                cursorColor: Theme.of(context).colorScheme.secondary,
                 textInputAction: textInputAction,
                 obscureText: obscureText,
                 //obscuringCharacter: '❄',
@@ -1068,7 +1070,7 @@ class ComponentCreator {
                   focusedBorder: UnderlineInputBorder(
                       borderSide:
                           BorderSide(color: Colors.transparent, width: 2.0)),
-                  focusColor: Theme.of(context).accentColor,
+                  focusColor: Theme.of(context).colorScheme.secondary,
                   //prefixStyle: TextStyle(fontSize: Theme.of(context).textTheme.bodyText1.fontSize, color: Colors.transparent),
                   prefixStyle: InvestrendTheme.of(context).inputPrefixStyle,
                   prefixText: prefixText,
@@ -1119,7 +1121,7 @@ class ComponentCreator {
               style: InvestrendTheme.of(context).inputStyle,
               //style: Theme.of(context).textTheme.bodyText2,
               // The validator receives the text that the user has entered.
-              cursorColor: Theme.of(context).accentColor,
+              cursorColor: Theme.of(context).colorScheme.secondary,
               textInputAction: textInputAction,
               obscureText: obscureText,
               //obscuringCharacter: '❄',
@@ -1130,8 +1132,9 @@ class ComponentCreator {
                     borderSide: BorderSide(color: Colors.grey, width: 1.0)),
                 focusedBorder: UnderlineInputBorder(
                     borderSide: BorderSide(
-                        color: Theme.of(context).accentColor, width: 2.0)),
-                focusColor: Theme.of(context).accentColor,
+                        color: Theme.of(context).colorScheme.secondary,
+                        width: 2.0)),
+                focusColor: Theme.of(context).colorScheme.secondary,
                 //prefixStyle: TextStyle(fontSize: Theme.of(context).textTheme.bodyText1.fontSize, color: Colors.transparent),
                 prefixStyle: InvestrendTheme.of(context)
                     .inputPrefixStyle
@@ -1330,7 +1333,7 @@ class ComponentCreator {
       {double padding = 0.0,
       Color color,
       FontWeight fontWeight,
-      double height: 1.0}) {
+      double height = 1.0}) {
     TextStyle textStyle;
     if (fontWeight == null) {
       fontWeight = InvestrendTheme.of(context).textValueStyle.fontWeight;
@@ -1371,7 +1374,7 @@ class ComponentCreator {
       {double padding = 0.0,
       Color color,
       FontWeight fontWeight,
-      double height: 1.0}) {
+      double height = 1.0}) {
     TextStyle textStyle;
     if (fontWeight == null) {
       fontWeight = InvestrendTheme.of(context).textValueStyle.fontWeight;
@@ -1411,7 +1414,7 @@ class ComponentCreator {
       {double padding = 0.0,
       Color color,
       FontWeight fontWeight,
-      double height: 1.0}) {
+      double height = 1.0}) {
     TextStyle textStyle;
     if (fontWeight == null) {
       fontWeight = InvestrendTheme.of(context).textValueStyle.fontWeight;
@@ -1550,7 +1553,7 @@ class ComponentCreator {
               ? errorWidget
               : Icon(
                   Icons.error_outline,
-                  color: Theme.of(context).errorColor,
+                  color: Theme.of(context).colorScheme.error,
                 )),
     );
   }
@@ -1577,7 +1580,7 @@ class ComponentCreator {
               ? errorWidget
               : Icon(
                   Icons.error_outline,
-                  color: Theme.of(context).errorColor,
+                  color: Theme.of(context).colorScheme.error,
                 ),
         );
       },
@@ -1609,7 +1612,7 @@ class ComponentCreator {
             context,
             image,
             textButton ?? 'button_more'.tr(),
-            Theme.of(context).accentColor,
+            Theme.of(context).colorScheme.secondary,
             callback),
       ],
     );

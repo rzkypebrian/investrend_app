@@ -13,7 +13,7 @@ class ScreenEIPOHelpDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     double paddingBottom = MediaQuery.of(context).viewPadding.bottom;
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       appBar: createAppBar(context),
       body: createBody(context, paddingBottom),
     );
@@ -21,7 +21,7 @@ class ScreenEIPOHelpDetails extends StatelessWidget {
   Widget createAppBar(BuildContext context) {
     return AppBar(
       elevation: 0.0,
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       title: AppBarTitleText('eipo_help_title'.tr()),
       leading: AppBarActionIcon('images/icons/action_back.png', () {
         Navigator.pop(context);

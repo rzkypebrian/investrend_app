@@ -1,4 +1,3 @@
-import 'dart:ui';
 
 import 'package:Investrend/objects/data_object.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
@@ -188,10 +187,10 @@ class Stock extends CodeNameSSI {
     String sectorText = StringUtils.noNullString(parsedJson['sectorText']);
     String subSectorDescription =
         StringUtils.noNullString(parsedJson['subSectorDescription']);
-    int ipo_price = Utils.safeInt(parsedJson['ipo_price']);
-    int base_price = Utils.safeInt(parsedJson['base_price']);
-    int listed_share = Utils.safeInt(parsedJson['listed_share']);
-    int tradable_share = Utils.safeInt(parsedJson['tradable_share']);
+    int ipoPrice = Utils.safeInt(parsedJson['ipo_price']);
+    int basePrice = Utils.safeInt(parsedJson['base_price']);
+    int listedShare = Utils.safeInt(parsedJson['listed_share']);
+    int tradableShare = Utils.safeInt(parsedJson['tradable_share']);
     bool syariah = Utils.safeBool(parsedJson['syariah']);
     String papan = StringUtils.noNullString(parsedJson['papan']);
     String typeText = StringUtils.noNullString(parsedJson['typeText']);
@@ -201,10 +200,10 @@ class Stock extends CodeNameSSI {
         type: type,
         sectorText: sectorText,
         subSectorDescription: subSectorDescription,
-        ipo_price: ipo_price,
-        base_price: base_price,
-        listed_share: listed_share,
-        tradable_share: tradable_share,
+        ipo_price: ipoPrice,
+        base_price: basePrice,
+        listed_share: listedShare,
+        tradable_share: tradableShare,
         syariah: syariah,
         papan: papan,
         typeText: typeText);
@@ -222,10 +221,10 @@ class Stock extends CodeNameSSI {
         StringUtils.noNullString(element.getAttribute('sectorText'));
     String subSectorDescription =
         StringUtils.noNullString(element.getAttribute('subSectorDescription'));
-    int ipo_price = Utils.safeInt(element.getAttribute('ipo_price'));
-    int base_price = Utils.safeInt(element.getAttribute('base_price'));
-    int listed_share = Utils.safeInt(element.getAttribute('listed_share'));
-    int tradable_share = Utils.safeInt(element.getAttribute('tradable_share'));
+    int ipoPrice = Utils.safeInt(element.getAttribute('ipo_price'));
+    int basePrice = Utils.safeInt(element.getAttribute('base_price'));
+    int listedShare = Utils.safeInt(element.getAttribute('listed_share'));
+    int tradableShare = Utils.safeInt(element.getAttribute('tradable_share'));
     bool syariah = Utils.safeBool(element.getAttribute('syariah'));
     String papan = StringUtils.noNullString(element.getAttribute('papan'));
     String typeText = StringUtils.noNullString(element.getAttribute(
@@ -237,10 +236,10 @@ class Stock extends CodeNameSSI {
         type: type,
         sectorText: sectorText,
         subSectorDescription: subSectorDescription,
-        ipo_price: ipo_price,
-        base_price: base_price,
-        listed_share: listed_share,
-        tradable_share: tradable_share,
+        ipo_price: ipoPrice,
+        base_price: basePrice,
+        listed_share: listedShare,
+        tradable_share: tradableShare,
         syariah: syariah,
         papan: papan,
         typeText: typeText);
@@ -257,10 +256,10 @@ class Stock extends CodeNameSSI {
       String sectorText = StringUtils.noNullString(datas.elementAt(5));
       String subSectorDescription =
           StringUtils.noNullString(datas.elementAt(6));
-      int ipo_price = Utils.safeInt(datas.elementAt(7));
-      int base_price = Utils.safeInt(datas.elementAt(8));
-      int listed_share = Utils.safeInt(datas.elementAt(9));
-      int tradable_share = Utils.safeInt(datas.elementAt(10));
+      int ipoPrice = Utils.safeInt(datas.elementAt(7));
+      int basePrice = Utils.safeInt(datas.elementAt(8));
+      int listedShare = Utils.safeInt(datas.elementAt(9));
+      int tradableShare = Utils.safeInt(datas.elementAt(10));
       bool syariah = Utils.safeBool(datas.elementAt(11));
       String papan = StringUtils.noNullString(datas.elementAt(12));
       String typeText = StringUtils.noNullString(
@@ -274,10 +273,10 @@ class Stock extends CodeNameSSI {
           type: type,
           sectorText: sectorText,
           subSectorDescription: subSectorDescription,
-          ipo_price: ipo_price,
-          base_price: base_price,
-          listed_share: listed_share,
-          tradable_share: tradable_share,
+          ipo_price: ipoPrice,
+          base_price: basePrice,
+          listed_share: listedShare,
+          tradable_share: tradableShare,
           syariah: syariah,
           papan: papan,
           typeText: typeText);
@@ -386,17 +385,17 @@ class Broker extends CodeNameSSI {
     String code = StringUtils.noNullString(parsedJson['code']);
     String name = StringUtils.noNullString(parsedJson['name']);
     String status = StringUtils.noNullString(parsedJson['status']);
-    int is_local = Utils.safeInt(parsedJson['is_local']);
-    return Broker(code, name, status, is_local);
+    int isLocal = Utils.safeInt(parsedJson['is_local']);
+    return Broker(code, name, status, isLocal);
   }
 
   factory Broker.fromXml(XmlElement element) {
     String code = StringUtils.noNullString(element.getAttribute('code'));
     String name = StringUtils.noNullString(element.getAttribute('name'));
     String status = StringUtils.noNullString(element.getAttribute('status'));
-    int is_local = Utils.safeInt(element.getAttribute('is_local'));
+    int isLocal = Utils.safeInt(element.getAttribute('is_local'));
     //return Broker(element.getAttribute('last'), element.getAttribute('code'), double.parse(element.getAttribute('change')), double.parse(element.getAttribute('percentChange')));
-    return Broker(code, name, status, is_local);
+    return Broker(code, name, status, isLocal);
   }
 
   factory Broker.fromPlain(String data) {
@@ -406,9 +405,9 @@ class Broker extends CodeNameSSI {
       String code = StringUtils.noNullString(datas.elementAt(0));
       String name = StringUtils.noNullString(datas.elementAt(1));
       String status = StringUtils.noNullString(datas.elementAt(2));
-      int is_local = Utils.safeInt(datas.elementAt(3));
+      int isLocal = Utils.safeInt(datas.elementAt(3));
 
-      return Broker(code, name, status, is_local);
+      return Broker(code, name, status, isLocal);
     }
     return null;
   }
@@ -443,13 +442,13 @@ class Sector extends SerializeableSSI {
   factory Sector.fromJson(Map<String, dynamic> parsedJson) {
     String code = StringUtils.noNullString(parsedJson['code']);
     String sector = StringUtils.noNullString(parsedJson['sector']);
-    String sector_text = StringUtils.noNullString(parsedJson['sector_text']);
-    String sub_sector = StringUtils.noNullString(parsedJson['sub_sector']);
+    String sectorText = StringUtils.noNullString(parsedJson['sector_text']);
+    String subSector = StringUtils.noNullString(parsedJson['sub_sector']);
     String industry = StringUtils.noNullString(parsedJson['industry']);
-    String sub_industry = StringUtils.noNullString(parsedJson['sub_industry']);
+    String subIndustry = StringUtils.noNullString(parsedJson['sub_industry']);
 
     return Sector(
-        code, sector, sector_text, sub_sector, industry, sub_industry);
+        code, sector, sectorText, subSector, industry, subIndustry);
   }
 
   @override
@@ -470,12 +469,12 @@ class Sector extends SerializeableSSI {
       // data
       String code = StringUtils.noNullString(datas.elementAt(0));
       String sector = StringUtils.noNullString(datas.elementAt(1));
-      String sector_text = StringUtils.noNullString(datas.elementAt(2));
-      String sub_sector = StringUtils.noNullString(datas.elementAt(3));
+      String sectorText = StringUtils.noNullString(datas.elementAt(2));
+      String subSector = StringUtils.noNullString(datas.elementAt(3));
       String industry = StringUtils.noNullString(datas.elementAt(4));
-      String sub_industry = StringUtils.noNullString(datas.elementAt(5));
+      String subIndustry = StringUtils.noNullString(datas.elementAt(5));
       return Sector(
-          code, sector, sector_text, sub_sector, industry, sub_industry);
+          code, sector, sectorText, subSector, industry, subIndustry);
     }
 
     return null;
@@ -519,14 +518,14 @@ class Index extends CodeNameSSI {
     String name = StringUtils.noNullString(parsedJson['name']);
     String grouping = StringUtils.noNullString(parsedJson['grouping']);
     String color = StringUtils.noNullString(parsedJson['color']);
-    String color_digit = StringUtils.noNullString(parsedJson['color_digit']);
+    String colorDigit = StringUtils.noNullString(parsedJson['color_digit']);
 
     // logic
     bool isSector = StringUtils.equalsIgnoreCase(grouping, 'JCI SECTOR');
     bool isComposite = StringUtils.equalsIgnoreCase(code, 'COMPOSITE');
 
     return Index(
-        code, name, grouping, color, color_digit, isSector, isComposite);
+        code, name, grouping, color, colorDigit, isSector, isComposite);
   }
 
   factory Index.fromXml(XmlElement element) {
@@ -536,7 +535,7 @@ class Index extends CodeNameSSI {
     String grouping =
         StringUtils.noNullString(element.getAttribute('grouping'));
     String color = StringUtils.noNullString(element.getAttribute('color'));
-    String color_digit =
+    String colorDigit =
         StringUtils.noNullString(element.getAttribute('color_digit'));
 
     // logic
@@ -544,7 +543,7 @@ class Index extends CodeNameSSI {
     bool isComposite = StringUtils.equalsIgnoreCase(code, 'COMPOSITE');
 
     return Index(
-        code, name, grouping, color, color_digit, isSector, isComposite);
+        code, name, grouping, color, colorDigit, isSector, isComposite);
   }
 
   factory Index.fromPlain(String data) {
@@ -556,14 +555,14 @@ class Index extends CodeNameSSI {
       String name = StringUtils.noNullString(datas.elementAt(1));
       String grouping = StringUtils.noNullString(datas.elementAt(2));
       String color = StringUtils.noNullString(datas.elementAt(3));
-      String color_digit = StringUtils.noNullString(datas.elementAt(4));
+      String colorDigit = StringUtils.noNullString(datas.elementAt(4));
 
       // logic
       bool isSector = StringUtils.equalsIgnoreCase(grouping, 'JCI SECTOR');
       bool isComposite = StringUtils.equalsIgnoreCase(code, 'COMPOSITE');
 
       return Index(
-          code, name, grouping, color, color_digit, isSector, isComposite);
+          code, name, grouping, color, colorDigit, isSector, isComposite);
     }
 
     return null;
@@ -2077,7 +2076,7 @@ class OrderQueue {
     int no = Utils.safeInt(parsedJson['#']);
     String time = StringUtils.noNullString(parsedJson['time']);
     String order = StringUtils.noNullString(parsedJson['order']);
-    String linked_time = StringUtils.noNullString(parsedJson['linked_time']);
+    String linkedTime = StringUtils.noNullString(parsedJson['linked_time']);
     String linked = StringUtils.noNullString(parsedJson['linked']);
     String broker = StringUtils.noNullString(parsedJson['broker']);
     int price = Utils.safeInt(parsedJson['price']);
@@ -2092,7 +2091,7 @@ class OrderQueue {
     if (StringUtils.isEmtpy(type)) {
       type = '-';
     }
-    return OrderQueue(no, time, order, linked_time, linked, broker, price,
+    return OrderQueue(no, time, order, linkedTime, linked, broker, price,
         volume, remaining, queue, type);
   }
 
@@ -2403,7 +2402,7 @@ class StockSummary {
 
   factory StockSummary.fromStreaming(List<String> data) {
     String HEADER = data[0];
-    String TYPE_SUMMARY = data[1];
+    String typeSummary = data[1];
     String start = data[2];
     String end = data[3];
     String stockCode = data[4];

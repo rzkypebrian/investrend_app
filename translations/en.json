@@ -356,6 +356,8 @@
 
 
   "card_order_book_title": "Order Book",
+  "card_trade_done_title": "Trade Done",
+  
 
   "card_performance_title": "Performance",
   "card_performance_intraday": "1 Day",
@@ -977,6 +979,8 @@
   "amend_confirmation_fast_mode_lot_price_label": "Lot | Price",
   "amend_confirmation_old_label": "Old",
   "amend_confirmation_new_label": "New",
+  "amend_confirmation_fast_mode_price_after_label": "Price After",
+  "amend_confirmation_fast_mode_price_before_label": "Price Before",
 
   "amend_finished_title": "Amend Sent!",
   "amend_finished_order_buy_sent_label": "Amend Buy Sent!",
@@ -1106,6 +1110,7 @@
   "settings_auto_scroll": "Focus Mode",
 
   "preview_buy": "Preview Buy",
+  "preview_sell": "Preview Sell",
 
   "settings_auto_scroll_information": "When this mode is active, it will automatically focus on the most important part of the current page.",
 

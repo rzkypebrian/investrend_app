@@ -1,24 +1,14 @@
 import 'package:Investrend/component/button_rounded.dart';
-import 'package:Investrend/component/cards/card_earning_pershare.dart';
-import 'package:Investrend/component/cards/card_label_value.dart';
-import 'package:Investrend/component/cards/card_local_foreign.dart';
-import 'package:Investrend/component/cards/card_performance.dart';
-import 'package:Investrend/component/chart_bar_line.dart';
-import 'package:Investrend/component/chart_bar_line_2.dart';
-import 'package:Investrend/component/chart_series_legend.dart';
 import 'package:Investrend/component/charts/chart_bar_triple_line.dart';
 import 'package:Investrend/component/charts/chart_dual_bar_line.dart';
 import 'package:Investrend/component/charts/chart_triple_bar_line.dart';
 import 'package:Investrend/component/charts/year_value.dart';
 import 'package:Investrend/component/component_creator.dart';
-import 'package:Investrend/component/scroll.dart';
 import 'package:Investrend/objects/class_value_notifier.dart';
 import 'package:Investrend/objects/data_object.dart';
-import 'package:Investrend/objects/home_objects.dart';
 import 'package:Investrend/objects/riverpod_change_notifier.dart';
 import 'package:Investrend/objects/iii_objects.dart';
 import 'package:Investrend/screens/base/base_state.dart';
-import 'package:Investrend/utils/connection_services.dart';
 import 'package:Investrend/utils/string_utils.dart';
 import 'package:flutter/material.dart';
 
@@ -97,12 +87,12 @@ class _ScreenStockDetailFinancialsState extends BaseStateNoTabsWithParentTab<Scr
       stock = context.read(primaryStockChangeNotifier).stock;
     }
 
-    String show_as = _rangeNotifier.value == 0 ? 'YEARLY' : 'QUARTERLY';
+    String showAs = _rangeNotifier.value == 0 ? 'YEARLY' : 'QUARTERLY';
     String code = stock != null ? stock.code : "";
     if (!StringUtils.isEmtpy(code)) {
       setNotifierLoading(_incomeStatementNotifier);
       try {
-        final result = await InvestrendTheme.datafeedHttp.fetchFinancialChart(code, 'INCOME_STATEMENT', show_as);
+        final result = await InvestrendTheme.datafeedHttp.fetchFinancialChart(code, 'INCOME_STATEMENT', showAs);
         if (result != null && result is DataChartIncomeStatement) {
           if (mounted) {
             print('Got INCOME_STATEMENT : ' + result.toString());
@@ -120,7 +110,7 @@ class _ScreenStockDetailFinancialsState extends BaseStateNoTabsWithParentTab<Scr
 
       setNotifierLoading(_balanceSheetNotifier);
       try {
-        final result = await InvestrendTheme.datafeedHttp.fetchFinancialChart(code, 'BALANCE_SHEET', show_as);
+        final result = await InvestrendTheme.datafeedHttp.fetchFinancialChart(code, 'BALANCE_SHEET', showAs);
         if (result != null && result is DataChartBalanceSheet) {
           if (mounted) {
             print('Got BALANCE_SHEET : ' + result.toString());
@@ -139,7 +129,7 @@ class _ScreenStockDetailFinancialsState extends BaseStateNoTabsWithParentTab<Scr
 
     setNotifierLoading(_cashFlowNotifier);
     try {
-      final result = await InvestrendTheme.datafeedHttp.fetchFinancialChart(code, 'CASH_FLOW', show_as);
+      final result = await InvestrendTheme.datafeedHttp.fetchFinancialChart(code, 'CASH_FLOW', showAs);
       if (result != null && result is DataChartCashFlow) {
         if (mounted) {
           print('Got CASH_FLOW : ' + result.toString());
@@ -157,7 +147,7 @@ class _ScreenStockDetailFinancialsState extends BaseStateNoTabsWithParentTab<Scr
 
     setNotifierLoading(_earningPerShareNotifier);
     try {
-      final result = await InvestrendTheme.datafeedHttp.fetchFinancialChart(code, 'EARNING_PER_SHARE', show_as);
+      final result = await InvestrendTheme.datafeedHttp.fetchFinancialChart(code, 'EARNING_PER_SHARE', showAs);
       if (result != null && result is DataChartEarningPerShare) {
         if (mounted) {
           print('Got EARNING_PER_SHARE : ' + result.toString());
@@ -261,7 +251,7 @@ class _ScreenStockDetailFinancialsState extends BaseStateNoTabsWithParentTab<Scr
                   'net_income_label'.tr(),
                   'revenue_label'.tr(),
                   'net_profit_margin_label'.tr(),
-                  Theme.of(context).accentColor,
+                  Theme.of(context).colorScheme.secondary,
                   InvestrendTheme.redText,
                   InvestrendTheme.greenText,
                   animate: true,
@@ -339,7 +329,7 @@ class _ScreenStockDetailFinancialsState extends BaseStateNoTabsWithParentTab<Scr
                   InvestrendTheme.greenText,
                   Colors.orange,
                   InvestrendTheme.redText,
-                  Theme.of(context).accentColor,
+                  Theme.of(context).colorScheme.secondary,
                   animate: true,
                 );
               }),
@@ -509,7 +499,7 @@ class _ScreenStockDetailFinancialsState extends BaseStateNoTabsWithParentTab<Scr
                       'dividend_per_share_label'.tr(),
                       'earning_per_share_label'.tr(),
                       'dividend_payout_ratio_label'.tr(),
-                      Theme.of(context).accentColor,
+                      Theme.of(context).colorScheme.secondary,
                       InvestrendTheme.redText,
                       InvestrendTheme.greenText,
                       animate: true,
@@ -561,7 +551,7 @@ class _ScreenStockDetailFinancialsState extends BaseStateNoTabsWithParentTab<Scr
 
     return RefreshIndicator(
       color: InvestrendTheme.of(context).textWhite,
-      backgroundColor: Theme.of(context).accentColor,
+      backgroundColor: Theme.of(context).colorScheme.secondary,
       onRefresh: onRefresh,
       child: ListView(
         controller: pScrollController,

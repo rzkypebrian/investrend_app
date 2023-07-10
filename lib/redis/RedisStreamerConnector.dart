@@ -36,17 +36,17 @@ class RedisStreamerConnector extends RedisConnector {
     // await super.writeToServer("SUBSCRIBE RT");
   }
   void subscribe(String channel) async {
-    await super.writeToServer("SUBSCRIBE $channel");
+    super.writeToServer("SUBSCRIBE $channel");
   }
   void unsubscribe(String channel) async {
-    await super.writeToServer("UNSUBSCRIBE $channel");
+    super.writeToServer("UNSUBSCRIBE $channel");
   }
 
   void psubscribe(String channel) async {
-    await super.writeToServer("PSUBSCRIBE $channel");
+    super.writeToServer("PSUBSCRIBE $channel");
   }
   void punsubscribe(String channel) async {
-    await super.writeToServer("PUNSUBSCRIBE $channel");
+    super.writeToServer("PUNSUBSCRIBE $channel");
   }
 
   @override

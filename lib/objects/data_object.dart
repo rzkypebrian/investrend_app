@@ -121,7 +121,7 @@ class SectorObject {
     } else if (StringUtils.equalsIgnoreCase(code, 'IDXTRANS')) {
       return Color(0xFFE7B030);
     }
-    return Theme.of(context).accentColor;
+    return Theme.of(context).colorScheme.secondary;
   }
 // factory SectorObject.fromXml(XmlElement element) {
 //   return SectorObject(element.getAttribute('last'), element.getAttribute('code'), double.parse(element.getAttribute('change')), double.parse(element.getAttribute('percentChange')));
@@ -327,13 +327,13 @@ class User {
       Token token,
       String message,
       String email,
-      String b_ip,
-      String b_multi,
-      String b_pass,
-      int b_port,
-      String r_ip,
-      String r_multi,
-      int r_port) {
+      String bIp,
+      String bMulti,
+      String bPass,
+      int bPort,
+      String rIp,
+      String rMulti,
+      int rPort) {
     this.username = username;
     this.realname = realname;
     this.feepct = feepct;
@@ -351,13 +351,13 @@ class User {
     this.token = token;
     this.email = email;
 
-    this.b_ip = b_ip;
-    this.b_multi = b_multi;
-    this.b_pass = b_pass;
-    this.b_port = b_port;
-    this.r_ip = r_ip;
-    this.r_multi = r_multi;
-    this.r_port = r_port;
+    this.b_ip = bIp;
+    this.b_multi = bMulti;
+    this.b_pass = bPass;
+    this.b_port = bPort;
+    this.r_ip = rIp;
+    this.r_multi = rMulti;
+    this.r_port = rPort;
 
     DebugWriter.info(
         'update  username : $username  realname : $realname  feepct : $feepct  email : $email  lotsize : $lotsize  message : $message  accounts.size : ' +
@@ -390,15 +390,15 @@ class User {
     print(list.runtimeType); //returns List<dynamic>
     List<Account> accountList = list.map((i) => Account.fromJson(i)).toList();
 
-    String b_multi_text = parsedJson['b_multi'];
-    String b_ip = parsedJson['b_ip'];
+    String bMultiText = parsedJson['b_multi'];
+    String bIp = parsedJson['b_ip'];
     //List<int> b_multi = Utils.parseMultiPort(b_multi_text);
-    String b_pass = parsedJson['b_pass'];
-    int b_port = Utils.safeInt(parsedJson['b_port']);
-    String r_ip = parsedJson['r_ip'];
-    String r_multi_text = parsedJson['r_multi'];
+    String bPass = parsedJson['b_pass'];
+    int bPort = Utils.safeInt(parsedJson['b_port']);
+    String rIp = parsedJson['r_ip'];
+    String rMultiText = parsedJson['r_multi'];
     //List<int> r_multi = Utils.parseMultiPort(r_multi_text);
-    int r_port = Utils.safeInt(parsedJson['r_port']);
+    int rPort = Utils.safeInt(parsedJson['r_port']);
 
     return User(
         parsedJson['username'],
@@ -409,13 +409,13 @@ class User {
         Token.fromJson(parsedJson['token']),
         parsedJson['message'],
         parsedJson['email'],
-        b_ip,
-        b_multi_text,
-        b_pass,
-        b_port,
-        r_ip,
-        r_multi_text,
-        r_port);
+        bIp,
+        bMultiText,
+        bPass,
+        bPort,
+        rIp,
+        rMultiText,
+        rPort);
   }
 }
 
@@ -820,17 +820,17 @@ class ServerAddress {
       this.r_multi_text,
       this.r_port); //ServerAddress(this.access_token, this.refresh_token);
 
-  void update(String b_ip, String b_multi_text, String b_pass, int b_port,
-      String r_ip, String r_multi_text, int r_port) {
-    this.b_ip = b_ip;
-    this.b_multi_text = b_multi_text;
-    this.b_pass = b_pass;
-    this.b_port = b_port;
-    this.r_ip = r_ip;
-    this.r_multi_text = r_multi_text;
-    this.r_port = r_port;
-    this.b_multi = Utils.parseMultiPort(b_multi_text);
-    this.r_multi = Utils.parseMultiPort(r_multi_text);
+  void update(String bIp, String bMultiText, String bPass, int bPort,
+      String rIp, String rMultiText, int rPort) {
+    this.b_ip = bIp;
+    this.b_multi_text = bMultiText;
+    this.b_pass = bPass;
+    this.b_port = bPort;
+    this.r_ip = rIp;
+    this.r_multi_text = rMultiText;
+    this.r_port = rPort;
+    this.b_multi = Utils.parseMultiPort(bMultiText);
+    this.r_multi = Utils.parseMultiPort(rMultiText);
   }
 
   Future<bool> load() async {
@@ -857,29 +857,27 @@ class ServerAddress {
     String updated = DateTime.now().toString();
     bool savedUpdated = await prefs.setString('server_updated', updated);
 
-    bool saved_b_ip = await prefs.setString('b_ip', b_ip);
-    bool saved_b_multi_text =
-        await prefs.setString('b_multi_text', b_multi_text);
-    bool saved_b_pass = await prefs.setString('b_pass', b_pass);
-    bool saved_b_port = await prefs.setInt('b_port', b_port);
+    bool savedBIp = await prefs.setString('b_ip', b_ip);
+    bool savedBMultiText = await prefs.setString('b_multi_text', b_multi_text);
+    bool savedBPass = await prefs.setString('b_pass', b_pass);
+    bool savedBPort = await prefs.setInt('b_port', b_port);
 
-    bool saved_r_ip = await prefs.setString('r_ip', r_ip);
-    bool saved_r_multi_text =
-        await prefs.setString('r_multi_text', r_multi_text);
-    bool saved_r_port = await prefs.setInt('r_port', r_port);
+    bool savedRIp = await prefs.setString('r_ip', r_ip);
+    bool savedRMultiText = await prefs.setString('r_multi_text', r_multi_text);
+    bool savedRPort = await prefs.setInt('r_port', r_port);
 
     bool saved = savedUpdated &&
-        saved_b_ip &&
-        saved_b_multi_text &&
-        saved_b_pass &&
-        saved_b_port &&
-        saved_r_ip &&
-        saved_r_multi_text &&
-        saved_r_port;
+        savedBIp &&
+        savedBMultiText &&
+        savedBPass &&
+        savedBPort &&
+        savedRIp &&
+        savedRMultiText &&
+        savedRPort;
     print('ServerAddress.save $saved updated : $updated' +
-        '   saved_b_ip : $saved_b_ip   saved_b_multi_text : $saved_b_multi_text' +
-        '   saved_b_pass : $saved_b_pass   saved_b_port : $saved_b_port' +
-        '   saved_r_ip : $saved_r_ip   saved_r_multi_text : $saved_r_multi_text   saved_r_port : $saved_r_port');
+        '   saved_b_ip : $savedBIp   saved_b_multi_text : $savedBMultiText' +
+        '   saved_b_pass : $savedBPass   saved_b_port : $savedBPort' +
+        '   saved_r_ip : $savedRIp   saved_r_multi_text : $savedRMultiText   saved_r_port : $savedRPort');
     return saved;
   }
 
@@ -901,9 +899,9 @@ class Token {
 
   Token(this.access_token, this.refresh_token);
 
-  void update(String _access_token, String _refresh_token) {
-    this.access_token = _access_token;
-    this.refresh_token = _refresh_token;
+  void update(String AccessToken, String RefreshToken) {
+    this.access_token = AccessToken;
+    this.refresh_token = RefreshToken;
   }
 
   Future<bool> load() async {
@@ -1003,29 +1001,29 @@ class InboxMessage extends BaseMessage {
   InboxMessage(
       this.ib_id,
       this.username,
-      String created_at,
-      String sent_at,
-      String fcm_title,
-      String fcm_body,
-      String fcm_image_url,
-      String fcm_android_color,
-      String fcm_android_channel_id,
-      String fcm_data_keys,
-      String fcm_data_values,
-      String fcm_message_id,
-      int read_count)
+      String createdAt,
+      String sentAt,
+      String fcmTitle,
+      String fcmBody,
+      String fcmImageUrl,
+      String fcmAndroidColor,
+      String fcmAndroidChannelId,
+      String fcmDataKeys,
+      String fcmDataValues,
+      String fcmMessageId,
+      int readCount)
       : super(
-            created_at,
-            sent_at,
-            fcm_title,
-            fcm_body,
-            fcm_image_url,
-            fcm_android_color,
-            fcm_android_channel_id,
-            fcm_data_keys,
-            fcm_data_values,
-            fcm_message_id,
-            read_count);
+            createdAt,
+            sentAt,
+            fcmTitle,
+            fcmBody,
+            fcmImageUrl,
+            fcmAndroidColor,
+            fcmAndroidChannelId,
+            fcmDataKeys,
+            fcmDataValues,
+            fcmMessageId,
+            readCount);
 
   @override
   String id() {
@@ -1059,38 +1057,36 @@ class InboxMessage extends BaseMessage {
     "fcm_message_id": "fcm_message_id",
     "read_count": "0"
     */
-    String ib_id = StringUtils.noNullString(parsedJson['ib_id']);
-    String created_at = StringUtils.noNullString(parsedJson['created_at']);
-    String sent_at = StringUtils.noNullString(parsedJson['sent_at']);
-    String fcm_title = StringUtils.noNullString(parsedJson['fcm_title']);
-    String fcm_body = StringUtils.noNullString(parsedJson['fcm_body']);
-    String fcm_image_url =
-        StringUtils.noNullString(parsedJson['fcm_image_url']);
-    String fcm_android_color =
+    String ibId = StringUtils.noNullString(parsedJson['ib_id']);
+    String createdAt = StringUtils.noNullString(parsedJson['created_at']);
+    String sentAt = StringUtils.noNullString(parsedJson['sent_at']);
+    String fcmTitle = StringUtils.noNullString(parsedJson['fcm_title']);
+    String fcmBody = StringUtils.noNullString(parsedJson['fcm_body']);
+    String fcmImageUrl = StringUtils.noNullString(parsedJson['fcm_image_url']);
+    String fcmAndroidColor =
         StringUtils.noNullString(parsedJson['fcm_android_color']);
-    String fcm_android_channel_id =
+    String fcmAndroidChannelId =
         StringUtils.noNullString(parsedJson['fcm_android_channel_id']);
-    String fcm_data_keys =
-        StringUtils.noNullString(parsedJson['fcm_data_keys']);
-    String fcm_data_values =
+    String fcmDataKeys = StringUtils.noNullString(parsedJson['fcm_data_keys']);
+    String fcmDataValues =
         StringUtils.noNullString(parsedJson['fcm_data_values']);
-    String fcm_message_id =
+    String fcmMessageId =
         StringUtils.noNullString(parsedJson['fcm_message_id']);
-    int read_count = Utils.safeInt(parsedJson['read_count']);
+    int readCount = Utils.safeInt(parsedJson['read_count']);
     return InboxMessage(
-        ib_id,
+        ibId,
         username,
-        created_at,
-        sent_at,
-        fcm_title,
-        fcm_body,
-        fcm_image_url,
-        fcm_android_color,
-        fcm_android_channel_id,
-        fcm_data_keys,
-        fcm_data_values,
-        fcm_message_id,
-        read_count);
+        createdAt,
+        sentAt,
+        fcmTitle,
+        fcmBody,
+        fcmImageUrl,
+        fcmAndroidColor,
+        fcmAndroidChannelId,
+        fcmDataKeys,
+        fcmDataValues,
+        fcmMessageId,
+        readCount);
   }
 
   @override
@@ -1114,47 +1110,47 @@ class InboxMessage extends BaseMessage {
   factory InboxMessage.fromPlain(String data) {
     List<String> datas = data.split('|');
     if (datas != null && datas.isNotEmpty && datas.length >= 13) {
-      String ib_id = Serializeable.unsafePlain(
+      String ibId = Serializeable.unsafePlain(
           StringUtils.noNullString(datas.elementAt(0)));
       String username = Serializeable.unsafePlain(
           StringUtils.noNullString(datas.elementAt(1)));
-      String created_at = Serializeable.unsafePlain(
+      String createdAt = Serializeable.unsafePlain(
           StringUtils.noNullString(datas.elementAt(2)));
-      String sent_at = Serializeable.unsafePlain(
+      String sentAt = Serializeable.unsafePlain(
           StringUtils.noNullString(datas.elementAt(3)));
-      String fcm_title = Serializeable.unsafePlain(
+      String fcmTitle = Serializeable.unsafePlain(
           StringUtils.noNullString(datas.elementAt(4)));
-      String fcm_body = Serializeable.unsafePlain(
+      String fcmBody = Serializeable.unsafePlain(
           StringUtils.noNullString(datas.elementAt(5)));
-      String fcm_image_url = Serializeable.unsafePlain(
+      String fcmImageUrl = Serializeable.unsafePlain(
           StringUtils.noNullString(datas.elementAt(6)));
-      String fcm_android_color = Serializeable.unsafePlain(
+      String fcmAndroidColor = Serializeable.unsafePlain(
           StringUtils.noNullString(datas.elementAt(7)));
-      String fcm_android_channel_id = Serializeable.unsafePlain(
+      String fcmAndroidChannelId = Serializeable.unsafePlain(
           StringUtils.noNullString(datas.elementAt(8)));
-      String fcm_data_keys = Serializeable.unsafePlain(
+      String fcmDataKeys = Serializeable.unsafePlain(
           StringUtils.noNullString(datas.elementAt(9)));
-      String fcm_data_values = Serializeable.unsafePlain(
+      String fcmDataValues = Serializeable.unsafePlain(
           StringUtils.noNullString(datas.elementAt(10)));
-      String fcm_message_id = Serializeable.unsafePlain(
+      String fcmMessageId = Serializeable.unsafePlain(
           StringUtils.noNullString(datas.elementAt(11)));
-      int read_count = Utils.safeInt(Serializeable.unsafePlain(
+      int readCount = Utils.safeInt(Serializeable.unsafePlain(
           StringUtils.noNullString(datas.elementAt(12))));
 
       return InboxMessage(
-          ib_id,
+          ibId,
           username,
-          created_at,
-          sent_at,
-          fcm_title,
-          fcm_body,
-          fcm_image_url,
-          fcm_android_color,
-          fcm_android_channel_id,
-          fcm_data_keys,
-          fcm_data_values,
-          fcm_message_id,
-          read_count);
+          createdAt,
+          sentAt,
+          fcmTitle,
+          fcmBody,
+          fcmImageUrl,
+          fcmAndroidColor,
+          fcmAndroidChannelId,
+          fcmDataKeys,
+          fcmDataValues,
+          fcmMessageId,
+          readCount);
     }
     return null;
   }
@@ -1172,29 +1168,29 @@ class BroadcastMessage extends BaseMessage {
   BroadcastMessage(
       this.bc_id,
       this.topic,
-      String created_at,
-      String sent_at,
-      String fcm_title,
-      String fcm_body,
-      String fcm_image_url,
-      String fcm_android_color,
-      String fcm_android_channel_id,
-      String fcm_data_keys,
-      String fcm_data_values,
-      String fcm_message_id,
-      int read_count)
+      String createdAt,
+      String sentAt,
+      String fcmTitle,
+      String fcmBody,
+      String fcmImageUrl,
+      String fcmAndroidColor,
+      String fcmAndroidChannelId,
+      String fcmDataKeys,
+      String fcmDataValues,
+      String fcmMessageId,
+      int readCount)
       : super(
-            created_at,
-            sent_at,
-            fcm_title,
-            fcm_body,
-            fcm_image_url,
-            fcm_android_color,
-            fcm_android_channel_id,
-            fcm_data_keys,
-            fcm_data_values,
-            fcm_message_id,
-            read_count);
+            createdAt,
+            sentAt,
+            fcmTitle,
+            fcmBody,
+            fcmImageUrl,
+            fcmAndroidColor,
+            fcmAndroidChannelId,
+            fcmDataKeys,
+            fcmDataValues,
+            fcmMessageId,
+            readCount);
 
   @override
   String id() {
@@ -1219,38 +1215,36 @@ class BroadcastMessage extends BaseMessage {
 
   factory BroadcastMessage.fromJson(
       Map<String, dynamic> parsedJson, String topic) {
-    String bc_id = StringUtils.noNullString(parsedJson['bc_id']);
-    String created_at = StringUtils.noNullString(parsedJson['created_at']);
-    String sent_at = StringUtils.noNullString(parsedJson['sent_at']);
-    String fcm_title = StringUtils.noNullString(parsedJson['fcm_title']);
-    String fcm_body = StringUtils.noNullString(parsedJson['fcm_body']);
-    String fcm_image_url =
-        StringUtils.noNullString(parsedJson['fcm_image_url']);
-    String fcm_android_color =
+    String bcId = StringUtils.noNullString(parsedJson['bc_id']);
+    String createdAt = StringUtils.noNullString(parsedJson['created_at']);
+    String sentAt = StringUtils.noNullString(parsedJson['sent_at']);
+    String fcmTitle = StringUtils.noNullString(parsedJson['fcm_title']);
+    String fcmBody = StringUtils.noNullString(parsedJson['fcm_body']);
+    String fcmImageUrl = StringUtils.noNullString(parsedJson['fcm_image_url']);
+    String fcmAndroidColor =
         StringUtils.noNullString(parsedJson['fcm_android_color']);
-    String fcm_android_channel_id =
+    String fcmAndroidChannelId =
         StringUtils.noNullString(parsedJson['fcm_android_channel_id']);
-    String fcm_data_keys =
-        StringUtils.noNullString(parsedJson['fcm_data_keys']);
-    String fcm_data_values =
+    String fcmDataKeys = StringUtils.noNullString(parsedJson['fcm_data_keys']);
+    String fcmDataValues =
         StringUtils.noNullString(parsedJson['fcm_data_values']);
-    String fcm_message_id =
+    String fcmMessageId =
         StringUtils.noNullString(parsedJson['fcm_message_id']);
-    int read_count = Utils.safeInt(parsedJson['read_count']);
+    int readCount = Utils.safeInt(parsedJson['read_count']);
     return BroadcastMessage(
-        bc_id,
+        bcId,
         topic,
-        created_at,
-        sent_at,
-        fcm_title,
-        fcm_body,
-        fcm_image_url,
-        fcm_android_color,
-        fcm_android_channel_id,
-        fcm_data_keys,
-        fcm_data_values,
-        fcm_message_id,
-        read_count);
+        createdAt,
+        sentAt,
+        fcmTitle,
+        fcmBody,
+        fcmImageUrl,
+        fcmAndroidColor,
+        fcmAndroidChannelId,
+        fcmDataKeys,
+        fcmDataValues,
+        fcmMessageId,
+        readCount);
   }
 
   @override
@@ -1274,47 +1268,47 @@ class BroadcastMessage extends BaseMessage {
   factory BroadcastMessage.fromPlain(String data) {
     List<String> datas = data.split('|');
     if (datas != null && datas.isNotEmpty && datas.length >= 13) {
-      String bc_id = Serializeable.unsafePlain(
+      String bcId = Serializeable.unsafePlain(
           StringUtils.noNullString(datas.elementAt(0)));
       String topic = Serializeable.unsafePlain(
           StringUtils.noNullString(datas.elementAt(1)));
-      String created_at = Serializeable.unsafePlain(
+      String createdAt = Serializeable.unsafePlain(
           StringUtils.noNullString(datas.elementAt(2)));
-      String sent_at = Serializeable.unsafePlain(
+      String sentAt = Serializeable.unsafePlain(
           StringUtils.noNullString(datas.elementAt(3)));
-      String fcm_title = Serializeable.unsafePlain(
+      String fcmTitle = Serializeable.unsafePlain(
           StringUtils.noNullString(datas.elementAt(4)));
-      String fcm_body = Serializeable.unsafePlain(
+      String fcmBody = Serializeable.unsafePlain(
           StringUtils.noNullString(datas.elementAt(5)));
-      String fcm_image_url = Serializeable.unsafePlain(
+      String fcmImageUrl = Serializeable.unsafePlain(
           StringUtils.noNullString(datas.elementAt(6)));
-      String fcm_android_color = Serializeable.unsafePlain(
+      String fcmAndroidColor = Serializeable.unsafePlain(
           StringUtils.noNullString(datas.elementAt(7)));
-      String fcm_android_channel_id = Serializeable.unsafePlain(
+      String fcmAndroidChannelId = Serializeable.unsafePlain(
           StringUtils.noNullString(datas.elementAt(8)));
-      String fcm_data_keys = Serializeable.unsafePlain(
+      String fcmDataKeys = Serializeable.unsafePlain(
           StringUtils.noNullString(datas.elementAt(9)));
-      String fcm_data_values = Serializeable.unsafePlain(
+      String fcmDataValues = Serializeable.unsafePlain(
           StringUtils.noNullString(datas.elementAt(10)));
-      String fcm_message_id = Serializeable.unsafePlain(
+      String fcmMessageId = Serializeable.unsafePlain(
           StringUtils.noNullString(datas.elementAt(11)));
-      int read_count = Utils.safeInt(Serializeable.unsafePlain(
+      int readCount = Utils.safeInt(Serializeable.unsafePlain(
           StringUtils.noNullString(datas.elementAt(12))));
 
       return BroadcastMessage(
-          bc_id,
+          bcId,
           topic,
-          created_at,
-          sent_at,
-          fcm_title,
-          fcm_body,
-          fcm_image_url,
-          fcm_android_color,
-          fcm_android_channel_id,
-          fcm_data_keys,
-          fcm_data_values,
-          fcm_message_id,
-          read_count);
+          createdAt,
+          sentAt,
+          fcmTitle,
+          fcmBody,
+          fcmImageUrl,
+          fcmAndroidColor,
+          fcmAndroidChannelId,
+          fcmDataKeys,
+          fcmDataValues,
+          fcmMessageId,
+          readCount);
     }
     return null;
   }
@@ -1934,30 +1928,29 @@ class OrderStatus {
   }
 */
 
-  bool isFilterHistoricalValid(int index_transaction, int index_period,
+  bool isFilterHistoricalValid(int indexTransaction, int indexPeriod,
       {int start = 0, int end = 0}) {
     //enum FilterTransaction { All, Buy, Sell}
     //enum FilterStatus { All, Open, Match, Partial, Withdraw, Reject, New }
 
-    if (index_transaction == FilterTransaction.All.index &&
-        index_period ==
-            FilterPeriod.ThisWeek.index /*FilterPeriod.All.index*/) {
+    if (indexTransaction == FilterTransaction.All.index &&
+        indexPeriod == FilterPeriod.ThisWeek.index /*FilterPeriod.All.index*/) {
       return true;
     }
 
-    if (index_transaction == FilterTransaction.Buy.index &&
+    if (indexTransaction == FilterTransaction.Buy.index &&
         !StringUtils.equalsIgnoreCase(this.bs, 'B')) {
       return false;
     }
-    if (index_transaction == FilterTransaction.Sell.index &&
+    if (indexTransaction == FilterTransaction.Sell.index &&
         !StringUtils.equalsIgnoreCase(this.bs, 'S')) {
       return false;
     }
-    if (index_period ==
+    if (indexPeriod ==
         FilterPeriod.ThisWeek.index /* FilterPeriod.All.index */) {
       return true;
     }
-    if (index_period == FilterPeriod.Today.index) {
+    if (indexPeriod == FilterPeriod.Today.index) {
       return true;
     }
     if (start == 0 || end == 0) {
@@ -1975,32 +1968,32 @@ class OrderStatus {
     //return true; // sementara dibuka semua, karena belum tau filter period nya
   }
 
-  bool isFilterValid(int index_transaction, int index_status) {
+  bool isFilterValid(int indexTransaction, int indexStatus) {
     //enum FilterTransaction { All, Buy, Sell}
     //enum FilterStatus { All, Open, Match, Partial, Withdraw, Reject, New }
 
-    if (index_transaction == FilterTransaction.All.index &&
-        index_status == FilterStatus.All.index) {
+    if (indexTransaction == FilterTransaction.All.index &&
+        indexStatus == FilterStatus.All.index) {
       return true;
     }
 
-    if (index_transaction == FilterTransaction.Buy.index &&
+    if (indexTransaction == FilterTransaction.Buy.index &&
         !StringUtils.equalsIgnoreCase(this.bs, 'B')) {
       return false;
     }
-    if (index_transaction == FilterTransaction.Sell.index &&
+    if (indexTransaction == FilterTransaction.Sell.index &&
         !StringUtils.equalsIgnoreCase(this.bs, 'S')) {
       return false;
     }
-    if (index_status == FilterStatus.All.index) {
+    if (indexStatus == FilterStatus.All.index) {
       return true;
     }
-    if (index_status == FilterStatus.Open.index &&
+    if (indexStatus == FilterStatus.Open.index &&
         (StringUtils.equalsIgnoreCase(this.orderStatus, 'Open') ||
             StringUtils.equalsIgnoreCase(this.orderStatus, 'Partial'))) {
       return true;
     }
-    if (index_status == FilterStatus.Match.index &&
+    if (indexStatus == FilterStatus.Match.index &&
         StringUtils.equalsIgnoreCase(this.orderStatus, 'Match')) {
       return true;
     }
@@ -2008,17 +2001,17 @@ class OrderStatus {
     //     (StringUtils.equalsIgnoreCase(this.orderStatus, 'Partial') || StringUtils.equalsIgnoreCase(this.orderStatus, 'Withdraw-P'))) {
     //   return true;
     // }
-    if (index_status == FilterStatus.Withdraw.index &&
+    if (indexStatus == FilterStatus.Withdraw.index &&
         (StringUtils.equalsIgnoreCase(this.orderStatus, 'Withdraw') ||
             StringUtils.equalsIgnoreCase(this.orderStatus, 'Cancel') ||
             StringUtils.equalsIgnoreCase(this.orderStatus, 'Withdraw-P'))) {
       return true;
     }
-    if (index_status == FilterStatus.Reject.index &&
+    if (indexStatus == FilterStatus.Reject.index &&
         StringUtils.equalsIgnoreCase(this.orderStatus, 'Reject')) {
       return true;
     }
-    if (index_status == FilterStatus.New.index &&
+    if (indexStatus == FilterStatus.New.index &&
         StringUtils.equalsIgnoreCase(this.orderStatus, 'New')) {
       return true;
     }
@@ -2875,68 +2868,67 @@ class Briefing {
   factory Briefing.fromJson(Map<String, dynamic> parsedJson) {
     int id = Utils.safeInt(parsedJson['id']);
     String type = StringUtils.noNullString(parsedJson['type']);
-    String display_title_id =
+    String displayTitleId =
         StringUtils.noNullString(parsedJson['display_title_id']);
-    String display_title_en =
+    String displayTitleEn =
         StringUtils.noNullString(parsedJson['display_title_en']);
-    String display_greet_id =
+    String displayGreetId =
         StringUtils.noNullString(parsedJson['display_greet_id']);
-    String display_greet_en =
+    String displayGreetEn =
         StringUtils.noNullString(parsedJson['display_greet_en']);
-    String display_body_id =
+    String displayBodyId =
         StringUtils.noNullString(parsedJson['display_body_id']);
-    String display_body_en =
+    String displayBodyEn =
         StringUtils.noNullString(parsedJson['display_body_en']);
-    String valid_from = StringUtils.noNullString(parsedJson['valid_from']);
-    String valid_to = StringUtils.noNullString(parsedJson['valid_to']);
+    String validFrom = StringUtils.noNullString(parsedJson['valid_from']);
+    String validTo = StringUtils.noNullString(parsedJson['valid_to']);
     String action = StringUtils.noNullString(parsedJson['action']);
 
     return Briefing(
         id,
         type,
-        display_title_id,
-        display_title_en,
-        display_greet_id,
-        display_greet_en,
-        display_body_id,
-        display_body_en,
-        valid_from,
-        valid_to,
+        displayTitleId,
+        displayTitleEn,
+        displayGreetId,
+        displayGreetEn,
+        displayBodyId,
+        displayBodyEn,
+        validFrom,
+        validTo,
         action);
   }
 
   factory Briefing.fromXml(XmlElement element) {
     int id = Utils.safeInt(element.getAttribute('id'));
     String type = StringUtils.noNullString(element.getAttribute('type'));
-    String display_title_id =
+    String displayTitleId =
         StringUtils.noNullString(element.getAttribute('display_title_id'));
-    String display_title_en =
+    String displayTitleEn =
         StringUtils.noNullString(element.getAttribute('display_title_en'));
-    String display_greet_id =
+    String displayGreetId =
         StringUtils.noNullString(element.getAttribute('display_greet_id'));
-    String display_greet_en =
+    String displayGreetEn =
         StringUtils.noNullString(element.getAttribute('display_greet_en'));
-    String display_body_id =
+    String displayBodyId =
         StringUtils.noNullString(element.getAttribute('display_body_id'));
-    String display_body_en =
+    String displayBodyEn =
         StringUtils.noNullString(element.getAttribute('display_body_en'));
-    String valid_from =
+    String validFrom =
         StringUtils.noNullString(element.getAttribute('valid_from'));
-    String valid_to =
-        StringUtils.noNullString(element.getAttribute('valid_to'));
+    String validTo = StringUtils.noNullString(element.getAttribute('valid_to'));
     String action = StringUtils.noNullString(element.getAttribute('action'));
 
     return Briefing(
         id,
         type,
-        display_title_id,
-        display_title_en,
-        display_greet_id,
-        display_greet_en,
-        display_body_id,
-        display_body_en,
-        valid_from,
-        valid_to,
+        displayTitleId,
+        displayTitleEn,
+        displayGreetId,
+        displayGreetEn,
+        displayBodyId,
+        displayBodyEn,
+        validFrom,
+        validTo,
         action);
   }
 
@@ -3543,37 +3535,36 @@ class ResearchRank {
   factory ResearchRank.fromJson(Map<String, dynamic> parsedJson) {
     String code = StringUtils.noNullString(parsedJson['code']);
     double value = Utils.safeDouble(parsedJson['value']);
-    String subtitle_id = StringUtils.noNullString(parsedJson['subtitle_id']);
-    String subtitle_en = StringUtils.noNullString(parsedJson['subtitle_en']);
-    String description_id =
+    String subtitleId = StringUtils.noNullString(parsedJson['subtitle_id']);
+    String subtitleEn = StringUtils.noNullString(parsedJson['subtitle_en']);
+    String descriptionId =
         StringUtils.noNullString(parsedJson['description_id']);
-    String description_en =
+    String descriptionEn =
         StringUtils.noNullString(parsedJson['description_en']);
-    String valid_from = StringUtils.noNullString(parsedJson['valid_from']);
-    String valid_to = StringUtils.noNullString(parsedJson['valid_to']);
+    String validFrom = StringUtils.noNullString(parsedJson['valid_from']);
+    String validTo = StringUtils.noNullString(parsedJson['valid_to']);
 
-    return ResearchRank(code, value, subtitle_id, subtitle_en, description_id,
-        description_en, valid_from, valid_to);
+    return ResearchRank(code, value, subtitleId, subtitleEn, descriptionId,
+        descriptionEn, validFrom, validTo);
   }
 
   factory ResearchRank.fromXml(XmlElement element) {
     String code = StringUtils.noNullString(element.getAttribute('code'));
     double value = Utils.safeDouble(element.getAttribute('value'));
-    String subtitle_id =
+    String subtitleId =
         StringUtils.noNullString(element.getAttribute('subtitle_id'));
-    String subtitle_en =
+    String subtitleEn =
         StringUtils.noNullString(element.getAttribute('subtitle_en'));
-    String description_id =
+    String descriptionId =
         StringUtils.noNullString(element.getAttribute('description_id'));
-    String description_en =
+    String descriptionEn =
         StringUtils.noNullString(element.getAttribute('description_en'));
-    String valid_from =
+    String validFrom =
         StringUtils.noNullString(element.getAttribute('valid_from'));
-    String valid_to =
-        StringUtils.noNullString(element.getAttribute('valid_to'));
+    String validTo = StringUtils.noNullString(element.getAttribute('valid_to'));
 
-    return ResearchRank(code, value, subtitle_id, subtitle_en, description_id,
-        description_en, valid_from, valid_to);
+    return ResearchRank(code, value, subtitleId, subtitleEn, descriptionId,
+        descriptionEn, validFrom, validTo);
   }
 
   void copyValueFrom(ResearchRank newValue) {
@@ -4013,46 +4004,46 @@ class CorporateActionEvent {
     String code = '';
     String name = '';
     String type = '';
-    String today_date = '';
-    String cum_date = '';
-    String distribution_date = '';
-    double proceed_ratio = 0;
-    double exercise_ratio = 0;
-    String recording_date = '';
+    String todayDate = '';
+    String cumDate = '';
+    String distributionDate = '';
+    double proceedRatio = 0;
+    double exerciseRatio = 0;
+    String recordingDate = '';
     double amount = 0;
     String description = '';
-    String hmetd_trx_date1 = '';
-    String hmetd_trx_date2 = '';
-    String exercise_instrument = '';
+    String hmetdTrxDate1 = '';
+    String hmetdTrxDate2 = '';
+    String exerciseInstrument = '';
 
-    String pay_date = '';
-    String split_date = '';
-    String ex_date = '';
-    String maturity_date = '';
+    String payDate = '';
+    String splitDate = '';
+    String exDate = '';
+    String maturityDate = '';
 
-    Color background_color = Colors.black;
-    int priority_color = 0;
+    Color backgroundColor = Colors.black;
+    int priorityColor = 0;
     return CorporateActionEvent(
         code,
         name,
         type,
-        today_date,
-        cum_date,
-        distribution_date,
-        proceed_ratio,
-        exercise_ratio,
-        recording_date,
+        todayDate,
+        cumDate,
+        distributionDate,
+        proceedRatio,
+        exerciseRatio,
+        recordingDate,
         amount,
         description,
-        hmetd_trx_date1,
-        hmetd_trx_date2,
-        exercise_instrument,
-        background_color,
-        priority_color,
-        pay_date,
-        split_date,
-        ex_date,
-        maturity_date);
+        hmetdTrxDate1,
+        hmetdTrxDate2,
+        exerciseInstrument,
+        backgroundColor,
+        priorityColor,
+        payDate,
+        splitDate,
+        exDate,
+        maturityDate);
   }
 
   CorporateActionEvent(
@@ -4102,34 +4093,33 @@ class CorporateActionEvent {
     String type = StringUtils.noNullString(parsedJson['type']);
     String today_date = StringUtils.noNullString(parsedJson['today_date']);
     String cum_date = StringUtils.noNullString(parsedJson['cum_date']);
-    String distribution_date =
+    String distributionDate =
         StringUtils.noNullString(parsedJson['distribution_date']);
-    double proceed_ratio = Utils.safeDouble(parsedJson['proceed_ratio']);
-    double exercise_ratio = Utils.safeDouble(parsedJson['exercise_ratio']);
-    String recording_date =
+    double proceedRatio = Utils.safeDouble(parsedJson['proceed_ratio']);
+    double exerciseRatio = Utils.safeDouble(parsedJson['exercise_ratio']);
+    String recordingDate =
         StringUtils.noNullString(parsedJson['recording_date']);
     double amount = Utils.safeDouble(parsedJson['amount']);
     String description = StringUtils.noNullString(parsedJson['description']);
-    String hmetd_trx_date1 =
+    String hmetdTrxDate1 =
         StringUtils.noNullString(parsedJson['hmetd_trx_date1']);
-    String hmetd_trx_date2 =
+    String hmetdTrxDate2 =
         StringUtils.noNullString(parsedJson['hmetd_trx_date2']);
-    String exercise_instrument =
+    String exerciseInstrument =
         StringUtils.noNullString(parsedJson['exercise_instrument']);
 
-    String pay_date = StringUtils.noNullString(parsedJson['pay_date']);
-    String split_date = StringUtils.noNullString(parsedJson['hmetd_trx_date1']);
-    String ex_date = StringUtils.noNullString(parsedJson['ex_date']);
-    String maturity_date =
-        StringUtils.noNullString(parsedJson['maturity_date']);
+    String payDate = StringUtils.noNullString(parsedJson['pay_date']);
+    String splitDate = StringUtils.noNullString(parsedJson['hmetd_trx_date1']);
+    String exDate = StringUtils.noNullString(parsedJson['ex_date']);
+    String maturityDate = StringUtils.noNullString(parsedJson['maturity_date']);
 
-    Color background_color = Colors.black;
-    int priority_color = 0;
+    Color backgroundColor = Colors.black;
+    int priorityColor = 0;
     if (StringUtils.equalsIgnoreCase(today_date, cum_date)) {
       //background_color = Color.RED;
       //background_color_id = R.drawable.button_ca_red;
-      background_color = InvestrendTheme.redText;
-      priority_color = 2;
+      backgroundColor = InvestrendTheme.redText;
+      priorityColor = 2;
     } else {
       int todayDate = Utils.safeInt(today_date.replaceAll("-", ""));
       int cumDate = Utils.safeInt(cum_date.replaceAll("-", ""));
@@ -4137,13 +4127,13 @@ class CorporateActionEvent {
       if (todayDate < cumDate) {
         //background_color = context.getResources().getColor(R.color.Orange);
         //background_color_id = R.drawable.button_ca_orange;
-        background_color = Colors.orange;
-        priority_color = 1;
+        backgroundColor = Colors.orange;
+        priorityColor = 1;
       } else if (todayDate > cumDate) {
         //background_color = Color.GRAY;
         //background_color_id = R.drawable.button_ca_gray;
-        background_color = Colors.grey;
-        priority_color = 0;
+        backgroundColor = Colors.grey;
+        priorityColor = 0;
       }
     }
 
@@ -4153,21 +4143,21 @@ class CorporateActionEvent {
         type,
         today_date,
         cum_date,
-        distribution_date,
-        proceed_ratio,
-        exercise_ratio,
-        recording_date,
+        distributionDate,
+        proceedRatio,
+        exerciseRatio,
+        recordingDate,
         amount,
         description,
-        hmetd_trx_date1,
-        hmetd_trx_date2,
-        exercise_instrument,
-        background_color,
-        priority_color,
-        pay_date,
-        split_date,
-        ex_date,
-        maturity_date);
+        hmetdTrxDate1,
+        hmetdTrxDate2,
+        exerciseInstrument,
+        backgroundColor,
+        priorityColor,
+        payDate,
+        splitDate,
+        exDate,
+        maturityDate);
   }
 
   bool isEmpty() {
@@ -4370,7 +4360,7 @@ class Remark2Stock {
     }
 
     String code = StringUtils.noNullString(parsedJson['code']);
-    String special_notation =
+    String specialNotation =
         StringUtils.noNullString(parsedJson['special_notation']);
     String key_19 = StringUtils.noNullString(parsedJson['key_19']);
     String key_20 = StringUtils.noNullString(parsedJson['key_20']);
@@ -4386,7 +4376,7 @@ class Remark2Stock {
     String key_29 = StringUtils.noNullString(parsedJson['key_29']);
     String key_30 = StringUtils.noNullString(parsedJson['key_30']);
 
-    return Remark2Stock(code, special_notation, key_19, key_20, key_21, key_22,
+    return Remark2Stock(code, specialNotation, key_19, key_20, key_21, key_22,
         key_23, key_24, key_25, key_26, key_27, key_28, key_29, key_30);
   }
 
@@ -4502,17 +4492,17 @@ class HelpData {
     return saved;
   }
 
-  void updateMenus(String new_md5_help_menus, List<HelpMenu> new_menus) {
+  void updateMenus(String newMd5HelpMenus, List<HelpMenu> newMenus) {
     this.menus.clear();
-    this.menus.addAll(new_menus);
-    this.md5_help_menus = new_md5_help_menus;
+    this.menus.addAll(newMenus);
+    this.md5_help_menus = newMd5HelpMenus;
   }
 
   void updateContents(
-      String new_md5_help_contents, List<HelpContent> new_contents) {
+      String newMd5HelpContents, List<HelpContent> newContents) {
     this.contents.clear();
-    this.contents.addAll(new_contents);
-    this.md5_help_contents = new_md5_help_contents;
+    this.contents.addAll(newContents);
+    this.md5_help_contents = newMd5HelpContents;
   }
 
   int countContents() {
@@ -4662,10 +4652,10 @@ class HelpMenu extends Serializeable {
       return null;
     }
     String id = StringUtils.noNullString(parsedJson['id']);
-    String menu_id = StringUtils.noNullString(parsedJson['menu_id']);
-    String menu_en = StringUtils.noNullString(parsedJson['menu_en']);
-    String updated_at = StringUtils.noNullString(parsedJson['updated_at']);
-    return HelpMenu(id, menu_id, menu_en, updated_at);
+    String menuId = StringUtils.noNullString(parsedJson['menu_id']);
+    String menuEn = StringUtils.noNullString(parsedJson['menu_en']);
+    String updatedAt = StringUtils.noNullString(parsedJson['updated_at']);
+    return HelpMenu(id, menuId, menuEn, updatedAt);
   }
 
   bool isEmpty() {
@@ -4701,14 +4691,14 @@ class HelpMenu extends Serializeable {
     if (datas != null && datas.isNotEmpty && datas.length >= 4) {
       String id = Serializeable.unsafePlain(
           StringUtils.noNullString(datas.elementAt(0)));
-      String menu_id = Serializeable.unsafePlain(
+      String menuId = Serializeable.unsafePlain(
           StringUtils.noNullString(datas.elementAt(1)));
-      String menu_en = Serializeable.unsafePlain(
+      String menuEn = Serializeable.unsafePlain(
           StringUtils.noNullString(datas.elementAt(2)));
-      String updated_at = Serializeable.unsafePlain(
+      String updatedAt = Serializeable.unsafePlain(
           StringUtils.noNullString(datas.elementAt(3)));
 
-      return HelpMenu(id, menu_id, menu_en, updated_at);
+      return HelpMenu(id, menuId, menuEn, updatedAt);
     }
     return null;
   }
@@ -4777,15 +4767,15 @@ class HelpContent extends Serializeable {
     if (parsedJson == null) {
       return null;
     }
-    String id_menu = StringUtils.noNullString(parsedJson['id_menu']);
+    String idMenu = StringUtils.noNullString(parsedJson['id_menu']);
     String id = StringUtils.noNullString(parsedJson['id']);
-    String subtile_id = StringUtils.noNullString(parsedJson['subtile_id']);
-    String subtile_en = StringUtils.noNullString(parsedJson['subtile_en']);
-    String content_id = StringUtils.noNullString(parsedJson['content_id']);
-    String content_en = StringUtils.noNullString(parsedJson['content_en']);
-    String updated_at = StringUtils.noNullString(parsedJson['updated_at']);
-    return HelpContent(id_menu, id, subtile_id, subtile_en, content_id,
-        content_en, updated_at);
+    String subtileId = StringUtils.noNullString(parsedJson['subtile_id']);
+    String subtileEn = StringUtils.noNullString(parsedJson['subtile_en']);
+    String contentId = StringUtils.noNullString(parsedJson['content_id']);
+    String contentEn = StringUtils.noNullString(parsedJson['content_en']);
+    String updatedAt = StringUtils.noNullString(parsedJson['updated_at']);
+    return HelpContent(
+        idMenu, id, subtileId, subtileEn, contentId, contentEn, updatedAt);
   }
 
   bool isEmpty() {
@@ -4828,23 +4818,23 @@ class HelpContent extends Serializeable {
   factory HelpContent.fromPlain(String data) {
     List<String> datas = data.split('|');
     if (datas != null && datas.isNotEmpty && datas.length >= 4) {
-      String id_menu = Serializeable.unsafePlain(
+      String idMenu = Serializeable.unsafePlain(
           StringUtils.noNullString(datas.elementAt(0)));
       String id = Serializeable.unsafePlain(
           StringUtils.noNullString(datas.elementAt(1)));
-      String subtile_id = Serializeable.unsafePlain(
+      String subtileId = Serializeable.unsafePlain(
           StringUtils.noNullString(datas.elementAt(2)));
-      String subtile_en = Serializeable.unsafePlain(
+      String subtileEn = Serializeable.unsafePlain(
           StringUtils.noNullString(datas.elementAt(3)));
-      String content_id = Serializeable.unsafePlain(
+      String contentId = Serializeable.unsafePlain(
           StringUtils.noNullString(datas.elementAt(4)));
-      String content_en = Serializeable.unsafePlain(
+      String contentEn = Serializeable.unsafePlain(
           StringUtils.noNullString(datas.elementAt(5)));
-      String updated_at = Serializeable.unsafePlain(
+      String updatedAt = Serializeable.unsafePlain(
           StringUtils.noNullString(datas.elementAt(6)));
 
-      return HelpContent(id_menu, id, subtile_id, subtile_en, content_id,
-          content_en, updated_at);
+      return HelpContent(
+          idMenu, id, subtileId, subtileEn, contentId, contentEn, updatedAt);
     }
     return null;
   }
@@ -5232,28 +5222,28 @@ class ContentEIPO {
     String code = StringUtils.noNullString(parsedJson['code']);
     String name = StringUtils.noNullString(parsedJson['name']);
     String sector = StringUtils.noNullString(parsedJson['sector']);
-    String sub_sector = StringUtils.noNullString(parsedJson['sub_sector']);
-    String offering_date_start =
+    String subSector = StringUtils.noNullString(parsedJson['sub_sector']);
+    String offeringDateStart =
         StringUtils.noNullString(parsedJson['offering_date_start']);
-    String offering_date_end =
+    String offeringDateEnd =
         StringUtils.noNullString(parsedJson['offering_date_end']);
-    int offering_price = Utils.safeInt(parsedJson['offering_price']);
-    int offering_lot = Utils.safeInt(parsedJson['offering_lot']);
-    double offering_lot_percentage =
+    int offeringPrice = Utils.safeInt(parsedJson['offering_price']);
+    int offeringLot = Utils.safeInt(parsedJson['offering_lot']);
+    double offeringLotPercentage =
         Utils.safeDouble(parsedJson['offering_lot_percentage']);
-    String book_building_date_start =
+    String bookBuildingDateStart =
         StringUtils.noNullString(parsedJson['book_building_date_start']);
-    String book_building_date_end =
+    String bookBuildingDateEnd =
         StringUtils.noNullString(parsedJson['book_building_date_end']);
-    int book_building_price_start =
+    int bookBuildingPriceStart =
         Utils.safeInt(parsedJson['book_building_price_start']);
-    int book_building_price_end =
+    int bookBuildingPriceEnd =
         Utils.safeInt(parsedJson['book_building_price_end']);
-    String allotment_date =
+    String allotmentDate =
         StringUtils.noNullString(parsedJson['allotment_date']);
-    String distribution_date =
+    String distributionDate =
         StringUtils.noNullString(parsedJson['distribution_date']);
-    String listing_date = StringUtils.noNullString(parsedJson['listing_date']);
+    String listingDate = StringUtils.noNullString(parsedJson['listing_date']);
     // String prospectus_file_url_1 = StringUtils.noNullString(parsedJson['prospectus_file_url_1']);
     // String prospectus_file_url_2 = StringUtils.noNullString(parsedJson['prospectus_file_url_2']);
     // String prospectus_file_url_3 = StringUtils.noNullString(parsedJson['prospectus_file_url_3']);
@@ -5264,11 +5254,11 @@ class ContentEIPO {
     // String additional_file_url_3 = StringUtils.noNullString(parsedJson['additional_file_url_3']);
     // String additional_file_url_4 = StringUtils.noNullString(parsedJson['additional_file_url_4']);
     // String additional_file_url_5 = StringUtils.noNullString(parsedJson['additional_file_url_5']);
-    String company_description =
+    String companyDescription =
         StringUtils.noNullString(parsedJson['company_description']);
-    String company_address =
+    String companyAddress =
         StringUtils.noNullString(parsedJson['company_address']);
-    String company_website =
+    String companyWebsite =
         StringUtils.noNullString(parsedJson['company_website']);
     // String participant_admin_1 = StringUtils.noNullString(parsedJson['participant_admin_1']);
     // String participant_admin_2 = StringUtils.noNullString(parsedJson['participant_admin_2']);
@@ -5280,13 +5270,13 @@ class ContentEIPO {
     // String underwriter_3 = StringUtils.noNullString(parsedJson['underwriter_3']);
     // String underwriter_4 = StringUtils.noNullString(parsedJson['underwriter_4']);
     // String underwriter_5 = StringUtils.noNullString(parsedJson['underwriter_5']);
-    String action_register_eipo =
+    String actionRegisterEipo =
         StringUtils.noNullString(parsedJson['action_register_eipo']);
-    String action_enter_eipo =
+    String actionEnterEipo =
         StringUtils.noNullString(parsedJson['action_enter_eipo']);
 
-    String company_icon = StringUtils.noNullString(parsedJson['company_icon']);
-    String company_icon_large =
+    String companyIcon = StringUtils.noNullString(parsedJson['company_icon']);
+    String companyIconLarge =
         StringUtils.noNullString(parsedJson['company_icon_large']);
 
     List<String> listProspectus = List.empty(growable: true);
@@ -5295,23 +5285,23 @@ class ContentEIPO {
     List<String> listUnderwriter = List.empty(growable: true);
 
     for (int i = 1; i < 6; i++) {
-      String prospectus_file_url =
+      String prospectusFileUrl =
           StringUtils.noNullString(parsedJson['prospectus_file_url_$i']);
-      String additional_file_url =
+      String additionalFileUrl =
           StringUtils.noNullString(parsedJson['additional_file_url_$i']);
-      String participant_admin =
+      String participantAdmin =
           StringUtils.noNullString(parsedJson['participant_admin_$i']);
       String underwriter =
           StringUtils.noNullString(parsedJson['underwriter_$i']);
 
-      if (!StringUtils.isEmtpy(prospectus_file_url)) {
-        listProspectus.add(prospectus_file_url);
+      if (!StringUtils.isEmtpy(prospectusFileUrl)) {
+        listProspectus.add(prospectusFileUrl);
       }
-      if (!StringUtils.isEmtpy(additional_file_url)) {
-        listAdditional.add(additional_file_url);
+      if (!StringUtils.isEmtpy(additionalFileUrl)) {
+        listAdditional.add(additionalFileUrl);
       }
-      if (!StringUtils.isEmtpy(participant_admin)) {
-        listParticipantAdmin.add(participant_admin);
+      if (!StringUtils.isEmtpy(participantAdmin)) {
+        listParticipantAdmin.add(participantAdmin);
       }
       if (!StringUtils.isEmtpy(underwriter)) {
         listUnderwriter.add(underwriter);
@@ -5322,30 +5312,30 @@ class ContentEIPO {
         code,
         name,
         sector,
-        sub_sector,
-        offering_date_start,
-        offering_date_end,
-        offering_price,
-        offering_lot,
-        offering_lot_percentage,
-        book_building_date_start,
-        book_building_date_end,
-        book_building_price_start,
-        book_building_price_end,
-        allotment_date,
-        distribution_date,
-        listing_date,
-        company_description,
-        company_address,
-        company_website,
-        action_register_eipo,
-        action_enter_eipo,
+        subSector,
+        offeringDateStart,
+        offeringDateEnd,
+        offeringPrice,
+        offeringLot,
+        offeringLotPercentage,
+        bookBuildingDateStart,
+        bookBuildingDateEnd,
+        bookBuildingPriceStart,
+        bookBuildingPriceEnd,
+        allotmentDate,
+        distributionDate,
+        listingDate,
+        companyDescription,
+        companyAddress,
+        companyWebsite,
+        actionRegisterEipo,
+        actionEnterEipo,
         listProspectus,
         listAdditional,
         listParticipantAdmin,
         listUnderwriter,
-        company_icon,
-        company_icon_large);
+        companyIcon,
+        companyIconLarge);
   }
 
   bool isEmpty() {
@@ -5528,10 +5518,10 @@ class ListEIPO {
     }
     String code = StringUtils.noNullString(parsedJson['code']);
     String name = StringUtils.noNullString(parsedJson['name']);
-    String offering_date_end =
+    String offeringDateEnd =
         StringUtils.noNullString(parsedJson['offering_date_end']);
-    String company_icon = StringUtils.noNullString(parsedJson['company_icon']);
-    return ListEIPO(code, name, offering_date_end, company_icon);
+    String companyIcon = StringUtils.noNullString(parsedJson['company_icon']);
+    return ListEIPO(code, name, offeringDateEnd, companyIcon);
   }
 
   bool isEmpty() {
@@ -5649,32 +5639,32 @@ class StockThemes {
   factory StockThemes.fromJson(Map<String, dynamic> parsedJson) {
     int id = Utils.safeInt(parsedJson['id']);
     String name = StringUtils.noNullString(parsedJson['name']);
-    String name_id = StringUtils.noNullString(parsedJson['name_id']);
-    String name_en = StringUtils.noNullString(parsedJson['name_en']);
+    String nameId = StringUtils.noNullString(parsedJson['name_id']);
+    String nameEn = StringUtils.noNullString(parsedJson['name_en']);
     String description = StringUtils.noNullString(parsedJson['description']);
-    String description_id =
+    String descriptionId =
         StringUtils.noNullString(parsedJson['description_id']);
-    String description_en =
+    String descriptionEn =
         StringUtils.noNullString(parsedJson['description_en']);
-    String background_image_url =
+    String backgroundImageUrl =
         StringUtils.noNullString(parsedJson['background_image_url']);
-    String background_color_string =
+    String backgroundColorString =
         StringUtils.noNullString(parsedJson['background_color']);
-    String member_stocks_string =
+    String memberStocksString =
         StringUtils.noNullString(parsedJson['member_stocks']);
-    int member_stocks_count = Utils.safeInt(parsedJson['member_stocks_count']);
+    int memberStocksCount = Utils.safeInt(parsedJson['member_stocks_count']);
 
-    Color background_color = MarketColors.toColor(background_color_string);
+    Color backgroundColor = MarketColors.toColor(backgroundColorString);
 
-    List<Stock> member_stocks = List.empty(growable: true);
-    if (!StringUtils.isEmtpy(member_stocks_string)) {
-      List<String> datas = member_stocks_string.split(',');
+    List<Stock> memberStocks = List.empty(growable: true);
+    if (!StringUtils.isEmtpy(memberStocksString)) {
+      List<String> datas = memberStocksString.split(',');
       //int count = datas != null ? datas.length : 0;
       if (datas != null) {
         datas.forEach((code) {
           Stock s = InvestrendTheme.storedData.findStock(code);
           if (s != null) {
-            member_stocks.add(s);
+            memberStocks.add(s);
           }
         });
       }
@@ -5684,48 +5674,48 @@ class StockThemes {
     return StockThemes(
         id,
         /*name,*/
-        name_id,
-        name_en,
+        nameId,
+        nameEn,
         /* description,*/
-        description_id,
-        description_en,
-        background_image_url,
-        background_color,
-        member_stocks_count,
-        member_stocks);
+        descriptionId,
+        descriptionEn,
+        backgroundImageUrl,
+        backgroundColor,
+        memberStocksCount,
+        memberStocks);
   }
 
   factory StockThemes.fromXml(XmlElement element) {
     int id = Utils.safeInt(element.getAttribute('id'));
     String name = StringUtils.noNullString(element.getAttribute('name'));
-    String name_id = StringUtils.noNullString(element.getAttribute('name_id'));
-    String name_en = StringUtils.noNullString(element.getAttribute('name_en'));
+    String nameId = StringUtils.noNullString(element.getAttribute('name_id'));
+    String nameEn = StringUtils.noNullString(element.getAttribute('name_en'));
     String description =
         StringUtils.noNullString(element.getAttribute('description'));
-    String description_id =
+    String descriptionId =
         StringUtils.noNullString(element.getAttribute('description_id'));
-    String description_en =
+    String descriptionEn =
         StringUtils.noNullString(element.getAttribute('description_en'));
-    String background_image_url =
+    String backgroundImageUrl =
         StringUtils.noNullString(element.getAttribute('background_image_url'));
-    String background_color_string =
+    String backgroundColorString =
         StringUtils.noNullString(element.getAttribute('background_color'));
-    String member_stocks_string =
+    String memberStocksString =
         StringUtils.noNullString(element.getAttribute('member_stocks'));
-    int member_stocks_count =
+    int memberStocksCount =
         Utils.safeInt(element.getAttribute('member_stocks_count'));
 
-    Color background_color = MarketColors.toColor(background_color_string);
+    Color backgroundColor = MarketColors.toColor(backgroundColorString);
 
-    List<Stock> member_stocks = List.empty(growable: true);
-    if (!StringUtils.isEmtpy(member_stocks_string)) {
-      List<String> datas = member_stocks_string.split(',');
+    List<Stock> memberStocks = List.empty(growable: true);
+    if (!StringUtils.isEmtpy(memberStocksString)) {
+      List<String> datas = memberStocksString.split(',');
       //int count = datas != null ? datas.length : 0;
       if (datas != null) {
         datas.forEach((code) {
           Stock s = InvestrendTheme.storedData.findStock(code);
           if (s != null) {
-            member_stocks.add(s);
+            memberStocks.add(s);
           }
         });
       }
@@ -5735,15 +5725,15 @@ class StockThemes {
     return StockThemes(
         id,
         /*name, */
-        name_id,
-        name_en,
+        nameId,
+        nameEn,
         /*description,*/
-        description_id,
-        description_en,
-        background_image_url,
-        background_color,
-        member_stocks_count,
-        member_stocks);
+        descriptionId,
+        descriptionEn,
+        backgroundImageUrl,
+        backgroundColor,
+        memberStocksCount,
+        memberStocks);
   }
 
 /*
@@ -5943,18 +5933,17 @@ class BankAccount {
       return null;
     }
 
-    String acc_name = StringUtils.noNullString(parsedJson['acc_name']);
-    String acc_no = StringUtils.noNullString(parsedJson['acc_no']);
+    String accName = StringUtils.noNullString(parsedJson['acc_name']);
+    String accNo = StringUtils.noNullString(parsedJson['acc_no']);
     String bank = StringUtils.noNullString(parsedJson['bank']);
 
-    String acc_name2 = StringUtils.noNullString(parsedJson['acc_name2']);
-    String acc_no2 = StringUtils.noNullString(parsedJson['acc_no2']);
+    String accName2 = StringUtils.noNullString(parsedJson['acc_name2']);
+    String accNo2 = StringUtils.noNullString(parsedJson['acc_no2']);
     String bank2 = StringUtils.noNullString(parsedJson['bank2']);
 
     String message = StringUtils.noNullString(parsedJson['message']);
 
-    return BankAccount(
-        acc_name, acc_name2, acc_no, acc_no2, bank, bank2, message);
+    return BankAccount(accName, accName2, accNo, accNo2, bank, bank2, message);
   }
 
   bool isEmpty() {
@@ -5976,11 +5965,11 @@ class FundamentalCache {
     }
 
     String ticker = StringUtils.noNullString(parsedJson['code']);
-    double last_eps = Utils.safeDouble(parsedJson['last_eps']);
-    double last_bvp = Utils.safeDouble(parsedJson['last_bvp']);
-    double last_roe = Utils.safeDouble(parsedJson['last_roe']);
+    double lastEps = Utils.safeDouble(parsedJson['last_eps']);
+    double lastBvp = Utils.safeDouble(parsedJson['last_bvp']);
+    double lastRoe = Utils.safeDouble(parsedJson['last_roe']);
 
-    return FundamentalCache(ticker, last_eps, last_bvp, last_roe);
+    return FundamentalCache(ticker, lastEps, lastBvp, lastRoe);
   }
 
   @override
@@ -6022,12 +6011,12 @@ class BankRDN {
       return null;
     }
 
-    String acc_name = StringUtils.noNullString(parsedJson['acc_name']);
-    String acc_no = StringUtils.noNullString(parsedJson['acc_no']);
+    String accName = StringUtils.noNullString(parsedJson['acc_name']);
+    String accNo = StringUtils.noNullString(parsedJson['acc_no']);
     String bank = StringUtils.noNullString(parsedJson['bank']);
     String message = StringUtils.noNullString(parsedJson['message']);
 
-    return BankRDN(acc_name, acc_no, bank, message);
+    return BankRDN(accName, accNo, bank, message);
   }
 
   bool isEmpty() {
@@ -6063,11 +6052,11 @@ class TopUpBank {
 
     String code = StringUtils.noNullString(parsedJson['code']);
     String name = StringUtils.noNullString(parsedJson['name']);
-    String icon_url = StringUtils.noNullString(parsedJson['icon_url']);
-    String guide_id = StringUtils.noNullString(parsedJson['guide_id']);
-    String guide_en = StringUtils.noNullString(parsedJson['guide_en']);
+    String iconUrl = StringUtils.noNullString(parsedJson['icon_url']);
+    String guideId = StringUtils.noNullString(parsedJson['guide_id']);
+    String guideEn = StringUtils.noNullString(parsedJson['guide_en']);
 
-    return TopUpBank(code, name, icon_url, guide_id, guide_en);
+    return TopUpBank(code, name, iconUrl, guideId, guideEn);
   }
 }
 
@@ -6573,17 +6562,16 @@ class Version {
       return null;
     }
     String platform = StringUtils.noNullString(parsedJson['platform']);
-    String version_code = StringUtils.noNullString(parsedJson['version_code']);
-    int version_number = Utils.safeInt(parsedJson['version_number']);
-    int minimum_version_number =
+    String versionCode = StringUtils.noNullString(parsedJson['version_code']);
+    int versionNumber = Utils.safeInt(parsedJson['version_number']);
+    int minimumVersionNumber =
         Utils.safeInt(parsedJson['minimum_version_number']);
-    String changes_notes =
-        StringUtils.noNullString(parsedJson['changes_notes']);
-    String minimum_version_code =
+    String changesNotes = StringUtils.noNullString(parsedJson['changes_notes']);
+    String minimumVersionCode =
         StringUtils.noNullString(parsedJson['minimum_version_code']);
 
-    return Version(platform, version_code, version_number,
-        minimum_version_number, changes_notes, minimum_version_code);
+    return Version(platform, versionCode, versionNumber, minimumVersionNumber,
+        changesNotes, minimumVersionCode);
   }
 }
 
@@ -6662,12 +6650,12 @@ class BrokerNetBuySell {
   factory BrokerNetBuySell.fromJson(Map<String, dynamic> parsedJson) {
     int no = parsedJson['#'];
     String BrokerCode = StringUtils.noNullString(parsedJson['BrokerCode']);
-    String last_date = StringUtils.noNullString(parsedJson['last_date']);
+    String lastDate = StringUtils.noNullString(parsedJson['last_date']);
     double BValue = Utils.safeDouble(parsedJson['BValue']);
     double SValue = Utils.safeDouble(parsedJson['SValue']);
     double NValue = Utils.safeDouble(parsedJson['NValue']);
 
-    return BrokerNetBuySell(no, BrokerCode, last_date, BValue, SValue, NValue);
+    return BrokerNetBuySell(no, BrokerCode, lastDate, BValue, SValue, NValue);
   }
 }
 
@@ -7542,15 +7530,15 @@ class DynamicContent {
     String text_1 = StringUtils.noNullString(data.elementAt(0));
     String text_2 = StringUtils.noNullString(data.elementAt(1));
     String text_3 = StringUtils.noNullString(data.elementAt(2));
-    String color_text = StringUtils.noNullString(data.elementAt(3));
+    String colorText = StringUtils.noNullString(data.elementAt(3));
     print('DynamicContent.fromJson BB');
-    if (StringUtils.equalsIgnoreCase(color_text, 'GREEN')) {
+    if (StringUtils.equalsIgnoreCase(colorText, 'GREEN')) {
       return DynamicContent(text_1, text_2, text_3,
           color: InvestrendTheme.greenText);
-    } else if (StringUtils.equalsIgnoreCase(color_text, 'RED')) {
+    } else if (StringUtils.equalsIgnoreCase(colorText, 'RED')) {
       return DynamicContent(text_1, text_2, text_3,
           color: InvestrendTheme.redText);
-    } else if (StringUtils.equalsIgnoreCase(color_text, 'YELLOW')) {
+    } else if (StringUtils.equalsIgnoreCase(colorText, 'YELLOW')) {
       return DynamicContent(text_1, text_2, text_3,
           color: InvestrendTheme.yellowText);
     }
@@ -7741,14 +7729,14 @@ class DataCompanyProfile {
     String code = '';
 
     //dataHistory
-    String listing_date = '';
-    String effective_date = '';
+    String listingDate = '';
+    String effectiveDate = '';
     String nominal = '';
-    String ipo_price = '';
-    String ipo_shares = '';
-    String ipo_amount = '';
-    List<String> underwriter_list = List.empty(growable: true);
-    List<String> share_registrar_list = List.empty(growable: true);
+    String ipoPrice = '';
+    String ipoShares = '';
+    String ipoAmount = '';
+    List<String> underwriterList = List.empty(growable: true);
+    List<String> shareRegistrarList = List.empty(growable: true);
 
     //dataShareholders
     String additionalInfo = '';
@@ -7756,30 +7744,30 @@ class DataCompanyProfile {
         List<DynamicContent>.empty(growable: true);
 
     //dataCommisioners
-    List<String> president_commissioner_list = List.empty(growable: true);
-    List<String> vice_president_commissioner_list = List.empty(growable: true);
-    List<String> commissioner_list = List.empty(growable: true);
-    List<String> president_director_list = List.empty(growable: true);
-    List<String> vice_president_director_list = List.empty(growable: true);
-    List<String> director_list = List.empty(growable: true);
+    List<String> presidentCommissionerList = List.empty(growable: true);
+    List<String> vicePresidentCommissionerList = List.empty(growable: true);
+    List<String> commissionerList = List.empty(growable: true);
+    List<String> presidentDirectorList = List.empty(growable: true);
+    List<String> vicePresidentDirectorList = List.empty(growable: true);
+    List<String> directorList = List.empty(growable: true);
     return DataCompanyProfile(
         code,
-        listing_date,
-        effective_date,
+        listingDate,
+        effectiveDate,
         nominal,
-        ipo_price,
-        ipo_shares,
-        ipo_amount,
-        underwriter_list,
-        share_registrar_list,
+        ipoPrice,
+        ipoShares,
+        ipoAmount,
+        underwriterList,
+        shareRegistrarList,
         additionalInfo,
         contentList,
-        president_commissioner_list,
-        vice_president_commissioner_list,
-        commissioner_list,
-        president_director_list,
-        vice_president_director_list,
-        director_list);
+        presidentCommissionerList,
+        vicePresidentCommissionerList,
+        commissionerList,
+        presidentDirectorList,
+        vicePresidentDirectorList,
+        directorList);
   }
 }
 
@@ -8114,90 +8102,86 @@ class DataChartIncomeStatement {
   static DataChartIncomeStatement createBasic() {
     String code = '';
     String type = ''; // INCOME_STATEMENT
-    String show_as = ''; // YEARLY or QUARTERLY
+    String showAs = ''; // YEARLY or QUARTERLY
 
     List<String> label = List.empty(growable: true);
-    List<YearValue> net_income = List.empty(growable: true);
+    List<YearValue> netIncome = List.empty(growable: true);
     List<YearValue> revenue = List.empty(growable: true);
-    List<YearValue> net_profit_margin = List.empty(growable: true);
+    List<YearValue> netProfitMargin = List.empty(growable: true);
 
-    return DataChartIncomeStatement(code, type, show_as, label, net_income,
-        revenue, net_profit_margin, 0, 0, 0, 0, 0, 0);
+    return DataChartIncomeStatement(code, type, showAs, label, netIncome,
+        revenue, netProfitMargin, 0, 0, 0, 0, 0, 0);
   }
 
   factory DataChartIncomeStatement.fromJson(Map<String, dynamic> parsedJson,
-      String code, String type, String show_as) {
+      String code, String type, String showAs) {
     if (parsedJson == null) {
       return null;
     }
     var label = parsedJson['label'] as List;
-    var net_income = parsedJson['net_income'] as List;
+    var netIncome = parsedJson['net_income'] as List;
     var revenue = parsedJson['revenue'] as List;
-    var net_profit_margin = parsedJson['net_profit_margin'] as List;
+    var netProfitMargin = parsedJson['net_profit_margin'] as List;
 
-    List<String> label_list = List.empty(growable: true);
-    List<YearValue> net_income_list = List.empty(growable: true);
-    List<YearValue> revenue_list = List.empty(growable: true);
-    List<YearValue> net_profit_margin_list = List.empty(growable: true);
+    List<String> labelList = List.empty(growable: true);
+    List<YearValue> netIncomeList = List.empty(growable: true);
+    List<YearValue> revenueList = List.empty(growable: true);
+    List<YearValue> netProfitMarginList = List.empty(growable: true);
 
-    double max_net_income = 0.0;
-    double min_net_income;
+    double maxNetIncome = 0.0;
+    double minNetIncome;
 
-    double max_revenue = 0.0;
-    double min_revenue;
+    double maxRevenue = 0.0;
+    double minRevenue;
 
-    double max_net_profit_margin = 0.0;
-    double min_net_profit_margin;
+    double maxNetProfitMargin = 0.0;
+    double minNetProfitMargin;
 
     if (label != null && label.isNotEmpty) {
-      int count_label = label != null ? label.length : 0;
-      int count_net_income = net_income != null ? net_income.length : 0;
-      int count_revenue = revenue != null ? revenue.length : 0;
-      int count_net_profit_margin =
-          net_profit_margin != null ? net_profit_margin.length : 0;
+      int countLabel = label != null ? label.length : 0;
+      int countNetIncome = netIncome != null ? netIncome.length : 0;
+      int countRevenue = revenue != null ? revenue.length : 0;
+      int countNetProfitMargin =
+          netProfitMargin != null ? netProfitMargin.length : 0;
 
-      for (int i = 0; i < count_label; i++) {
+      for (int i = 0; i < countLabel; i++) {
         String year = label.elementAt(i).toString();
-        label_list.add(year);
+        labelList.add(year);
 
-        double value_net_income = i < count_net_income
-            ? Utils.safeDouble(net_income.elementAt(i))
-            : 0.0;
-        double value_revenue =
-            i < count_revenue ? Utils.safeDouble(revenue.elementAt(i)) : 0.0;
-        double value_net_profit_margin = i < count_net_profit_margin
-            ? Utils.safeDouble(net_profit_margin.elementAt(i))
+        double valueNetIncome =
+            i < countNetIncome ? Utils.safeDouble(netIncome.elementAt(i)) : 0.0;
+        double valueRevenue =
+            i < countRevenue ? Utils.safeDouble(revenue.elementAt(i)) : 0.0;
+        double valueNetProfitMargin = i < countNetProfitMargin
+            ? Utils.safeDouble(netProfitMargin.elementAt(i))
             : 0.0;
 
-        max_net_income = max(max_net_income, value_net_income);
-        if (min_net_income == null) {
-          min_net_income = value_net_income;
+        maxNetIncome = max(maxNetIncome, valueNetIncome);
+        if (minNetIncome == null) {
+          minNetIncome = valueNetIncome;
         } else {
-          min_net_income = min(min_net_income, value_net_income);
+          minNetIncome = min(minNetIncome, valueNetIncome);
         }
 
-        max_net_profit_margin =
-            max(max_net_profit_margin, value_net_profit_margin);
-        if (min_net_profit_margin == null) {
-          min_net_profit_margin = value_net_profit_margin;
+        maxNetProfitMargin = max(maxNetProfitMargin, valueNetProfitMargin);
+        if (minNetProfitMargin == null) {
+          minNetProfitMargin = valueNetProfitMargin;
         } else {
-          min_net_profit_margin =
-              min(min_net_profit_margin, value_net_profit_margin);
+          minNetProfitMargin = min(minNetProfitMargin, valueNetProfitMargin);
         }
 
-        max_revenue = max(max_revenue, value_revenue);
-        if (min_revenue == null) {
-          min_revenue = value_revenue;
+        maxRevenue = max(maxRevenue, valueRevenue);
+        if (minRevenue == null) {
+          minRevenue = valueRevenue;
         } else {
-          min_revenue = min(min_revenue, value_revenue);
+          minRevenue = min(minRevenue, valueRevenue);
         }
 
         //min_net_income = value_net_income > 0.0 ? min(min_net_income, value_net_income) : value_net_income;
 
-        net_income_list.add(new YearValue(year, value_net_income));
-        revenue_list.add(new YearValue(year, value_revenue));
-        net_profit_margin_list
-            .add(new YearValue(year, value_net_profit_margin));
+        netIncomeList.add(new YearValue(year, valueNetIncome));
+        revenueList.add(new YearValue(year, valueRevenue));
+        netProfitMarginList.add(new YearValue(year, valueNetProfitMargin));
 
         // net_income_list.add(new YearValue(year, i < count_net_income ? Utils.safeDouble(net_income.elementAt(i)) : 0.0));
         // revenue_list.add(new YearValue(year, i < count_revenue ? Utils.safeDouble(revenue.elementAt(i)) : 0.0));
@@ -8205,24 +8189,24 @@ class DataChartIncomeStatement {
       }
     }
 
-    min_net_income = min_net_income ?? 0;
-    min_revenue = min_revenue ?? 0;
-    min_net_profit_margin = min_net_profit_margin ?? 0;
+    minNetIncome = minNetIncome ?? 0;
+    minRevenue = minRevenue ?? 0;
+    minNetProfitMargin = minNetProfitMargin ?? 0;
 
     return DataChartIncomeStatement(
         code,
         type,
-        show_as,
-        label_list,
-        net_income_list,
-        revenue_list,
-        net_profit_margin_list,
-        max_net_income,
-        min_net_income,
-        max_revenue,
-        min_revenue,
-        max_net_profit_margin,
-        min_net_profit_margin);
+        showAs,
+        labelList,
+        netIncomeList,
+        revenueList,
+        netProfitMarginList,
+        maxNetIncome,
+        minNetIncome,
+        maxRevenue,
+        minRevenue,
+        maxNetProfitMargin,
+        minNetProfitMargin);
   }
 
   void copyValueFrom(DataChartIncomeStatement newValue) {
@@ -8285,20 +8269,20 @@ class DataChartBalanceSheet {
   static DataChartBalanceSheet createBasic() {
     String code = '';
     String type = ''; // BALANCE_SHEET
-    String show_as = ''; // YEARLY or QUARTERLY
+    String showAs = ''; // YEARLY or QUARTERLY
 
     List<String> label = List.empty(growable: true);
     List<YearValue> equity = List.empty(growable: true);
     List<YearValue> liabilities = List.empty(growable: true);
     List<YearValue> assets = List.empty(growable: true);
-    List<YearValue> debt_equity_ratio = List.empty(growable: true);
+    List<YearValue> debtEquityRatio = List.empty(growable: true);
 
-    return DataChartBalanceSheet(code, type, show_as, label, equity,
-        liabilities, assets, debt_equity_ratio);
+    return DataChartBalanceSheet(code, type, showAs, label, equity, liabilities,
+        assets, debtEquityRatio);
   }
 
   factory DataChartBalanceSheet.fromJson(Map<String, dynamic> parsedJson,
-      String code, String type, String show_as) {
+      String code, String type, String showAs) {
     if (parsedJson == null) {
       return null;
     }
@@ -8306,54 +8290,54 @@ class DataChartBalanceSheet {
     var equity = parsedJson['equity'] as List;
     var liabilities = parsedJson['liabilities'] as List;
     var assets = parsedJson['assets'] as List;
-    var debt_equity_ratio = parsedJson['debt_equity_ratio'] as List;
+    var debtEquityRatio = parsedJson['debt_equity_ratio'] as List;
 
-    List<String> label_list = List.empty(growable: true);
-    List<YearValue> equity_list = List.empty(growable: true);
-    List<YearValue> liabilities_list = List.empty(growable: true);
-    List<YearValue> assets_list = List.empty(growable: true);
-    List<YearValue> debt_equity_ratio_list = List.empty(growable: true);
+    List<String> labelList = List.empty(growable: true);
+    List<YearValue> equityList = List.empty(growable: true);
+    List<YearValue> liabilitiesList = List.empty(growable: true);
+    List<YearValue> assetsList = List.empty(growable: true);
+    List<YearValue> debtEquityRatioList = List.empty(growable: true);
 
     //if (label != null && label.isNotEmpty) {
-    int count_label = label != null ? label.length : 0;
-    int count_equity = equity != null ? equity.length : 0;
-    int count_liabilities = liabilities != null ? liabilities.length : 0;
-    int count_assets = assets != null ? assets.length : 0;
-    int count_debt_equity_ratio =
-        debt_equity_ratio != null ? debt_equity_ratio.length : 0;
+    int countLabel = label != null ? label.length : 0;
+    int countEquity = equity != null ? equity.length : 0;
+    int countLiabilities = liabilities != null ? liabilities.length : 0;
+    int countAssets = assets != null ? assets.length : 0;
+    int countDebtEquityRatio =
+        debtEquityRatio != null ? debtEquityRatio.length : 0;
 
-    for (int i = 0; i < count_label; i++) {
+    for (int i = 0; i < countLabel; i++) {
       String year = label.elementAt(i).toString();
-      label_list.add(year);
-      equity_list.add(new YearValue(year,
-          i < count_equity ? Utils.safeDouble(equity.elementAt(i)) : 0.0));
-      liabilities_list.add(new YearValue(
+      labelList.add(year);
+      equityList.add(new YearValue(
+          year, i < countEquity ? Utils.safeDouble(equity.elementAt(i)) : 0.0));
+      liabilitiesList.add(new YearValue(
           year,
-          i < count_liabilities
+          i < countLiabilities
               ? Utils.safeDouble(liabilities.elementAt(i))
               : 0.0));
-      assets_list.add(new YearValue(year,
-          i < count_assets ? Utils.safeDouble(assets.elementAt(i)) : 0.0));
-      debt_equity_ratio_list.add(new YearValue(
+      assetsList.add(new YearValue(
+          year, i < countAssets ? Utils.safeDouble(assets.elementAt(i)) : 0.0));
+      debtEquityRatioList.add(new YearValue(
           year,
-          i < count_debt_equity_ratio
-              ? Utils.safeDouble(debt_equity_ratio.elementAt(i))
+          i < countDebtEquityRatio
+              ? Utils.safeDouble(debtEquityRatio.elementAt(i))
               : 0.0));
     }
     //}
 
     print('label_list : ' +
-        label_list.length.toString() +
+        labelList.length.toString() +
         '  equity_list : ' +
-        equity_list.length.toString() +
+        equityList.length.toString() +
         '  liabilities_list : ' +
-        liabilities_list.length.toString() +
+        liabilitiesList.length.toString() +
         '  assets_list : ' +
-        assets_list.length.toString() +
+        assetsList.length.toString() +
         '  debt_equity_ratio_list : ' +
-        debt_equity_ratio_list.length.toString());
-    return DataChartBalanceSheet(code, type, show_as, label_list, equity_list,
-        liabilities_list, assets_list, debt_equity_ratio_list);
+        debtEquityRatioList.length.toString());
+    return DataChartBalanceSheet(code, type, showAs, labelList, equityList,
+        liabilitiesList, assetsList, debtEquityRatioList);
   }
 
   void copyValueFrom(DataChartBalanceSheet newValue) {
@@ -8422,80 +8406,71 @@ class DataChartCashFlow {
   static DataChartCashFlow createBasic() {
     String code = '';
     String type = ''; // CASH_FLOW
-    String show_as = ''; // YEARLY or QUARTERLY
+    String showAs = ''; // YEARLY or QUARTERLY
 
     List<String> label = List.empty(growable: true);
-    List<YearValue> cash_reserve = List.empty(growable: true);
+    List<YearValue> cashReserve = List.empty(growable: true);
     List<YearValue> investing = List.empty(growable: true);
     List<YearValue> operating = List.empty(growable: true);
     List<YearValue> financing = List.empty(growable: true);
 
-    return DataChartCashFlow(code, type, show_as, label, cash_reserve,
-        investing, operating, financing);
+    return DataChartCashFlow(code, type, showAs, label, cashReserve, investing,
+        operating, financing);
   }
 
   factory DataChartCashFlow.fromJson(Map<String, dynamic> parsedJson,
-      String code, String type, String show_as) {
+      String code, String type, String showAs) {
     if (parsedJson == null) {
       return null;
     }
     var label = parsedJson['label'] as List;
-    var cash_reserve = parsedJson['cash_reserve'] as List;
+    var cashReserve = parsedJson['cash_reserve'] as List;
     var investing = parsedJson['investing'] as List;
     var operating = parsedJson['operating'] as List;
     var financing = parsedJson['financing'] as List;
 
-    List<String> label_list = List.empty(growable: true);
-    List<YearValue> cash_reserve_list = List.empty(growable: true);
-    List<YearValue> investing_list = List.empty(growable: true);
-    List<YearValue> operating_list = List.empty(growable: true);
-    List<YearValue> financing_list = List.empty(growable: true);
+    List<String> labelList = List.empty(growable: true);
+    List<YearValue> cashReserveList = List.empty(growable: true);
+    List<YearValue> investingList = List.empty(growable: true);
+    List<YearValue> operatingList = List.empty(growable: true);
+    List<YearValue> financingList = List.empty(growable: true);
 
     //if (label != null && label.isNotEmpty) {
-    int count_label = label != null ? label.length : 0;
-    int count_cash_reserve = cash_reserve != null ? cash_reserve.length : 0;
-    int count_investing = investing != null ? investing.length : 0;
-    int count_operating = operating != null ? operating.length : 0;
-    int count_financing = financing != null ? financing.length : 0;
+    int countLabel = label != null ? label.length : 0;
+    int countCashReserve = cashReserve != null ? cashReserve.length : 0;
+    int countInvesting = investing != null ? investing.length : 0;
+    int countOperating = operating != null ? operating.length : 0;
+    int countFinancing = financing != null ? financing.length : 0;
 
-    for (int i = 0; i < count_label; i++) {
+    for (int i = 0; i < countLabel; i++) {
       String year = label.elementAt(i).toString();
-      label_list.add(year);
-      cash_reserve_list.add(new YearValue(
+      labelList.add(year);
+      cashReserveList.add(new YearValue(
           year,
-          i < count_cash_reserve
-              ? Utils.safeDouble(cash_reserve.elementAt(i))
+          i < countCashReserve
+              ? Utils.safeDouble(cashReserve.elementAt(i))
               : 0.0));
-      investing_list.add(new YearValue(
-          year,
-          i < count_investing
-              ? Utils.safeDouble(investing.elementAt(i))
-              : 0.0));
-      operating_list.add(new YearValue(
-          year,
-          i < count_operating
-              ? Utils.safeDouble(operating.elementAt(i))
-              : 0.0));
-      financing_list.add(new YearValue(
-          year,
-          i < count_financing
-              ? Utils.safeDouble(financing.elementAt(i))
-              : 0.0));
+      investingList.add(new YearValue(year,
+          i < countInvesting ? Utils.safeDouble(investing.elementAt(i)) : 0.0));
+      operatingList.add(new YearValue(year,
+          i < countOperating ? Utils.safeDouble(operating.elementAt(i)) : 0.0));
+      financingList.add(new YearValue(year,
+          i < countFinancing ? Utils.safeDouble(financing.elementAt(i)) : 0.0));
     }
     //}
 
     print('label_list : ' +
-        label_list.length.toString() +
+        labelList.length.toString() +
         '  cash_reserve_list : ' +
-        cash_reserve_list.length.toString() +
+        cashReserveList.length.toString() +
         '  investing_list : ' +
-        investing_list.length.toString() +
+        investingList.length.toString() +
         '  operating_list : ' +
-        operating_list.length.toString() +
+        operatingList.length.toString() +
         '  financing_list : ' +
-        financing_list.length.toString());
-    return DataChartCashFlow(code, type, show_as, label_list, cash_reserve_list,
-        investing_list, operating_list, financing_list);
+        financingList.length.toString());
+    return DataChartCashFlow(code, type, showAs, labelList, cashReserveList,
+        investingList, operatingList, financingList);
   }
 
   void copyValueFrom(DataChartCashFlow newValue) {
@@ -8569,70 +8544,64 @@ class DataChartEarningPerShare {
   static DataChartEarningPerShare createBasic() {
     String code = '';
     String type = ''; // EARNING_PER_SHARE
-    String show_as = ''; // YEARLY or QUARTERLY
+    String showAs = ''; // YEARLY or QUARTERLY
 
     List<String> label = List.empty(growable: true);
-    List<YearValue> dividend_per_share = List.empty(growable: true);
-    List<YearValue> earning_per_share = List.empty(growable: true);
-    List<YearValue> dividend_payout_ratio = List.empty(growable: true);
+    List<YearValue> dividendPerShare = List.empty(growable: true);
+    List<YearValue> earningPerShare = List.empty(growable: true);
+    List<YearValue> dividendPayoutRatio = List.empty(growable: true);
 
-    return DataChartEarningPerShare(code, type, show_as, label,
-        dividend_per_share, earning_per_share, dividend_payout_ratio);
+    return DataChartEarningPerShare(code, type, showAs, label, dividendPerShare,
+        earningPerShare, dividendPayoutRatio);
   }
 
   factory DataChartEarningPerShare.fromJson(Map<String, dynamic> parsedJson,
-      String code, String type, String show_as) {
+      String code, String type, String showAs) {
     if (parsedJson == null) {
       return null;
     }
     var label = parsedJson['label'] as List;
-    var dividend_per_share = parsedJson['dividend_per_share'] as List;
-    var earning_per_share = parsedJson['earning_per_share'] as List;
-    var dividend_payout_ratio = parsedJson['dividend_payout_ratio'] as List;
+    var dividendPerShare = parsedJson['dividend_per_share'] as List;
+    var earningPerShare = parsedJson['earning_per_share'] as List;
+    var dividendPayoutRatio = parsedJson['dividend_payout_ratio'] as List;
 
-    List<String> label_list = List.empty(growable: true);
-    List<YearValue> dividend_per_share_list = List.empty(growable: true);
-    List<YearValue> earning_per_share_list = List.empty(growable: true);
-    List<YearValue> dividend_payout_ratio_list = List.empty(growable: true);
+    List<String> labelList = List.empty(growable: true);
+    List<YearValue> dividendPerShareList = List.empty(growable: true);
+    List<YearValue> earningPerShareList = List.empty(growable: true);
+    List<YearValue> dividendPayoutRatioList = List.empty(growable: true);
 
     if (label != null && label.isNotEmpty) {
-      int count_label = label != null ? label.length : 0;
-      int count_dividend_per_share =
-          dividend_per_share != null ? dividend_per_share.length : 0;
-      int count_earning_per_share =
-          earning_per_share != null ? earning_per_share.length : 0;
-      int count_dividend_payout_ratio =
-          dividend_payout_ratio != null ? dividend_payout_ratio.length : 0;
+      int countLabel = label != null ? label.length : 0;
+      int countDividendPerShare =
+          dividendPerShare != null ? dividendPerShare.length : 0;
+      int countEarningPerShare =
+          earningPerShare != null ? earningPerShare.length : 0;
+      int countDividendPayoutRatio =
+          dividendPayoutRatio != null ? dividendPayoutRatio.length : 0;
 
-      for (int i = 0; i < count_label; i++) {
+      for (int i = 0; i < countLabel; i++) {
         String year = label.elementAt(i).toString();
-        label_list.add(year);
-        dividend_per_share_list.add(new YearValue(
+        labelList.add(year);
+        dividendPerShareList.add(new YearValue(
             year,
-            i < count_dividend_per_share
-                ? Utils.safeDouble(dividend_per_share.elementAt(i))
+            i < countDividendPerShare
+                ? Utils.safeDouble(dividendPerShare.elementAt(i))
                 : 0.0));
-        earning_per_share_list.add(new YearValue(
+        earningPerShareList.add(new YearValue(
             year,
-            i < count_earning_per_share
-                ? Utils.safeDouble(earning_per_share.elementAt(i))
+            i < countEarningPerShare
+                ? Utils.safeDouble(earningPerShare.elementAt(i))
                 : 0.0));
-        dividend_payout_ratio_list.add(new YearValue(
+        dividendPayoutRatioList.add(new YearValue(
             year,
-            i < count_dividend_payout_ratio
-                ? Utils.safeDouble(dividend_payout_ratio.elementAt(i))
+            i < countDividendPayoutRatio
+                ? Utils.safeDouble(dividendPayoutRatio.elementAt(i))
                 : 0.0));
       }
     }
 
-    return DataChartEarningPerShare(
-        code,
-        type,
-        show_as,
-        label_list,
-        dividend_per_share_list,
-        earning_per_share_list,
-        dividend_payout_ratio_list);
+    return DataChartEarningPerShare(code, type, showAs, labelList,
+        dividendPerShareList, earningPerShareList, dividendPayoutRatioList);
   }
 
   void copyValueFrom(DataChartEarningPerShare newValue) {
@@ -8887,9 +8856,9 @@ class News {
   factory News.fromXml(XmlElement element) {
     String title = element.findElements('title').single.text;
     String description = element.findElements('description').single.text;
-    String url_tumbnail = StringUtils.between(description, '<img src=\"', '\"');
+    String urlTumbnail = StringUtils.between(description, '<img src=\"', '\"');
 
-    String url_news = element.findElements('link').single.text;
+    String urlNews = element.findElements('link').single.text;
     String time = element.findElements('pubDate').single.text;
 
     int indexStart = description.indexOf('>');
@@ -8902,7 +8871,7 @@ class News {
     String category = 'general';
     int commentCount = 3;
     int likedCount = 6;
-    return News(title, description, url_news, url_tumbnail, time, category,
+    return News(title, description, urlNews, urlTumbnail, time, category,
         commentCount, likedCount);
   }
 }

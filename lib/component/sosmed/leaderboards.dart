@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:blurrycontainer/blurrycontainer.dart';
 import 'package:Investrend/component/badwords/string_contains.dart';
 import 'dart:math' as math;
-import 'dart:ui' show ImageFilter;
 
 class Leaderboards extends StatefulWidget {
   const Leaderboards({Key key}) : super(key: key);

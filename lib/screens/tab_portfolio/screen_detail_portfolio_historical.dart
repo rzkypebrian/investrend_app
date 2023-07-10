@@ -1,17 +1,11 @@
-import 'dart:math';
 
-import 'package:Investrend/component/bottom_sheet/bottom_sheet_alert.dart';
 import 'package:Investrend/component/bottom_sheet/bottom_sheet_portfolio_detail_filter.dart';
 import 'package:Investrend/component/bottom_sheet/bottom_sheet_transaction_filter.dart';
-import 'package:Investrend/component/button_order.dart';
 import 'package:Investrend/component/component_app_bar.dart';
 import 'package:Investrend/component/component_creator.dart';
 import 'package:Investrend/component/empty_label.dart';
-import 'package:Investrend/component/rows/row_watchlist.dart';
 import 'package:Investrend/objects/class_value_notifier.dart';
 import 'package:Investrend/objects/data_object.dart';
-import 'package:Investrend/objects/iii_objects.dart';
-import 'package:Investrend/objects/riverpod_change_notifier.dart';
 import 'package:Investrend/utils/connection_services.dart';
 import 'package:Investrend/utils/debug_writer.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
@@ -258,14 +252,14 @@ class _ScreenDetailPortfolioHistoricalState extends VisibilityAwareState<ScreenD
       }
 
       print(routeName + ' try report stock hist');
-      final report_stock_hist = await InvestrendTheme.tradingHttp.report_stock_hist(
+      final reportStockHist = await InvestrendTheme.tradingHttp.report_stock_hist(
           broker, account, user, stock_code, InvestrendTheme.of(context).applicationPlatform, InvestrendTheme.of(context).applicationVersion,
           bs: bs, from: from, to: to);
       //DebugWriter.info(routeName + ' Got stockPosition ' + stockPosition.accountcode + '   stockList.size : ' + stockPosition.stockListSize().toString());
-      DebugWriter.information(routeName + ' Got report_stock_hist : ' + report_stock_hist.size().toString());
-      if (report_stock_hist != null && !report_stock_hist.isEmpty()) {
+      DebugWriter.information(routeName + ' Got report_stock_hist : ' + reportStockHist.size().toString());
+      if (reportStockHist != null && !reportStockHist.isEmpty()) {
         if (mounted) {
-          _reportStockHistNotifier.setValue(report_stock_hist);
+          _reportStockHistNotifier.setValue(reportStockHist);
         }
       } else {
         if (mounted) {
@@ -298,9 +292,9 @@ class _ScreenDetailPortfolioHistoricalState extends VisibilityAwareState<ScreenD
         } else if (error.isErrorTrading()) {
           InvestrendTheme.of(context).showSnackBar(context, error.message());
         } else {
-          String network_error_label = 'network_error_label'.tr();
-          network_error_label = network_error_label.replaceFirst("#CODE#", error.code.toString());
-          InvestrendTheme.of(context).showSnackBar(context, network_error_label);
+          String networkErrorLabel = 'network_error_label'.tr();
+          networkErrorLabel = networkErrorLabel.replaceFirst("#CODE#", error.code.toString());
+          InvestrendTheme.of(context).showSnackBar(context, networkErrorLabel);
         }
       } else {
         //InvestrendTheme.of(context).showSnackBar(context, error.toString());
@@ -326,7 +320,7 @@ class _ScreenDetailPortfolioHistoricalState extends VisibilityAwareState<ScreenD
       builder: (BuildContext context, BoxConstraints constraints) {
         return RefreshIndicator(
           color: InvestrendTheme.of(context).textWhite,
-          backgroundColor: Theme.of(context).accentColor,
+          backgroundColor: Theme.of(context).colorScheme.secondary,
           onRefresh: onRefresh,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -638,17 +632,17 @@ class _ScreenDetailPortfolioHistoricalState extends VisibilityAwareState<ScreenD
                         index_transaction,
                         from,
                         to,
-                        callbackRange: (new_index_transaction, new_from, new_to) {
-                          bool isChanged = !StringUtils.equalsIgnoreCase(from, new_from) ||
-                              !StringUtils.equalsIgnoreCase(to, new_to) ||
-                              index_transaction != new_index_transaction;
+                        callbackRange: (newIndexTransaction, newFrom, newTo) {
+                          bool isChanged = !StringUtils.equalsIgnoreCase(from, newFrom) ||
+                              !StringUtils.equalsIgnoreCase(to, newTo) ||
+                              index_transaction != newIndexTransaction;
                           print(routeName +
-                              ' filter callbackRange new_index_transaction : $new_index_transaction   $new_from , $new_to  isChanged : $isChanged');
+                              ' filter callbackRange new_index_transaction : $newIndexTransaction   $newFrom , $newTo  isChanged : $isChanged');
 
                           if (isChanged) {
-                            this.index_transaction = new_index_transaction;
-                            this.from = new_from;
-                            this.to = new_to;
+                            this.index_transaction = newIndexTransaction;
+                            this.from = newFrom;
+                            this.to = newTo;
                             doUpdate();
                           }
                         },
@@ -693,11 +687,11 @@ class _ScreenDetailPortfolioHistoricalState extends VisibilityAwareState<ScreenD
     }
 
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       //floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
       //floatingActionButton: createFloatingActionButton(context),
       appBar: AppBar(
-        backgroundColor: Theme.of(context).backgroundColor,
+        backgroundColor: Theme.of(context).colorScheme.background,
         centerTitle: true,
         shadowColor: shadowColor,
         elevation: elevation,

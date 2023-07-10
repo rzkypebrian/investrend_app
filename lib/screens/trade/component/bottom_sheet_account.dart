@@ -1,7 +1,6 @@
 import 'package:Investrend/objects/data_object.dart';
 import 'package:Investrend/objects/riverpod_change_notifier.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
-import 'package:Investrend/utils/string_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -33,7 +32,7 @@ class AccountBottomSheet extends ConsumerWidget {
 
     Color color = isSelected ? Theme
         .of(context)
-        .accentColor : InvestrendTheme
+        .colorScheme.secondary : InvestrendTheme
         .of(context)
         .blackAndWhiteText;
 
@@ -48,25 +47,25 @@ class AccountBottomSheet extends ConsumerWidget {
     // int gain_loss_idr = 30000000;
     // double gain_loss_percentage = 14.56;
 
-    int portfolio_value = 0;
-    double buying_power = 0;
-    int gain_loss_idr = 0;
-    double gain_loss_percentage = 0;
+    int portfolioValue = 0;
+    double buyingPower = 0;
+    int gainLossIdr = 0;
+    double gainLossPercentage = 0;
     //double rdnBalance = 0;
     double cashBalance = 0;
     double creditLimit = 0;
     if (info != null) {
-      portfolio_value = info.totalMarket;
-      buying_power = info.outstandingLimit; // harus diisi
-      gain_loss_idr = info.totalGL;
-      gain_loss_percentage = info.totalGLPct;
+      portfolioValue = info.totalMarket;
+      buyingPower = info.outstandingLimit; // harus diisi
+      gainLossIdr = info.totalGL;
+      gainLossPercentage = info.totalGLPct;
       //rdnBalance = info.rdnBalance;
       //cashBalance = info.cashBalance;
       cashBalance = info.availableCash;
       creditLimit = info.creditLimit;
     }
 
-    Color colorGain = InvestrendTheme.priceTextColor(gain_loss_idr);
+    Color colorGain = InvestrendTheme.priceTextColor(gainLossIdr);
 
     List<Widget> list = List.empty(growable: true);
 
@@ -150,7 +149,7 @@ class AccountBottomSheet extends ConsumerWidget {
       children: [
         Expanded(
             flex: 1,
-            child: Text(InvestrendTheme.formatMoney(portfolio_value, prefixRp: true),
+            child: Text(InvestrendTheme.formatMoney(portfolioValue, prefixRp: true),
                 style: InvestrendTheme
                     .of(context)
                     .small_w400_compact
@@ -160,7 +159,7 @@ class AccountBottomSheet extends ConsumerWidget {
         Expanded(
             flex: 1,
             child: Text(
-              InvestrendTheme.formatMoneyDouble(buying_power, prefixRp: true),
+              InvestrendTheme.formatMoneyDouble(buyingPower, prefixRp: true),
               style: InvestrendTheme
                   .of(context)
                   .small_w400_compact
@@ -176,7 +175,7 @@ class AccountBottomSheet extends ConsumerWidget {
     ));
     list.add(Row(
       children: [
-        Text(InvestrendTheme.formatMoney(gain_loss_idr, prefixRp: true),
+        Text(InvestrendTheme.formatMoney(gainLossIdr, prefixRp: true),
             style: InvestrendTheme
                 .of(context)
                 .support_w400_compact
@@ -185,7 +184,7 @@ class AccountBottomSheet extends ConsumerWidget {
           width: 4.0,
         ),
         Text(
-          '(' + InvestrendTheme.formatPercentChange(gain_loss_percentage, sufixPercent: true) + ')',
+          '(' + InvestrendTheme.formatPercentChange(gainLossPercentage, sufixPercent: true) + ')',
           style: InvestrendTheme
               .of(context)
               .support_w400_compact
@@ -203,7 +202,7 @@ class AccountBottomSheet extends ConsumerWidget {
 
 
         //context.read(buyRdnBuyingPowerChangeNotifier).update(buying_power, rdnBalance);
-        context.read(buyRdnBuyingPowerChangeNotifier).update(buying_power, cashBalance, creditLimit);
+        context.read(buyRdnBuyingPowerChangeNotifier).update(buyingPower, cashBalance, creditLimit);
       },
       child: Padding(
         padding: const EdgeInsets.only(top: 24.0, bottom: 24.0, left: 24.0, right: 24.0),

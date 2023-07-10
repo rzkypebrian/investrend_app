@@ -368,6 +368,7 @@
 
 
   "card_order_book_title": "Order Book",
+  "card_trade_done_title": "Trade Done",
 
   "card_performance_title": "Performa",
   "card_performance_intraday": "1 Hari",
@@ -1008,6 +1009,8 @@
   "amend_confirmation_fast_mode_lot_price_label": "Lot | Harga",
   "amend_confirmation_old_label": "Old",
   "amend_confirmation_new_label": "New",
+  "amend_confirmation_fast_mode_price_after_label": "Harga Setelahnya",
+  "amend_confirmation_fast_mode_price_before_label": "Harga Sebelumnya",
 
   "amend_finished_title": "Amend Terkirim!",
   "amend_finished_order_buy_sent_label": "Amend Beli Terkirim!",
@@ -1134,6 +1137,7 @@
   "settings_auto_scroll": "Mode Fokus",
 
   "preview_buy": "Pratinjau Pembelian",
+  "preview_sell": "Pratinjau Penjualan",
 
   "settings_auto_scroll_information": "Bila mode ini aktif, maka akan otomatis fokus ke bagian terpenting dalam halaman yang sedang terbuka.",
 

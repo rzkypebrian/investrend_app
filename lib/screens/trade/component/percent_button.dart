@@ -12,7 +12,7 @@ class PercentButton extends StatelessWidget {
   Widget build(BuildContext context) {
     Color color = InvestrendTheme.of(context).support_w400.color;
     if (percentValue == selected) {
-      color = Theme.of(context).accentColor;
+      color = Theme.of(context).colorScheme.secondary;
     }
     return TextButton(
         style: ButtonStyle(visualDensity: VisualDensity.compact),

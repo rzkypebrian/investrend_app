@@ -1,6 +1,5 @@
 import 'package:Investrend/component/cards/card_competitions.dart';
 import 'package:Investrend/component/cards/card_profiles.dart';
-import 'package:Investrend/component/component_creator.dart';
 import 'package:Investrend/objects/home_objects.dart';
 import 'package:Investrend/screens/base/base_state.dart';
 import 'package:Investrend/screens/screen_main.dart';
@@ -82,7 +81,7 @@ class _ScreenCommunityCompetitionsState extends BaseStateNoTabsWithParentTab<Scr
 
     return RefreshIndicator(
       color: InvestrendTheme.of(context).textWhite,
-      backgroundColor: Theme.of(context).accentColor,
+      backgroundColor: Theme.of(context).colorScheme.secondary,
       onRefresh: onRefresh,
       child: ListView(
         //padding: const EdgeInsets.all(InvestrendTheme.cardMargin),

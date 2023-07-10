@@ -11,7 +11,6 @@ import 'package:Investrend/screens/base/base_state.dart';
 import 'package:Investrend/screens/screen_main.dart';
 import 'package:Investrend/utils/debug_writer.dart';
 import 'package:Investrend/utils/string_utils.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:Investrend/component/button_outlined_rounded.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -643,12 +642,12 @@ class _ScreenProfilePortfolioState extends BaseStateNoTabsWithParentTab<ScreenPr
 
     bool hasAccount = context.read(dataHolderChangeNotifier).user.accountSize() > 0;
     if(hasAccount){
-      String accoun_codes = '';
+      String accounCodes = '';
       context.read(dataHolderChangeNotifier).user?.accounts?.forEach((account) {
-        if(StringUtils.isEmtpy(accoun_codes)){
-          accoun_codes = account.accountcode;
+        if(StringUtils.isEmtpy(accounCodes)){
+          accounCodes = account.accountcode;
         }else{
-          accoun_codes += '|'+account.accountcode;
+          accounCodes += '|'+account.accountcode;
         }
       });
 
@@ -656,7 +655,7 @@ class _ScreenProfilePortfolioState extends BaseStateNoTabsWithParentTab<ScreenPr
         print(routeName+' try stockPosition');
         final stockPosition = await InvestrendTheme.tradingHttp.stock_position(
             '', // broker
-            accoun_codes,
+            accounCodes,
             '', // username
             InvestrendTheme.of(super.context).applicationPlatform,
             InvestrendTheme.of(super.context).applicationVersion);

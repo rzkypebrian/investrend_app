@@ -1,6 +1,4 @@
-import 'package:Investrend/component/component_creator.dart';
 import 'package:Investrend/objects/class_value_notifier.dart';
-import 'package:Investrend/objects/data_object.dart';
 import 'package:Investrend/screens/base/base_state.dart';
 import 'package:Investrend/screens/tab_search/screen_search_bond_yield.dart';
 import 'package:Investrend/screens/tab_search/screen_search_commodities.dart';
@@ -20,49 +18,53 @@ class ScreenSearch extends StatefulWidget {
   const ScreenSearch({Key key, this.visibilityNotifier}) : super(key: key);
 
   @override
-  _ScreenSearchState createState() => _ScreenSearchState(visibilityNotifier: visibilityNotifier);
+  _ScreenSearchState createState() =>
+      _ScreenSearchState(visibilityNotifier: visibilityNotifier);
 }
 
 class _ScreenSearchState extends BaseStateWithTabs<ScreenSearch>
-    //with SingleTickerProviderStateMixin
+//with SingleTickerProviderStateMixin
 {
   String timeCreation = '-';
 
-  _ScreenSearchState({BaseValueNotifier<bool> visibilityNotifier}) : super('/search', screenAware: false, visibilityNotifier: visibilityNotifier);
+  _ScreenSearchState({BaseValueNotifier<bool> visibilityNotifier})
+      : super('/search',
+            screenAware: false, visibilityNotifier: visibilityNotifier);
   //TabController _tabController;
 
   //Key testKey = UniqueKey();
   @override
   void initState() {
     super.initState();
-    print(routeName+'.initState ');
+    print(routeName + '.initState ');
     timeCreation = DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.now());
     //_tabController = new TabController(vsync: this, length: tabs.length);
     pTabController.addListener(_tabListener);
 
-    if(visibilityNotifier.value){
+    if (visibilityNotifier.value) {
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         onActive();
       });
     }
   }
-  void _tabListener(){
-    print(routeName+' pTabController onChange : '+pTabController.index.toString());
-    runPostFrame((){
-      if (mounted && context !=null) {
+
+  void _tabListener() {
+    print(routeName +
+        ' pTabController onChange : ' +
+        pTabController.index.toString());
+    runPostFrame(() {
+      if (mounted && context != null) {
         FocusScope.of(context).requestFocus(new FocusNode());
         onActive();
       }
     });
-
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    print(routeName+'.didChangeDependencies ');
-
+    print(routeName + '.didChangeDependencies ');
 
     // pTabController.addListener(() {
     //   print(routeName+' pTabController onChange : '+pTabController.index.toString());
@@ -77,8 +79,8 @@ class _ScreenSearchState extends BaseStateWithTabs<ScreenSearch>
   @override
   void dispose() {
     //_tabController.dispose();
-    print(routeName+'.dispose ');
-    for(int i = 0; i <_visibilityNotifiers.length ; i++){
+    print(routeName + '.dispose ');
+    for (int i = 0; i < _visibilityNotifiers.length; i++) {
       _visibilityNotifiers.elementAt(i).dispose();
     }
     pTabController.removeListener(_tabListener);
@@ -110,9 +112,10 @@ class _ScreenSearchState extends BaseStateWithTabs<ScreenSearch>
     ValueNotifier<bool>(false),
   ];
 
-  Widget createAppBar(BuildContext context){
+  Widget createAppBar(BuildContext context) {
     return null;
   }
+
   /*
   Widget createAppBar(BuildContext context){
 
@@ -129,39 +132,67 @@ class _ScreenSearchState extends BaseStateWithTabs<ScreenSearch>
     );
   }
   */
-  Widget createBody(BuildContext context,double paddingBottom){
+  Widget createBody(BuildContext context, double paddingBottom) {
     return TabBarView(
       controller: pTabController,
       children: List<Widget>.generate(
         tabs.length,
-            (int index) {
+        (int index) {
           print(tabs[index]);
           if (index == 0) {
-            return ScreenSearchMarket(0, pTabController , visibilityNotifier: _visibilityNotifiers.elementAt(index),);
-          }
-          else if (index == 1) {
-            return ScreenSearchGlobal(1,  pTabController , visibilityNotifier: _visibilityNotifiers.elementAt(index),);
-          }
-          else if (index == 2) {
-            return ScreenSearchWatchlist(2, pTabController , visibilityNotifier: _visibilityNotifiers.elementAt(index),);
-          }
-          else if (index == 3) {
-            return ScreenSearchMovers(3,  pTabController, visibilityNotifier: _visibilityNotifiers.elementAt(index),);
-          }
-          else if (index == 4) {
-            return ScreenSearchThemes(4,  pTabController, visibilityNotifier: _visibilityNotifiers.elementAt(index),);
-          }
-          else if (index == 5) {
-            return ScreenSearchCurrency(5, pTabController , visibilityNotifier: _visibilityNotifiers.elementAt(index),);
-          }
-          else if (index == 6) {
-            return ScreenSearchCryptocurrency(6,  pTabController, visibilityNotifier: _visibilityNotifiers.elementAt(index),);
-          }
-          else if (index == 7) {
-            return ScreenSearchCommodities(7,  pTabController , visibilityNotifier: _visibilityNotifiers.elementAt(index),);
-          }
-          else if (index == 8) {
-            return ScreenSearchBondYield(8, pTabController, visibilityNotifier: _visibilityNotifiers.elementAt(index),);
+            return ScreenSearchMarket(
+              0,
+              pTabController,
+              visibilityNotifier: _visibilityNotifiers.elementAt(index),
+            );
+          } else if (index == 1) {
+            return ScreenSearchGlobal(
+              1,
+              pTabController,
+              visibilityNotifier: _visibilityNotifiers.elementAt(index),
+            );
+          } else if (index == 2) {
+            return ScreenSearchWatchlist(
+              2,
+              pTabController,
+              visibilityNotifier: _visibilityNotifiers.elementAt(index),
+            );
+          } else if (index == 3) {
+            return ScreenSearchMovers(
+              3,
+              pTabController,
+              visibilityNotifier: _visibilityNotifiers.elementAt(index),
+            );
+          } else if (index == 4) {
+            return ScreenSearchThemes(
+              4,
+              pTabController,
+              visibilityNotifier: _visibilityNotifiers.elementAt(index),
+            );
+          } else if (index == 5) {
+            return ScreenSearchCurrency(
+              5,
+              pTabController,
+              visibilityNotifier: _visibilityNotifiers.elementAt(index),
+            );
+          } else if (index == 6) {
+            return ScreenSearchCryptocurrency(
+              6,
+              pTabController,
+              visibilityNotifier: _visibilityNotifiers.elementAt(index),
+            );
+          } else if (index == 7) {
+            return ScreenSearchCommodities(
+              7,
+              pTabController,
+              visibilityNotifier: _visibilityNotifiers.elementAt(index),
+            );
+          } else if (index == 8) {
+            return ScreenSearchBondYield(
+              8,
+              pTabController,
+              visibilityNotifier: _visibilityNotifiers.elementAt(index),
+            );
           }
           return Container(
             child: Center(
@@ -187,8 +218,6 @@ class _ScreenSearchState extends BaseStateWithTabs<ScreenSearch>
   }
   */
 
-
-
   Widget getChip(BuildContext context, String text, bool selected,
       ValueChanged<bool> onSelected) {
     return ChoiceChip(
@@ -204,7 +233,7 @@ class _ScreenSearchState extends BaseStateWithTabs<ScreenSearch>
       visualDensity: VisualDensity.comfortable,
       selected: selected,
       backgroundColor: InvestrendTheme.of(context).tileBackground,
-      selectedColor: Theme.of(context).accentColor,
+      selectedColor: Theme.of(context).colorScheme.secondary,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(0.0),
         //side: BorderSide(color: Theme.of(context).accentColor),
@@ -222,7 +251,7 @@ class _ScreenSearchState extends BaseStateWithTabs<ScreenSearch>
       isScrollable: true,
       tabs: List<Widget>.generate(
         tabs.length,
-            (int index) {
+        (int index) {
           print(tabs[index]);
           return new Tab(text: tabs[index]);
         },
@@ -238,35 +267,39 @@ class _ScreenSearchState extends BaseStateWithTabs<ScreenSearch>
   @override
   void onActive() {
     // TODO: implement onActive
-    print(routeName+'  onActive pTabController.index : '+pTabController.index.toString()+'  value : '+_visibilityNotifiers.elementAt(pTabController.index).value.toString());
-    for(int i = 0; i <_visibilityNotifiers.length ; i++){
+    print(routeName +
+        '  onActive pTabController.index : ' +
+        pTabController.index.toString() +
+        '  value : ' +
+        _visibilityNotifiers.elementAt(pTabController.index).value.toString());
+    for (int i = 0; i < _visibilityNotifiers.length; i++) {
       ValueNotifier childNotifier = _visibilityNotifiers.elementAt(i);
-      if(childNotifier != null){
-        if(pTabController.index == i){
+      if (childNotifier != null) {
+        if (pTabController.index == i) {
           childNotifier.value = true;
-        }else{
+        } else {
           childNotifier.value = false;
         }
-        print('childNotifier[$i] = '+childNotifier.value.toString());
-      }else{
+        print('childNotifier[$i] = ' + childNotifier.value.toString());
+      } else {
         print('childNotifier[$i] = NULL');
       }
-
     }
   }
 
   @override
   void onInactive() {
     // TODO: implement onInactive
-    print(routeName+'  onInactive pTabController.index : '+pTabController.index.toString()+'  value : '+_visibilityNotifiers.elementAt(pTabController.index).value.toString());
-    for(int i = 0; i <_visibilityNotifiers.length ; i++){
+    print(routeName +
+        '  onInactive pTabController.index : ' +
+        pTabController.index.toString() +
+        '  value : ' +
+        _visibilityNotifiers.elementAt(pTabController.index).value.toString());
+    for (int i = 0; i < _visibilityNotifiers.length; i++) {
       ValueNotifier childNotifier = _visibilityNotifiers.elementAt(i);
-      if(childNotifier != null){
+      if (childNotifier != null) {
         childNotifier.value = false;
       }
     }
   }
-
-
 }
-

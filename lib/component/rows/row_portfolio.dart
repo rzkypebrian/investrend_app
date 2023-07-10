@@ -1,7 +1,6 @@
 import 'package:Investrend/component/component_creator.dart';
 import 'package:Investrend/objects/data_object.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
-import 'package:Investrend/utils/string_utils.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
@@ -40,7 +39,7 @@ class RowPortfolio extends StatelessWidget {
   Widget rowPortfolio(BuildContext context) {
 
     TextStyle regular700 = InvestrendTheme.of(context).regular_w600_compact;
-    TextStyle more_support400 = InvestrendTheme.of(context).more_support_w400_compact;
+    TextStyle moreSupport400 = InvestrendTheme.of(context).more_support_w400_compact;
 
     Color gainLossColor = InvestrendTheme.priceTextColor(portfolio.gainLoss);
     String gainLossText  = InvestrendTheme.formatMoney(portfolio.gainLoss, prefixPlus: true, prefixRp: true);
@@ -84,9 +83,9 @@ class RowPortfolio extends StatelessWidget {
                         children: [
                           Text(InvestrendTheme.formatMoney(portfolio.value, prefixRp: true), style: regular700),
                           SizedBox(height: 5.0,),
-                          AutoSizeText(gainLossText, style: more_support400.copyWith(color: gainLossColor)),
+                          AutoSizeText(gainLossText, style: moreSupport400.copyWith(color: gainLossColor)),
                           SizedBox(height: 5.0,),
-                          Text(lotAverage, style: more_support400.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor)),
+                          Text(lotAverage, style: moreSupport400.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor)),
                         ],
                       ),
                     ),
@@ -110,7 +109,7 @@ class RowPortfolio extends StatelessWidget {
                     SizedBox(height: 5.0,),
                     FittedBox(
                       fit: BoxFit.scaleDown,
-                        child: Text(changeText, style: more_support400.copyWith(color: marketColor),maxLines: 1,)),
+                        child: Text(changeText, style: moreSupport400.copyWith(color: marketColor),maxLines: 1,)),
                   ],
                 ),
               ),

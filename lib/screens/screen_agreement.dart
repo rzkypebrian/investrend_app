@@ -1,10 +1,7 @@
 import 'package:Investrend/component/component_app_bar.dart';
 import 'package:Investrend/component/component_creator.dart';
-import 'package:Investrend/objects/riverpod_change_notifier.dart';
 import 'package:Investrend/screens/screen_content.dart';
-import 'package:Investrend/utils/connection_services.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
-import 'package:Investrend/utils/string_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -47,11 +44,11 @@ class _ScreenAgreementState extends State<ScreenAgreement> {
     }
     bool lightTheme = Theme.of(context).brightness == Brightness.light;
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       //floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
       //floatingActionButton: createFloatingActionButton(context),
       appBar: AppBar(
-        backgroundColor: Theme.of(context).backgroundColor,
+        backgroundColor: Theme.of(context).colorScheme.background,
         centerTitle: true,
         shadowColor: shadowColor,
         elevation: elevation,
@@ -65,10 +62,11 @@ class _ScreenAgreementState extends State<ScreenAgreement> {
             FocusScope.of(context).requestFocus(new FocusNode());
             Navigator.of(context).pop();
           },
-          color: Theme.of(context).accentColor,
+          color: Theme.of(context).colorScheme.secondary,
         ),
       ),
-      body: ComponentCreator.keyboardHider(context, createBody(context, paddingBottom)),
+      body: ComponentCreator.keyboardHider(
+          context, createBody(context, paddingBottom)),
       bottomSheet: createBottomSheet(context, paddingBottom),
     );
   }
@@ -92,13 +90,17 @@ class _ScreenAgreementState extends State<ScreenAgreement> {
       //child: Text(content, style: InvestrendTheme.of(context).small_w400_greyDarker,),
       child: Column(
         children: [
-          Spacer(flex: 4,),
+          Spacer(
+            flex: 4,
+          ),
           Text(
             'agreement_content'.tr(),
             style: InvestrendTheme.of(context).regular_w400,
             textAlign: TextAlign.center,
           ),
-          Spacer(flex: 4,),
+          Spacer(
+            flex: 4,
+          ),
           // SizedBox(
           //   height: 30.0,
           // ),
@@ -106,7 +108,8 @@ class _ScreenAgreementState extends State<ScreenAgreement> {
           rowAgreement(context, 'settings_tnc'.tr(), _tncNotifier, () {
             print('tnc_content pressed');
             String content = 'tnc_content'.tr();
-            String applicationName = InvestrendTheme.of(context).applicationName;
+            String applicationName =
+                InvestrendTheme.of(context).applicationName;
             content = content.replaceAll('<APP_NAME/>', applicationName);
             Navigator.push(
                 context,
@@ -121,24 +124,42 @@ class _ScreenAgreementState extends State<ScreenAgreement> {
           // SizedBox(
           //   height: 10.0,
           // ),
-          rowAgreement(context, 'settings_privacy_policy'.tr(), _privacyNotifier, () {
+          rowAgreement(
+              context, 'settings_privacy_policy'.tr(), _privacyNotifier, () {
             print('privacy_policy pressed');
             String content = 'privacy_policy_content'.tr();
-            String applicationName = InvestrendTheme.of(context).applicationName;
+            String applicationName =
+                InvestrendTheme.of(context).applicationName;
             content = content.replaceAll('<APP_NAME/>', applicationName);
-            Navigator.push(context, CupertinoPageRoute(
-              builder: (_) => ScreenContent(title: 'settings_privacy_policy'.tr(), content: content,), settings: RouteSettings(name: '/content'),));
+            Navigator.push(
+                context,
+                CupertinoPageRoute(
+                  builder: (_) => ScreenContent(
+                    title: 'settings_privacy_policy'.tr(),
+                    content: content,
+                  ),
+                  settings: RouteSettings(name: '/content'),
+                ));
           }),
           // SizedBox(
           //   height: 10.0,
           // ),
-          rowAgreement(context, 'settings_disclaimer'.tr(), _disclaimerNotifier, () {
+          rowAgreement(context, 'settings_disclaimer'.tr(), _disclaimerNotifier,
+              () {
             print('disclaimer pressed');
             String content = 'disclaimers_content'.tr();
-            String applicationName = InvestrendTheme.of(context).applicationName;
+            String applicationName =
+                InvestrendTheme.of(context).applicationName;
             content = content.replaceAll('<APP_NAME/>', applicationName);
-            Navigator.push(context, CupertinoPageRoute(
-              builder: (_) => ScreenContent(title: 'settings_disclaimer'.tr(), content: content,), settings: RouteSettings(name: '/content'),));
+            Navigator.push(
+                context,
+                CupertinoPageRoute(
+                  builder: (_) => ScreenContent(
+                    title: 'settings_disclaimer'.tr(),
+                    content: content,
+                  ),
+                  settings: RouteSettings(name: '/content'),
+                ));
           }),
           // Spacer(flex: 1,),
 
@@ -148,16 +169,21 @@ class _ScreenAgreementState extends State<ScreenAgreement> {
           FractionallySizedBox(
             widthFactor: 0.8,
             child: ComponentCreator.roundedButton(
-                context, 'agreement_button_accept'.tr(), Theme.of(context).accentColor, Theme.of(context).primaryColor, Theme.of(context).accentColor,
-                    () {
-                  // on presss
-                      if(_tncNotifier.value && _privacyNotifier.value && _disclaimerNotifier.value){
-                        Navigator.of(context).pop('AGREE');
-                      }else{
-                        InvestrendTheme.of(context).showSnackBar(context, 'agreement_error'.tr());
-                      }
-
-                }),
+                context,
+                'agreement_button_accept'.tr(),
+                Theme.of(context).colorScheme.secondary,
+                Theme.of(context).primaryColor,
+                Theme.of(context).colorScheme.secondary, () {
+              // on presss
+              if (_tncNotifier.value &&
+                  _privacyNotifier.value &&
+                  _disclaimerNotifier.value) {
+                Navigator.of(context).pop('AGREE');
+              } else {
+                InvestrendTheme.of(context)
+                    .showSnackBar(context, 'agreement_error'.tr());
+              }
+            }),
           ),
           // SizedBox(
           //   height: paddingBottom,
@@ -166,17 +192,20 @@ class _ScreenAgreementState extends State<ScreenAgreement> {
       ),
     );
   }
+
   void showMainPage(BuildContext context) {
     InvestrendTheme.showMainPage(context, ScreenTransition.Fade);
   }
-  Widget rowAgreement(BuildContext context, String buttonText, ValueNotifier<bool> notifier, VoidCallback onPressed){
+
+  Widget rowAgreement(BuildContext context, String buttonText,
+      ValueNotifier<bool> notifier, VoidCallback onPressed) {
     return Row(
       children: [
         ValueListenableBuilder<bool>(
           valueListenable: notifier,
           builder: (context, value, child) {
             return Checkbox(
-                activeColor: Theme.of(context).accentColor,
+                activeColor: Theme.of(context).colorScheme.secondary,
                 value: notifier.value,
                 onChanged: (value) {
                   notifier.value = !notifier.value;
@@ -186,10 +215,11 @@ class _ScreenAgreementState extends State<ScreenAgreement> {
         ),
         TextButton(
           style: TextButton.styleFrom(
-              animationDuration: Duration(milliseconds: 500),
               primary: InvestrendTheme.of(context).hyperlink,
+              animationDuration: Duration(milliseconds: 500),
               backgroundColor: Colors.transparent,
-              textStyle: InvestrendTheme.of(context).small_w400_compact_greyDarker),
+              textStyle:
+                  InvestrendTheme.of(context).small_w400_compact_greyDarker),
           child: Text(buttonText),
           onPressed: onPressed,
         ),

@@ -1,9 +1,7 @@
 
-import 'dart:math';
 
 import 'package:Investrend/component/component_creator.dart';
 import 'package:Investrend/objects/serializeable.dart';
-import 'package:Investrend/utils/callbacks.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -199,7 +197,7 @@ class WatchlistBottomSheet extends StatelessWidget {
                   flex: 1,
                   child: Scrollbar(
                     thickness: 2.0,
-                    isAlwaysShown: true,
+                    thumbVisibility: true,
                     child: ListView(
                       children: list,
                     ),
@@ -224,9 +222,9 @@ class WatchlistBottomSheet extends StatelessWidget {
     Color colorIcon = Colors.transparent;
 
     if (selected ) {
-      style = InvestrendTheme.of(context).regular_w600_compact.copyWith(color: Theme.of(context).accentColor);
+      style = InvestrendTheme.of(context).regular_w600_compact.copyWith(color: Theme.of(context).colorScheme.secondary);
       //colorText = Theme.of(context).accentColor;
-      colorIcon = Theme.of(context).accentColor;
+      colorIcon = Theme.of(context).colorScheme.secondary;
     }else if(!enable){
       style = style.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor);
     }

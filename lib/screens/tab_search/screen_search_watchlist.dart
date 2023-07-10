@@ -30,10 +30,14 @@ class ScreenSearchWatchlist extends StatefulWidget {
   final int tabIndex;
   final ValueNotifier<bool> visibilityNotifier;
 
-  ScreenSearchWatchlist(this.tabIndex, this.tabController, {Key key, this.visibilityNotifier}) : super(key: key);
+  ScreenSearchWatchlist(this.tabIndex, this.tabController,
+      {Key key, this.visibilityNotifier})
+      : super(key: key);
 
   @override
-  _ScreenSearchWatchlistState createState() => _ScreenSearchWatchlistState(tabIndex, tabController, visibilityNotifier: visibilityNotifier);
+  _ScreenSearchWatchlistState createState() =>
+      _ScreenSearchWatchlistState(tabIndex, tabController,
+          visibilityNotifier: visibilityNotifier);
 }
 
 /*
@@ -57,9 +61,11 @@ extension SortWatchlistExtension on SortWatchlist {
   }
 }
 */
-class _ScreenSearchWatchlistState extends BaseStateNoTabsWithParentTab<ScreenSearchWatchlist> {
+class _ScreenSearchWatchlistState
+    extends BaseStateNoTabsWithParentTab<ScreenSearchWatchlist> {
   //final GeneralPriceNotifier _watchlistDataNotifier = GeneralPriceNotifier(new GeneralPriceData());
-  final WatclistPriceNotifier _watchlistDataNotifier = WatclistPriceNotifier(new WatchlistPriceData());
+  final WatclistPriceNotifier _watchlistDataNotifier =
+      WatclistPriceNotifier(new WatchlistPriceData());
   final SlidableController slidableController = SlidableController();
   final ValueNotifier<int> _watchlistNotifier = ValueNotifier<int>(0);
   final ValueNotifier<int> _sortNotifier = ValueNotifier<int>(0);
@@ -68,8 +74,11 @@ class _ScreenSearchWatchlistState extends BaseStateNoTabsWithParentTab<ScreenSea
   bool canTapRow = true;
   static const Duration _durationUpdate = Duration(milliseconds: 2500);
 
-  _ScreenSearchWatchlistState(int tabIndex, TabController tabController, {ValueNotifier<bool> visibilityNotifier})
-      : super('/search_watchlist', tabIndex, tabController, parentTabIndex: Tabs.Search.index, visibilityNotifier: visibilityNotifier);
+  _ScreenSearchWatchlistState(int tabIndex, TabController tabController,
+      {ValueNotifier<bool> visibilityNotifier})
+      : super('/search_watchlist', tabIndex, tabController,
+            parentTabIndex: Tabs.Search.index,
+            visibilityNotifier: visibilityNotifier);
 
   // @override
   // bool get wantKeepAlive => true;
@@ -81,7 +90,6 @@ class _ScreenSearchWatchlistState extends BaseStateNoTabsWithParentTab<ScreenSea
     'watchlist_sort_by_movers_lowest'.tr(),
     'watchlist_sort_by_price_highest'.tr(),
     'watchlist_sort_by_price_lowest'.tr(),
-
     'watchlist_sort_by_value_highest'.tr(),
     'watchlist_sort_by_value_lowest'.tr()
   ];
@@ -90,37 +98,44 @@ class _ScreenSearchWatchlistState extends BaseStateNoTabsWithParentTab<ScreenSea
     switch (_sortNotifier.value) {
       case 0: //a_to_z
         {
-          _watchlistDataNotifier.value.datas.sort((a, b) => a.code.compareTo(b.code));
+          _watchlistDataNotifier.value.datas
+              .sort((a, b) => a.code.compareTo(b.code));
         }
         break;
       case 1: // z_to_a
         {
-          _watchlistDataNotifier.value.datas.sort((a, b) => b.code.compareTo(a.code));
+          _watchlistDataNotifier.value.datas
+              .sort((a, b) => b.code.compareTo(a.code));
         }
         break;
       case 2: // movers_highest
         {
-          _watchlistDataNotifier.value.datas.sort((a, b) => b.percent.compareTo(a.percent));
+          _watchlistDataNotifier.value.datas
+              .sort((a, b) => b.percent.compareTo(a.percent));
         }
         break;
       case 3: // movers_lowest
         {
-          _watchlistDataNotifier.value.datas.sort((a, b) => a.percent.compareTo(b.percent));
+          _watchlistDataNotifier.value.datas
+              .sort((a, b) => a.percent.compareTo(b.percent));
         }
         break;
       case 4: // price_highest
         {
-          _watchlistDataNotifier.value.datas.sort((a, b) => b.price.compareTo(a.price));
+          _watchlistDataNotifier.value.datas
+              .sort((a, b) => b.price.compareTo(a.price));
         }
         break;
       case 5: // price_lowest
         {
-          _watchlistDataNotifier.value.datas.sort((a, b) => a.price.compareTo(b.price));
+          _watchlistDataNotifier.value.datas
+              .sort((a, b) => a.price.compareTo(b.price));
         }
         break;
       case 6: // value_highest
         {
-          _watchlistDataNotifier.value.datas.sort(( a, b) => b.value.compareTo(a.value));
+          _watchlistDataNotifier.value.datas
+              .sort((a, b) => b.value.compareTo(a.value));
 
           // List<WatchlistPrice> list = _watchlistDataNotifier.value.datas;
           // list.sort(( a, b) => b.value.compareTo(a.value));
@@ -129,7 +144,8 @@ class _ScreenSearchWatchlistState extends BaseStateNoTabsWithParentTab<ScreenSea
         break;
       case 7: // value_lowest
         {
-          _watchlistDataNotifier.value.datas.sort((a, b) => a.value.compareTo(b.value));
+          _watchlistDataNotifier.value.datas
+              .sort((a, b) => a.value.compareTo(b.value));
 
           // List<WatchlistPrice> list = _watchlistDataNotifier.value.datas;
           // list.sort((a, b) => a.value.compareTo(b.value));
@@ -138,7 +154,10 @@ class _ScreenSearchWatchlistState extends BaseStateNoTabsWithParentTab<ScreenSea
         break;
     }
     _watchlistDataNotifier.notifyListeners();
-    context.read(propertiesNotifier).properties.saveInt(routeName, PROP_SELECTED_SORT, _sortNotifier.value);
+    context
+        .read(propertiesNotifier)
+        .properties
+        .saveInt(routeName, PROP_SELECTED_SORT, _sortNotifier.value);
   }
 
   bool onProgress = false;
@@ -146,40 +165,53 @@ class _ScreenSearchWatchlistState extends BaseStateNoTabsWithParentTab<ScreenSea
   double widthRight = 0;
   Future doUpdate({bool pullToRefresh = false}) async {
     if (!active) {
-      print(routeName + '.doUpdate Aborted : ' + DateTime.now().toString() + "  active : $active  pullToRefresh : $pullToRefresh");
+      print(routeName +
+          '.doUpdate Aborted : ' +
+          DateTime.now().toString() +
+          "  active : $active  pullToRefresh : $pullToRefresh");
       return false;
     }
 
     if (mounted && context != null) {
       bool isForeground = context.read(dataHolderChangeNotifier).isForeground;
-      if(!isForeground){
-        print(routeName + ' doUpdate ignored isForeground : $isForeground  isVisible : ' + isVisible().toString());
+      if (!isForeground) {
+        print(routeName +
+            ' doUpdate ignored isForeground : $isForeground  isVisible : ' +
+            isVisible().toString());
         return false;
       }
     }
 
-    print(routeName + '.doUpdate : ' + DateTime.now().toString() + "  active : $active  pullToRefresh : $pullToRefresh");
+    print(routeName +
+        '.doUpdate : ' +
+        DateTime.now().toString() +
+        "  active : $active  pullToRefresh : $pullToRefresh");
 
     onProgress = true;
 
-    Watchlist activeWatchlist = context.read(watchlistChangeNotifier).getWatchlist(_watchlistNotifier.value);
+    Watchlist activeWatchlist = context
+        .read(watchlistChangeNotifier)
+        .getWatchlist(_watchlistNotifier.value);
     if (activeWatchlist != null && activeWatchlist.stocks.isNotEmpty) {
       try {
         print(routeName + ' try Summarys');
         String codes = activeWatchlist.stocks.join('_');
 
-        final stockSummarys = await InvestrendTheme.datafeedHttp.fetchStockSummaryMultiple(codes, 'RG');
+        final stockSummarys = await InvestrendTheme.datafeedHttp
+            .fetchStockSummaryMultiple(codes, 'RG');
         if (stockSummarys != null && stockSummarys.isNotEmpty) {
           //print(routeName + ' Future Summary DATA : ' + stockSummary.code + '  prev : ' + stockSummary.prev.toString());
           //_summaryNotifier.setData(stockSummary);
           //context.read(stockSummaryChangeNotifier).setData(stockSummary);
-          _watchlistDataNotifier.updateBySummarys(stockSummarys, context: context);
+          _watchlistDataNotifier.updateBySummarys(stockSummarys,
+              context: context);
           sort();
         } else {
           print(routeName + ' Future Summarys NO DATA');
         }
       } catch (e) {
-        DebugWriter.information(routeName + ' Summarys Exception : ' + e.toString());
+        DebugWriter.information(
+            routeName + ' Summarys Exception : ' + e.toString());
         print(e);
       }
     } else {
@@ -194,7 +226,9 @@ class _ScreenSearchWatchlistState extends BaseStateNoTabsWithParentTab<ScreenSea
   Widget _options(BuildContext context) {
     return Container(
       //color: Colors.purple,
-      padding: EdgeInsets.only(left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral),
+      padding: EdgeInsets.only(
+          left: InvestrendTheme.cardPaddingGeneral,
+          right: InvestrendTheme.cardPaddingGeneral),
       child: Row(
         children: [
           /*
@@ -223,7 +257,8 @@ class _ScreenSearchWatchlistState extends BaseStateNoTabsWithParentTab<ScreenSea
               if (context.read(watchlistChangeNotifier).isEmpty()) {
                 label = 'search_watchlist_default_label'.tr();
               } else {
-                Watchlist activeWatchlist = context.read(watchlistChangeNotifier).getWatchlist(index);
+                Watchlist activeWatchlist =
+                    context.read(watchlistChangeNotifier).getWatchlist(index);
                 if (activeWatchlist != null) {
                   label = activeWatchlist.name;
                 }
@@ -243,7 +278,9 @@ class _ScreenSearchWatchlistState extends BaseStateNoTabsWithParentTab<ScreenSea
                         label,
                         style: InvestrendTheme.of(context)
                             .more_support_w400_compact
-                            .copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor),
+                            .copyWith(
+                                color: InvestrendTheme.of(context)
+                                    .greyDarkerTextColor),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 5.0),
@@ -281,27 +318,37 @@ class _ScreenSearchWatchlistState extends BaseStateNoTabsWithParentTab<ScreenSea
   }
 
   Widget buttonAddWatchlist(BuildContext context) {
-    TextStyle style = InvestrendTheme.of(context).regular_w600_compact.copyWith(color: Theme.of(context).accentColor);
-    Color colorIcon = Theme.of(context).accentColor;
+    TextStyle style = InvestrendTheme.of(context)
+        .regular_w600_compact
+        .copyWith(color: Theme.of(context).colorScheme.secondary);
+    Color colorIcon = Theme.of(context).colorScheme.secondary;
     return Center(
-      child: TextButton(onPressed: () => createWatchlist(context), child: Text('search_watchlist_add_button'.tr())),
+      child: TextButton(
+          onPressed: () => createWatchlist(context),
+          child: Text('search_watchlist_add_button'.tr())),
     );
   }
 
   Widget buttonAddStock(BuildContext context) {
-    TextStyle style = InvestrendTheme.of(context).regular_w600_compact.copyWith(color: Theme.of(context).accentColor);
-    Color colorIcon = Theme.of(context).accentColor;
+    TextStyle style = InvestrendTheme.of(context)
+        .regular_w600_compact
+        .copyWith(color: Theme.of(context).colorScheme.secondary);
+    Color colorIcon = Theme.of(context).colorScheme.secondary;
     return Center(
       child: TextButton(
           onPressed: () {
-            Watchlist activeWatchlist = context.read(watchlistChangeNotifier).getWatchlist(_watchlistNotifier.value);
+            Watchlist activeWatchlist = context
+                .read(watchlistChangeNotifier)
+                .getWatchlist(_watchlistNotifier.value);
             if (activeWatchlist != null) {
-              final result = InvestrendTheme.showFinderScreen(context, showStockOnly: true, watchlistName: activeWatchlist.name);
+              final result = InvestrendTheme.showFinderScreen(context,
+                  showStockOnly: true, watchlistName: activeWatchlist.name);
               result.then((value) {
                 loadActiveWatchlist(context);
               });
             } else {
-              InvestrendTheme.of(context).showSnackBar(context, 'error_watchlist_cant_find_active'.tr());
+              InvestrendTheme.of(context).showSnackBar(
+                  context, 'error_watchlist_cant_find_active'.tr());
             }
           },
           child: Text('search_watchlist_add_stock_button'.tr())),
@@ -314,19 +361,22 @@ class _ScreenSearchWatchlistState extends BaseStateNoTabsWithParentTab<ScreenSea
     //IntCallback onSlideDelete(int index){
     Navigator.of(context).pop();
     print('onSlideDelete');
-    Watchlist toDelete = context.read(watchlistChangeNotifier).getWatchlist(index);
+    Watchlist toDelete =
+        context.read(watchlistChangeNotifier).getWatchlist(index);
     String title = 'watchlist_info_title'.tr();
 
-    String content = 'confirmation_remove_label'.tr() + '\n\'' + toDelete.name + '\' ?';
-    String action_save = 'button_yes'.tr();
-    String action_cancel = 'button_cancel'.tr();
+    String content =
+        'confirmation_remove_label'.tr() + '\n\'' + toDelete.name + '\' ?';
+    String actionSave = 'button_yes'.tr();
+    String actionCancel = 'button_cancel'.tr();
 
     VoidCallback onPressedYes = () {
       Navigator.of(context).pop();
       //_watchlistNotifier.value = 0;
       context.read(watchlistChangeNotifier).removeWatchlist(index);
       //_listWatchlist.add(Watchlist(controller.text));
-      Watchlist.save(context.read(watchlistChangeNotifier).getAll()).then((value) {
+      Watchlist.save(context.read(watchlistChangeNotifier).getAll())
+          .then((value) {
         _watchlistNotifier.value = 0;
         showWatchlist(context);
         _watchlistNotifier.notifyListeners();
@@ -338,7 +388,10 @@ class _ScreenSearchWatchlistState extends BaseStateNoTabsWithParentTab<ScreenSea
       showWatchlist(context);
     };
     InvestrendTheme.of(context).showDialogPlatform(context, title, content,
-        buttonYes: action_save, buttonNo: action_cancel, onPressedYes: onPressedYes, onPressedNo: onPressedNo);
+        buttonYes: actionSave,
+        buttonNo: actionCancel,
+        onPressedYes: onPressedYes,
+        onPressedNo: onPressedNo);
 
     /*
     if (Platform.isIOS) {
@@ -412,9 +465,11 @@ class _ScreenSearchWatchlistState extends BaseStateNoTabsWithParentTab<ScreenSea
     print('createWatchlist');
     controller.text = '';
 
-    if (context.read(watchlistChangeNotifier).count() >= InvestrendTheme.MAX_WATCHLIST) {
+    if (context.read(watchlistChangeNotifier).count() >=
+        InvestrendTheme.MAX_WATCHLIST) {
       String errorFull = 'error_maximum_create_watchlist'.tr();
-      errorFull = errorFull.replaceFirst('#MAX#', InvestrendTheme.MAX_WATCHLIST.toString());
+      errorFull = errorFull.replaceFirst(
+          '#MAX#', InvestrendTheme.MAX_WATCHLIST.toString());
       InvestrendTheme.of(context).showSnackBar(context, errorFull);
     } else {
       VoidCallback onCancelPressed = () {
@@ -423,11 +478,14 @@ class _ScreenSearchWatchlistState extends BaseStateNoTabsWithParentTab<ScreenSea
       };
       VoidCallback onSavePressed = () {
         if (StringUtils.isEmtpy(controller.text)) {
-          InvestrendTheme.of(context).showSnackBar(context, 'error_watchlist_name_empty'.tr());
+          InvestrendTheme.of(context)
+              .showSnackBar(context, 'error_watchlist_name_empty'.tr());
           return;
         }
         print(controller.text);
-        Watchlist existing = context.read(watchlistChangeNotifier).getWatchlistByName(controller.text);
+        Watchlist existing = context
+            .read(watchlistChangeNotifier)
+            .getWatchlistByName(controller.text);
         if (existing != null) {
           String error = 'error_watchlist_already_exist'.tr();
           error = error.replaceFirst('#NAME#', controller.text);
@@ -441,9 +499,11 @@ class _ScreenSearchWatchlistState extends BaseStateNoTabsWithParentTab<ScreenSea
 
         //showWatchlist(context);
 
-        Watchlist.save(context.read(watchlistChangeNotifier).getAll()).then((value) {
+        Watchlist.save(context.read(watchlistChangeNotifier).getAll())
+            .then((value) {
           Navigator.of(context).pop();
-          final result = InvestrendTheme.showFinderScreen(context, showStockOnly: true, watchlistName: newWatchlist.name);
+          final result = InvestrendTheme.showFinderScreen(context,
+              showStockOnly: true, watchlistName: newWatchlist.name);
           result.then((value) {
             //showWatchlist(context);
             int usedIndex = context.read(watchlistChangeNotifier).count() - 1;
@@ -457,8 +517,8 @@ class _ScreenSearchWatchlistState extends BaseStateNoTabsWithParentTab<ScreenSea
       };
 
       String title = 'new_watchlist_title'.tr();
-      String action_save = 'button_save'.tr();
-      String action_cancel = 'button_cancel'.tr();
+      String actionSave = 'button_save'.tr();
+      String actionCancel = 'button_cancel'.tr();
       if (Platform.isIOS) {
         // iOS-specific code
         showCupertinoDialog(
@@ -469,16 +529,17 @@ class _ScreenSearchWatchlistState extends BaseStateNoTabsWithParentTab<ScreenSea
                     controller: controller,
                     textInputAction: TextInputAction.done,
                     keyboardType: TextInputType.name,
-                    style: TextStyle(color: InvestrendTheme.of(context).blackAndWhiteText),
-                    cursorColor: Theme.of(context).accentColor,
+                    style: TextStyle(
+                        color: InvestrendTheme.of(context).blackAndWhiteText),
+                    cursorColor: Theme.of(context).colorScheme.secondary,
                   ),
                   actions: [
                     CupertinoDialogAction(
-                      child: Text(action_save),
+                      child: Text(actionSave),
                       onPressed: onSavePressed,
                     ),
                     CupertinoDialogAction(
-                      child: Text(action_cancel),
+                      child: Text(actionCancel),
                       isDestructiveAction: true,
                       onPressed: onCancelPressed,
                     ),
@@ -493,16 +554,17 @@ class _ScreenSearchWatchlistState extends BaseStateNoTabsWithParentTab<ScreenSea
                     controller: controller,
                     textInputAction: TextInputAction.done,
                     keyboardType: TextInputType.name,
-                    style: TextStyle(color: InvestrendTheme.of(context).blackAndWhiteText),
-                    cursorColor: Theme.of(context).accentColor,
+                    style: TextStyle(
+                        color: InvestrendTheme.of(context).blackAndWhiteText),
+                    cursorColor: Theme.of(context).colorScheme.secondary,
                   ),
                   actions: [
                     TextButton(
-                      child: Text(action_save),
+                      child: Text(actionSave),
                       onPressed: onSavePressed,
                     ),
                     TextButton(
-                      child: Text(action_cancel),
+                      child: Text(actionCancel),
                       onPressed: onCancelPressed,
                     ),
                   ],
@@ -516,22 +578,27 @@ class _ScreenSearchWatchlistState extends BaseStateNoTabsWithParentTab<ScreenSea
     print('onTapCreate');
     controller.text = '';
 
-    if (context.read(watchlistChangeNotifier).count() >= InvestrendTheme.MAX_WATCHLIST) {
+    if (context.read(watchlistChangeNotifier).count() >=
+        InvestrendTheme.MAX_WATCHLIST) {
       String errorFull = 'error_maximum_create_watchlist'.tr();
-      errorFull = errorFull.replaceFirst('#MAX#', InvestrendTheme.MAX_WATCHLIST.toString());
+      errorFull = errorFull.replaceFirst(
+          '#MAX#', InvestrendTheme.MAX_WATCHLIST.toString());
       InvestrendTheme.of(context).showSnackBar(context, errorFull);
     } else {
       String title = 'new_watchlist_title'.tr();
-      String action_save = 'button_save'.tr();
-      String action_cancel = 'button_cancel'.tr();
+      String actionSave = 'button_save'.tr();
+      String actionCancel = 'button_cancel'.tr();
 
       VoidCallback onPressedYes = () {
         if (StringUtils.isEmtpy(controller.text)) {
-          InvestrendTheme.of(context).showSnackBar(context, 'error_watchlist_name_empty'.tr());
+          InvestrendTheme.of(context)
+              .showSnackBar(context, 'error_watchlist_name_empty'.tr());
           return;
         }
         print(controller.text);
-        Watchlist existing = context.read(watchlistChangeNotifier).getWatchlistByName(controller.text);
+        Watchlist existing = context
+            .read(watchlistChangeNotifier)
+            .getWatchlistByName(controller.text);
         if (existing != null) {
           String error = 'error_watchlist_already_exist'.tr();
           error = error.replaceFirst('#NAME#', controller.text);
@@ -546,13 +613,16 @@ class _ScreenSearchWatchlistState extends BaseStateNoTabsWithParentTab<ScreenSea
         // _watchlistNotifier.value = context.read(watchlistChangeNotifier).count() -1;
         // showWatchlist(context);
 
-        Watchlist.save(context.read(watchlistChangeNotifier).getAll()).then((value) {
+        Watchlist.save(context.read(watchlistChangeNotifier).getAll())
+            .then((value) {
           Navigator.of(context).pop();
-          final result = InvestrendTheme.showFinderScreen(context, showStockOnly: true, watchlistName: newWatchlist.name);
+          final result = InvestrendTheme.showFinderScreen(context,
+              showStockOnly: true, watchlistName: newWatchlist.name);
           result.then((value) {
             // loadActiveWatchlist(context);
             // showWatchlist(context);
-            _watchlistNotifier.value = context.read(watchlistChangeNotifier).count() - 1;
+            _watchlistNotifier.value =
+                context.read(watchlistChangeNotifier).count() - 1;
             onActive();
             showWatchlist(context);
           });
@@ -568,8 +638,8 @@ class _ScreenSearchWatchlistState extends BaseStateNoTabsWithParentTab<ScreenSea
         context,
         controller,
         title,
-        buttonYes: action_save,
-        buttonNo: action_cancel,
+        buttonYes: actionSave,
+        buttonNo: actionCancel,
         onPressedYes: onPressedYes,
         onPressedNo: onPressedNo,
         maxInputLength: InvestrendTheme.MAX_WATCHLIST_NAME_CHARACTER,
@@ -705,22 +775,26 @@ class _ScreenSearchWatchlistState extends BaseStateNoTabsWithParentTab<ScreenSea
 
   VoidCallback onSlideRename(int index) {
     Navigator.of(context).pop();
-    Watchlist toRename = context.read(watchlistChangeNotifier).getWatchlist(index);
+    Watchlist toRename =
+        context.read(watchlistChangeNotifier).getWatchlist(index);
     print('onSlideRename [$index] : ' + toRename.name);
     controller.text = toRename.name;
     String title = 'rename_watchlist_title'.tr();
-    String action_save = 'button_save'.tr();
-    String action_cancel = 'button_cancel'.tr();
+    String actionSave = 'button_save'.tr();
+    String actionCancel = 'button_cancel'.tr();
 
     VoidCallback onPressedYes = () {
       if (StringUtils.isEmtpy(controller.text)) {
-        InvestrendTheme.of(context).showSnackBar(context, 'error_watchlist_name_empty'.tr());
+        InvestrendTheme.of(context)
+            .showSnackBar(context, 'error_watchlist_name_empty'.tr());
         return;
       }
       print('onSlideRename new name: ' + controller.text);
 
       if (!StringUtils.equalsIgnoreCase(controller.text, toRename.name)) {
-        Watchlist existing = context.read(watchlistChangeNotifier).getWatchlistByName(controller.text);
+        Watchlist existing = context
+            .read(watchlistChangeNotifier)
+            .getWatchlistByName(controller.text);
         if (existing != null) {
           String error = 'error_watchlist_already_exist'.tr();
           error = error.replaceFirst('#NAME#', controller.text);
@@ -734,7 +808,8 @@ class _ScreenSearchWatchlistState extends BaseStateNoTabsWithParentTab<ScreenSea
       toRename.name = controller.text;
       print('onSlideRename saving new name: ' + toRename.name);
       context.read(watchlistChangeNotifier).replaceWatchlist(index, toRename);
-      Watchlist.save(context.read(watchlistChangeNotifier).getAll()).then((value) {
+      Watchlist.save(context.read(watchlistChangeNotifier).getAll())
+          .then((value) {
         showWatchlist(context);
       });
     };
@@ -742,9 +817,10 @@ class _ScreenSearchWatchlistState extends BaseStateNoTabsWithParentTab<ScreenSea
       Navigator.of(context).pop();
       showWatchlist(context);
     };
-    InvestrendTheme.of(context).showDialogInputPlatform(context, controller, title,
-        buttonYes: action_save,
-        buttonNo: action_cancel,
+    InvestrendTheme.of(context).showDialogInputPlatform(
+        context, controller, title,
+        buttonYes: actionSave,
+        buttonNo: actionCancel,
         onPressedYes: onPressedYes,
         onPressedNo: onPressedNo,
         maxInputLength: InvestrendTheme.MAX_WATCHLIST_NAME_CHARACTER);
@@ -869,7 +945,8 @@ class _ScreenSearchWatchlistState extends BaseStateNoTabsWithParentTab<ScreenSea
     showModalBottomSheet(
         isScrollControlled: true,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(topLeft: Radius.circular(24.0), topRight: Radius.circular(24.0)),
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(24.0), topRight: Radius.circular(24.0)),
         ),
         //backgroundColor: Colors.transparent,
         context: context,
@@ -909,7 +986,7 @@ class _ScreenSearchWatchlistState extends BaseStateNoTabsWithParentTab<ScreenSea
   Widget createBody(BuildContext context, double paddingBottom) {
     return RefreshIndicator(
       color: InvestrendTheme.of(context).textWhite,
-      backgroundColor: Theme.of(context).accentColor,
+      backgroundColor: Theme.of(context).colorScheme.secondary,
       onRefresh: onRefresh,
       child: ValueListenableBuilder(
           valueListenable: _watchlistDataNotifier,
@@ -930,7 +1007,9 @@ class _ScreenSearchWatchlistState extends BaseStateNoTabsWithParentTab<ScreenSea
               }
 
               return ListView(
-                padding: EdgeInsets.only(top: InvestrendTheme.cardPadding, bottom: InvestrendTheme.cardPaddingGeneral),
+                padding: EdgeInsets.only(
+                    top: InvestrendTheme.cardPadding,
+                    bottom: InvestrendTheme.cardPaddingGeneral),
                 children: [
                   _options(context),
                   Container(
@@ -940,8 +1019,11 @@ class _ScreenSearchWatchlistState extends BaseStateNoTabsWithParentTab<ScreenSea
                 ],
               );
             }
-            Watchlist active = context.read(watchlistChangeNotifier).getWatchlist(_watchlistNotifier.value);
-            if (active != null && active.count() < InvestrendTheme.MAX_STOCK_PER_WATCHLIST) {
+            Watchlist active = context
+                .read(watchlistChangeNotifier)
+                .getWatchlist(_watchlistNotifier.value);
+            if (active != null &&
+                active.count() < InvestrendTheme.MAX_STOCK_PER_WATCHLIST) {
               buttonAdd = buttonAddStock(context);
             }
             return Column(
@@ -950,9 +1032,15 @@ class _ScreenSearchWatchlistState extends BaseStateNoTabsWithParentTab<ScreenSea
                 Expanded(
                   flex: 1,
                   child: ListView.builder(
+                      physics: BouncingScrollPhysics(
+                        parent: ScrollPhysics(),
+                      ),
                       shrinkWrap: false,
-                      padding: EdgeInsets.only(/*top: InvestrendTheme.cardPadding,*/ bottom: InvestrendTheme.cardPaddingGeneral),
-                      itemCount: countData /*data.count()*/ /*+ 1 */+ (buttonAdd != null ? 1 : 0),
+                      padding: EdgeInsets.only(
+                          /*top: InvestrendTheme.cardPadding,*/ bottom:
+                              InvestrendTheme.cardPaddingGeneral),
+                      itemCount: countData /*data.count()*/ /*+ 1 */ +
+                          (buttonAdd != null ? 1 : 0),
                       // separatorBuilder: (BuildContext context, int index) {
                       //   if(index == 0){
                       //     return SizedBox(width: 1.0,);
@@ -979,13 +1067,12 @@ class _ScreenSearchWatchlistState extends BaseStateNoTabsWithParentTab<ScreenSea
                           }
                         }
 
-                        GeneralPrice generalPrice = data.datas.elementAt(indexData);
+                        GeneralPrice generalPrice =
+                            data.datas.elementAt(indexData);
                         WatchlistPrice gp;
-                        if(generalPrice is WatchlistPrice){
+                        if (generalPrice is WatchlistPrice) {
                           gp = generalPrice;
                         }
-
-
 
                         return Slidable(
                           controller: slidableController,
@@ -998,19 +1085,31 @@ class _ScreenSearchWatchlistState extends BaseStateNoTabsWithParentTab<ScreenSea
                               InvestrendTheme.buyColor,
                               () {
                                 print('buy clicked code : ' + gp.code);
-                                Stock stock = InvestrendTheme.storedData.findStock(gp.code);
+                                Stock stock = InvestrendTheme.storedData
+                                    .findStock(gp.code);
                                 if (stock == null) {
-                                  print('buy clicked code : ' + gp.code + ' aborted, not find stock on StockStorer');
+                                  print('buy clicked code : ' +
+                                      gp.code +
+                                      ' aborted, not find stock on StockStorer');
                                   return;
                                 }
 
-                                context.read(primaryStockChangeNotifier).setStock(stock);
+                                context
+                                    .read(primaryStockChangeNotifier)
+                                    .setStock(stock);
 
                                 //InvestrendTheme.push(context, ScreenTrade(OrderType.Buy), ScreenTransition.SlideLeft, '/trade');
 
-                                bool hasAccount = context.read(dataHolderChangeNotifier).user.accountSize() > 0;
-                                InvestrendTheme.pushScreenTrade(context, hasAccount,
-                                    type: OrderType.Buy, initialPriceLot: PriceLot(gp.price.toInt(), 0));
+                                bool hasAccount = context
+                                        .read(dataHolderChangeNotifier)
+                                        .user
+                                        .accountSize() >
+                                    0;
+                                InvestrendTheme.pushScreenTrade(
+                                    context, hasAccount,
+                                    type: OrderType.Buy,
+                                    initialPriceLot:
+                                        PriceLot(gp.price.toInt(), 0));
                                 /*
                                   Navigator.push(context,
                                       CupertinoPageRoute(builder: (_) => ScreenTrade(OrderType.Buy), settings: RouteSettings(name: '/trade')));
@@ -1023,18 +1122,30 @@ class _ScreenSearchWatchlistState extends BaseStateNoTabsWithParentTab<ScreenSea
                               InvestrendTheme.sellColor,
                               () {
                                 print('sell clicked code : ' + gp.code);
-                                Stock stock = InvestrendTheme.storedData.findStock(gp.code);
+                                Stock stock = InvestrendTheme.storedData
+                                    .findStock(gp.code);
                                 if (stock == null) {
-                                  print('sell clicked code : ' + gp.code + ' aborted, not find stock on StockStorer');
+                                  print('sell clicked code : ' +
+                                      gp.code +
+                                      ' aborted, not find stock on StockStorer');
                                   return;
                                 }
 
-                                context.read(primaryStockChangeNotifier).setStock(stock);
+                                context
+                                    .read(primaryStockChangeNotifier)
+                                    .setStock(stock);
                                 //InvestrendTheme.push(context, ScreenTrade(OrderType.Sell), ScreenTransition.SlideLeft, '/trade');
 
-                                bool hasAccount = context.read(dataHolderChangeNotifier).user.accountSize() > 0;
-                                InvestrendTheme.pushScreenTrade(context, hasAccount,
-                                    type: OrderType.Sell, initialPriceLot: PriceLot(gp.price.toInt(), 0));
+                                bool hasAccount = context
+                                        .read(dataHolderChangeNotifier)
+                                        .user
+                                        .accountSize() >
+                                    0;
+                                InvestrendTheme.pushScreenTrade(
+                                    context, hasAccount,
+                                    type: OrderType.Sell,
+                                    initialPriceLot:
+                                        PriceLot(gp.price.toInt(), 0));
                                 /*
                                   Navigator.push(
                                       context,
@@ -1058,19 +1169,29 @@ class _ScreenSearchWatchlistState extends BaseStateNoTabsWithParentTab<ScreenSea
                               onTap: () {
                                 print('Clicked Remove on : ' + gp.code);
                                 //InvestrendTheme.of(context).showSnackBar(context, 'Clicked Remove on : '+gp.code);
-                                Watchlist active = context.read(watchlistChangeNotifier).getWatchlist(_watchlistNotifier.value);
+                                Watchlist active = context
+                                    .read(watchlistChangeNotifier)
+                                    .getWatchlist(_watchlistNotifier.value);
                                 bool removed = active.removeStock(gp.code);
                                 if (removed) {
-                                  Watchlist.save(context.read(watchlistChangeNotifier).getAll()).then((value) {
-                                    InvestrendTheme.of(context)
-                                        .showSnackBar(context, gp.code + 'search_watchlist_removed_from_label'.tr() + active.name);
+                                  Watchlist.save(context
+                                          .read(watchlistChangeNotifier)
+                                          .getAll())
+                                      .then((value) {
+                                    InvestrendTheme.of(context).showSnackBar(
+                                        context,
+                                        gp.code +
+                                            'search_watchlist_removed_from_label'
+                                                .tr() +
+                                            active.name);
                                     int existing = _watchlistNotifier.value;
                                     _watchlistNotifier.value = existing + 1;
                                     _watchlistNotifier.value = existing;
                                   }).onError((error, stackTrace) {});
                                 }
                               },
-                              foregroundColor: InvestrendTheme.of(context).textWhite /*Colors.white*/,
+                              foregroundColor: InvestrendTheme.of(context)
+                                  .textWhite /*Colors.white*/,
                             ),
                           ],
                           child: RowWatchlist(
@@ -1078,28 +1199,41 @@ class _ScreenSearchWatchlistState extends BaseStateNoTabsWithParentTab<ScreenSea
                             groupBest: groupBest,
                             firstRow: (indexData == 0),
                             onTap: () {
-                              print('clicked code : ' + gp.code + '  canTapRow : $canTapRow');
+                              print('clicked code : ' +
+                                  gp.code +
+                                  '  canTapRow : $canTapRow');
                               if (canTapRow) {
                                 canTapRow = false;
 
-                                Stock stock = InvestrendTheme.storedData.findStock(gp.code);
+                                Stock stock = InvestrendTheme.storedData
+                                    .findStock(gp.code);
                                 if (stock == null) {
-                                  print('clicked code : ' + gp.code + ' aborted, not find stock on StockStorer');
+                                  print('clicked code : ' +
+                                      gp.code +
+                                      ' aborted, not find stock on StockStorer');
                                   canTapRow = true;
                                   return;
                                 }
-                                context.read(primaryStockChangeNotifier).setStock(stock);
+                                context
+                                    .read(primaryStockChangeNotifier)
+                                    .setStock(stock);
 
                                 Future.delayed(Duration(milliseconds: 200), () {
                                   canTapRow = true;
-                                  InvestrendTheme.of(context).showStockDetail(context);
+                                  InvestrendTheme.of(context)
+                                      .showStockDetail(context);
                                 });
                               }
                             },
-                            paddingLeftRight: InvestrendTheme.cardPaddingGeneral,
-                            onPressedButtonCorporateAction: ()=> onPressedButtonCorporateAction(context, gp.corporateAction),
+                            paddingLeftRight:
+                                InvestrendTheme.cardPaddingGeneral,
+                            onPressedButtonCorporateAction: () =>
+                                onPressedButtonCorporateAction(
+                                    context, gp.corporateAction),
                             //onPressedButtonSpecialNotation: ()=> onPressedButtonSpecialNotation(context, gp.notation),
-                            onPressedButtonSpecialNotation: ()=> onPressedButtonImportantInformation(context, gp.notation, gp.suspendStock),
+                            onPressedButtonSpecialNotation: () =>
+                                onPressedButtonImportantInformation(
+                                    context, gp.notation, gp.suspendStock),
                             stockInformationStatus: gp.status,
                             widthRight: _watchlistDataNotifier.widthRight,
                           ),
@@ -1145,28 +1279,25 @@ class _ScreenSearchWatchlistState extends BaseStateNoTabsWithParentTab<ScreenSea
     );
   }
 
-  void onPressedButtonImportantInformation(BuildContext context, List<Remark2Mapping> notation, SuspendStock suspendStock) {
-
-
+  void onPressedButtonImportantInformation(BuildContext context,
+      List<Remark2Mapping> notation, SuspendStock suspendStock) {
     int count = notation == null ? 0 : notation.length;
-    if(count == 0 && suspendStock == null){
-      print(routeName+'.onPressedButtonImportantInformation not showing anything');
+    if (count == 0 && suspendStock == null) {
+      print(routeName +
+          '.onPressedButtonImportantInformation not showing anything');
       return;
     }
-    print(routeName+'.onPressedButtonImportantInformation');
+    print(routeName + '.onPressedButtonImportantInformation');
     List<Widget> childs = List.empty(growable: true);
 
-
     double height = 0;
-    if(suspendStock != null){
-
-
+    if (suspendStock != null) {
       String infoSuspend = 'suspended_time_info'.tr();
 
       DateFormat dateFormatter = DateFormat('EEEE, dd/MM/yyyy', 'id');
       DateFormat dateParser = DateFormat('yyyy-MM-dd');
       DateTime dateTime = dateParser.parseUtc(suspendStock.date);
-      print('dateTime : '+dateTime.toString());
+      print('dateTime : ' + dateTime.toString());
       //print('indexSummary.date : '+data.date+' '+data.time);
       String formatedDate = dateFormatter.format(dateTime);
       //String formatedTime = timeFormatter.format(dateTime);
@@ -1177,24 +1308,30 @@ class _ScreenSearchWatchlistState extends BaseStateNoTabsWithParentTab<ScreenSea
       height += 25.0;
       childs.add(Padding(
         padding: const EdgeInsets.only(bottom: 5.0),
-        child: Text('Suspended '+suspendStock.board, style: InvestrendTheme.of(context).small_w600,),
+        child: Text(
+          'Suspended ' + suspendStock.board,
+          style: InvestrendTheme.of(context).small_w600,
+        ),
       ));
 
       height += 50.0;
       childs.add(Padding(
         padding: const EdgeInsets.only(bottom: 15.0),
         child: RichText(
-          text: TextSpan(text:  '•  ', style: InvestrendTheme.of(context).small_w600, children: [
-            TextSpan(
-              text: infoSuspend,
-              style: InvestrendTheme.of(context).small_w400,
-            )
-          ]),
+          text: TextSpan(
+              text: '•  ',
+              style: InvestrendTheme.of(context).small_w600,
+              children: [
+                TextSpan(
+                  text: infoSuspend,
+                  style: InvestrendTheme.of(context).small_w400,
+                )
+              ]),
         ),
       ));
     }
     bool titleSpecialNotation = true;
-    for(int i = 0; i < count; i++){
+    for (int i = 0; i < count; i++) {
       /*
       Remark2Mapping remark2 = notation.elementAt(i);
       if(remark2 != null){
@@ -1231,42 +1368,51 @@ class _ScreenSearchWatchlistState extends BaseStateNoTabsWithParentTab<ScreenSea
        */
 
       Remark2Mapping remark2 = notation.elementAt(i);
-      if(remark2 != null){
-        if(remark2.isSurveilance()) {
+      if (remark2 != null) {
+        if (remark2.isSurveilance()) {
           height += 35.0;
           childs.add(Padding(
             padding: const EdgeInsets.only(bottom: 15.0),
-            child: Text(remark2.code+' : '+remark2.value, style: InvestrendTheme.of(context).small_w600,),
+            child: Text(
+              remark2.code + ' : ' + remark2.value,
+              style: InvestrendTheme.of(context).small_w600,
+            ),
           ));
-        }else {
-          if(titleSpecialNotation){
+        } else {
+          if (titleSpecialNotation) {
             titleSpecialNotation = false;
             height += 25.0;
             childs.add(Padding(
               padding: const EdgeInsets.only(bottom: 5.0),
-              child: Text('bottom_sheet_alert_title'.tr(), style: InvestrendTheme.of(context).small_w600,),
+              child: Text(
+                'bottom_sheet_alert_title'.tr(),
+                style: InvestrendTheme.of(context).small_w600,
+              ),
             ));
           }
           height += 40.0;
           childs.add(Padding(
             padding: const EdgeInsets.only(bottom: 5.0),
             child: RichText(
-              text: TextSpan(text: /*remark2.code + " : "*/ '•  ', style: InvestrendTheme.of(context).small_w600, children: [
-                TextSpan(
-                  text: remark2.code,
+              text: TextSpan(
+                  text: /*remark2.code + " : "*/ '•  ',
                   style: InvestrendTheme.of(context).small_w600,
-                ),
-                TextSpan(
-                  text: ' : '+remark2.value,
-                  style: InvestrendTheme.of(context).small_w400,
-                )
-              ]),
+                  children: [
+                    TextSpan(
+                      text: remark2.code,
+                      style: InvestrendTheme.of(context).small_w600,
+                    ),
+                    TextSpan(
+                      text: ' : ' + remark2.value,
+                      style: InvestrendTheme.of(context).small_w400,
+                    )
+                  ]),
             ),
           ));
         }
       }
     }
-    if(childs.isNotEmpty){
+    if (childs.isNotEmpty) {
       showAlert(context, childs, childsHeight: height, title: ' ');
     }
   }
@@ -1295,9 +1441,9 @@ class _ScreenSearchWatchlistState extends BaseStateNoTabsWithParentTab<ScreenSea
     }
   }
   */
-  void onPressedButtonCorporateAction(BuildContext context, List<CorporateActionEvent> corporateAction) {
-    print('onPressedButtonCorporateAction : '+corporateAction.toString());
-
+  void onPressedButtonCorporateAction(
+      BuildContext context, List<CorporateActionEvent> corporateAction) {
+    print('onPressedButtonCorporateAction : ' + corporateAction.toString());
 
     List<Widget> childs = List.empty(growable: true);
     if (corporateAction != null && corporateAction.isNotEmpty) {
@@ -1306,12 +1452,13 @@ class _ScreenSearchWatchlistState extends BaseStateNoTabsWithParentTab<ScreenSea
           childs.add(Padding(
             padding: const EdgeInsets.only(bottom: 20),
             child: ca.getInformationWidget(context),
-
           ));
         }
       });
 
-      showAlert(context, childs, childsHeight: (childs.length * 50).toDouble(),title: 'Corporate Action');
+      showAlert(context, childs,
+          childsHeight: (childs.length * 50).toDouble(),
+          title: 'Corporate Action');
     }
   }
   /*
@@ -1504,7 +1651,9 @@ class _ScreenSearchWatchlistState extends BaseStateNoTabsWithParentTab<ScreenSea
 
   bool loadActiveWatchlist(BuildContext context) {
     bool loaded = false;
-    Watchlist active = context.read(watchlistChangeNotifier).getWatchlist(_watchlistNotifier.value);
+    Watchlist active = context
+        .read(watchlistChangeNotifier)
+        .getWatchlist(_watchlistNotifier.value);
     if (active != null) {
       //GeneralPriceData dataWatchlist = GeneralPriceData();
       WatchlistPriceData dataWatchlist = WatchlistPriceData();
@@ -1512,10 +1661,12 @@ class _ScreenSearchWatchlistState extends BaseStateNoTabsWithParentTab<ScreenSea
         Stock stock = InvestrendTheme.storedData.findStock(code);
         if (stock != null) {
           //dataWatchlist.datas.add(GeneralPrice(stock.code, 0.0, 0.0, 0.0, name: stock.name));
-          dataWatchlist.datas.add(WatchlistPrice(stock.code, 0.0, 0.0, 0.0, stock.name, value: 0));
+          dataWatchlist.datas.add(
+              WatchlistPrice(stock.code, 0.0, 0.0, 0.0, stock.name, value: 0));
         } else {
           //dataWatchlist.datas.add(GeneralPrice(code, 0.0, 0.0, 0.0, name: '-'));
-          dataWatchlist.datas.add(WatchlistPrice(code, 0.0, 0.0, 0.0, '-', value: 0));
+          dataWatchlist.datas
+              .add(WatchlistPrice(code, 0.0, 0.0, 0.0, '-', value: 0));
         }
       });
 
@@ -1527,7 +1678,8 @@ class _ScreenSearchWatchlistState extends BaseStateNoTabsWithParentTab<ScreenSea
       // _stopTimer();
       // doUpdate();
       // _startTimer();
-      context.read(propertiesNotifier).properties.saveInt(routeName, PROP_SELECTED_WATCHLIST, _watchlistNotifier.value);
+      context.read(propertiesNotifier).properties.saveInt(
+          routeName, PROP_SELECTED_WATCHLIST, _watchlistNotifier.value);
     } else {
       _watchlistDataNotifier.setValue(null);
     }
@@ -1575,8 +1727,14 @@ class _ScreenSearchWatchlistState extends BaseStateNoTabsWithParentTab<ScreenSea
     });
     runPostFrame(() {
       // #1 get properties
-      int selectedWatchlist = context.read(propertiesNotifier).properties.getInt(routeName, PROP_SELECTED_WATCHLIST, 0);
-      int selectedSort = context.read(propertiesNotifier).properties.getInt(routeName, PROP_SELECTED_SORT, 0);
+      int selectedWatchlist = context
+          .read(propertiesNotifier)
+          .properties
+          .getInt(routeName, PROP_SELECTED_WATCHLIST, 0);
+      int selectedSort = context
+          .read(propertiesNotifier)
+          .properties
+          .getInt(routeName, PROP_SELECTED_SORT, 0);
 
       // #2 use properties
       int countWatchlist = context.read(watchlistChangeNotifier).count();
@@ -1585,10 +1743,14 @@ class _ScreenSearchWatchlistState extends BaseStateNoTabsWithParentTab<ScreenSea
 
       // #3 check properties if changed, then save again
       if (selectedWatchlist != _watchlistNotifier.value) {
-        context.read(propertiesNotifier).properties.saveInt(routeName, PROP_SELECTED_WATCHLIST, _watchlistNotifier.value);
+        context.read(propertiesNotifier).properties.saveInt(
+            routeName, PROP_SELECTED_WATCHLIST, _watchlistNotifier.value);
       }
       if (selectedSort != _sortNotifier.value) {
-        context.read(propertiesNotifier).properties.saveInt(routeName, PROP_SELECTED_SORT, _sortNotifier.value);
+        context
+            .read(propertiesNotifier)
+            .properties
+            .saveInt(routeName, PROP_SELECTED_SORT, _sortNotifier.value);
       }
 
       bool loaded = loadActiveWatchlist(context);
@@ -1625,7 +1787,8 @@ class _ScreenSearchWatchlistState extends BaseStateNoTabsWithParentTab<ScreenSea
         print('_timer.tick : ' + _timer.tick.toString());
         if (active) {
           if (onProgress) {
-            print(routeName + ' timer aborted caused by onProgress : $onProgress');
+            print(routeName +
+                ' timer aborted caused by onProgress : $onProgress');
           } else {
             doUpdate();
           }

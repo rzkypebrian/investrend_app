@@ -251,15 +251,15 @@ class BuySell {
     return added;
   }
 
-  PriceLot getFastPriceLot(int by_price) {
-    final priceLot = _listFastPriceLot.firstWhere((element) => element.price == by_price, orElse: () {
+  PriceLot getFastPriceLot(int byPrice) {
+    final priceLot = _listFastPriceLot.firstWhere((element) => element.price == byPrice, orElse: () {
       return null;
     });
     return priceLot;
   }
 
-  void removeFastPriceLot(int by_price) {
-    final index = _listFastPriceLot.indexWhere((element) => element.price == by_price);
+  void removeFastPriceLot(int byPrice) {
+    final index = _listFastPriceLot.indexWhere((element) => element.price == byPrice);
     if (index >= 0) {
       //print('Using indexWhere: ${people[index]}');
       // PriceLot pl = _listFastPriceLot.elementAt(index);

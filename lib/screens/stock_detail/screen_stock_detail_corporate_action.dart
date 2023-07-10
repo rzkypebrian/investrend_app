@@ -1,17 +1,12 @@
-import 'dart:math';
 
 import 'package:Investrend/component/button_rounded.dart';
-import 'package:Investrend/component/cards/card_earning_pershare.dart';
 import 'package:Investrend/component/cards/card_label_value.dart';
-import 'package:Investrend/component/cards/card_local_foreign.dart';
-import 'package:Investrend/component/cards/card_performance.dart';
 import 'package:Investrend/component/component_creator.dart';
 import 'package:Investrend/objects/class_value_notifier.dart';
 import 'package:Investrend/objects/data_object.dart';
 import 'package:Investrend/objects/riverpod_change_notifier.dart';
 import 'package:Investrend/objects/iii_objects.dart';
 import 'package:Investrend/screens/base/base_state.dart';
-import 'package:Investrend/utils/connection_services.dart';
 import 'package:Investrend/utils/string_utils.dart';
 import 'package:flutter/material.dart';
 
@@ -180,13 +175,13 @@ class _ScreenStockDetailCorporateActionState extends BaseStateNoTabsWithParentTa
         final result = await InvestrendTheme.datafeedHttp.fetchCorporateAction(code, type);
         if (result != null && !result.isEmpty()) {
           if (mounted) {
-            Stock stock_now = context.read(primaryStockChangeNotifier).stock;
-            String type_now = _types.elementAt(_caTypeNotifier.value);
-            if(StringUtils.equalsIgnoreCase(result.code, stock_now?.code) && StringUtils.equalsIgnoreCase(result.type, type_now) ){
+            Stock stockNow = context.read(primaryStockChangeNotifier).stock;
+            String typeNow = _types.elementAt(_caTypeNotifier.value);
+            if(StringUtils.equalsIgnoreCase(result.code, stockNow?.code) && StringUtils.equalsIgnoreCase(result.type, typeNow) ){
               print('Got CorporateActionData : ' + result.toString());
               _dataNotifier.setValue(result);
             }else{
-              print('Got CorporateActionData : IGNORED  result.code : '+result.code+'  stock_now : '+stock_now?.code+'  result.type : '+result.type+'  type_now : $type_now');
+              print('Got CorporateActionData : IGNORED  result.code : '+result.code+'  stock_now : '+stockNow?.code+'  result.type : '+result.type+'  type_now : $typeNow');
             }
           } else {
             print('ignored CorporateActionData, mounted : $mounted');
@@ -328,7 +323,7 @@ class _ScreenStockDetailCorporateActionState extends BaseStateNoTabsWithParentTa
 
     return RefreshIndicator(
       color: InvestrendTheme.of(context).textWhite,
-      backgroundColor: Theme.of(context).accentColor,
+      backgroundColor: Theme.of(context).colorScheme.secondary,
       onRefresh: onRefresh,
       child: ListView(
         controller: pScrollController,

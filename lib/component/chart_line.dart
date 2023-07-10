@@ -1,4 +1,3 @@
-import 'package:Investrend/redis/BooleanString.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:intl/intl.dart';
 import 'package:Investrend/objects/data_object.dart';

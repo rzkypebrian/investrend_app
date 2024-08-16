@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'dart:math';
 
 import 'package:Investrend/component/component_creator.dart';
@@ -14,8 +16,12 @@ class WidgetTradebook extends StatefulWidget {
   //final TradeBookNotifier  _tradeBookNotifier;
   final int maxShowLine;
   //final bool showMore;
-  final ValueNotifier<bool> showMoreNotifier;
-  const WidgetTradebook(/*this._tradeBookNotifier,*/ {this.showMoreNotifier,this.maxShowLine = 0 , Key key}) : super(key: key);
+  final ValueNotifier<bool>? showMoreNotifier;
+  const WidgetTradebook(
+      /*this._tradeBookNotifier,*/ {this.showMoreNotifier,
+      this.maxShowLine = 0,
+      Key? key})
+      : super(key: key);
 
   @override
   State<WidgetTradebook> createState() => _WidgetTradebookState();
@@ -28,18 +34,15 @@ class _WidgetTradebookState extends State<WidgetTradebook> {
   @override
   void initState() {
     super.initState();
-    if(widget.showMoreNotifier != null){
-      this.showMore = widget.showMoreNotifier.value;
-      widget.showMoreNotifier.addListener(() {
-        this.showMore = widget.showMoreNotifier.value;
-        setState(() {
-
-        });
+    if (widget.showMoreNotifier != null) {
+      this.showMore = widget.showMoreNotifier!.value;
+      widget.showMoreNotifier?.addListener(() {
+        this.showMore = widget.showMoreNotifier!.value;
+        setState(() {});
       });
-
     }
-
   }
+
   @override
   Widget build(BuildContext context) {
     // if(widget.showMoreNotifier != null){
@@ -49,7 +52,6 @@ class _WidgetTradebookState extends State<WidgetTradebook> {
     //         return getTableDataTradebook(context);
     //       });
     // }
-
 
     return getTableDataTradebook(context);
   }
@@ -69,16 +71,19 @@ class _WidgetTradebookState extends State<WidgetTradebook> {
       List<TableRow> list = List.empty(growable: true);
 
       TableRow header = TableRow(children: [
-        ComponentCreator.tableCellLeftHeader(context, 'Price', padding: InvestrendTheme.cardPaddingGeneral),
+        ComponentCreator.tableCellLeftHeader(context, 'Price',
+            padding: InvestrendTheme.cardPaddingGeneral),
         ComponentCreator.tableCellCenterHeader(context, 'Lot'),
         ComponentCreator.tableCellCenterHeader(context, 'Buy Lot'),
-        ComponentCreator.tableCellCenterHeader(context, 'Sell Lot', padding: InvestrendTheme.cardPaddingGeneral),
+        ComponentCreator.tableCellCenterHeader(context, 'Sell Lot',
+            padding: InvestrendTheme.cardPaddingGeneral),
       ]);
       list.add(header);
 
-      if(notifier.tradebook.countRows() == 0 && widget.maxShowLine > 0){
-
-        double fontHeight = UIHelper.textSize('AjKg', InvestrendTheme.of(context).small_w400).height;
+      if (notifier.tradebook!.countRows() == 0 && widget.maxShowLine > 0) {
+        double fontHeight =
+            UIHelper.textSize('AjKg', InvestrendTheme.of(context).small_w400)
+                .height;
         double rowHeight = fontHeight + 5.0 + 5.0;
         return Column(
           children: [
@@ -100,10 +105,15 @@ class _WidgetTradebookState extends State<WidgetTradebook> {
             )
           ],
         );
-      }else{
-        StockSummary stockSummary = context.read(stockSummaryChangeNotifier).summary;
-        int prev = stockSummary != null && stockSummary.prev != null ? stockSummary.prev : 0;
-        int close = stockSummary != null && stockSummary.close != null ? stockSummary.close : 0;
+      } else {
+        StockSummary? stockSummary =
+            context.read(stockSummaryChangeNotifier).summary;
+        int? prev = stockSummary != null && stockSummary.prev != null
+            ? stockSummary.prev
+            : 0;
+        int? close = stockSummary != null && stockSummary.close != null
+            ? stockSummary.close
+            : 0;
         /*
       StockSummaryNotifier _summaryNotifier = InvestrendTheme.of(context).summaryNotifier;
       int prev = _summaryNotifier != null && _summaryNotifier.value != null ? _summaryNotifier.value.prev : 0;
@@ -111,7 +121,7 @@ class _WidgetTradebookState extends State<WidgetTradebook> {
 
         // notifier.tradebook.listTradeBookRows.length
 
-        int countMax = notifier.tradebook.countRows();
+        int countMax = notifier.tradebook!.countRows();
 
         if (widget.maxShowLine > 0) {
           hasMore = widget.maxShowLine < countMax;
@@ -124,7 +134,8 @@ class _WidgetTradebookState extends State<WidgetTradebook> {
 
         //for (int index = 0; index < notifier.tradebook.countRows(); index++) {
         for (int index = 0; index < countMax; index++) {
-          TradeBookRow tr = notifier.tradebook.listTradeBookRows.elementAt(index);
+          TradeBookRow tr =
+              notifier.tradebook!.listTradeBookRows!.elementAt(index);
           bool highlightPrice = close == tr.price;
           int lot = tr.volume ~/ 100;
           int buyerLot = tr.buyerVolume ~/ 100;
@@ -137,23 +148,29 @@ class _WidgetTradebookState extends State<WidgetTradebook> {
                   color: InvestrendTheme.of(context).oddColor,
                 ),
                 children: [
-                  createLabelLeft(context, InvestrendTheme.formatPrice(tr.price),
-                      color: InvestrendTheme.priceTextColor(tr.price, prev: prev),
+                  createLabelLeft(
+                      context, InvestrendTheme.formatPrice(tr.price),
+                      color:
+                          InvestrendTheme.priceTextColor(tr.price, prev: prev!),
                       padding: InvestrendTheme.cardPaddingGeneral,
                       highlightPrice: highlightPrice),
                   createLabelCenter(context, InvestrendTheme.formatPrice(lot)),
-                  createLabelCenter(context, InvestrendTheme.formatPrice(buyerLot)),
-                  createLabelCenter(context, InvestrendTheme.formatPrice(sellerLot), padding: InvestrendTheme.cardPaddingGeneral),
+                  createLabelCenter(
+                      context, InvestrendTheme.formatPrice(buyerLot)),
+                  createLabelCenter(
+                      context, InvestrendTheme.formatPrice(sellerLot),
+                      padding: InvestrendTheme.cardPaddingGeneral),
                 ]);
           } else {
             row = TableRow(children: [
               createLabelLeft(context, InvestrendTheme.formatPrice(tr.price),
-                  color: InvestrendTheme.priceTextColor(tr.price, prev: prev),
+                  color: InvestrendTheme.priceTextColor(tr.price, prev: prev!),
                   padding: InvestrendTheme.cardPaddingGeneral,
                   highlightPrice: highlightPrice),
               createLabelCenter(context, InvestrendTheme.formatPrice(lot)),
               createLabelCenter(context, InvestrendTheme.formatPrice(buyerLot)),
-              createLabelCenter(context, InvestrendTheme.formatPrice(sellerLot), padding: InvestrendTheme.cardPaddingGeneral),
+              createLabelCenter(context, InvestrendTheme.formatPrice(sellerLot),
+                  padding: InvestrendTheme.cardPaddingGeneral),
             ]);
           }
           // TableRow row = TableRow(
@@ -183,7 +200,9 @@ class _WidgetTradebookState extends State<WidgetTradebook> {
                 children: list,
               ),
               Padding(
-                padding: const EdgeInsets.only(left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral),
+                padding: const EdgeInsets.only(
+                    left: InvestrendTheme.cardPaddingGeneral,
+                    right: InvestrendTheme.cardPaddingGeneral),
                 child: Material(
                   color: Colors.transparent,
                   child: InkWell(
@@ -191,14 +210,17 @@ class _WidgetTradebookState extends State<WidgetTradebook> {
                       // setState(() {
                       //   showMore = !showMore;
                       // });
-                      widget.showMoreNotifier.value = !widget.showMoreNotifier.value;
+                      widget.showMoreNotifier!.value =
+                          !widget.showMoreNotifier!.value;
                     },
                     child: Text(
-                      showMore ? "button_show_more".tr() : "button_show_less".tr(),
+                      showMore
+                          ? "button_show_more".tr()
+                          : "button_show_less".tr(),
                       textAlign: TextAlign.end,
-                      style: InvestrendTheme.of(context)
-                          .small_w600
-                          .copyWith(color: InvestrendTheme.of(context).investrendPurple/*, fontWeight: FontWeight.bold*/),
+                      style: InvestrendTheme.of(context).small_w600?.copyWith(
+                          color: InvestrendTheme.of(context)
+                              .investrendPurple /*, fontWeight: FontWeight.bold*/),
                     ),
                   ),
                 ),
@@ -207,8 +229,6 @@ class _WidgetTradebookState extends State<WidgetTradebook> {
           );
         }
       }
-
-
 
       return Table(
         defaultVerticalAlignment: TableCellVerticalAlignment.middle,
@@ -296,16 +316,18 @@ class _WidgetTradebookState extends State<WidgetTradebook> {
      */
   }
 
-  Widget createLabelLeft(BuildContext context, String text, {double padding = 0.0, Color color, bool highlightPrice = false}) {
+  Widget createLabelLeft(BuildContext context, String text,
+      {double padding = 0.0, Color? color, bool highlightPrice = false}) {
     if (color == null) {
       color = InvestrendTheme.of(context).greyDarkerTextColor;
     }
-    TextStyle style;
+    TextStyle? style;
     if (highlightPrice) {
       text = ' $text ';
-      style = InvestrendTheme.of(context).small_w400.copyWith(color: Theme.of(context).primaryColor, backgroundColor: color);
+      style = InvestrendTheme.of(context).small_w400?.copyWith(
+          color: Theme.of(context).primaryColor, backgroundColor: color);
     } else {
-      style = InvestrendTheme.of(context).small_w400.copyWith(color: color);
+      style = InvestrendTheme.of(context).small_w400?.copyWith(color: color);
     }
     return Padding(
       padding: EdgeInsets.only(left: padding, top: 5.0, bottom: 5.0),
@@ -318,7 +340,8 @@ class _WidgetTradebookState extends State<WidgetTradebook> {
     );
   }
 
-  Widget createLabelCenter(BuildContext context, String text, {double padding = 0.0, Color color}) {
+  Widget createLabelCenter(BuildContext context, String text,
+      {double padding = 0.0, Color? color}) {
     if (color == null) {
       color = InvestrendTheme.of(context).greyDarkerTextColor;
     }
@@ -327,7 +350,7 @@ class _WidgetTradebookState extends State<WidgetTradebook> {
       child: Text(
         text,
         maxLines: 1,
-        style: InvestrendTheme.of(context).small_w400.copyWith(color: color),
+        style: InvestrendTheme.of(context).small_w400?.copyWith(color: color),
         textAlign: TextAlign.center,
       ),
     );

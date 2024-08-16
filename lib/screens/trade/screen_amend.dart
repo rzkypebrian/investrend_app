@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'dart:io';
 
 import 'package:Investrend/component/bottom_sheet/bottom_sheet_alert.dart';
@@ -28,23 +30,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ScreenAmend extends StatefulWidget {
-  final BuySell amendData;
+  final BuySell? amendData;
 
   const ScreenAmend(
     this.amendData, {
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
   _ScreenAmendState createState() =>
-      _ScreenAmendState(amendData.orderType, amendData);
+      _ScreenAmendState(amendData!.orderType, amendData);
 }
 
 class _ScreenAmendState extends BaseStateNoTabs<ScreenAmend>
     with SingleTickerProviderStateMixin {
   String timeCreation = '-';
-  OrderType _initialOrderType;
-  final BuySell amendData;
+  OrderType? _initialOrderType;
+  final BuySell? amendData;
   final UniqueKey keyAmendBuy = UniqueKey();
   final UniqueKey keyAmendSell = UniqueKey();
   ValueNotifier<bool> _updateDataNotifier = ValueNotifier<bool>(false);
@@ -64,21 +66,21 @@ class _ScreenAmendState extends BaseStateNoTabs<ScreenAmend>
       int index = context
           .read(dataHolderChangeNotifier)
           .user
-          .getIndexAccountByCode(amendData.brokerCode, amendData.accountCode);
+          .getIndexAccountByCode(amendData?.brokerCode, amendData?.accountCode);
       print(routeName +
           ' initState amend got indexAccount : $index  for ' +
-          amendData.accountCode);
+          amendData!.accountCode!);
       if (index >= 0) {
         context.read(accountChangeNotifier).setIndex(index);
-        Account account = context
+        Account? account = context
             .read(dataHolderChangeNotifier)
             .user
-            .getAccountByCode(amendData.brokerCode, amendData.accountCode);
+            .getAccountByCode(amendData?.brokerCode, amendData?.accountCode);
 
         if (account != null) {
-          AccountStockPosition info = context
+          AccountStockPosition? info = context
               .read(accountsInfosNotifier)
-              .getInfo(amendData.accountCode);
+              .getInfo(amendData?.accountCode);
           if (info != null) {
             double buyingPower = info.outstandingLimit; // harus diisi
             //double rdnBalance = info.rdnBalance;
@@ -120,14 +122,10 @@ class _ScreenAmendState extends BaseStateNoTabs<ScreenAmend>
   }
 
   @override
-  void onActive() {
-    // TODO: implement onActive
-  }
+  void onActive() {}
 
   @override
-  void onInactive() {
-    // TODO: implement onInactive
-  }
+  void onInactive() {}
 
   //
   //
@@ -145,14 +143,14 @@ class _ScreenAmendState extends BaseStateNoTabs<ScreenAmend>
   //     bottomSheet: createBottomSheet(context, paddingBottom),
   //   );
   // }
-  String attentionCodes;
-  List<Remark2Mapping> notation = List.empty(growable: true);
-  StockInformationStatus status;
-  SuspendStock suspendStock;
-  List<CorporateActionEvent> corporateAction = List.empty(growable: true);
+  String? attentionCodes;
+  List<Remark2Mapping>? notation = List.empty(growable: true);
+  StockInformationStatus? status;
+  SuspendStock? suspendStock;
+  List<CorporateActionEvent>? corporateAction = List.empty(growable: true);
   Color corporateActionColor = Colors.black;
 
-  Widget createAppBar(BuildContext context) {
+  PreferredSizeWidget createAppBar(BuildContext context) {
     double elevation = 0.0;
     Color shadowColor = Theme.of(context).shadowColor;
     if (!InvestrendTheme.tradingHttp.is_production) {
@@ -165,33 +163,34 @@ class _ScreenAmendState extends BaseStateNoTabs<ScreenAmend>
         return Center(child: CircularProgressIndicator());
       }
 
-      TextStyle styleAttention = InvestrendTheme.of(context).headline3;
+      TextStyle? styleAttention = InvestrendTheme.of(context).headline3;
       Size textSize = UIHelper.textSize('ABCD', styleAttention);
       attentionCodes = context
           .read(remark2Notifier)
-          .getSpecialNotationCodes(notifier.stock.code);
-      notation =
-          context.read(remark2Notifier).getSpecialNotation(notifier.stock.code);
+          .getSpecialNotationCodes(notifier.stock?.code);
+      notation = context
+          .read(remark2Notifier)
+          .getSpecialNotation(notifier.stock?.code);
       status = context
           .read(remark2Notifier)
-          .getSpecialNotationStatus(notifier.stock.code);
+          .getSpecialNotationStatus(notifier.stock?.code);
       suspendStock = context
           .read(suspendedStockNotifier)
-          .getSuspended(notifier.stock.code, notifier.stock.defaultBoard);
+          .getSuspended(notifier.stock?.code, notifier.stock?.defaultBoard);
       if (suspendStock != null) {
         status = StockInformationStatus.Suspended;
       }
-      VoidCallback onImportantInformation;
-      if (notation.isNotEmpty || suspendStock != null) {
+      VoidCallback? onImportantInformation;
+      if (notation!.isNotEmpty || suspendStock != null) {
         onImportantInformation = () => onPressedButtonImportantInformation(
             context, notation, suspendStock);
       }
       corporateAction = context
           .read(corporateActionEventNotifier)
-          .getEvent(notifier.stock.code);
+          .getEvent(notifier.stock?.code);
       corporateActionColor = CorporateActionEvent.getColor(corporateAction);
       VoidCallback onPressedCorporateAction;
-      if ((corporateAction != null && corporateAction.isNotEmpty)) {
+      if ((corporateAction != null && corporateAction!.isNotEmpty)) {
         onPressedCorporateAction = () => onPressedButtonCorporateAction();
       }
       /*
@@ -210,15 +209,16 @@ class _ScreenAmendState extends BaseStateNoTabs<ScreenAmend>
        */
       Widget codePriceWidget = Column(
         children: [
-          Hero(tag: 'trade_code', child: AppBarTitleText(amendData.stock_code)),
+          Hero(
+              tag: 'trade_code', child: AppBarTitleText(amendData?.stock_code)),
           SizedBox(
             height: 5.0,
           ),
           Text(
-            InvestrendTheme.formatPrice(notifier.summary.close),
+            InvestrendTheme.formatPrice(notifier.summary?.close),
             style: InvestrendTheme.of(context)
                 .support_w400_compact
-                .copyWith(color: Theme.of(context).colorScheme.secondary),
+                ?.copyWith(color: Theme.of(context).colorScheme.secondary),
           ),
         ],
       );
@@ -230,7 +230,7 @@ class _ScreenAmendState extends BaseStateNoTabs<ScreenAmend>
         list.add(ButtonTextAttentionMozaic(attentionCodes, textSize.height - 3,
             status, onImportantInformation));
       }
-      if ((corporateAction != null && corporateAction.isNotEmpty)) {
+      if ((corporateAction != null && corporateAction!.isNotEmpty)) {
         list.add(ButtonCorporateAction(textSize.height, corporateActionColor,
             onPressedButtonCorporateAction));
       }
@@ -338,8 +338,8 @@ class _ScreenAmendState extends BaseStateNoTabs<ScreenAmend>
     print('onPressedButtonCorporateAction : ' + corporateAction.toString());
 
     List<Widget> childs = List.empty(growable: true);
-    if (corporateAction != null && corporateAction.isNotEmpty) {
-      corporateAction.forEach((ca) {
+    if (corporateAction != null && corporateAction!.isNotEmpty) {
+      corporateAction?.forEach((CorporateActionEvent? ca) {
         if (ca != null) {
           childs.add(Padding(
             padding: const EdgeInsets.only(bottom: 20),
@@ -355,7 +355,7 @@ class _ScreenAmendState extends BaseStateNoTabs<ScreenAmend>
   }
 
   void onPressedButtonImportantInformation(BuildContext context,
-      List<Remark2Mapping> notation, SuspendStock suspendStock) {
+      List<Remark2Mapping>? notation, SuspendStock? suspendStock) {
     List<Widget> childs = List.empty(growable: true);
     int count = notation == null ? 0 : notation.length;
 
@@ -365,20 +365,20 @@ class _ScreenAmendState extends BaseStateNoTabs<ScreenAmend>
 
       DateFormat dateFormatter = DateFormat('EEEE, dd/MM/yyyy', 'id');
       DateFormat dateParser = DateFormat('yyyy-MM-dd');
-      DateTime dateTime = dateParser.parseUtc(suspendStock.date);
+      DateTime dateTime = dateParser.parseUtc(suspendStock.date!);
       print('dateTime : ' + dateTime.toString());
       //print('indexSummary.date : '+data.date+' '+data.time);
       String formatedDate = dateFormatter.format(dateTime);
       //String formatedTime = timeFormatter.format(dateTime);
       //infoSuspend = infoSuspend.replaceAll('#BOARD#', suspendStock.board);
       infoSuspend = infoSuspend.replaceAll('#DATE#', formatedDate);
-      infoSuspend = infoSuspend.replaceAll('#TIME#', suspendStock.time);
+      infoSuspend = infoSuspend.replaceAll('#TIME#', suspendStock.time!);
       //displayTime = infoTime;
       height += 25.0;
       childs.add(Padding(
         padding: const EdgeInsets.only(bottom: 5.0),
         child: Text(
-          'Suspended ' + suspendStock.board,
+          'Suspended ' + suspendStock.board!,
           style: InvestrendTheme.of(context).small_w600,
         ),
       ));
@@ -401,14 +401,14 @@ class _ScreenAmendState extends BaseStateNoTabs<ScreenAmend>
     }
     bool titleSpecialNotation = true;
     for (int i = 0; i < count; i++) {
-      Remark2Mapping remark2 = notation.elementAt(i);
+      Remark2Mapping? remark2 = notation?.elementAt(i);
       if (remark2 != null) {
         if (remark2.isSurveilance()) {
           height += 35.0;
           childs.add(Padding(
             padding: const EdgeInsets.only(bottom: 15.0),
             child: Text(
-              remark2.code + ' : ' + remark2.value,
+              remark2.code! + ' : ' + remark2.value!,
               style: InvestrendTheme.of(context).small_w600,
             ),
           ));
@@ -437,7 +437,7 @@ class _ScreenAmendState extends BaseStateNoTabs<ScreenAmend>
                       style: InvestrendTheme.of(context).small_w600,
                     ),
                     TextSpan(
-                      text: ' : ' + remark2.value,
+                      text: ' : ' + remark2.value!,
                       style: InvestrendTheme.of(context).small_w400,
                     )
                   ]),
@@ -453,7 +453,7 @@ class _ScreenAmendState extends BaseStateNoTabs<ScreenAmend>
   }
 
   void showAlert(BuildContext context, List<Widget> childs,
-      {String title, double childsHeight = 0}) {
+      {String? title, double childsHeight = 0}) {
     showModalBottomSheet(
         isScrollControlled: true,
         shape: RoundedRectangleBorder(
@@ -474,7 +474,7 @@ class _ScreenAmendState extends BaseStateNoTabs<ScreenAmend>
   //bool fastMode = false;
 
   Widget createBody(BuildContext context, double paddingBottom) {
-    if (_initialOrderType.isBuyOrAmendBuy()) {
+    if (_initialOrderType!.isBuyOrAmendBuy()) {
       return ComponentCreator.keyboardHider(
           context,
           ScreenAmendBuy(
@@ -483,7 +483,7 @@ class _ScreenAmendState extends BaseStateNoTabs<ScreenAmend>
             key: keyAmendBuy,
             keyboardNotifier: _keyboardNotifier,
           ));
-    } else if (_initialOrderType.isSellOrAmendSell()) {
+    } else if (_initialOrderType!.isSellOrAmendSell()) {
       return ComponentCreator.keyboardHider(
           context,
           ScreenAmendSell(
@@ -496,7 +496,7 @@ class _ScreenAmendState extends BaseStateNoTabs<ScreenAmend>
       return Center(
           child: Text(
         'Amend Unknown Type',
-        style: Theme.of(context).textTheme.bodyText2,
+        style: Theme.of(context).textTheme.bodyMedium,
       ));
     }
 
@@ -532,16 +532,16 @@ class _ScreenAmendState extends BaseStateNoTabs<ScreenAmend>
 
   Widget createBottomSheet(BuildContext context, double paddingBottom) {
     String tag;
-    if (_initialOrderType.isBuyOrAmendBuy()) {
+    if (_initialOrderType!.isBuyOrAmendBuy()) {
       tag = 'button_buy';
-    } else if (_initialOrderType.isSellOrAmendSell()) {
+    } else if (_initialOrderType!.isSellOrAmendSell()) {
       tag = 'button_sell';
     } else {
       tag = '???';
     }
     return ValueListenableBuilder(
       valueListenable: _bottomSheetNotifier,
-      builder: (context, value, child) {
+      builder: (context, bool value, child) {
         if (!value) {
           if (Platform.isIOS) {
             return Container(
@@ -562,7 +562,7 @@ class _ScreenAmendState extends BaseStateNoTabs<ScreenAmend>
                     'button_done'.tr(),
                     style: InvestrendTheme.of(context)
                         .small_w500_compact
-                        .copyWith(
+                        ?.copyWith(
                             color: Theme.of(context).colorScheme.secondary),
                   ),
                   onPressed: () {
@@ -595,7 +595,7 @@ class _ScreenAmendState extends BaseStateNoTabs<ScreenAmend>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            _initialOrderType.isBuyOrAmendBuy()
+                            _initialOrderType!.isBuyOrAmendBuy()
                                 ? 'trade_total_buy_label'.tr()
                                 : 'trade_total_sell_label'.tr(),
                             style: InvestrendTheme.of(context).small_w400,
@@ -668,11 +668,11 @@ class _ScreenAmendState extends BaseStateNoTabs<ScreenAmend>
                           // logs.add(newData.toString());
                           // logs.add('--------------');
 
-                          Account account = context
+                          Account? account = context
                               .read(dataHolderChangeNotifier)
                               .user
-                              .getAccountByCode(
-                                  amendData.brokerCode, amendData.accountCode);
+                              .getAccountByCode(amendData?.brokerCode,
+                                  amendData?.accountCode);
                           if (account == null) {
                             InvestrendTheme.of(context).showSnackBar(
                                 context, 'error_no_account_selected'.tr());
@@ -944,14 +944,15 @@ class _ScreenAmendState extends BaseStateNoTabs<ScreenAmend>
 //
 //    */
 // }
-
 }
 
 class BaseTradeBottomSheet extends StatelessWidget {
-  const BaseTradeBottomSheet({Key key}) : super(key: key);
+  const BaseTradeBottomSheet({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {}
+  Widget build(BuildContext context) {
+    return SizedBox();
+  }
 
 // Widget TradeComponentCreator.popupRow(BuildContext context, String label, String value) {
 //   return Container(
@@ -1084,7 +1085,7 @@ class AmendFinishedBottomSheet extends BaseTradeBottomSheet {
             : 'amend_finished_order_sell_sent_label'.tr()),
         style: InvestrendTheme.of(context)
             .regular_w400_compact
-            .copyWith(color: Color(0xFF25B792)),
+            ?.copyWith(color: Color(0xFF25B792)),
       )),
     );
     list.add(Spacer(
@@ -1112,7 +1113,7 @@ class AmendFinishedBottomSheet extends BaseTradeBottomSheet {
             'amend_finished_button_close'.tr(),
             style: InvestrendTheme.of(context)
                 .small_w600_compact
-                .copyWith(color: Theme.of(context).buttonColor),
+                ?.copyWith(color: Theme.of(context).highlightColor),
           ),
           onPressed: () {
             print('closed clicked');
@@ -1147,15 +1148,15 @@ class AmendFinishedBottomSheet extends BaseTradeBottomSheet {
 }
 
 class ConfirmationBottomSheet extends BaseTradeBottomSheet {
-  final OrderType orderType;
-  final BuySell initialAmendData;
+  final OrderType? orderType;
+  final BuySell? initialAmendData;
   final BuySell data;
   final String reff;
   final ValueNotifier<bool> loadingNotifier;
 
   const ConfirmationBottomSheet(this.initialAmendData, this.orderType,
       this.data, this.reff, this.loadingNotifier,
-      {Key key})
+      {Key? key})
       : super(key: key);
 
   /*
@@ -1265,7 +1266,7 @@ class ConfirmationBottomSheet extends BaseTradeBottomSheet {
   }
   */
   void buttonConfirmClicked(
-      BuildContext context, BuySell oldData, BuySell newData) {
+      BuildContext context, BuySell? oldData, BuySell? newData) {
     String loadingText = 'loading_submiting_amend_label'.tr();
     showModalBottomSheet(
         isScrollControlled: true,
@@ -1283,12 +1284,12 @@ class ConfirmationBottomSheet extends BaseTradeBottomSheet {
 
     Future<OrderReply> result = InvestrendTheme.tradingHttp.amend(
         reff,
-        newData.brokerCode,
-        newData.accountCode,
+        newData?.brokerCode,
+        newData?.accountCode,
         context.read(dataHolderChangeNotifier).user.username,
-        newData.orderid,
-        newData.normalPriceLot.price,
-        newData.normalPriceLot.lot,
+        newData?.orderid,
+        newData?.normalPriceLot?.price,
+        newData?.normalPriceLot?.lot,
         InvestrendTheme.of(context).applicationPlatform,
         InvestrendTheme.of(context).applicationVersion);
 
@@ -1383,7 +1384,6 @@ class ConfirmationBottomSheet extends BaseTradeBottomSheet {
         // WidgetsBinding.instance.addPostFrameCallback((_) {
         //
         // });
-
       } else {
         if (value is String) {
           if (StringUtils.equalsIgnoreCase(value, 'KEEP')) {
@@ -1393,8 +1393,7 @@ class ConfirmationBottomSheet extends BaseTradeBottomSheet {
             context.read(clearOrderChangeNotifier).mustNotifyListener();
             Navigator.popUntil(context, (route) {
               print('popUntil : ' + route.toString());
-              if (StringUtils.equalsIgnoreCase(
-                  route?.settings?.name, '/main')) {
+              if (StringUtils.equalsIgnoreCase(route.settings.name, '/main')) {
                 return true;
               }
               return route.isFirst;
@@ -1425,36 +1424,39 @@ class ConfirmationBottomSheet extends BaseTradeBottomSheet {
 
     //BuySell data = context.read(amendChangeNotifier).getData(orderType);
 
-    data.setAccount(initialAmendData.accountName, initialAmendData.accountType,
-        initialAmendData.accountCode, initialAmendData.brokerCode);
+    data.setAccount(
+        initialAmendData?.accountName,
+        initialAmendData?.accountType,
+        initialAmendData?.accountCode,
+        initialAmendData?.brokerCode);
     data.setOrderInformation(
-        initialAmendData.orderid, initialAmendData.orderdate);
+        initialAmendData?.orderid, initialAmendData?.orderdate);
     //data.setStock(initialAmendData.stock_code, initialAmendData.stock_name);
 
     print('CONFIRMATION AMEND for data --> ' + data.toString());
-    String accountName = data.accountName;
-    String accountType = data.accountType;
+    String? accountName = data.accountName;
+    String? accountType = data.accountType;
     //String code = data.stock_code;
     //String name = data.stock_name;
 
-    String code = initialAmendData.stock_code;
-    String name = initialAmendData.stock_name;
+    String? code = initialAmendData?.stock_code;
+    String? name = initialAmendData?.stock_name;
 
-    bool fastMode = data.fastMode;
+    bool? fastMode = data.fastMode;
     int tradingLimitUsage = data.tradingLimitUsage;
-    int totalValue =
-        data.fastMode ? data.fastTotalValue : data.normalTotalValue;
+    int? totalValue =
+        data.fastMode! ? data.fastTotalValue : data.normalTotalValue;
     //OrderType orderType = odc.orderType;
     String orderTypeText =
-        orderType.isBuyOrAmendBuy() ? 'buy_text'.tr() : 'sell_text'.tr();
-    String confirmationTitle = orderType.isBuyOrAmendBuy()
+        orderType!.isBuyOrAmendBuy() ? 'buy_text'.tr() : 'sell_text'.tr();
+    String confirmationTitle = orderType!.isBuyOrAmendBuy()
         ? 'amend_confirmation_buy_label'.tr()
         : 'amend_confirmation_sell_label'.tr();
 
     List<Widget> list = List.empty(growable: true);
 
     double heightListView = 0.0;
-    double heightRowSmallPlusPadding = 20.0 +
+    double? heightRowSmallPlusPadding = 20.0 +
         UIHelper.textSize(
                 'WgjLl', InvestrendTheme.of(context).small_w400_compact)
             .height;
@@ -1465,7 +1467,7 @@ class ConfirmationBottomSheet extends BaseTradeBottomSheet {
     list.add(TradeComponentCreator.popupRow(
         context,
         'amend_confirmation_account_label'.tr(),
-        accountName + ' - ' + accountType));
+        accountName! + ' - ' + accountType!));
     heightListView += heightRowSmallPlusPadding;
     list.add(TradeComponentCreator.popupRow(
         context, 'amend_confirmation_stock_code_label'.tr(), code));
@@ -1476,8 +1478,8 @@ class ConfirmationBottomSheet extends BaseTradeBottomSheet {
     list.add(TradeComponentCreator.popupRow(
         context, 'amend_confirmation_order_type_label'.tr(), orderTypeText));
     heightListView += heightRowSmallPlusPadding;
-    if (fastMode) {
-      List<PriceLot> listPriceLot = data.listFastPriceLot;
+    if (fastMode!) {
+      List<PriceLot>? listPriceLot = data.listFastPriceLot;
       int count = listPriceLot != null ? listPriceLot.length : 0;
       if (count == 0) {
         list.add(TradeComponentCreator.popupRow(context,
@@ -1486,7 +1488,7 @@ class ConfirmationBottomSheet extends BaseTradeBottomSheet {
       } else {
         bool first = true;
         for (int i = 0; i < count; i++) {
-          PriceLot pl = listPriceLot.elementAt(i);
+          PriceLot? pl = listPriceLot?.elementAt(i);
           if (pl != null) {
             if (first) {
               list.add(TradeComponentCreator.popupRow(
@@ -1514,18 +1516,18 @@ class ConfirmationBottomSheet extends BaseTradeBottomSheet {
         }
       }
     } else {
-      PriceLot newPriceLot = data.normalPriceLot;
-      PriceLot oldPriceLot = initialAmendData.normalPriceLot;
+      PriceLot? newPriceLot = data.normalPriceLot;
+      PriceLot? oldPriceLot = initialAmendData?.normalPriceLot;
       if (newPriceLot != null) {
         list.add(TradeComponentCreator.popupRow(
             context,
             'amend_confirmation_price_old_label'.tr(),
-            InvestrendTheme.formatMoney(oldPriceLot.price, prefixRp: true)));
+            InvestrendTheme.formatMoney(oldPriceLot?.price, prefixRp: true)));
         heightListView += heightRowSmallPlusPadding;
         list.add(TradeComponentCreator.popupRow(
             context,
             'amend_confirmation_lot_old_label'.tr(),
-            InvestrendTheme.formatComma(oldPriceLot.lot)));
+            InvestrendTheme.formatComma(oldPriceLot?.lot)));
         heightListView += heightRowSmallPlusPadding;
         list.add(TradeComponentCreator.popupRow(
             context,
@@ -1573,13 +1575,13 @@ class ConfirmationBottomSheet extends BaseTradeBottomSheet {
         children: [
           Text(
             'trade_confirmation_total_label'.tr(),
-            style: InvestrendTheme.of(context).regular_w600_compact.copyWith(
+            style: InvestrendTheme.of(context).regular_w600_compact?.copyWith(
                 color: InvestrendTheme.of(context).greyLighterTextColor),
           ),
           Expanded(
             child: Text(
               InvestrendTheme.formatMoney(totalValue, prefixRp: true),
-              style: InvestrendTheme.of(context).regular_w600_compact.copyWith(
+              style: InvestrendTheme.of(context).regular_w600_compact?.copyWith(
                   color: InvestrendTheme.of(context).blackAndWhiteText),
               textAlign: TextAlign.right,
             ),

@@ -1,3 +1,4 @@
+// ignore_for_file: unused_local_variable, non_constant_identifier_names
 
 import 'package:Investrend/component/bottom_sheet/bottom_sheet_portfolio_detail_filter.dart';
 import 'package:Investrend/component/bottom_sheet/bottom_sheet_transaction_filter.dart';
@@ -14,40 +15,44 @@ import 'package:Investrend/utils/utils.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
+// import 'package:flutter_riverpod/flutter_riverpod.dart';
+// import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:visibility_aware_state/visibility_aware_state.dart';
 
 class ScreenDetailPortfolioHistorical extends StatefulWidget {
-  final String init_stock_code;
-  final String init_stock_name;
-  final String init_account;
-  final String init_user;
-  final String init_broker;
+  final String? init_stock_code;
+  final String? init_stock_name;
+  final String? init_account;
+  final String? init_user;
+  final String? init_broker;
 
-  const ScreenDetailPortfolioHistorical(this.init_stock_code, this.init_stock_name, this.init_account, this.init_user, this.init_broker,
-      {Key key})
+  const ScreenDetailPortfolioHistorical(this.init_stock_code,
+      this.init_stock_name, this.init_account, this.init_user, this.init_broker,
+      {Key? key})
       : super(key: key);
 
   @override
-  _ScreenDetailPortfolioHistoricalState createState() => _ScreenDetailPortfolioHistoricalState();
+  _ScreenDetailPortfolioHistoricalState createState() =>
+      _ScreenDetailPortfolioHistoricalState();
 }
 
-class _ScreenDetailPortfolioHistoricalState extends VisibilityAwareState<ScreenDetailPortfolioHistorical> {
+class _ScreenDetailPortfolioHistoricalState
+    extends VisibilityAwareState<ScreenDetailPortfolioHistorical> {
   final String routeName = '/detail_portfolio_historical';
   bool onProgress = false;
   bool active = false;
-  ReportStockHistNotifier _reportStockHistNotifier = ReportStockHistNotifier(ReportStockHistData());
+  ReportStockHistNotifier? _reportStockHistNotifier =
+      ReportStockHistNotifier(ReportStockHistData());
 
   // String code ='-';
   // String name ='-';
   // String account='-';
 
-  String stock_code = '-';
-  String stock_name = '-';
-  String account = '-';
-  String user = '-';
-  String broker = '-';
+  String? stock_code = '-';
+  String? stock_name = '-';
+  String? account = '-';
+  String? user = '-';
+  String? broker = '-';
 
   int index_transaction = 0;
   String from = '';
@@ -58,7 +63,6 @@ class _ScreenDetailPortfolioHistoricalState extends VisibilityAwareState<ScreenD
   // String type; // belum tentu kepakai
 
   void onVisibilityChanged(WidgetVisibility visibility) {
-    // TODO: Use visibility
     switch (visibility) {
       case WidgetVisibility.VISIBLE:
         // Like Android's Activity.onResume()
@@ -72,7 +76,8 @@ class _ScreenDetailPortfolioHistoricalState extends VisibilityAwareState<ScreenD
         break;
       case WidgetVisibility.GONE:
         // Like Android's Activity.onDestroy()
-        print('*** ScreenVisibility.GONE: ${this.routeName}   mounted : $mounted');
+        print(
+            '*** ScreenVisibility.GONE: ${this.routeName}   mounted : $mounted');
         //_onInactiveBase(caller: 'onVisibilityChanged.GONE');
         break;
     }
@@ -125,7 +130,7 @@ class _ScreenDetailPortfolioHistoricalState extends VisibilityAwareState<ScreenD
 
   @override
   void dispose() {
-    _reportStockHistNotifier.dispose();
+    _reportStockHistNotifier?.dispose();
 
     super.dispose();
   } // belum tentu kepakai
@@ -147,11 +152,17 @@ class _ScreenDetailPortfolioHistoricalState extends VisibilityAwareState<ScreenD
 
   Future doUpdate({bool pullToRefresh = false}) async {
     if (!mounted) {
-      print(routeName + '.doUpdate Aborted : ' + DateTime.now().toString() + "  mounted : $mounted  pullToRefresh : $pullToRefresh");
+      print(routeName +
+          '.doUpdate Aborted : ' +
+          DateTime.now().toString() +
+          "  mounted : $mounted  pullToRefresh : $pullToRefresh");
       return false;
     }
     onProgress = true;
-    print(routeName + '.doUpdate : ' + DateTime.now().toString() + "  pullToRefresh : $pullToRefresh");
+    print(routeName +
+        '.doUpdate : ' +
+        DateTime.now().toString() +
+        "  pullToRefresh : $pullToRefresh");
 
     /*
     bool hasAccount = context.read(dataHolderChangeNotifier).user.accountSize() > 0;
@@ -252,24 +263,35 @@ class _ScreenDetailPortfolioHistoricalState extends VisibilityAwareState<ScreenD
       }
 
       print(routeName + ' try report stock hist');
-      final reportStockHist = await InvestrendTheme.tradingHttp.report_stock_hist(
-          broker, account, user, stock_code, InvestrendTheme.of(context).applicationPlatform, InvestrendTheme.of(context).applicationVersion,
-          bs: bs, from: from, to: to);
+      final ReportStockHistData? reportStockHist =
+          await InvestrendTheme.tradingHttp.report_stock_hist(
+              broker,
+              account,
+              user,
+              stock_code,
+              InvestrendTheme.of(context).applicationPlatform,
+              InvestrendTheme.of(context).applicationVersion,
+              bs: bs,
+              from: from,
+              to: to);
       //DebugWriter.info(routeName + ' Got stockPosition ' + stockPosition.accountcode + '   stockList.size : ' + stockPosition.stockListSize().toString());
-      DebugWriter.information(routeName + ' Got report_stock_hist : ' + reportStockHist.size().toString());
+      // DebugWriter.information(routeName +
+      //     ' Got report_stock_hist : ' +
+      //     reportStockHist.size().toString());
       if (reportStockHist != null && !reportStockHist.isEmpty()) {
         if (mounted) {
-          _reportStockHistNotifier.setValue(reportStockHist);
+          _reportStockHistNotifier?.setValue(reportStockHist);
         }
       } else {
         if (mounted) {
-          _reportStockHistNotifier.setNoData();
+          _reportStockHistNotifier?.setNoData();
         }
       }
     } catch (e) {
-      DebugWriter.information(routeName + ' stockPosition Exception : ' + e.toString());
+      DebugWriter.information(
+          routeName + ' stockPosition Exception : ' + e.toString());
       if (mounted) {
-        _reportStockHistNotifier.setError(message: e.toString());
+        _reportStockHistNotifier?.setError(message: e.toString());
       }
       handleNetworkError(context, e);
     }
@@ -293,7 +315,8 @@ class _ScreenDetailPortfolioHistoricalState extends VisibilityAwareState<ScreenD
           InvestrendTheme.of(context).showSnackBar(context, error.message());
         } else {
           String networkErrorLabel = 'network_error_label'.tr();
-          networkErrorLabel = networkErrorLabel.replaceFirst("#CODE#", error.code.toString());
+          networkErrorLabel =
+              networkErrorLabel.replaceFirst("#CODE#", error.code.toString());
           InvestrendTheme.of(context).showSnackBar(context, networkErrorLabel);
         }
       } else {
@@ -326,15 +349,24 @@ class _ScreenDetailPortfolioHistoricalState extends VisibilityAwareState<ScreenD
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.only(left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral),
-                child: Text(stock_code, style: InvestrendTheme.of(context).regular_w600,),
+                padding: const EdgeInsets.only(
+                    left: InvestrendTheme.cardPaddingGeneral,
+                    right: InvestrendTheme.cardPaddingGeneral),
+                child: Text(
+                  stock_code!,
+                  style: InvestrendTheme.of(context).regular_w600,
+                ),
               ),
               SizedBox(
                 height: 4.0,
               ),
               Padding(
-                padding: const EdgeInsets.only(left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral),
-                child: Text(stock_name, style: InvestrendTheme.of(context).more_support_w400_compact_greyDarker),
+                padding: const EdgeInsets.only(
+                    left: InvestrendTheme.cardPaddingGeneral,
+                    right: InvestrendTheme.cardPaddingGeneral),
+                child: Text(stock_name!,
+                    style: InvestrendTheme.of(context)
+                        .more_support_w400_compact_greyDarker),
               ),
               SizedBox(
                 height: InvestrendTheme.cardPadding,
@@ -350,51 +382,70 @@ class _ScreenDetailPortfolioHistoricalState extends VisibilityAwareState<ScreenD
               Expanded(
                 flex: 1,
                 child: ValueListenableBuilder(
-                    valueListenable: _reportStockHistNotifier,
-                    builder: (context, ReportStockHistData value, child) {
+                    valueListenable: _reportStockHistNotifier!,
+                    builder: (context, ReportStockHistData? value, child) {
                       List<Widget> childs = List.empty(growable: true);
 
-                      Widget noWidget = _reportStockHistNotifier.currentState.getNoWidget(onRetry: () {
+                      Widget? noWidget = _reportStockHistNotifier?.currentState
+                          .getNoWidget(onRetry: () {
                         doUpdate(pullToRefresh: true);
                       });
 
                       if (noWidget != null) {
-
-                        if (_reportStockHistNotifier.currentState.isNoData()) {
-                          String emptyDescription = 'portfolio_detail_historical_empty_description'.tr();
+                        if (_reportStockHistNotifier!.currentState.isNoData()) {
+                          String emptyDescription =
+                              'portfolio_detail_historical_empty_description'
+                                  .tr();
                           //"portfolio_detail_historical_empty_description": "You haven't made any transactions yet, start ordering.",
 
-                          if (index_transaction != 0 && (!StringUtils.isEmtpy(from) || !StringUtils.isEmtpy(to))) {
+                          if (index_transaction != 0 &&
+                              (!StringUtils.isEmtpy(from) ||
+                                  !StringUtils.isEmtpy(to))) {
                             // "portfolio_detail_historical_filter_description": "Filter applied for transaction \"#TRX#\" and period \"#FRM#\" - \"#TO#\"",
-                            emptyDescription = 'portfolio_detail_historical_filter_description'.tr();
+                            emptyDescription =
+                                'portfolio_detail_historical_filter_description'
+                                    .tr();
                           } else if (index_transaction != 0) {
                             //"portfolio_detail_historical_filter_transaction_description": "Filter applied for transaction \"#TRX#\"",
-                            emptyDescription = 'portfolio_detail_historical_filter_transaction_description'.tr();
-                          } else if (!StringUtils.isEmtpy(from) || !StringUtils.isEmtpy(to)) {
+                            emptyDescription =
+                                'portfolio_detail_historical_filter_transaction_description'
+                                    .tr();
+                          } else if (!StringUtils.isEmtpy(from) ||
+                              !StringUtils.isEmtpy(to)) {
                             //"portfolio_detail_historical_filter_periode_description": "Filter applied for period \"#FRM#\" - \"#TO#\"",
-                            emptyDescription = 'portfolio_detail_historical_filter_periode_description'.tr();
+                            emptyDescription =
+                                'portfolio_detail_historical_filter_periode_description'
+                                    .tr();
                           }
 
-                          emptyDescription = emptyDescription.replaceFirst('#TRX#', FilterTransaction.values.elementAt(index_transaction).text);
-                          emptyDescription = emptyDescription.replaceFirst('#FRM#', from);
-                          emptyDescription = emptyDescription.replaceFirst('#TO#', to);
+                          emptyDescription = emptyDescription.replaceFirst(
+                              '#TRX#',
+                              FilterTransaction.values
+                                  .elementAt(index_transaction)
+                                  .text);
+                          emptyDescription =
+                              emptyDescription.replaceFirst('#FRM#', from);
+                          emptyDescription =
+                              emptyDescription.replaceFirst('#TO#', to);
 
                           childs.add(SizedBox(
                             height: MediaQuery.of(context).size.width / 4,
                           ));
-                          childs.add(EmptyTitleLabel(text: 'portfolio_detail_historical_empty_title'.tr()));
+                          childs.add(EmptyTitleLabel(
+                              text: 'portfolio_detail_historical_empty_title'
+                                  .tr()));
                           childs.add(SizedBox(
                             height: InvestrendTheme.cardPaddingGeneral,
                           ));
                           childs.add(EmptyLabel(text: emptyDescription));
-                        }else{
+                        } else {
                           childs.add(Padding(
-                            padding: EdgeInsets.only(top: InvestrendTheme.cardPaddingVertical, bottom: InvestrendTheme.cardPaddingVertical),
+                            padding: EdgeInsets.only(
+                                top: InvestrendTheme.cardPaddingVertical,
+                                bottom: InvestrendTheme.cardPaddingVertical),
                             child: Center(child: noWidget),
                           ));
                         }
-
-
 
                         return ListView(
                           padding: const EdgeInsets.only(
@@ -405,7 +456,7 @@ class _ScreenDetailPortfolioHistoricalState extends VisibilityAwareState<ScreenD
                         );
                       } else {
                         //int loop = min(max_showed, value.size());
-                        int count = value.size();
+                        int? count = value?.size();
                         // for (int i = 0; i < count; i++) {
                         //   if (i > 0) {
                         //     childs.add(ComponentCreator.divider(context, thickness: 0.5));
@@ -415,12 +466,15 @@ class _ScreenDetailPortfolioHistoricalState extends VisibilityAwareState<ScreenD
 
                         return ListView.separated(
                           shrinkWrap: false,
-                          padding: const EdgeInsets.only(left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral),
-                          itemCount: count + 1,
+                          padding: const EdgeInsets.only(
+                              left: InvestrendTheme.cardPaddingGeneral,
+                              right: InvestrendTheme.cardPaddingGeneral),
+                          itemCount: count! + 1,
                           // di + 1 supaya muncul divider di paling bawah
                           itemBuilder: (BuildContext context, int index) {
                             if (index < count) {
-                              return createRowMatched(context, value.datas.elementAt(index));
+                              return createRowMatched(
+                                  context, value!.datas!.elementAt(index));
                             } else {
                               return SizedBox(
                                 height: 80.0 + paddingBottom,
@@ -431,7 +485,8 @@ class _ScreenDetailPortfolioHistoricalState extends VisibilityAwareState<ScreenD
                           },
                           separatorBuilder: (BuildContext context, int index) {
                             if (index < count) {
-                              return ComponentCreator.divider(context, thickness: 0.5);
+                              return ComponentCreator.divider(context,
+                                  thickness: 0.5);
                             } else {
                               return SizedBox(
                                 width: 1.0,
@@ -475,7 +530,7 @@ class _ScreenDetailPortfolioHistoricalState extends VisibilityAwareState<ScreenD
     return bs;
   }
 
-  Color colorBuySell(BuildContext context, String bs) {
+  Color? colorBuySell(BuildContext context, String bs) {
     if (StringUtils.equalsIgnoreCase(bs, 'S')) {
       return InvestrendTheme.sellTextColor;
     } else if (StringUtils.equalsIgnoreCase(bs, 'B')) {
@@ -489,10 +544,13 @@ class _ScreenDetailPortfolioHistoricalState extends VisibilityAwareState<ScreenD
   AutoSizeGroup groupMatchedHeader = AutoSizeGroup();
 
   Widget createRowMatched(BuildContext context, ReportStockHist data) {
-    TextStyle styleTop = InvestrendTheme.of(context).regular_w500_compact;
-    TextStyle styleBottom = InvestrendTheme.of(context).small_w400_compact_greyDarker;
+    TextStyle? styleTop = InvestrendTheme.of(context).regular_w500_compact;
+    TextStyle? styleBottom =
+        InvestrendTheme.of(context).small_w400_compact_greyDarker;
     return Padding(
-      padding: EdgeInsets.only(top: InvestrendTheme.cardPadding, bottom: InvestrendTheme.cardPadding),
+      padding: EdgeInsets.only(
+          top: InvestrendTheme.cardPadding,
+          bottom: InvestrendTheme.cardPadding),
       child: Column(
         children: [
           Row(
@@ -500,7 +558,7 @@ class _ScreenDetailPortfolioHistoricalState extends VisibilityAwareState<ScreenD
               Expanded(
                   flex: 1,
                   child: AutoSizeText(
-                    data.date,
+                    data.date!,
                     style: styleTop,
                     textAlign: TextAlign.left,
                     maxLines: 1,
@@ -510,8 +568,9 @@ class _ScreenDetailPortfolioHistoricalState extends VisibilityAwareState<ScreenD
               Expanded(
                   flex: 1,
                   child: AutoSizeText(
-                    translateBuySell(data.bs),
-                    style: styleTop.copyWith(color: colorBuySell(context, data.bs)),
+                    translateBuySell(data.bs!),
+                    style: styleTop?.copyWith(
+                        color: colorBuySell(context, data.bs!)),
                     textAlign: TextAlign.center,
                     maxLines: 1,
                     minFontSize: 5.0,
@@ -520,7 +579,7 @@ class _ScreenDetailPortfolioHistoricalState extends VisibilityAwareState<ScreenD
               Expanded(
                   flex: 1,
                   child: AutoSizeText(
-                    InvestrendTheme.formatPrice(data.price),
+                    InvestrendTheme.formatPrice(data.price!),
                     style: styleTop,
                     textAlign: TextAlign.right,
                     maxLines: 1,
@@ -547,7 +606,7 @@ class _ScreenDetailPortfolioHistoricalState extends VisibilityAwareState<ScreenD
               Expanded(
                   flex: 1,
                   child: AutoSizeText(
-                    InvestrendTheme.formatPrice(data.lot),
+                    InvestrendTheme.formatPrice(data.lot!),
                     style: styleBottom,
                     textAlign: TextAlign.center,
                     maxLines: 1,
@@ -557,7 +616,7 @@ class _ScreenDetailPortfolioHistoricalState extends VisibilityAwareState<ScreenD
               Expanded(
                   flex: 1,
                   child: AutoSizeText(
-                    InvestrendTheme.formatMoney(data.value, prefixRp: true),
+                    InvestrendTheme.formatMoney(data.value!, prefixRp: true),
                     style: styleBottom,
                     textAlign: TextAlign.right,
                     maxLines: 1,
@@ -572,9 +631,11 @@ class _ScreenDetailPortfolioHistoricalState extends VisibilityAwareState<ScreenD
   }
 
   Widget createHeaderMatched(BuildContext context) {
-    TextStyle styleHeader = InvestrendTheme.of(context).small_w500_compact;
+    TextStyle? styleHeader = InvestrendTheme.of(context).small_w500_compact;
     return Padding(
-      padding: EdgeInsets.only(top: InvestrendTheme.cardPadding, bottom: InvestrendTheme.cardPadding),
+      padding: EdgeInsets.only(
+          top: InvestrendTheme.cardPadding,
+          bottom: InvestrendTheme.cardPadding),
       child: Row(
         children: [
           Expanded(
@@ -614,7 +675,9 @@ class _ScreenDetailPortfolioHistoricalState extends VisibilityAwareState<ScreenD
 
   Widget _options(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(/*bottom: 8.0 ,*/ left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral),
+      padding: EdgeInsets.only(
+          /*bottom: 8.0 ,*/ left: InvestrendTheme.cardPaddingGeneral,
+          right: InvestrendTheme.cardPaddingGeneral),
       child: Row(
         children: [
           OutlinedButton(
@@ -622,7 +685,9 @@ class _ScreenDetailPortfolioHistoricalState extends VisibilityAwareState<ScreenD
                 showModalBottomSheet(
                     isScrollControlled: true,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(topLeft: Radius.circular(24.0), topRight: Radius.circular(24.0)),
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(24.0),
+                          topRight: Radius.circular(24.0)),
                     ),
                     //backgroundColor: Colors.transparent,
                     context: context,
@@ -633,9 +698,10 @@ class _ScreenDetailPortfolioHistoricalState extends VisibilityAwareState<ScreenD
                         from,
                         to,
                         callbackRange: (newIndexTransaction, newFrom, newTo) {
-                          bool isChanged = !StringUtils.equalsIgnoreCase(from, newFrom) ||
-                              !StringUtils.equalsIgnoreCase(to, newTo) ||
-                              index_transaction != newIndexTransaction;
+                          bool isChanged =
+                              !StringUtils.equalsIgnoreCase(from, newFrom) ||
+                                  !StringUtils.equalsIgnoreCase(to, newTo) ||
+                                  index_transaction != newIndexTransaction;
                           print(routeName +
                               ' filter callbackRange new_index_transaction : $newIndexTransaction   $newFrom , $newTo  isChanged : $isChanged');
 
@@ -660,7 +726,8 @@ class _ScreenDetailPortfolioHistoricalState extends VisibilityAwareState<ScreenD
                   ),
                   Text(
                     'button_filter'.tr(),
-                    style: InvestrendTheme.of(context).more_support_w400_compact,
+                    style:
+                        InvestrendTheme.of(context).more_support_w400_compact,
                   ),
                 ],
               )),
@@ -719,7 +786,7 @@ class _ScreenDetailPortfolioHistoricalState extends VisibilityAwareState<ScreenD
     );
   }
 
-  Widget createBottomSheet(BuildContext context, double paddingBottom) {
+  Widget? createBottomSheet(BuildContext context, double paddingBottom) {
     return null;
   }
 }

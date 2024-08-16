@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'dart:async';
 
 import 'package:Investrend/component/button_info.dart';
@@ -16,23 +18,23 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ScreenTradeBuy extends StatefulWidget {
-  final ValueNotifier<bool> _fastModeNotifier;
-  final TabController _tabController;
+  final ValueNotifier<bool>? _fastModeNotifier;
+  final TabController? _tabController;
   final OrderbookNotifier _orderbookNotifier;
   final ValueNotifier<bool> _updateDataNotifier;
   final bool _onlyFastOrder;
 
-  final PriceLot initialPriceLot;
-  final ValueNotifier<bool> keyboardNotifier;
+  final PriceLot? initialPriceLot;
+  final ValueNotifier<bool>? keyboardNotifier;
   const ScreenTradeBuy(this._fastModeNotifier, this._tabController,
       this._orderbookNotifier, this._updateDataNotifier, this._onlyFastOrder,
-      {Key key, this.initialPriceLot, this.keyboardNotifier})
+      {Key? key, this.initialPriceLot, this.keyboardNotifier})
       : super(key: key);
 
   @override
-  _ScreenTradeBuyState createState() => _ScreenTradeBuyState(_fastModeNotifier,
-      _tabController, _orderbookNotifier, _updateDataNotifier, _onlyFastOrder,
-      initialPriceLot: initialPriceLot, keyboardNotifier: keyboardNotifier);
+  _ScreenTradeBuyState createState() => _ScreenTradeBuyState(_fastModeNotifier!,
+      _tabController!, _orderbookNotifier, _updateDataNotifier, _onlyFastOrder,
+      initialPriceLot: initialPriceLot!, keyboardNotifier: keyboardNotifier!);
 }
 
 class _ScreenTradeBuyState extends BaseTradeState<
@@ -40,16 +42,16 @@ class _ScreenTradeBuyState extends BaseTradeState<
 {
   _ScreenTradeBuyState(
       ValueNotifier<bool> fastModeNotifier,
-      TabController tabController,
+      TabController? tabController,
       OrderbookNotifier orderbookNotifier,
       ValueNotifier<bool> updateDataNotifier,
       bool onlyFastOrder,
-      {PriceLot initialPriceLot,
-      ValueNotifier<bool> keyboardNotifier})
-      : super(OrderType.Buy, fastModeNotifier, tabController, orderbookNotifier,
-            updateDataNotifier, onlyFastOrder,
-            initialPriceLot: initialPriceLot,
-            keyboardNotifier: keyboardNotifier);
+      {PriceLot? initialPriceLot,
+      ValueNotifier<bool>? keyboardNotifier})
+      : super(OrderType.Buy, fastModeNotifier, tabController!,
+            orderbookNotifier, updateDataNotifier, onlyFastOrder,
+            initialPriceLot: initialPriceLot!,
+            keyboardNotifier: keyboardNotifier!);
 
   StringColorFontBoolNotifier notifierCashAvailable =
       StringColorFontBoolNotifier(StringColorFontBool());
@@ -67,15 +69,15 @@ class _ScreenTradeBuyState extends BaseTradeState<
     if (onEventBuyingPowerCashAvailable != null) {
       container
           .read(buyRdnBuyingPowerChangeNotifier)
-          .removeListener(onEventBuyingPowerCashAvailable);
+          .removeListener(onEventBuyingPowerCashAvailable!);
     }
     if (keyboardNotifier != null) {
-      keyboardNotifier.removeListener(keyboardEvent);
+      keyboardNotifier?.removeListener(keyboardEvent);
     }
     super.dispose();
   }
 
-  VoidCallback onEventBuyingPowerCashAvailable;
+  VoidCallback? onEventBuyingPowerCashAvailable;
 
   @override
   void initState() {
@@ -84,7 +86,7 @@ class _ScreenTradeBuyState extends BaseTradeState<
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       Future.delayed(Duration(milliseconds: 500), () {
         if (onEventBuyingPowerCashAvailable != null) {
-          onEventBuyingPowerCashAvailable();
+          onEventBuyingPowerCashAvailable!();
         }
       });
     });
@@ -105,7 +107,7 @@ class _ScreenTradeBuyState extends BaseTradeState<
     onProgressAccount = true;
 
     int selected = context.read(accountChangeNotifier).index;
-    Account account =
+    Account? account =
         context.read(dataHolderChangeNotifier).user.getAccount(selected);
 
     if (account == null) {
@@ -118,7 +120,7 @@ class _ScreenTradeBuyState extends BaseTradeState<
     } else {
       List<String> listAccountCode = List.empty(growable: true);
 
-      context.read(dataHolderChangeNotifier).user.accounts.forEach((account) {
+      context.read(dataHolderChangeNotifier).user.accounts?.forEach((account) {
         listAccountCode.add(account.accountcode);
       });
 
@@ -130,17 +132,17 @@ class _ScreenTradeBuyState extends BaseTradeState<
               context.read(dataHolderChangeNotifier).user.username,
               InvestrendTheme.of(context).applicationPlatform,
               InvestrendTheme.of(context).applicationVersion);
-      accountStockPosition.then((value) {
-        DebugWriter.information(orderType.routeName +
-            ' Got accountStockPosition  accountStockPosition.size : ' +
-            value.length.toString());
+      accountStockPosition.then((List<AccountStockPosition>? value) {
+        // DebugWriter.information(orderType.routeName +
+        //     ' Got accountStockPosition  accountStockPosition.size : ' +
+        //     value.length.toString());
         if (!mounted) {
           print(orderType.routeName +
               ' accountStockPosition ignored.  mounted : $mounted');
           onProgressAccount = false;
           return false;
         }
-        AccountStockPosition first =
+        AccountStockPosition? first =
             (value != null && value.length > 0) ? value.first : null;
         if (first != null && first.ignoreThis()) {
           // ignore in aja
@@ -149,12 +151,12 @@ class _ScreenTradeBuyState extends BaseTradeState<
               first.message);
         } else {
           context.read(accountsInfosNotifier).updateList(value);
-          Account activeAccount = context
+          Account? activeAccount = context
               .read(dataHolderChangeNotifier)
               .user
               .getAccount(context.read(accountChangeNotifier).index);
           if (activeAccount != null) {
-            AccountStockPosition accountInfo = context
+            AccountStockPosition? accountInfo = context
                 .read(accountsInfosNotifier)
                 .getInfo(activeAccount.accountcode);
             if (accountInfo != null) {
@@ -194,6 +196,7 @@ class _ScreenTradeBuyState extends BaseTradeState<
         } else {
           InvestrendTheme.of(context).showSnackBar(context, e.toString());
         }
+        return null;
       });
     }
     onProgressAccount = false;
@@ -207,7 +210,7 @@ class _ScreenTradeBuyState extends BaseTradeState<
     if (onEventBuyingPowerCashAvailable != null) {
       context
           .read(buyRdnBuyingPowerChangeNotifier)
-          .removeListener(onEventBuyingPowerCashAvailable);
+          .removeListener(onEventBuyingPowerCashAvailable!);
     } else {
       onEventBuyingPowerCashAvailable = () {
         if (mounted) {
@@ -232,9 +235,9 @@ class _ScreenTradeBuyState extends BaseTradeState<
           String cashBalanceText =
               InvestrendTheme.formatMoneyDouble(cashBalance, prefixRp: true);
 
-          TextStyle style = InvestrendTheme.of(context).regular_w600;
-          style =
-              UIHelper.useFontSize(context, style, widthValue, buyingPowerText);
+          TextStyle? style = InvestrendTheme.of(context).regular_w600;
+          style = UIHelper.useFontSize(
+              context, style!, widthValue, buyingPowerText);
           style =
               UIHelper.useFontSize(context, style, widthValue, cashBalanceText);
 
@@ -249,19 +252,19 @@ class _ScreenTradeBuyState extends BaseTradeState<
             activeCashAvailable = true;
           }
           notifierBuyingPowerNew.setValue(buyingPowerText,
-              fontSize: style.fontSize,
-              newColor: style.color,
+              fontSize: style?.fontSize,
+              newColor: style?.color,
               boolFlag: activeBuyingPower);
           notifierCashAvailable.setValue(cashBalanceText,
-              fontSize: style.fontSize,
-              newColor: style.color,
+              fontSize: style?.fontSize,
+              newColor: style?.color,
               boolFlag: activeCashAvailable);
         }
       };
     }
     context
         .read(buyRdnBuyingPowerChangeNotifier)
-        .addListener(onEventBuyingPowerCashAvailable);
+        .addListener(onEventBuyingPowerCashAvailable!);
   }
 
   @override
@@ -273,7 +276,7 @@ class _ScreenTradeBuyState extends BaseTradeState<
         children: [
           ValueListenableBuilder(
             valueListenable: notifierBuyingPowerNew,
-            builder: (context, StringColorFontBool value, child) {
+            builder: (context, StringColorFontBool? value, child) {
               return ButtonInfo(
                 'trade_buy_label_buying_power'.tr(),
                 value,
@@ -288,7 +291,7 @@ class _ScreenTradeBuyState extends BaseTradeState<
           ),
           ValueListenableBuilder(
             valueListenable: notifierCashAvailable,
-            builder: (context, StringColorFontBool value, child) {
+            builder: (context, StringColorFontBool? value, child) {
               return ButtonInfo(
                 'cash_available_label'.tr(),
                 value,
@@ -308,7 +311,9 @@ class _ScreenTradeBuyState extends BaseTradeState<
   }
 }
 
-class DragAndDrop extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() {}
-}
+// class DragAndDrop extends StatefulWidget {
+//   @override
+//   State<StatefulWidget> createState() {
+//     return null;
+//   }
+// }

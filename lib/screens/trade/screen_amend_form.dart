@@ -1,3 +1,5 @@
+// ignore_for_file: unused_field, unused_local_variable, unnecessary_null_comparison
+
 import 'dart:async';
 
 import 'package:Investrend/component/button_order.dart';
@@ -21,51 +23,54 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:visibility_aware_state/visibility_aware_state.dart';
 
-
-abstract class BaseAmendState<T extends StatefulWidget> extends VisibilityAwareState //with AutomaticKeepAliveClientMixin<StatefulWidget>
+abstract class BaseAmendState<T extends StatefulWidget>
+    extends VisibilityAwareState //with AutomaticKeepAliveClientMixin<StatefulWidget>
 {
-  final OrderType orderType;
-  final BuySell amendData;
+  final OrderType? orderType;
+  final BuySell? amendData;
   final ValueNotifier<bool> updateDataNotifier;
-  final ValueNotifier<bool> keyboardNotifier;
-  BaseAmendState(this.orderType, this.amendData, this.updateDataNotifier,{this.keyboardNotifier});
+  final ValueNotifier<bool>? keyboardNotifier;
+  BaseAmendState(this.orderType, this.amendData, this.updateDataNotifier,
+      {this.keyboardNotifier});
 
   bool active = false;
   //Timer _timer;
-  Timer _timerAccount;
-  FocusNode focusNodePrice;
-  FocusNode focusNodeLot;
+  Timer? _timerAccount;
+  FocusNode? focusNodePrice;
+  FocusNode? focusNodeLot;
 
-  final fieldPriceController = TextEditingController();
+  final TextEditingController fieldPriceController = TextEditingController();
   final fieldLotController = TextEditingController();
   final ValueNotifier<int> valueOrderNotifier = ValueNotifier<int>(0);
   final ValueNotifier<int> predefineLotNotifier = ValueNotifier<int>(0);
   static const Duration _durationUpdate = Duration(milliseconds: 2000);
   static const Duration _durationUpdateAccount = Duration(milliseconds: 5000);
   //ValueNotifier<double> animatePaddingNotifier;
-  final OrderbookNotifier orderbookNotifier = OrderbookNotifier(OrderbookData());
-  final ValueNotifier<String> predefineLotSourceNotifier = ValueNotifier<String>('cash_available_label'.tr());
+  final OrderbookNotifier orderbookNotifier =
+      OrderbookNotifier(OrderbookData());
+  final ValueNotifier<String> predefineLotSourceNotifier =
+      ValueNotifier<String>('cash_available_label'.tr());
   // @override
   // bool get wantKeepAlive => true;
-  VoidCallback resetPredefineLot;
+  VoidCallback? resetPredefineLot;
   final ScrollController scrollController = ScrollController();
 
   void onVisibilityChanged(WidgetVisibility visibility) {
-    // TODO: Use visibility
     switch (visibility) {
       case WidgetVisibility.VISIBLE:
         // Like Android's Activity.onResume()
-        print('*** ScreenVisibility.VISIBLE: ${orderType.routeName}');
+        print('*** ScreenVisibility.VISIBLE: ${orderType?.routeName}');
         onActive(caller: 'onVisibilityChanged.VISIBLE');
         break;
       case WidgetVisibility.INVISIBLE:
         // Like Android's Activity.onPause()
-        print('*** ScreenVisibility.INVISIBLE: ${orderType.routeName}');
+        print('*** ScreenVisibility.INVISIBLE: ${orderType?.routeName}');
         onInactive(caller: 'onVisibilityChanged.INVISIBLE');
         break;
       case WidgetVisibility.GONE:
         // Like Android's Activity.onDestroy()
-        print('*** ScreenVisibility.GONE: ${orderType.routeName}   mounted : $mounted');
+        print(
+            '*** ScreenVisibility.GONE: ${orderType?.routeName}   mounted : $mounted');
         //onInactive(caller: 'onVisibilityChanged.GONE');
         break;
     }
@@ -79,16 +84,18 @@ abstract class BaseAmendState<T extends StatefulWidget> extends VisibilityAwareS
     //   return;
     // }
     active = true;
-    print(orderType.routeName + '.onActive _active : $active  caller : $caller');
+    print(
+        orderType!.routeName + '.onActive _active : $active  caller : $caller');
     //_startTimer();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if(mounted){
+      if (mounted) {
         context.read(amendChangeNotifier).mustNotifyListener();
 
-        Stock stock = InvestrendTheme.storedData.findStock(amendData.stock_code);
+        Stock? stock =
+            InvestrendTheme.storedData?.findStock(amendData?.stock_code);
 
         if (stock == null || !stock.isValid()) {
-          print(orderType.routeName + '.doUpdate stock is NULL');
+          print(orderType!.routeName + '.doUpdate stock is NULL');
           return;
         }
         unsubscribe(context, 'onActive');
@@ -98,27 +105,24 @@ abstract class BaseAmendState<T extends StatefulWidget> extends VisibilityAwareS
         //doUpdate(pullToRefresh: true);
         doUpdateAccount(pullToRefresh: true);
         _startTimer();
-
-
       }
-
     });
   }
 
   void onInactive({String caller = ''}) {
     active = false;
-    print(orderType.routeName + '.onInactive _active : $active  caller : $caller');
+    print(orderType!.routeName +
+        '.onInactive _active : $active  caller : $caller');
     _stopTimer();
     unsubscribe(context, 'onInactive');
   }
-
 
   @override
   void initState() {
     super.initState();
 
-    resetPredefineLot = (){
-      print('resetPredefineLot on text : '+fieldLotController.text);
+    resetPredefineLot = () {
+      print('resetPredefineLot on text : ' + fieldLotController.text);
       if (predefineLotNotifier.value != 0) {
         predefineLotNotifier.value = 0;
       }
@@ -128,17 +132,18 @@ abstract class BaseAmendState<T extends StatefulWidget> extends VisibilityAwareS
     // bug fix ketemu irwan
     // error kepanggil terus saat pencet amend keyboard masih showed, found by irwan karena di didChangeDepencies()
     container.read(amendChangeNotifier).setData(amendData);
-    fieldLotController.addListener(resetPredefineLot);
+    fieldLotController.addListener(resetPredefineLot!);
     fieldLotController.addListener(calculateOrder);
     fieldPriceController.addListener(calculateOrder);
-    print(orderType.routeName + '.initState');
-    fieldPriceController.text = amendData.normalPriceLot.price.toString();
-    fieldLotController.text = amendData.normalPriceLot.lot.toString();
+    print(orderType!.routeName + '.initState');
+    fieldPriceController.text = amendData!.normalPriceLot!.price.toString();
+    fieldLotController.text = amendData!.normalPriceLot!.lot.toString();
     focusNodePrice = FocusNode();
     focusNodeLot = FocusNode();
 
     updateDataNotifier.addListener(() {
-      print(orderType.routeName + '.updateDataNotifier triggered --> mounted : $mounted');
+      print(orderType!.routeName +
+          '.updateDataNotifier triggered --> mounted : $mounted');
       if (mounted) {
         calculateOrder(caller: 'updateDataNotifier');
       }
@@ -168,8 +173,10 @@ abstract class BaseAmendState<T extends StatefulWidget> extends VisibilityAwareS
     // final container = ProviderContainer();
     // container.read(primaryStockChangeNotifier).addListener(stockChangeListener);
     predefineLotSourceNotifier.addListener(() {
-      print(orderType.routeName + '.predefineLotSourceNotifier changed '+predefineLotSourceNotifier.value.toString());
-      if(predefineLotNotifier.value != 0){
+      print(orderType!.routeName +
+          '.predefineLotSourceNotifier changed ' +
+          predefineLotSourceNotifier.value.toString());
+      if (predefineLotNotifier.value != 0) {
         fieldLotController.text = '';
       }
       //resetPredefineLot();
@@ -178,14 +185,16 @@ abstract class BaseAmendState<T extends StatefulWidget> extends VisibilityAwareS
     _startTimer();
   }
 
-  VoidCallback clearChangeListener;
+  VoidCallback? clearChangeListener;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    print(orderType.routeName + '.didChangeDependencies  _active ' + active.toString());
+    print(orderType!.routeName +
+        '.didChangeDependencies  _active ' +
+        active.toString());
     //Stock stock = InvestrendTheme.of(context).stock;
-    Stock stock = InvestrendTheme.storedData.findStock(amendData.stock_code);
+    Stock? stock = InvestrendTheme.storedData?.findStock(amendData?.stock_code);
     //Stock stock = context.read(primaryStockChangeNotifier).stock;
 
     // error kepanggil terus saat pencet amend keyboard masih showed, found by irwan
@@ -198,7 +207,9 @@ abstract class BaseAmendState<T extends StatefulWidget> extends VisibilityAwareS
     if (clearChangeListener == null) {
       clearChangeListener = () {
         if (!mounted) {
-          print(orderType.routeName + '.clearChangeListener aborted, caused by widget mounted : ' + mounted.toString());
+          print(orderType!.routeName +
+              '.clearChangeListener aborted, caused by widget mounted : ' +
+              mounted.toString());
           return;
         }
         BuySell data = context.read(amendChangeNotifier).getData(orderType);
@@ -208,27 +219,35 @@ abstract class BaseAmendState<T extends StatefulWidget> extends VisibilityAwareS
         context.read(amendChangeNotifier).mustNotifyListener();
       };
     }
-    context.read(clearOrderChangeNotifier).addListener(clearChangeListener);
+    context.read(clearOrderChangeNotifier).addListener(clearChangeListener!);
     //context.read(amendChangeNotifier).getData(orderType).setStock(stock.code, stock.name);
   }
 
   @override
   void dispose() {
-    print(orderType.routeName + '.dispose');
+    print(orderType!.routeName + '.dispose');
     scrollController.dispose();
     final container = ProviderContainer();
     //container.read(primaryStockChangeNotifier).removeListener(stockChangeListener);
-    container.read(clearOrderChangeNotifier).removeListener(clearChangeListener);
+    container
+        .read(clearOrderChangeNotifier)
+        .removeListener(clearChangeListener!);
     clearChangeListener = null;
 
-    if(subscribeSummary != null){
-      container.read(managerDatafeedNotifier).unsubscribe(subscribeSummary,'dispose');
+    if (subscribeSummary != null) {
+      container
+          .read(managerDatafeedNotifier)
+          .unsubscribe(subscribeSummary, 'dispose');
     }
-    if(subscribeOrderbook != null){
-      container.read(managerDatafeedNotifier).unsubscribe(subscribeOrderbook,'dispose');
+    if (subscribeOrderbook != null) {
+      container
+          .read(managerDatafeedNotifier)
+          .unsubscribe(subscribeOrderbook, 'dispose');
     }
-    if(subscribeTradebook != null){
-      container.read(managerDatafeedNotifier).unsubscribe(subscribeTradebook,'dispose');
+    if (subscribeTradebook != null) {
+      container
+          .read(managerDatafeedNotifier)
+          .unsubscribe(subscribeTradebook, 'dispose');
     }
     orderbookNotifier.dispose();
 
@@ -238,15 +257,14 @@ abstract class BaseAmendState<T extends StatefulWidget> extends VisibilityAwareS
     valueOrderNotifier.dispose();
     fieldPriceController.dispose();
     fieldLotController.dispose();
-    focusNodeLot.dispose();
-    focusNodePrice.dispose();
+    focusNodeLot?.dispose();
+    focusNodePrice?.dispose();
     predefineLotNotifier.dispose();
     predefineLotSourceNotifier.dispose();
     super.dispose();
   }
 
   void _startTimer() {
-
     if (!InvestrendTheme.DEBUG) {
       /*
       if (_timer == null || !_timer.isActive) {
@@ -264,17 +282,19 @@ abstract class BaseAmendState<T extends StatefulWidget> extends VisibilityAwareS
       }
       */
 
-      if (_timerAccount == null || !_timerAccount.isActive) {
-        print(orderType.routeName + '._startTimer _timerAccount');
+      if (_timerAccount == null || !_timerAccount!.isActive) {
+        print(orderType!.routeName + '._startTimer _timerAccount');
         _timerAccount = Timer.periodic(_durationUpdateAccount, (timer) {
-          print(orderType.routeName+' _timerAccount.tick : '+_timerAccount.tick.toString());
+          print(orderType!.routeName +
+              ' _timerAccount.tick : ' +
+              _timerAccount!.tick.toString());
           if (active) {
-            if(onProgressAccount){
-              print(orderType.routeName+' timer aborted caused by onProgressAccount : $onProgressAccount');
-            }else{
+            if (onProgressAccount) {
+              print(orderType!.routeName +
+                  ' timer aborted caused by onProgressAccount : $onProgressAccount');
+            } else {
               doUpdateAccount();
             }
-
           }
         });
       }
@@ -287,41 +307,47 @@ abstract class BaseAmendState<T extends StatefulWidget> extends VisibilityAwareS
     //   _timer.cancel();
     // }
 
-    print(orderType.routeName + '._stopTimer _timerAccount');
-    if (_timerAccount != null && _timerAccount.isActive) {
-      _timerAccount.cancel();
+    print(orderType!.routeName + '._stopTimer _timerAccount');
+    if (_timerAccount != null && _timerAccount!.isActive) {
+      _timerAccount?.cancel();
     }
   }
 
   bool onProgressAccount = false;
   Future doUpdateAccount({bool pullToRefresh = false}) async {
-    onProgressAccount =  false;
+    onProgressAccount = false;
     return true;
   }
 
   bool onProgress = false;
 
   Future doUpdate({bool pullToRefresh = false}) async {
-
-
     if (!active || !mounted) {
-      print(orderType.routeName + '.doUpdate Aborted : ' + DateTime.now().toString() + "  _active : $active  mounted : $mounted  pullToRefresh : $pullToRefresh");
+      print(orderType!.routeName +
+          '.doUpdate Aborted : ' +
+          DateTime.now().toString() +
+          "  _active : $active  mounted : $mounted  pullToRefresh : $pullToRefresh");
       return;
     }
     if (mounted && context != null) {
       bool isForeground = context.read(dataHolderChangeNotifier).isForeground;
-      if(!isForeground){
-        print(orderType.routeName + ' doUpdate ignored isForeground : $isForeground  isVisible : ' + isVisible().toString());
+      if (!isForeground) {
+        print(orderType!.routeName +
+            ' doUpdate ignored isForeground : $isForeground  isVisible : ' +
+            isVisible().toString());
         return;
       }
     }
 
-    print(orderType.routeName + '.doUpdate : ' + DateTime.now().toString() + "  _active : $active  mounted : $mounted  pullToRefresh : $pullToRefresh");
+    print(orderType!.routeName +
+        '.doUpdate : ' +
+        DateTime.now().toString() +
+        "  _active : $active  mounted : $mounted  pullToRefresh : $pullToRefresh");
     //Stock stock = context.read(primaryStockChangeNotifier).stock;
-    Stock stock = InvestrendTheme.storedData.findStock(amendData.stock_code);
+    Stock? stock = InvestrendTheme.storedData?.findStock(amendData?.stock_code);
 
     if (stock == null || !stock.isValid()) {
-      print(orderType.routeName + '.doUpdate stock is NULL');
+      print(orderType!.routeName + '.doUpdate stock is NULL');
       return;
     }
     onProgress = true;
@@ -374,7 +400,8 @@ abstract class BaseAmendState<T extends StatefulWidget> extends VisibilityAwareS
     }
      */
     onProgress = false;
-    print(orderType.routeName + '.doUpdate finished. pullToRefresh : $pullToRefresh');
+    print(orderType!.routeName +
+        '.doUpdate finished. pullToRefresh : $pullToRefresh');
   }
 
   // Widget getTextField(TextEditingController controller, Color colorForm, {String hint}) {
@@ -411,7 +438,7 @@ abstract class BaseAmendState<T extends StatefulWidget> extends VisibilityAwareS
 
     String labelType;
     Color colorForm;
-    if (orderType.isBuyOrAmendBuy()) {
+    if (orderType!.isBuyOrAmendBuy()) {
       labelType = 'trade_buy_type_order_label'.tr();
       colorForm = InvestrendTheme.buyColor;
     } else {
@@ -421,7 +448,9 @@ abstract class BaseAmendState<T extends StatefulWidget> extends VisibilityAwareS
     const double paddingLeftRight = 10.0;
     return Container(
       margin: EdgeInsets.all(InvestrendTheme.cardPaddingGeneral),
-      padding: EdgeInsets.only(top: InvestrendTheme.cardPadding, bottom: InvestrendTheme.cardPadding),
+      padding: EdgeInsets.only(
+          top: InvestrendTheme.cardPadding,
+          bottom: InvestrendTheme.cardPadding),
       //height: 225,
       width: double.infinity,
       decoration: BoxDecoration(
@@ -436,7 +465,8 @@ abstract class BaseAmendState<T extends StatefulWidget> extends VisibilityAwareS
           Padding(
             //color: Colors.blue,
             //padding: const EdgeInsets.only(left: InvestrendTheme.cardPadding, right: InvestrendTheme.cardPadding),
-            padding: const EdgeInsets.only(left: paddingLeftRight, right: paddingLeftRight),
+            padding: const EdgeInsets.only(
+                left: paddingLeftRight, right: paddingLeftRight),
             child: Table(
               columnWidths: {
                 0: FractionColumnWidth(.5),
@@ -448,13 +478,18 @@ abstract class BaseAmendState<T extends StatefulWidget> extends VisibilityAwareS
               children: [
                 TableRow(
                   children: [
-                    Text(labelType, style: InvestrendTheme.of(context).small_w500.copyWith(fontWeight: FontWeight.w600)),
+                    Text(labelType,
+                        style: InvestrendTheme.of(context)
+                            .small_w500
+                            ?.copyWith(fontWeight: FontWeight.w600)),
                     SizedBox(
                       width: 2,
                       height: 2,
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(left: InvestrendTheme.cardPadding, right: InvestrendTheme.cardPadding),
+                      padding: const EdgeInsets.only(
+                          left: InvestrendTheme.cardPadding,
+                          right: InvestrendTheme.cardPadding),
                       child: Text(
                         'Normal',
                         style: InvestrendTheme.of(context).small_w400,
@@ -472,7 +507,10 @@ abstract class BaseAmendState<T extends StatefulWidget> extends VisibilityAwareS
                 ),
                 TableRow(
                   children: [
-                    Text('trade_form_price_label'.tr(), style: InvestrendTheme.of(context).small_w500.copyWith(fontWeight: FontWeight.w600)),
+                    Text('trade_form_price_label'.tr(),
+                        style: InvestrendTheme.of(context)
+                            .small_w500
+                            ?.copyWith(fontWeight: FontWeight.w600)),
                     TradeComponentCreator.minusButton(iconSize, () {
                       addOrSubstractPriceTick(-1);
                     }),
@@ -484,10 +522,14 @@ abstract class BaseAmendState<T extends StatefulWidget> extends VisibilityAwareS
                     //     ),
                     //     onPressed: () {addOrSubstractPriceTick(-1);}),
                     Padding(
-                      padding: const EdgeInsets.only(left: InvestrendTheme.cardPadding, right: InvestrendTheme.cardPadding),
+                      padding: const EdgeInsets.only(
+                          left: InvestrendTheme.cardPadding,
+                          right: InvestrendTheme.cardPadding),
                       //child: getTextField(fieldPriceController, colorForm, hint: amendData.normalPriceLot.price.toString()),
-                      child: TradeComponentCreator.textField(context, fieldPriceController, colorForm, focusNodePrice,
-                          hint: amendData.normalPriceLot.price.toString(), nextFocusNode: focusNodeLot),
+                      child: TradeComponentCreator.textField(context,
+                          fieldPriceController, colorForm, focusNodePrice,
+                          hint: amendData?.normalPriceLot?.price.toString(),
+                          nextFocusNode: focusNodeLot),
                     ),
                     TradeComponentCreator.plusButton(iconSize, () {
                       addOrSubstractPriceTick(1);
@@ -503,7 +545,10 @@ abstract class BaseAmendState<T extends StatefulWidget> extends VisibilityAwareS
                 ),
                 TableRow(
                   children: [
-                    Text('trade_form_lot_label'.tr(), style: InvestrendTheme.of(context).small_w500.copyWith(fontWeight: FontWeight.w600)),
+                    Text('trade_form_lot_label'.tr(),
+                        style: InvestrendTheme.of(context)
+                            .small_w500
+                            ?.copyWith(fontWeight: FontWeight.w600)),
                     TradeComponentCreator.minusButton(iconSize, () {
                       addOrSubstractLot(-1);
                     }),
@@ -515,10 +560,13 @@ abstract class BaseAmendState<T extends StatefulWidget> extends VisibilityAwareS
                     //     ),
                     //     onPressed: () {addOrSubstractLot(-1);}),
                     Padding(
-                      padding: const EdgeInsets.only(left: InvestrendTheme.cardPadding, right: InvestrendTheme.cardPadding),
+                      padding: const EdgeInsets.only(
+                          left: InvestrendTheme.cardPadding,
+                          right: InvestrendTheme.cardPadding),
                       //child: getTextField(fieldLotController, colorForm, hint: amendData.normalPriceLot.lot.toString()),
-                      child: TradeComponentCreator.textField(context, fieldLotController, colorForm, focusNodeLot,
-                          hint: amendData.normalPriceLot.lot.toString()),
+                      child: TradeComponentCreator.textField(
+                          context, fieldLotController, colorForm, focusNodeLot,
+                          hint: amendData?.normalPriceLot?.lot.toString()),
                     ),
                     TradeComponentCreator.plusButton(iconSize, () {
                       addOrSubstractLot(1);
@@ -540,7 +588,9 @@ abstract class BaseAmendState<T extends StatefulWidget> extends VisibilityAwareS
             builder: (context, int value, child) {
               return Padding(
                 padding: const EdgeInsets.only(
-                    left: InvestrendTheme.cardPadding, right: InvestrendTheme.cardPadding, bottom: InvestrendTheme.cardPadding),
+                    left: InvestrendTheme.cardPadding,
+                    right: InvestrendTheme.cardPadding,
+                    bottom: InvestrendTheme.cardPadding),
                 child: Column(
                   children: [
                     Row(
@@ -554,23 +604,30 @@ abstract class BaseAmendState<T extends StatefulWidget> extends VisibilityAwareS
                         predefineButton(100),
                       ],
                     ),
-                    (value > 0 && orderType.isBuyOrAmendBuy()) ?
-                    ValueListenableBuilder(
-                      valueListenable: predefineLotSourceNotifier,
-                      builder: (context, valueSource, child) {
-
-                        //#PERCENT#% of your #VALUE#
-                        String text = 'predefine_lot_by_text'.tr();
-                        text = text.replaceFirst("#VALUE#", valueSource);
-                        text = text.replaceFirst("#PERCENT#", value.toString());
-                        //AlignmentGeometry textAlign = StringUtils.equalsIgnoreCase(valueSource, 'trade_buy_label_buying_power'.tr()) ? Alignment.centerLeft : Alignment.centerRight;
-                        return Text(text,
-                          style: InvestrendTheme.of(context).support_w500_compact.copyWith(color: InvestrendTheme.of(context).investrendPurpleText),
-
-                        );
-                      },
-                    )
-                        : SizedBox(width: 1.0,),
+                    (value > 0 && orderType!.isBuyOrAmendBuy())
+                        ? ValueListenableBuilder(
+                            valueListenable: predefineLotSourceNotifier,
+                            builder: (context, valueSource, child) {
+                              //#PERCENT#% of your #VALUE#
+                              String text = 'predefine_lot_by_text'.tr();
+                              text = text.replaceFirst(
+                                  "#VALUE#", valueSource as String);
+                              text = text.replaceFirst(
+                                  "#PERCENT#", value.toString());
+                              //AlignmentGeometry textAlign = StringUtils.equalsIgnoreCase(valueSource, 'trade_buy_label_buying_power'.tr()) ? Alignment.centerLeft : Alignment.centerRight;
+                              return Text(
+                                text,
+                                style: InvestrendTheme.of(context)
+                                    .support_w500_compact
+                                    ?.copyWith(
+                                        color: InvestrendTheme.of(context)
+                                            .investrendPurpleText),
+                              );
+                            },
+                          )
+                        : SizedBox(
+                            width: 1.0,
+                          ),
                   ],
                 ),
               );
@@ -616,7 +673,8 @@ abstract class BaseAmendState<T extends StatefulWidget> extends VisibilityAwareS
           */
           ComponentCreator.divider(context),
           Padding(
-            padding: const EdgeInsets.only(left: paddingLeftRight, right: paddingLeftRight),
+            padding: const EdgeInsets.only(
+                left: paddingLeftRight, right: paddingLeftRight),
             child: Row(
               children: [
                 Text(
@@ -628,7 +686,8 @@ abstract class BaseAmendState<T extends StatefulWidget> extends VisibilityAwareS
                   child: ValueListenableBuilder(
                     valueListenable: valueOrderNotifier,
                     builder: (context, int value, child) {
-                      String totalValueText = InvestrendTheme.formatMoney(value, prefixRp: true);
+                      String totalValueText =
+                          InvestrendTheme.formatMoney(value, prefixRp: true);
                       return Text(
                         totalValueText,
                         style: InvestrendTheme.of(context).regular_w600,
@@ -651,7 +710,7 @@ abstract class BaseAmendState<T extends StatefulWidget> extends VisibilityAwareS
   Widget _normalMode() {
     return RefreshIndicator(
       color: InvestrendTheme.of(context).textWhite,
-      backgroundColor: orderType.color,
+      backgroundColor: orderType?.color,
       onRefresh: onRefresh,
       child: ListView(
         controller: scrollController,
@@ -668,9 +727,12 @@ abstract class BaseAmendState<T extends StatefulWidget> extends VisibilityAwareS
           SizedBox(
             height: InvestrendTheme.cardMargin,
           ),
-
-
-          CardOrderbook(orderbookNotifier, 10,owner: orderType.routeName, onTap: onTapOrderbook,),
+          CardOrderbook(
+            orderbookNotifier,
+            10,
+            owner: orderType?.routeName,
+            onTap: onTapOrderbook,
+          ),
           /*
           Padding(
             padding: const EdgeInsets.only(
@@ -702,7 +764,8 @@ abstract class BaseAmendState<T extends StatefulWidget> extends VisibilityAwareS
                 right: InvestrendTheme.cardPaddingGeneral,
                 top: InvestrendTheme.cardPadding,
                 bottom: InvestrendTheme.cardPadding),
-            child: ComponentCreator.subtitle(context, 'trade_title_trade_book'.tr()),
+            child: ComponentCreator.subtitle(
+                context, 'trade_title_trade_book'.tr()),
           ),
           WidgetTradebook(),
           SizedBox(
@@ -785,26 +848,35 @@ abstract class BaseAmendState<T extends StatefulWidget> extends VisibilityAwareS
     );
     */
   }
-  void onTapOrderbook(TypeOrderbook type, TypeField field, PriceLotQueue data){
-    print('onTapOrderbook  '+type.text+'  '+field.text+'  '+data.toString());
-    if(field == TypeField.Price){
+
+  void onTapOrderbook(TypeOrderbook type, TypeField field, PriceLotQueue data) {
+    print('onTapOrderbook  ' +
+        type.text +
+        '  ' +
+        field.text +
+        '  ' +
+        data.toString());
+    if (field == TypeField.Price) {
       OrderType orderType = OrderType.Buy;
       fieldPriceController.text = InvestrendTheme.formatComma(data.price);
-      scrollController.animateTo(0.0,duration: Duration(milliseconds: 500), curve: Curves.easeInOutQuint);
-    }else if (field == TypeField.Queue) {
-      if(data.queue > 0){
-        Stock stock = context.read(primaryStockChangeNotifier).stock;
+      scrollController.animateTo(0.0,
+          duration: Duration(milliseconds: 500), curve: Curves.easeInOutQuint);
+    } else if (field == TypeField.Queue) {
+      if (data.queue > 0) {
+        Stock? stock = context.read(primaryStockChangeNotifier).stock;
         Navigator.push(
             context,
             CupertinoPageRoute(
-              builder: (_) => ScreenOrderQueue(stock.code, stock.defaultBoard, type.text, data.price),
+              builder: (_) => ScreenOrderQueue(
+                  stock?.code, stock?.defaultBoard, type.text, data.price),
               settings: RouteSettings(name: '/order_queue'),
             ));
       }
     }
   }
+
   Widget predefineButton(int percentValue) {
-    Color color = InvestrendTheme.of(context).support_w400.color;
+    Color? color = InvestrendTheme.of(context).support_w400?.color;
     if (percentValue == predefineLotNotifier.value) {
       color = Theme.of(context).colorScheme.secondary;
     }
@@ -815,86 +887,105 @@ abstract class BaseAmendState<T extends StatefulWidget> extends VisibilityAwareS
         },
         child: Text(
           '$percentValue%',
-          style: InvestrendTheme.of(context).support_w600.copyWith(color: color),
+          style:
+              InvestrendTheme.of(context).support_w600?.copyWith(color: color),
         ));
   }
 
   void predefineLot(int percentage) {
-    fieldLotController.removeListener(resetPredefineLot);
+    fieldLotController.removeListener(resetPredefineLot!);
     predefineLotNotifier.value = percentage;
 
-    if (orderType.isBuyOrAmendBuy()) {
-      print('predefineLot ' + orderType.text + '  $percentage %   availableMoney : belum');
+    if (orderType!.isBuyOrAmendBuy()) {
+      print('predefineLot ' +
+          orderType!.text +
+          '  $percentage %   availableMoney : belum');
       int price = Utils.safeInt(fieldPriceController.text.replaceAll(',', ''));
-      double buyingPower = context.read(buyRdnBuyingPowerChangeNotifier).buyingPower;
-      double cashAvailable = context.read(buyRdnBuyingPowerChangeNotifier).cashAvailable;
+      double buyingPower =
+          context.read(buyRdnBuyingPowerChangeNotifier).buyingPower;
+      double cashAvailable =
+          context.read(buyRdnBuyingPowerChangeNotifier).cashAvailable;
       //double feeBuy = 0.02;
-      double feeBuy = context.read(dataHolderChangeNotifier).user.feepct;
-      Account activeAccount = context.read(dataHolderChangeNotifier).user.getAccount(context.read(accountChangeNotifier).index);
+      double? feeBuy = context.read(dataHolderChangeNotifier).user.feepct;
+      Account? activeAccount = context
+          .read(dataHolderChangeNotifier)
+          .user
+          .getAccount(context.read(accountChangeNotifier).index);
       if (activeAccount != null) {
         feeBuy = activeAccount.commission;
       }
 
-
-
-      if(price <= 0){
-        InvestrendTheme.of(context).showSnackBar(context, 'predefine_price_error_text'.tr());
-        focusNodePrice.requestFocus();
+      if (price <= 0) {
+        InvestrendTheme.of(context)
+            .showSnackBar(context, 'predefine_price_error_text'.tr());
+        focusNodePrice?.requestFocus();
         predefineLotNotifier.value = 0;
         return;
       }
       double usedValue = 0.0;
-      if(StringUtils.equalsIgnoreCase(predefineLotSourceNotifier.value, 'trade_buy_label_buying_power'.tr())){
+      if (StringUtils.equalsIgnoreCase(predefineLotSourceNotifier.value,
+          'trade_buy_label_buying_power'.tr())) {
         usedValue = buyingPower;
-      }else if(StringUtils.equalsIgnoreCase(predefineLotSourceNotifier.value, 'cash_available_label'.tr())){
+      } else if (StringUtils.equalsIgnoreCase(
+          predefineLotSourceNotifier.value, 'cash_available_label'.tr())) {
         usedValue = cashAvailable;
       }
 
-      if(buyingPower <= 0 && StringUtils.equalsIgnoreCase(predefineLotSourceNotifier.value, 'trade_buy_label_buying_power'.tr())){
+      if (buyingPower <= 0 &&
+          StringUtils.equalsIgnoreCase(predefineLotSourceNotifier.value,
+              'trade_buy_label_buying_power'.tr())) {
         String error = 'predefine_data_error_text'.tr();
         error = error.replaceFirst("#VALUE#", predefineLotSourceNotifier.value);
-        InvestrendTheme.of(context).showSnackBar(context,
+        InvestrendTheme.of(context).showSnackBar(
+            context,
             //'Please wait for buyingPower first.'
-            error
-        );
-        focusNodePrice.requestFocus();
+            error);
+        focusNodePrice?.requestFocus();
         predefineLotNotifier.value = 0;
         return;
       }
 
-      if(cashAvailable <= 0 && StringUtils.equalsIgnoreCase(predefineLotSourceNotifier.value, 'cash_available_label'.tr())){
+      if (cashAvailable <= 0 &&
+          StringUtils.equalsIgnoreCase(
+              predefineLotSourceNotifier.value, 'cash_available_label'.tr())) {
         String error = 'predefine_data_error_text'.tr();
         error = error.replaceFirst("#VALUE#", predefineLotSourceNotifier.value);
-        InvestrendTheme.of(context).showSnackBar(context,
+        InvestrendTheme.of(context).showSnackBar(
+            context,
             //'Please wait for buyingPower first.'
-            error
-        );
-        focusNodePrice.requestFocus();
+            error);
+        focusNodePrice?.requestFocus();
         predefineLotNotifier.value = 0;
         return;
       }
 
       //if (price > 0 && buyingPower > 0) {
       if (price > 0 && usedValue > 0) {
-        print('predefineLot ' + orderType.text + '  usedValue : $usedValue  price : $price  feeBuy : $feeBuy');
+        print('predefineLot ' +
+            orderType!.text +
+            '  usedValue : $usedValue  price : $price  feeBuy : $feeBuy');
         //int lot = ((buyingPower * (percentage / 100)) / (price * 100 * (1.0 + (feeBuy / 100)))).toInt();
-        int lot = (usedValue * (percentage / 100)) ~/ (price * 100 * (1.0 + (feeBuy / 100)));
+        int lot = (usedValue * (percentage / 100)) ~/
+            (price * 100 * (1.0 + (feeBuy! / 100)));
 
         //int value = price * lot * fee;
         //lot = value / price / fee
-        print('predefineLot ' + orderType.text + '  result lot : $lot');
+        print('predefineLot ' + orderType!.text + '  result lot : $lot');
         fieldLotController.text = InvestrendTheme.formatComma(lot);
-        focusNodeLot.unfocus();
+        focusNodeLot?.unfocus();
       } else {
         //InvestrendTheme.of(context).showSnackBar(context, 'Please fill price first.');
-        InvestrendTheme.of(context).showSnackBar(context, 'predefine_price_error_text'.tr());
-        focusNodePrice.requestFocus();
+        InvestrendTheme.of(context)
+            .showSnackBar(context, 'predefine_price_error_text'.tr());
+        focusNodePrice?.requestFocus();
         predefineLotNotifier.value = 0;
       }
     } else {
       int availableLot = context.read(sellLotAvgChangeNotifier).lot;
 
-      print('predefineLot ' + orderType.text + '  $percentage %   availableLot : $availableLot');
+      print('predefineLot ' +
+          orderType!.text +
+          '  $percentage %   availableLot : $availableLot');
       int lot = 0;
       if (availableLot > 0 && percentage > 0) {
         if (percentage == 100) {
@@ -903,11 +994,11 @@ abstract class BaseAmendState<T extends StatefulWidget> extends VisibilityAwareS
           lot = ((percentage / 100) * availableLot).toInt();
         }
       }
-      print('predefineLot ' + orderType.text + '  result lot : $lot');
+      print('predefineLot ' + orderType!.text + '  result lot : $lot');
       fieldLotController.text = InvestrendTheme.formatComma(lot);
-      focusNodeLot.unfocus();
+      focusNodeLot?.unfocus();
     }
-    fieldLotController.addListener(resetPredefineLot);
+    fieldLotController.addListener(resetPredefineLot!);
   }
 
   void addOrSubstractLot(int step) {
@@ -921,7 +1012,7 @@ abstract class BaseAmendState<T extends StatefulWidget> extends VisibilityAwareS
     }
     fieldLotController.text = lot.toString();
     //focusNodeLot.requestFocus();
-    focusNodeLot.unfocus();
+    focusNodeLot?.unfocus();
     if (predefineLotNotifier.value != 0) {
       predefineLotNotifier.value = 0;
     }
@@ -966,7 +1057,8 @@ abstract class BaseAmendState<T extends StatefulWidget> extends VisibilityAwareS
     int newPrice = price;
     int tick = addSubtick > 0 ? priceTickUp(price) : priceTickDown(price);
     int precised = price % tick;
-    print('addOrSubstractPriceTick addSubtick $addSubtick   price : $price  tick : $tick  precised : $precised');
+    print(
+        'addOrSubstractPriceTick addSubtick $addSubtick   price : $price  tick : $tick  precised : $precised');
     if (precised == 0) {
       int tickPrice = tick * addSubtick;
       newPrice += tickPrice;
@@ -977,7 +1069,8 @@ abstract class BaseAmendState<T extends StatefulWidget> extends VisibilityAwareS
         newPrice = newPrice + tick;
       }
     }
-    print('addOrSubstractPriceTick addSubtick $addSubtick   price : $price  newPrice : $newPrice');
+    print(
+        'addOrSubstractPriceTick addSubtick $addSubtick   price : $price  newPrice : $newPrice');
     if (newPrice < 0) {
       newPrice = 0;
       fieldPriceController.text = newPrice.toString();
@@ -986,17 +1079,17 @@ abstract class BaseAmendState<T extends StatefulWidget> extends VisibilityAwareS
     }
 
     //focusNodePrice.requestFocus();
-    focusNodePrice.unfocus();
+    focusNodePrice?.unfocus();
   }
 
-  bool isActiveAndMounted(){
+  bool isActiveAndMounted() {
     return active && mounted;
   }
-  
+
   Future onRefresh() {
-    unsubscribe(context,'onRefresh');
-    Stock stock = context.read(primaryStockChangeNotifier).stock;
-    subscribe(context, stock,'onRefresh');
+    unsubscribe(context, 'onRefresh');
+    Stock? stock = context.read(primaryStockChangeNotifier).stock;
+    subscribe(context, stock, 'onRefresh');
 
     return doUpdateAccount(pullToRefresh: true);
     //return doUpdate(pullToRefresh: true);
@@ -1009,21 +1102,27 @@ abstract class BaseAmendState<T extends StatefulWidget> extends VisibilityAwareS
       width: 60,
     );
   }
+
   Widget accelerationLabel(BuildContext context) {
     return Consumer(builder: (context, watch, child) {
       final notifier = watch(primaryStockChangeNotifier);
       if (notifier.invalid()) {
         return Center(child: CircularProgressIndicator());
       }
-      if (notifier.stock.isAccelerationBoard()) {
+      if (notifier.stock!.isAccelerationBoard()) {
         return Container(
-          margin: const EdgeInsets.only(top: InvestrendTheme.cardPadding,),
-          padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 8.0, bottom: 8.0),
+          margin: const EdgeInsets.only(
+            top: InvestrendTheme.cardPadding,
+          ),
+          padding: const EdgeInsets.only(
+              left: 20.0, right: 20.0, top: 8.0, bottom: 8.0),
           width: double.maxFinite,
           color: InvestrendTheme.of(context).tileBackground,
           child: Text(
             'stock_detail_overview_card_detail_special_notation'.tr(),
-            style: InvestrendTheme.of(context).support_w400_compact.copyWith(color: InvestrendTheme.of(context).investrendPurple),
+            style: InvestrendTheme.of(context)
+                .support_w400_compact
+                ?.copyWith(color: InvestrendTheme.of(context).investrendPurple),
             textAlign: TextAlign.center,
           ),
         );
@@ -1051,7 +1150,7 @@ abstract class BaseAmendState<T extends StatefulWidget> extends VisibilityAwareS
   }
 
   void calculateOrder({String caller = ''}) {
-    print(orderType.routeName + '.calculateOrder  caller : $caller');
+    print(orderType!.routeName + '.calculateOrder  caller : $caller');
 
     String scrappedPrice = fieldPriceController.text.replaceAll(',', '');
     int price = Utils.safeInt(scrappedPrice);
@@ -1061,7 +1160,7 @@ abstract class BaseAmendState<T extends StatefulWidget> extends VisibilityAwareS
 
     int value = price * lot * 100;
 
-    print(orderType.routeName +
+    print(orderType!.routeName +
         '.calculateOrder Price : ' +
         fieldPriceController.text +
         '   Lot : ' +
@@ -1069,25 +1168,30 @@ abstract class BaseAmendState<T extends StatefulWidget> extends VisibilityAwareS
         '  value : $value');
 
     // batasin lot kalo sell, cuma kalo Loop ga dibatasin.
-    if(orderType.isSellOrAmendSell() ){
+    if (orderType!.isSellOrAmendSell()) {
       final lotAverage = context.read(sellLotAvgChangeNotifier);
-      int maxLot = lotAverage.lot + amendData.normalPriceLot.lot;
-      if(lot > maxLot ){
+      int maxLot = lotAverage.lot + amendData!.normalPriceLot!.lot;
+      if (lot > maxLot) {
         //fieldLotController.text = InvestrendTheme.formatComma(lotAverage.lot);
         fieldLotController.text = InvestrendTheme.formatComma(maxLot);
-        fieldLotController.selection = TextSelection(baseOffset: fieldLotController.text.length, extentOffset: fieldLotController.text.length);
+        fieldLotController.selection = TextSelection(
+            baseOffset: fieldLotController.text.length,
+            extentOffset: fieldLotController.text.length);
         //lot = lotAverage.lot;
         lot = maxLot;
-        value = price * lot * 100 ;
+        value = price * lot * 100;
       }
     }
 
-    double feeBuy = context.read(dataHolderChangeNotifier).user.feepct;
-    Account activeAccount = context.read(dataHolderChangeNotifier).user.getAccount(context.read(accountChangeNotifier).index);
+    double? feeBuy = context.read(dataHolderChangeNotifier).user.feepct;
+    Account? activeAccount = context
+        .read(dataHolderChangeNotifier)
+        .user
+        .getAccount(context.read(accountChangeNotifier).index);
     if (activeAccount != null) {
       feeBuy = activeAccount.commission;
     }
-    if (orderType.isBuyOrAmendBuy() && feeBuy > 0) {
+    if (orderType!.isBuyOrAmendBuy() && feeBuy! > 0) {
       value = (value * (1.0 + (feeBuy / 100))).toInt();
     }
 
@@ -1107,85 +1211,110 @@ abstract class BaseAmendState<T extends StatefulWidget> extends VisibilityAwareS
     // }
   }
 
-
-  SubscribeAndHGET subscribeSummary;
-  SubscribeAndHGET subscribeOrderbook;
-  SubscribeAndHGET subscribeTradebook;
-  void unsubscribe(BuildContext context, String caller){
-    if(subscribeSummary != null){
-      print(orderType.routeName+' unsubscribe Summary : '+subscribeSummary.channel);
-      context.read(managerDatafeedNotifier).unsubscribe(subscribeSummary, orderType.routeName+'.'+caller);
+  SubscribeAndHGET? subscribeSummary;
+  SubscribeAndHGET? subscribeOrderbook;
+  SubscribeAndHGET? subscribeTradebook;
+  void unsubscribe(BuildContext context, String caller) {
+    if (subscribeSummary != null) {
+      print(orderType!.routeName +
+          ' unsubscribe Summary : ' +
+          subscribeSummary!.channel!);
+      context
+          .read(managerDatafeedNotifier)
+          .unsubscribe(subscribeSummary, orderType!.routeName + '.' + caller);
       subscribeSummary = null;
     }
 
-    if(subscribeOrderbook != null){
-      print(orderType.routeName+' unsubscribe Orderbook : '+subscribeOrderbook.channel);
-      context.read(managerDatafeedNotifier).unsubscribe(subscribeOrderbook, orderType.routeName+'.'+caller);
+    if (subscribeOrderbook != null) {
+      print(orderType!.routeName +
+          ' unsubscribe Orderbook : ' +
+          subscribeOrderbook!.channel!);
+      context
+          .read(managerDatafeedNotifier)
+          .unsubscribe(subscribeOrderbook, orderType!.routeName + '.' + caller);
       subscribeOrderbook = null;
     }
 
-    if(subscribeTradebook != null){
-      print(orderType.routeName+' unsubscribe Tradebook : '+subscribeTradebook.channel);
-      context.read(managerDatafeedNotifier).unsubscribe(subscribeTradebook, orderType.routeName+'.'+caller);
+    if (subscribeTradebook != null) {
+      print(orderType!.routeName +
+          ' unsubscribe Tradebook : ' +
+          subscribeTradebook!.channel!);
+      context
+          .read(managerDatafeedNotifier)
+          .unsubscribe(subscribeTradebook, orderType!.routeName + '.' + caller);
       subscribeTradebook = null;
     }
   }
-  void subscribe(BuildContext context, Stock stock, String caller){
-    String codeBoard = stock.code+'.'+stock.defaultBoard;
 
-    String channelSummary = DatafeedType.Summary.key+'.'+codeBoard;
+  void subscribe(BuildContext context, Stock? stock, String caller) {
+    String codeBoard = stock!.code! + '.' + stock.defaultBoard;
+
+    String channelSummary = DatafeedType.Summary.key + '.' + codeBoard;
     context.read(stockSummaryChangeNotifier).setStock(stock);
-    subscribeSummary = SubscribeAndHGET(channelSummary, DatafeedType.Summary.collection, codeBoard,listener: (message){
-      print(channelSummary+' got : '+message.elementAt(1));
+    subscribeSummary = SubscribeAndHGET(
+        channelSummary, DatafeedType.Summary.collection, codeBoard,
+        listener: (message) {
+      print(channelSummary + ' got : ' + message.elementAt(1));
       print(message);
-      if(mounted){
+      if (mounted) {
         StockSummary stockSummary = StockSummary.fromStreaming(message);
-        FundamentalCache cache = context.read(fundamentalCacheNotifier).getCache(stockSummary.code);
+        FundamentalCache? cache =
+            context.read(fundamentalCacheNotifier).getCache(stockSummary.code);
         stockSummary.updateCache(context, cache);
-        context.read(stockSummaryChangeNotifier).setData(stockSummary, check: true);
+        context
+            .read(stockSummaryChangeNotifier)
+            .setData(stockSummary, check: true);
       }
-
+      return '';
     }, validator: validatorSummary);
-    print(orderType.routeName+' subscribe Summary : $codeBoard');
-    context.read(managerDatafeedNotifier).subscribe(subscribeSummary, orderType.routeName+'.'+caller);
+    print(orderType!.routeName + ' subscribe Summary : $codeBoard');
+    context
+        .read(managerDatafeedNotifier)
+        .subscribe(subscribeSummary, orderType!.routeName + '.' + caller);
 
-
-    String channelOrderbook = DatafeedType.Orderbook.key+'.'+codeBoard;
+    String channelOrderbook = DatafeedType.Orderbook.key + '.' + codeBoard;
     context.read(orderBookChangeNotifier).setStock(stock);
-    subscribeOrderbook = SubscribeAndHGET(channelOrderbook, DatafeedType.Orderbook.collection, codeBoard,listener: (message){
-      print(orderType.routeName+' got : '+message.elementAt(1));
+    subscribeOrderbook = SubscribeAndHGET(
+        channelOrderbook, DatafeedType.Orderbook.collection, codeBoard,
+        listener: (message) {
+      print(orderType!.routeName + ' got : ' + message.elementAt(1));
       DebugWriter.info(message);
 
       OrderBook orderbook = OrderBook.fromStreaming(message);
       if (mounted) {
-        DebugWriter.info('got orderbook --> '+orderbook.toString());
+        DebugWriter.info('got orderbook --> ' + orderbook.toString());
         orderbook.generateDataForUI(10, context: context);
 
         context.read(orderBookChangeNotifier).setData(orderbook);
-        StockSummary stockSummary = context.read(stockSummaryChangeNotifier).summary;
+        StockSummary? stockSummary =
+            context.read(stockSummaryChangeNotifier).summary;
         OrderbookData orderbookData = OrderbookData();
         orderbookData.orderbook = orderbook;
         orderbookData.prev = stockSummary != null ? stockSummary.prev : 0;
         orderbookData.close = stockSummary != null ? stockSummary.close : 0;
-        orderbookData.averagePrice = stockSummary != null ? stockSummary.averagePrice : 0;
+        orderbookData.averagePrice =
+            stockSummary != null ? stockSummary.averagePrice : 0;
         orderbookNotifier.setValue(orderbookData);
         print('got orderbook --> notify');
       }
-
+      return '';
     }, validator: validatorOrderbook);
-    print(orderType.routeName+' subscribe Orderbook : $codeBoard');
-    context.read(managerDatafeedNotifier).subscribe(subscribeOrderbook, orderType.routeName+'.'+caller);
+    print(orderType!.routeName + ' subscribe Orderbook : $codeBoard');
+    context
+        .read(managerDatafeedNotifier)
+        .subscribe(subscribeOrderbook, orderType!.routeName + '.' + caller);
 
-
-    String channelTradebook = DatafeedType.Tradebook.key+'.'+codeBoard;
+    String channelTradebook = DatafeedType.Tradebook.key + '.' + codeBoard;
     context.read(tradeBookChangeNotifier).setStock(stock);
-    subscribeTradebook = SubscribeAndHGET(channelTradebook, DatafeedType.Tradebook.collection, codeBoard,listener: (message){
-      print(orderType.routeName+' got : '+message.elementAt(1));
+    subscribeTradebook = SubscribeAndHGET(
+        channelTradebook, DatafeedType.Tradebook.collection, codeBoard,
+        listener: (message) {
+      print(orderType!.routeName + ' got : ' + message.elementAt(1));
       DebugWriter.info(message);
 
       TradeBook tradebook = TradeBook.fromStreaming(message);
       if (mounted) {
-        DebugWriter.info('got tradebook --> '+tradebook.toString());
+        DebugWriter.info('got tradebook --> ' + tradebook.toString());
         // orderbook.generateDataForUI(10, context: context);
         //
         // context.read(orderBookChangeNotifier).setData(orderbook);
@@ -1198,60 +1327,76 @@ abstract class BaseAmendState<T extends StatefulWidget> extends VisibilityAwareS
         context.read(tradeBookChangeNotifier).setData(tradebook);
         print('got tradebook --> notify');
       }
-
+      return '';
     }, validator: validatorTradebook);
-    print(orderType.routeName+' subscribe Tradebook : $codeBoard');
-    context.read(managerDatafeedNotifier).subscribe(subscribeTradebook, orderType.routeName+'.'+caller);
+    print(orderType!.routeName + ' subscribe Tradebook : $codeBoard');
+    context
+        .read(managerDatafeedNotifier)
+        .subscribe(subscribeTradebook, orderType!.routeName + '.' + caller);
   }
-  bool validatorOrderbook(List<String> data, String channel){
-    //List<String> data = message.split('|');
-    if(data != null && data.length > 5 /* && data.first == 'III' && data.elementAt(1) == 'Q'*/){
-      final String HEADER       = data[0];
-      final String type         = data[1];
-      final String start 	      = data[2];
-      final String end 		      = data[3];
-      final String stockCode    = data[4];
-      final String boardCode    = data[5];
 
-      String codeBoard = stockCode+'.'+boardCode;
-      String channelData = DatafeedType.Orderbook.key+'.'+codeBoard;
-      if(HEADER == 'III' && type == DatafeedType.Orderbook.type && channel == channelData){
+  bool validatorOrderbook(List<String>? data, String channel) {
+    //List<String> data = message.split('|');
+    if (data != null &&
+        data.length >
+            5 /* && data.first == 'III' && data.elementAt(1) == 'Q'*/) {
+      final String header = data[0];
+      final String type = data[1];
+      final String start = data[2];
+      final String end = data[3];
+      final String stockCode = data[4];
+      final String boardCode = data[5];
+
+      String codeBoard = stockCode + '.' + boardCode;
+      String channelData = DatafeedType.Orderbook.key + '.' + codeBoard;
+      if (header == 'III' &&
+          type == DatafeedType.Orderbook.type &&
+          channel == channelData) {
         return true;
       }
     }
     return false;
   }
-  bool validatorTradebook(List<String> data, String channel){
+
+  bool validatorTradebook(List<String>? data, String channel) {
     //List<String> data = message.split('|');
-    if(data != null && data.length > 5 /* && data.first == 'III' && data.elementAt(1) == 'Q'*/){
-      final String HEADER       = data[0];
-      final String type         = data[1];
-      final String start 	      = data[2];
-      final String end 		      = data[3];
-      final String stockCode    = data[4];
-      final String boardCode    = data[5];
+    if (data != null &&
+        data.length >
+            5 /* && data.first == 'III' && data.elementAt(1) == 'Q'*/) {
+      final String header = data[0];
+      final String type = data[1];
+      final String start = data[2];
+      final String end = data[3];
+      final String stockCode = data[4];
+      final String boardCode = data[5];
 
-
-      String codeBoard = stockCode+'.'+boardCode;
-      String channelData = DatafeedType.Tradebook.key+'.'+codeBoard;
-      if(HEADER == 'III' && type == DatafeedType.Tradebook.type && channel == channelData){
+      String codeBoard = stockCode + '.' + boardCode;
+      String channelData = DatafeedType.Tradebook.key + '.' + codeBoard;
+      if (header == 'III' &&
+          type == DatafeedType.Tradebook.type &&
+          channel == channelData) {
         return true;
       }
     }
     return false;
   }
-  bool validatorSummary(List<String> data, String channel){
+
+  bool validatorSummary(List<String>? data, String channel) {
     //List<String> data = message.split('|');
-    if(data != null && data.length > 5 /* && data.first == 'III' && data.elementAt(1) == 'Q'*/){
-      final String HEADER       = data[0];
+    if (data != null &&
+        data.length >
+            5 /* && data.first == 'III' && data.elementAt(1) == 'Q'*/) {
+      final String header = data[0];
       final String typeSummary = data[1];
-      final String start 	      = data[2];
-      final String end 		      = data[3];
-      final String stockCode    = data[4];
-      final String boardCode    = data[5];
-      String codeBoard = stockCode+'.'+boardCode;
-      String channelData = DatafeedType.Summary.key+'.'+codeBoard;
-      if(HEADER == 'III' && typeSummary == DatafeedType.Summary.type && channel == channelData){
+      final String start = data[2];
+      final String end = data[3];
+      final String stockCode = data[4];
+      final String boardCode = data[5];
+      String codeBoard = stockCode + '.' + boardCode;
+      String channelData = DatafeedType.Summary.key + '.' + codeBoard;
+      if (header == 'III' &&
+          typeSummary == DatafeedType.Summary.type &&
+          channel == channelData) {
         return true;
       }
     }

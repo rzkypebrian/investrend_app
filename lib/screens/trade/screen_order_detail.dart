@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'dart:async';
 import 'dart:math';
 
@@ -110,35 +112,34 @@ const String PIN_SUCCESS = 'pin_success';
 
 class ScreenOrderDetail extends StatefulWidget {
   final BuySell _data;
-  final OrderStatus _orderStatus;
+  final OrderStatus? _orderStatus;
   final bool historicalMode;
 
   const ScreenOrderDetail(this._data, this._orderStatus,
-      {this.historicalMode = false, Key key})
+      {this.historicalMode = false, Key? key})
       : super(key: key);
 
   @override
   _ScreenOrderDetailState createState() =>
-      _ScreenOrderDetailState(_data, _orderStatus,
+      _ScreenOrderDetailState(_data, _orderStatus!,
           historicalMode: historicalMode);
 }
 
 class _ScreenOrderDetailState extends BaseStateNoTabs<ScreenOrderDetail> {
   //static const Duration _durationUpdate = Duration(milliseconds: 5000);
-  Duration _durationUpdate;
-  final BuySell data;
+  Duration? _durationUpdate;
+  final BuySell? data;
   final bool historicalMode;
 
-  Timer _timer;
-  OrderStatus os;
-  List<TradeStatusSummary> tradesSummary = List.empty(growable: true);
+  Timer? _timer;
+  OrderStatus? os;
+  List<TradeStatusSummary?>? tradesSummary = List.empty(growable: true);
 
   _ScreenOrderDetailState(this.data, this.os, {this.historicalMode = false})
       : super(historicalMode ? '/order_detail_historical' : '/order_detail');
 
   @override
   void onActive() {
-    // TODO: implement onActive
     if (historicalMode) {
       //doUpdate();
     } else {
@@ -149,7 +150,6 @@ class _ScreenOrderDetailState extends BaseStateNoTabs<ScreenOrderDetail> {
 
   @override
   void onInactive() {
-    // TODO: implement onInactive
     _stopTimer();
   }
 
@@ -171,13 +171,13 @@ class _ScreenOrderDetailState extends BaseStateNoTabs<ScreenOrderDetail> {
 
   @override
   void dispose() {
-    if (_timer != null) _timer.cancel();
+    if (_timer != null) _timer?.cancel();
 
     final container = ProviderContainer();
     if (onStatusRefreshEvent != null) {
       container
           .read(statusRefreshNotifier)
-          .removeListener(onStatusRefreshEvent);
+          .removeListener(onStatusRefreshEvent!);
     }
     onStatusRefreshEvent = null;
 
@@ -186,8 +186,8 @@ class _ScreenOrderDetailState extends BaseStateNoTabs<ScreenOrderDetail> {
 
   void _startTimer() {
     print(routeName + '._startTimer');
-    if (_timer == null || !_timer.isActive) {
-      _timer = Timer.periodic(_durationUpdate, (timer) {
+    if (_timer == null || !_timer!.isActive) {
+      _timer = Timer.periodic(_durationUpdate!, (timer) {
         if (active) {
           if (onProgress) {
             print(routeName +
@@ -201,7 +201,7 @@ class _ScreenOrderDetailState extends BaseStateNoTabs<ScreenOrderDetail> {
     }
   }
 
-  VoidCallback onStatusRefreshEvent;
+  VoidCallback? onStatusRefreshEvent;
 
   @override
   void didChangeDependencies() {
@@ -210,7 +210,7 @@ class _ScreenOrderDetailState extends BaseStateNoTabs<ScreenOrderDetail> {
 
     final notifierRefreshStatus = context.read(statusRefreshNotifier);
     if (onStatusRefreshEvent != null) {
-      notifierRefreshStatus.removeListener(onStatusRefreshEvent);
+      notifierRefreshStatus.removeListener(onStatusRefreshEvent!);
     } else {
       onStatusRefreshEvent = () {
         if (mounted) {
@@ -224,13 +224,13 @@ class _ScreenOrderDetailState extends BaseStateNoTabs<ScreenOrderDetail> {
         }
       };
     }
-    notifierRefreshStatus.addListener(onStatusRefreshEvent);
+    notifierRefreshStatus.addListener(onStatusRefreshEvent!);
   }
 
   void _stopTimer() {
     print(routeName + '._stopTimer');
-    if (_timer != null && _timer.isActive) {
-      _timer.cancel();
+    if (_timer != null && _timer!.isActive) {
+      _timer?.cancel();
     }
   }
 
@@ -250,9 +250,9 @@ class _ScreenOrderDetailState extends BaseStateNoTabs<ScreenOrderDetail> {
       return;
     }
 
-    String username = context.read(dataHolderChangeNotifier).user.username;
+    String? username = context.read(dataHolderChangeNotifier).user.username;
     int selected = context.read(accountChangeNotifier).index;
-    Account account =
+    Account? account =
         context.read(dataHolderChangeNotifier).user.getAccount(selected);
     if (account == null) {
       print(routeName +
@@ -271,12 +271,13 @@ class _ScreenOrderDetailState extends BaseStateNoTabs<ScreenOrderDetail> {
     //   return;
     // }
 
-    String orderid =
-        data != null ? data.orderid : (os != null ? os.orderid : '-');
+    String? orderid =
+        data != null ? data?.orderid : (os != null ? os?.orderid : '-');
     bool reloadUI = false;
     try {
-      print('try orderStatus orderid : ' + orderid);
-      final orderStatus = await InvestrendTheme.tradingHttp.orderStatus(
+      print('try orderStatus orderid : ' + orderid!);
+      final List<OrderStatus>? orderStatus =
+          await InvestrendTheme.tradingHttp.orderStatus(
         /*account.brokercode*/
         '',
         /*account.accountcode*/
@@ -292,8 +293,8 @@ class _ScreenOrderDetailState extends BaseStateNoTabs<ScreenOrderDetail> {
       print('Got orderStatus : ' + orderStatusCount.toString());
       if (orderStatusCount > 0) {
         for (int i = 0; i < orderStatusCount; i++) {
-          OrderStatus newOS = orderStatus.elementAt(i);
-          if (StringUtils.equalsIgnoreCase(newOS.orderid, orderid)) {
+          OrderStatus? newOS = orderStatus?.elementAt(i);
+          if (StringUtils.equalsIgnoreCase(newOS?.orderid, orderid)) {
             os = newOS;
             print('Found orderStatus with orderid : $orderid');
             break;
@@ -309,9 +310,9 @@ class _ScreenOrderDetailState extends BaseStateNoTabs<ScreenOrderDetail> {
       print(routeName + ' doUpdate order_status error : ' + error.toString());
     }
     try {
-      print('try tradeStatusSummary orderid : ' + orderid);
-      final tradeStatusSummary = await InvestrendTheme.tradingHttp
-          .tradeStatusSummary(
+      print('try tradeStatusSummary orderid : ' + orderid!);
+      final List<TradeStatusSummary?>? tradeStatusSummary =
+          await InvestrendTheme.tradingHttp.tradeStatusSummary(
               account.brokercode,
               account.accountcode,
               username,
@@ -319,7 +320,7 @@ class _ScreenOrderDetailState extends BaseStateNoTabs<ScreenOrderDetail> {
               InvestrendTheme.of(context).applicationPlatform,
               InvestrendTheme.of(context).applicationVersion);
 
-      int tradeStatusSummaryCount =
+      int? tradeStatusSummaryCount =
           tradeStatusSummary != null ? tradeStatusSummary.length : 0;
       print('Got tradeStatusSummary : ' + tradeStatusSummary.toString());
       /*
@@ -393,7 +394,7 @@ class _ScreenOrderDetailState extends BaseStateNoTabs<ScreenOrderDetail> {
   }
 
   @override
-  Widget createAppBar(BuildContext context) {
+  PreferredSizeWidget createAppBar(BuildContext context) {
     double elevation = 0.0;
     Color shadowColor = Theme.of(context).shadowColor;
     if (!InvestrendTheme.tradingHttp.is_production) {
@@ -420,67 +421,70 @@ class _ScreenOrderDetailState extends BaseStateNoTabs<ScreenOrderDetail> {
     // int done_lot = 40; // hardcode
     // int balance_lot = order_lot - done_lot;
 
-    String idxOrderNo = '-'; // hardcode
-    String orderStatus = '-'; // hardcode
-    String orderDate = '-'; // hardcode
-    String orderTime = '-'; // hardcode
-    int orderPrice = 0;
-    int orderLot = 0;
+    String? idxOrderNo = '-'; // hardcode
+    String? orderStatus = '-'; // hardcode
+    String? orderDate = '-'; // hardcode
+    String? orderTime = '-'; // hardcode
+    int? orderPrice = 0;
+    int? orderLot = 0;
     int doneLot = 0; // hardcode
     int balanceLot = 0;
-    int value = 0;
+    int? value = 0;
 
-    String orderId = '-';
+    String? orderId = '-';
 
     String accountInfo = '-';
-    String stockCode = '-';
-    String orderType = '-';
+    String? stockCode = '-';
+    String? orderType = '-';
 
     if (os != null) {
-      accountInfo =
-          data.accountName + ' - ' + os.accountcode + ' - ' + data.accountType;
-      orderId = os.orderid;
-      idxOrderNo = os.idxOrderNumber; // hardcode
-      orderStatus = os.orderStatus; // hardcode
+      accountInfo = data!.accountName! +
+          ' - ' +
+          os!.accountcode +
+          ' - ' +
+          data!.accountType!;
+      orderId = os?.orderid;
+      idxOrderNo = os?.idxOrderNumber; // hardcode
+      orderStatus = os?.orderStatus; // hardcode
       //order_date = os.orderDate; // hardcode
-      orderDate = os.getDateFormatted();
+      orderDate = os?.getDateFormatted();
       //order_time = os.getTime(); // hardcode
-      orderTime = os.getTimeFormatted(); // hardcode
-      orderPrice = os.price;
-      orderLot = os.orderQty ~/ 100;
-      doneLot = os.matchQty ~/ 100; // hardcode
-      balanceLot = os.balanceQty ~/ 100;
-      value = os.price * os.orderQty;
-      stockCode = os.stockCode;
+      orderTime = os?.getTimeFormatted(); // hardcode
+      orderPrice = os?.price;
+      orderLot = os!.orderQty ~/ 100;
+      doneLot = os!.matchQty ~/ 100; // hardcode
+      balanceLot = os!.balanceQty ~/ 100;
+      value = os!.price * os!.orderQty;
+      stockCode = os?.stockCode;
 
-      if (StringUtils.equalsIgnoreCase(os.bs, 'B')) {
+      if (StringUtils.equalsIgnoreCase(os?.bs, 'B')) {
         orderType = 'buy_text'.tr();
-      } else if (StringUtils.equalsIgnoreCase(os.bs, 'S')) {
+      } else if (StringUtils.equalsIgnoreCase(os?.bs, 'S')) {
         orderType = 'sell_text'.tr();
       } else {
-        orderType = os.bs;
+        orderType = os?.bs;
       }
     } else if (data != null) {
-      accountInfo = data.accountName +
+      accountInfo = data!.accountName! +
           ' - ' +
-          data.accountCode +
+          data!.accountCode! +
           ' - ' +
-          data.accountType;
-      orderId = data.orderid;
+          data!.accountType!;
+      orderId = data?.orderid;
       //idx_order_no = os.idxOrderNumber; // hardcode
       //order_status = os.orderStatus; // hardcode
       //order_date = os.orderDate; // hardcode
       //order_time = os.getTime(); // hardcode
-      if (!data.fastMode) {
-        orderPrice = data.normalPriceLot.price;
-        orderLot = data.normalPriceLot.lot;
+      if (!data!.fastMode!) {
+        orderPrice = data?.normalPriceLot?.price;
+        orderLot = data?.normalPriceLot?.lot;
       }
       //done_lot = 0; // hardcode
       //balance_lot = os.balanceQty;
 
-      value = data.fastMode ? data.fastTotalValue : data.normalTotalValue;
-      stockCode = data.stock_code;
-      orderType = data.orderType.text;
+      value = data!.fastMode! ? data?.fastTotalValue : data?.normalTotalValue;
+      stockCode = data?.stock_code;
+      orderType = data?.orderType?.text;
     }
 
     List<Widget> list = List.empty(growable: true);
@@ -496,9 +500,9 @@ class _ScreenOrderDetailState extends BaseStateNoTabs<ScreenOrderDetail> {
         context, 'order_detail_stock_code_label'.tr(), stockCode,
         textStyleValue: InvestrendTheme.of(context)
             .small_w600_compact
-            .copyWith(color: Theme.of(context).colorScheme.secondary)));
+            ?.copyWith(color: Theme.of(context).colorScheme.secondary)));
     list.add(TradeComponentCreator.popupRow(
-        context, 'order_detail_stock_name_label'.tr(), data.stock_name));
+        context, 'order_detail_stock_name_label'.tr(), data?.stock_name));
     list.add(TradeComponentCreator.popupRow(
         context, 'order_detail_order_type_label'.tr(), orderType));
     list.add(TradeComponentCreator.popupRow(
@@ -528,13 +532,13 @@ class _ScreenOrderDetailState extends BaseStateNoTabs<ScreenOrderDetail> {
       context,
       TradeComponentCreator.popupTitle(
           context, 'order_detail_order_value_label'.tr(),
-          color: InvestrendTheme.of(context).greyLighterTextColor),
+          color: InvestrendTheme.of(context).greyLighterTextColor) as Text,
       TradeComponentCreator.popupTitle(
           context, InvestrendTheme.formatMoney(value, prefixRp: true),
-          textAlign: TextAlign.right),
+          textAlign: TextAlign.right) as Text,
     ));
 
-    if (tradesSummary != null && tradesSummary.isNotEmpty) {
+    if (tradesSummary != null && tradesSummary!.isNotEmpty) {
       list.add(SizedBox(height: 8.0));
       list.add(ComponentCreator.divider(context, thickness: 1.0));
       list.add(SizedBox(height: 8.0));
@@ -545,10 +549,10 @@ class _ScreenOrderDetailState extends BaseStateNoTabs<ScreenOrderDetail> {
           'order_detail_done_summary_info_label'.tr(),
           textStyleValue: InvestrendTheme.of(context)
               .small_w400_compact
-              .copyWith(
+              ?.copyWith(
                   color: InvestrendTheme.of(context).greyLighterTextColor)));
-      tradesSummary.forEach((trade) {
-        int lot = trade.matchQty ~/ 100;
+      tradesSummary?.forEach((trade) {
+        int lot = trade!.matchQty ~/ 100;
         list.add(TradeComponentCreator.popupRow(
             context,
             ' ',
@@ -647,7 +651,7 @@ class _ScreenOrderDetailState extends BaseStateNoTabs<ScreenOrderDetail> {
           InvestrendTheme.of(context).showDialogInvalidSession(context);
         } else if (value is String) {
           if (StringUtils.equalsIgnoreCase(value, PIN_SUCCESS)) {
-            InvestrendTheme.push(context, ScreenAmend(data.cloneAsAmend()),
+            InvestrendTheme.push(context, ScreenAmend(data?.cloneAsAmend()),
                     ScreenTransition.SlideLeft, '/amend')
                 .then((value) {
               if (value != null && value is String) {
@@ -655,7 +659,7 @@ class _ScreenOrderDetailState extends BaseStateNoTabs<ScreenOrderDetail> {
                   Navigator.popUntil(context, (route) {
                     print('popUntil : ' + route.toString());
                     if (StringUtils.equalsIgnoreCase(
-                        route?.settings?.name, '/main')) {
+                        route.settings.name, '/main')) {
                       return true;
                     }
                     return route.isFirst;
@@ -669,15 +673,14 @@ class _ScreenOrderDetailState extends BaseStateNoTabs<ScreenOrderDetail> {
         }
       });
     } else {
-      InvestrendTheme.push(context, ScreenAmend(data.cloneAsAmend()),
+      InvestrendTheme.push(context, ScreenAmend(data?.cloneAsAmend()),
               ScreenTransition.SlideLeft, '/amend')
           .then((value) {
         if (value != null && value is String) {
           if (StringUtils.equalsIgnoreCase(value, 'FINISHED')) {
             Navigator.popUntil(context, (route) {
               print('popUntil : ' + route.toString());
-              if (StringUtils.equalsIgnoreCase(
-                  route?.settings?.name, '/main')) {
+              if (StringUtils.equalsIgnoreCase(route.settings.name, '/main')) {
                 return true;
               }
               return route.isFirst;
@@ -691,21 +694,21 @@ class _ScreenOrderDetailState extends BaseStateNoTabs<ScreenOrderDetail> {
     }
   }
 
-  Widget createBottomSheet(BuildContext context, double paddingBottom) {
+  Widget? createBottomSheet(BuildContext context, double paddingBottom) {
     if (historicalMode) {
       return null;
     }
     String tag;
-    if (data.isBuy()) {
+    if (data!.isBuy()) {
       tag = 'button_buy';
-    } else if (data.isSell()) {
+    } else if (data!.isSell()) {
       tag = 'button_sell';
     } else {
       tag = '???';
     }
 
     List<Widget> list = List.empty(growable: true);
-    bool canWithdraw = os != null && os.canWithdraw();
+    bool canWithdraw = os != null && os!.canWithdraw();
     if (canWithdraw) {
       list.add(Expanded(
         flex: 1,
@@ -716,8 +719,8 @@ class _ScreenOrderDetailState extends BaseStateNoTabs<ScreenOrderDetail> {
             //style: Theme.of(context).textTheme.button.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor),
             style: Theme.of(context)
                 .textTheme
-                .button
-                .copyWith(color: InvestrendTheme.redText),
+                .labelLarge
+                ?.copyWith(color: InvestrendTheme.redText),
           ),
           onPressed: () {
             executeCancel(context);
@@ -746,7 +749,7 @@ class _ScreenOrderDetailState extends BaseStateNoTabs<ScreenOrderDetail> {
       ));
     }
 
-    bool canAmend = os != null && os.canAmend();
+    bool canAmend = os != null && os!.canAmend();
     // bool canAmend = true;
     if (canAmend) {
       list.add(Expanded(
@@ -876,9 +879,9 @@ class _ScreenOrderDetailState extends BaseStateNoTabs<ScreenOrderDetail> {
 }
 
 class BottomSheetTradeSummary extends StatelessWidget {
-  final List<TradeStatusSummary> tradesSummary;
+  final List<TradeStatusSummary?>? tradesSummary;
 
-  const BottomSheetTradeSummary(this.tradesSummary, {Key key})
+  const BottomSheetTradeSummary(this.tradesSummary, {Key? key})
       : super(key: key);
 
   @override
@@ -927,23 +930,23 @@ class BottomSheetTradeSummary extends StatelessWidget {
     ));
     // contentHeight += 16.0;
 
-    if (tradesSummary != null && tradesSummary.isNotEmpty) {
-      TextStyle styleLabel = InvestrendTheme.of(context)
+    if (tradesSummary != null && tradesSummary!.isNotEmpty) {
+      TextStyle? styleLabel = InvestrendTheme.of(context)
           .small_w400_compact
-          .copyWith(color: InvestrendTheme.of(context).greyLighterTextColor);
-      TextStyle styleValue = InvestrendTheme.of(context).small_w400_compact;
+          ?.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor);
+      TextStyle? styleValue = InvestrendTheme.of(context).small_w400_compact;
       list.add(Expanded(
           flex: 1,
           child: Scrollbar(
             thumbVisibility: true,
             child: ListView.separated(
-              itemCount: tradesSummary.length,
+              itemCount: tradesSummary!.length,
               separatorBuilder: (BuildContext context, int index) {
                 return ComponentCreator.divider(context);
               },
               itemBuilder: (BuildContext context, int index) {
-                TradeStatusSummary trade = tradesSummary.elementAt(index);
-                int lot = trade.matchQty ~/ 100;
+                TradeStatusSummary? trade = tradesSummary?.elementAt(index);
+                int lot = trade!.matchQty ~/ 100;
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -996,7 +999,7 @@ class BottomSheetTradeSummary extends StatelessWidget {
                       height: InvestrendTheme.cardPadding,
                     ),
                     Text(
-                      trade.idxTradeNumber,
+                      trade.idxTradeNumber!,
                       style: styleValue,
                       softWrap: true,
                     ),
@@ -1066,8 +1069,8 @@ class BottomSheetTradeSummary extends StatelessWidget {
 }
 
 class BottomSheetConfirmationCancel extends StatelessWidget {
-  final BuySell data;
-  final OrderStatus orderStatus;
+  final BuySell? data;
+  final OrderStatus? orderStatus;
   final String reffID;
 
   BottomSheetConfirmationCancel(this.data, this.orderStatus, this.reffID);
@@ -1176,32 +1179,32 @@ class BottomSheetConfirmationCancel extends StatelessWidget {
         print('cancel order clicked');
         //Navigator.pop(context, data.clone()); // clear data
 
-        String username = context.read(dataHolderChangeNotifier).user.username;
+        String? username = context.read(dataHolderChangeNotifier).user.username;
         if (orderStatus != null) {
           print('cancel order using orderStatus');
           InvestrendTheme.tradingHttp.withdraw(
               this.reffID,
-              orderStatus.brokercode,
-              orderStatus.accountcode,
+              orderStatus?.brokercode,
+              orderStatus?.accountcode,
               username,
-              orderStatus.orderid,
+              orderStatus?.orderid,
               InvestrendTheme.of(context).applicationPlatform,
               InvestrendTheme.of(context).applicationVersion);
         } else {
           print('cancel order using data buySell');
           InvestrendTheme.tradingHttp.withdraw(
               this.reffID,
-              data.brokerCode,
-              data.accountCode,
+              data?.brokerCode,
+              data?.accountCode,
               username,
-              data.orderid,
+              data?.orderid,
               InvestrendTheme.of(context).applicationPlatform,
               InvestrendTheme.of(context).applicationVersion);
         }
 
         Navigator.popUntil(context, (route) {
           print('popUntil : ' + route.toString());
-          if (StringUtils.equalsIgnoreCase(route?.settings?.name, '/main')) {
+          if (StringUtils.equalsIgnoreCase(route.settings.name, '/main')) {
             return true;
           }
           return route.isFirst;

@@ -9,16 +9,16 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:video_player/video_player.dart';
 
 class CameraComponent extends StatefulWidget {
-  final CameraComponentController controller;
-  final ValueChanged<XFile> onConfirmImage;
-  final CameraMode cameraMode;
+  final CameraComponentController? controller;
+  final ValueChanged<XFile?>? onConfirmImage;
+  final CameraMode? cameraMode;
   final int recordingLimit;
   final bool videoMode;
-  final String frame;
-  final String naskah;
+  final String? frame;
+  final String? naskah;
 
   const CameraComponent({
-    Key key,
+    Key? key,
     this.controller,
     this.onConfirmImage,
     this.frame,
@@ -58,13 +58,13 @@ class CameraComponentState extends State<CameraComponent>
         break;
       case AppLifecycleState.paused:
         debugPrint("app state paused camera  cam component");
-        if (widget.controller.value.state ==
+        if (widget.controller!.value.state ==
                 CameraComponensStates.onOpenedCamera
             // || widget.controller.value.state == CameraComponensStates.onLoadedImage
             ) {
-          widget.controller.value.oldCameraController =
-              widget.controller.value.cameraController;
-          widget.controller.value.cameraController.dispose();
+          widget.controller!.value.oldCameraController =
+              widget.controller!.value.cameraController;
+          widget.controller!.value.cameraController!.dispose();
           Navigator.of(context).pop();
         }
         break;
@@ -137,7 +137,7 @@ class CameraComponentState extends State<CameraComponent>
   }
 
   Widget openedCameraWidget() {
-    print("size camera = ${widget.controller.value.cameraController}");
+    print("size camera = ${widget.controller!.value.cameraController}");
     return Container(
       color: Colors.black,
       width: double.infinity,
@@ -151,7 +151,7 @@ class CameraComponentState extends State<CameraComponent>
                 alignment: Alignment.bottomCenter,
                 child: Center(
                   child: CameraPreview(
-                    widget.controller.value.cameraController,
+                    widget.controller!.value.cameraController!,
                     child: Stack(
                       children: [
                         Container(
@@ -188,15 +188,15 @@ class CameraComponentState extends State<CameraComponent>
                       },
                       child: ValueListenableBuilder<CameraValue>(
                         valueListenable:
-                            widget.controller.value.cameraController,
+                            widget.controller!.value.cameraController!,
                         builder: (c, d, w) {
                           return Icon(
-                            widget.controller.value.cameraController.value
+                            widget.controller!.value.cameraController!.value
                                         .flashMode ==
                                     FlashMode.auto
                                 ? Icons.flash_auto
-                                : widget.controller.value.cameraController.value
-                                            .flashMode ==
+                                : widget.controller!.value.cameraController!
+                                            .value.flashMode ==
                                         FlashMode.torch
                                     ? Icons.flash_on
                                     : Icons.flash_off,
@@ -232,7 +232,7 @@ class CameraComponentState extends State<CameraComponent>
                       color: Colors.transparent,
                       child: ValueListenableBuilder<CameraValue>(
                         valueListenable:
-                            widget.controller.value.cameraController,
+                            widget.controller!.value.cameraController!,
                         builder: (c, d, w) {
                           return const Icon(
                             Icons.sync,
@@ -310,11 +310,11 @@ class CameraComponentState extends State<CameraComponent>
                         //     ?.dispose()
                         //     .then((value) => null);
                         if (widget.onConfirmImage != null) {
-                          widget
-                              .onConfirmImage(widget.controller.value.captured);
+                          widget.onConfirmImage!(
+                              widget.controller!.value.captured);
                         } else {
                           Navigator.of(context)
-                              .pop(widget.controller.value.captured);
+                              .pop(widget.controller!.value.captured);
                         }
                       },
                       child: const Icon(
@@ -412,7 +412,7 @@ class VideoComponentState extends State<CameraComponent>
   }
 
   Widget openedCameraWidget() {
-    String naskah = widget.naskah;
+    String? naskah = widget.naskah;
     return Container(
       color: Colors.black,
       width: double.infinity,
@@ -435,7 +435,7 @@ class VideoComponentState extends State<CameraComponent>
               child: Align(
                 alignment: Alignment.bottomCenter,
                 child: CameraPreview(
-                  widget.controller.value.cameraController,
+                  widget.controller!.value.cameraController!,
                   child: Column(
                     children: [
                       Expanded(
@@ -530,7 +530,7 @@ class VideoComponentState extends State<CameraComponent>
                             color: Colors.transparent,
                             child: ValueListenableBuilder<CameraValue>(
                               valueListenable:
-                                  widget.controller.value.cameraController,
+                                  widget.controller!.value.cameraController!,
                               builder: (c, d, w) {
                                 return const Icon(
                                   Icons.sync,
@@ -551,7 +551,7 @@ class VideoComponentState extends State<CameraComponent>
   }
 
   Widget recordingViedeoWidget() {
-    String naskah = widget.naskah;
+    String? naskah = widget.naskah;
     return Container(
       color: Colors.black,
       width: double.infinity,
@@ -564,7 +564,7 @@ class VideoComponentState extends State<CameraComponent>
             color: Colors.black,
             alignment: Alignment.center,
             child: StreamBuilder<Duration>(
-              stream: widget.controller.value.durationStream.stream,
+              stream: widget.controller!.value.durationStream.stream,
               builder: (c, s) {
                 return Text(
                   "${s.data?.inSeconds ?? ""}",
@@ -580,7 +580,7 @@ class VideoComponentState extends State<CameraComponent>
               child: Align(
                 alignment: Alignment.bottomCenter,
                 child: CameraPreview(
-                  widget.controller.value.cameraController,
+                  widget.controller!.value.cameraController!,
                   child: Column(
                     children: [
                       Expanded(
@@ -673,7 +673,7 @@ class VideoComponentState extends State<CameraComponent>
                             color: Colors.transparent,
                             child: ValueListenableBuilder<CameraValue>(
                               valueListenable:
-                                  widget.controller.value.cameraController,
+                                  widget.controller!.value.cameraController!,
                               builder: (c, d, w) {
                                 return const Icon(
                                   Icons.sync,
@@ -725,7 +725,7 @@ class VideoComponentState extends State<CameraComponent>
                           (s.data?.value.size.height ??
                               MediaQuery.of(context).size.height),
                       child: VideoPlayer(
-                        widget.controller.value.videoPlayerController,
+                        widget.controller!.value.videoPlayerController!,
                       ),
                     );
                   },
@@ -770,11 +770,11 @@ class VideoComponentState extends State<CameraComponent>
                             ?.dispose()
                             .then((value) => null);
                         if (widget.onConfirmImage != null) {
-                          widget
-                              .onConfirmImage(widget.controller.value.captured);
+                          widget.onConfirmImage!(
+                              widget.controller!.value.captured);
                         } else {
                           Navigator.of(context)
-                              .pop(widget.controller.value.captured);
+                              .pop(widget.controller!.value.captured);
                         }
                       },
                       child: const Icon(
@@ -819,20 +819,20 @@ class VideoComponentState extends State<CameraComponent>
 
 class CameraComponentController extends ValueNotifier<CameraComponentValue> {
   CameraComponentController({
-    CameraComponentValue value,
+    CameraComponentValue? value,
   }) : super(
           value ?? CameraComponentValue(),
         );
 
   void initCamera({
-    CameraDescription cameraDescription,
+    CameraDescription? cameraDescription,
   }) {
     setState(CameraComponensStates.onInitializeCamera);
     value.cameraController?.dispose();
     if (cameraDescription != null) {
       value.selectedCamera = cameraDescription;
       value.cameraController =
-          CameraController(value.selectedCamera, ResolutionPreset.high);
+          CameraController(value.selectedCamera!, ResolutionPreset.high);
       value.cameraController?.initialize().then(
         (camera) {
           value.cameraController?.setFlashMode(value.flashMode);
@@ -845,7 +845,7 @@ class CameraComponentController extends ValueNotifier<CameraComponentValue> {
           value.cameraDescriptions = availableCamera;
           value.selectedCamera = value.cameraDescriptions?.first;
           value.cameraController =
-              CameraController(value.selectedCamera, ResolutionPreset.high);
+              CameraController(value.selectedCamera!, ResolutionPreset.high);
           value.cameraController?.initialize().then(
             (camera) {
               value.cameraController?.setFlashMode(value.flashMode);
@@ -859,13 +859,12 @@ class CameraComponentController extends ValueNotifier<CameraComponentValue> {
 
   void changeCamera() {
     if ((value.cameraDescriptions?.length ?? 0) > 1) {
-      int _indexCamra =
-          (value.cameraDescriptions).indexOf(value.selectedCamera);
+      int _indexCamra = value.cameraDescriptions!.indexOf(value.selectedCamera);
       if ((_indexCamra + 1) <= (value.cameraDescriptions ?? []).length - 1) {
         value.cameraController?.dispose().then(
           (dispose) {
             initCamera(
-              cameraDescription: value.cameraDescriptions[(_indexCamra + 1)],
+              cameraDescription: value.cameraDescriptions![(_indexCamra + 1)],
             );
           },
         );
@@ -892,13 +891,13 @@ class CameraComponentController extends ValueNotifier<CameraComponentValue> {
   }
 
   void setFlashMode(FlashMode mode) {
-    value.cameraController.setFlashMode(mode);
+    value.cameraController!.setFlashMode(mode);
     value.flashMode = mode;
     commit();
   }
 
   void takePicture() {
-    value.cameraController.takePicture().then(
+    value.cameraController!.takePicture().then(
       (image) {
         value.captured = image;
         setState(CameraComponensStates.onLoadedImage);
@@ -906,11 +905,11 @@ class CameraComponentController extends ValueNotifier<CameraComponentValue> {
     );
   }
 
-  void startRecording({int recordingLimit}) {
+  void startRecording({int? recordingLimit}) {
     value.cameraController?.startVideoRecording().then((camera) {
       value.state = CameraComponensStates.onRecording;
       commit();
-      value.duration = Duration(seconds: recordingLimit);
+      value.duration = Duration(seconds: recordingLimit!);
       value.recordingTimer?.cancel();
       value.recordingTimer = Timer.periodic(
         const Duration(seconds: 1),
@@ -935,7 +934,7 @@ class CameraComponentController extends ValueNotifier<CameraComponentValue> {
     });
   }
 
-  Future<VideoPlayerController> previewVideo() {
+  Future<VideoPlayerController>? previewVideo() {
     value.videoPlayerController =
         VideoPlayerController.file(File(value.captured?.path ?? ""));
 
@@ -943,7 +942,7 @@ class CameraComponentController extends ValueNotifier<CameraComponentValue> {
     return value.videoPlayerController?.initialize().then(
       (_) {
         value.videoPlayerController?.play();
-        return Future.value().then((v) => value.videoPlayerController);
+        return Future.value().then((v) => value.videoPlayerController!);
       },
     );
   }
@@ -953,32 +952,32 @@ class CameraComponentController extends ValueNotifier<CameraComponentValue> {
     commit();
   }
 
-  Future<File> cropImage(filePath) {
-    return ImageCropper()
-        .cropImage(
+  Future<CroppedFile?> cropImage(filePath) {
+    return ImageCropper().cropImage(
+      uiSettings: [
+        AndroidUiSettings(
+          toolbarTitle: 'Potong gambar sesuai dengan frame yang disediakan',
+          toolbarColor: Color(0xFF5414DB),
+          toolbarWidgetColor: Color(0xFFFAFAFA),
+          statusBarColor: Color(0xFF5414DB),
+          activeControlsWidgetColor: Color(0xFF5414DB),
+          hideBottomControls: true,
+          lockAspectRatio: true,
+          cropFrameColor: Color(0xFF5414DB),
+          cropGridColor: Color(0xFF5414DB),
+        ),
+        IOSUiSettings(
+          title: 'Potong gambar sesuai dengan frame yang disediakan',
+          aspectRatioLockEnabled: true,
+          aspectRatioLockDimensionSwapEnabled: true,
+        ),
+      ],
       sourcePath: filePath,
       aspectRatio: Platform.isAndroid
           ? CropAspectRatio(ratioX: 2.997, ratioY: 2.102)
           : CropAspectRatio(ratioX: 2.997, ratioY: 2.102),
-      androidUiSettings: AndroidUiSettings(
-        toolbarTitle: 'Potong gambar sesuai dengan frame yang disediakan',
-        toolbarColor: Color(0xFF5414DB),
-        toolbarWidgetColor: Color(0xFFFAFAFA),
-        statusBarColor: Color(0xFF5414DB),
-        activeControlsWidgetColor: Color(0xFF5414DB),
-        hideBottomControls: true,
-        lockAspectRatio: true,
-        cropFrameColor: Color(0xFF5414DB),
-        cropGridColor: Color(0xFF5414DB),
-      ),
-      iosUiSettings: IOSUiSettings(
-        title: 'Potong gambar sesuai dengan frame yang disediakan',
-        aspectRatioLockEnabled: true,
-        aspectRatioLockDimensionSwapEnabled: true,
-      ),
-    )
-        .then((value) {
-      return value;
+    ).then((value) {
+      return value!;
     });
   }
 
@@ -989,17 +988,21 @@ class CameraComponentController extends ValueNotifier<CameraComponentValue> {
 
 class CameraComponentValue {
   CameraComponensStates state = CameraComponensStates.onInitializeCamera;
-  CameraController cameraController;
-  CameraController oldCameraController;
-  List<CameraDescription> cameraDescriptions;
-  CameraDescription selectedCamera;
+  CameraController? cameraController;
+  CameraController? oldCameraController;
+  List<CameraDescription?>? cameraDescriptions;
+  CameraDescription? selectedCamera;
   FlashMode flashMode = FlashMode.off;
-  VideoPlayerController videoPlayerController;
-  Timer recordingTimer;
-  Duration duration;
+  VideoPlayerController? videoPlayerController;
+  Timer? recordingTimer;
+  Duration? duration;
   StreamController<Duration> durationStream =
       StreamController<Duration>.broadcast();
-  XFile captured;
+  XFile? captured;
+
+  void dispose() {
+    durationStream.close();
+  }
 }
 
 enum CameraComponensStates {

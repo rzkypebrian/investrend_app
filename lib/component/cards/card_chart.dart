@@ -1,5 +1,7 @@
 //import 'dart:math';
 
+// ignore_for_file: must_be_immutable
+
 //import 'package:Investrend/component/component_creator.dart';
 import 'package:Investrend/objects/class_value_notifier.dart';
 import 'package:Investrend/objects/data_object.dart';
@@ -12,17 +14,17 @@ import 'package:easy_localization/easy_localization.dart';
 import '../chart_line.dart';
 
 class CardChart extends StatefulWidget {
-  final ChartNotifier dataNotifier;
-  final ChartOhlcvNotifier ohlcvDataNotifier;
-  NumberFormat numberFormatRight;
-  final ValueNotifier<int> rangeNotifier;
+  final ChartNotifier? dataNotifier;
+  final ChartOhlcvNotifier? ohlcvDataNotifier;
+  NumberFormat? numberFormatRight;
+  final ValueNotifier<int>? rangeNotifier;
   //final StringCallback callbackRange;
-  final RangeCallback callbackRange;
-  final VoidCallback onRetry;
+  final RangeCallback? callbackRange;
+  final VoidCallback? onRetry;
 
   CardChart(this.dataNotifier, this.rangeNotifier,
       {this.callbackRange,
-      Key key,
+      Key? key,
       this.onRetry,
       this.numberFormatRight,
       this.ohlcvDataNotifier})
@@ -59,10 +61,10 @@ class _CardChartState extends State<CardChart> {
         children: [
           _chipsRange(context),
           ValueListenableBuilder(
-            valueListenable: widget.dataNotifier,
-            builder: (context, ChartLineData data, child) {
-              Widget noWidget = widget.dataNotifier.currentState
-                  .getNoWidget(onRetry: widget.onRetry);
+            valueListenable: widget.dataNotifier!,
+            builder: (context, ChartLineData? data, child) {
+              Widget? noWidget = widget.dataNotifier?.currentState
+                  .getNoWidget(onRetry: widget.onRetry!);
               if (noWidget != null) {
                 return Container(
                   width: double.maxFinite,
@@ -79,10 +81,10 @@ class _CardChartState extends State<CardChart> {
                 height: 220,
                 width: double.maxFinite,
                 child: ChartLine(
-                  chartData: data.datas,
-                  chipsRangeIndex: widget.rangeNotifier.value,
-                  minimumData: data.minValue,
-                  maximumData: data.maxValue,
+                  chartData: data?.datas,
+                  chipsRangeIndex: widget.rangeNotifier!.value,
+                  minimumData: data?.minValue,
+                  maximumData: data?.maxValue,
                   listChipRange: _listChipRange,
                 ),
               );
@@ -106,7 +108,7 @@ class _CardChartState extends State<CardChart> {
           reservedSize: 22,
           getTextStyles: (value, double) => InvestrendTheme.of(context)
               .support_w400_compact
-              .copyWith(color: Colors.purple),
+              ?.copyWith(color: Colors.purple),
           getTitles: (value) {
             print('getTitles $value   spots : ' +
                 lineData.spots.length.toString());
@@ -127,7 +129,8 @@ class _CardChartState extends State<CardChart> {
           showTitles: true,
           getTextStyles: (value, double) => InvestrendTheme.of(context)
               .support_w400_compact
-              .copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor),
+              ?.copyWith(
+                  color: InvestrendTheme.of(context).greyDarkerTextColor),
           getTitles: (value) {
             if (value == data.minValue) {
               return InvestrendTheme.formatPriceDouble(data.minValue,
@@ -156,7 +159,7 @@ class _CardChartState extends State<CardChart> {
           show: false,
           border: Border.all(color: const Color(0xff37434d), width: 1)),
       minX: 0,
-      maxX: lineData.spots.length?.toDouble(),
+      maxX: lineData.spots.length.toDouble(),
       minY: data.minValue,
       maxY: data.maxValue,
       lineBarsData: [lineData],
@@ -182,7 +185,7 @@ class _CardChartState extends State<CardChart> {
         //color: Colors.green,
         color: InvestrendTheme.of(context).tileBackground,
         border: Border.all(
-          color: InvestrendTheme.of(context).chipBorder,
+          color: InvestrendTheme.of(context).chipBorder!,
           width: 1.0,
         ),
         borderRadius: BorderRadius.circular(2.0),
@@ -190,7 +193,7 @@ class _CardChartState extends State<CardChart> {
         //color: Colors.green,
       ),
       child: ValueListenableBuilder<int>(
-          valueListenable: widget.rangeNotifier,
+          valueListenable: widget.rangeNotifier!,
           builder: (context, value, child) {
             return Row(
               children: List<Widget>.generate(
@@ -204,7 +207,7 @@ class _CardChartState extends State<CardChart> {
                       color: Colors.transparent,
                       child: InkWell(
                         onTap: () {
-                          widget.rangeNotifier.value = index;
+                          widget.rangeNotifier!.value = index;
                           executeCallback(index);
                         },
                         child: Container(
@@ -216,11 +219,11 @@ class _CardChartState extends State<CardChart> {
                             _listChipRange[index],
                             style: InvestrendTheme.of(context)
                                 .more_support_w400_compact
-                                .copyWith(
+                                ?.copyWith(
                                     color: selected
                                         ? InvestrendTheme.of(context)
-                                            .textWhite /*Colors.white*/ : InvestrendTheme
-                                                .of(context)
+                                            .textWhite /*Colors.white*/
+                                        : InvestrendTheme.of(context)
                                             .blackAndWhiteText),
                           )),
                         ),
@@ -333,8 +336,8 @@ class _CardChartState extends State<CardChart> {
 
   void executeCallback(int index) {
     if (widget.callbackRange != null) {
-      DateTime from;
-      DateTime to;
+      DateTime? from;
+      DateTime? to;
       //widget.callbackRange(_listChipRange[_selectedRange]);
       //  0      1    2     3      4     5    6      7
       //['1D', '1W', '1M', '3M', '6M', '1Y', '5Y', 'All'];
@@ -393,7 +396,7 @@ class _CardChartState extends State<CardChart> {
       //fromText = _dateFormat.format(from);
       //toText = _dateFormat.format(to);
 
-      widget.callbackRange(widget.rangeNotifier.value, fromText, toText);
+      widget.callbackRange!(widget.rangeNotifier!.value, fromText, toText);
     }
   }
 }

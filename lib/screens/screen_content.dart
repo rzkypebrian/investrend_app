@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable, non_constant_identifier_names
+
 import 'package:Investrend/component/component_app_bar.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:Investrend/utils/string_utils.dart';
@@ -60,7 +62,8 @@ class ScreenContent extends StatelessWidget {
   final String title;
   final String content;
 
-  const ScreenContent({this.title = '', this.content = '', Key key}) : super(key: key);
+  const ScreenContent({this.title = '', this.content = '', Key? key})
+      : super(key: key);
 
   final String TAG_BOLD_START = '<B>';
   final String TAG_BOLD_END = '</B>';
@@ -105,7 +108,7 @@ class ScreenContent extends StatelessWidget {
     );
   }
 
-  Widget createBottomSheet(BuildContext context, double paddingBottom) {
+  Widget? createBottomSheet(BuildContext context, double paddingBottom) {
     return null;
   }
 
@@ -125,9 +128,11 @@ class ScreenContent extends StatelessWidget {
       // if(!StringUtils.isEmtpy(cutted)){
       //   list.add(cutted);
       // }
-      int indexBoldEnd = content.indexOf(TagText.Paragraph.tagEnd, index + TagText.Paragraph.tagStart.length);
+      int indexBoldEnd = content.indexOf(
+          TagText.Paragraph.tagEnd, index + TagText.Paragraph.tagStart.length);
 
-      String paragraph = content.substring(index + TagText.Paragraph.tagStart.length, indexBoldEnd);
+      String paragraph = content.substring(
+          index + TagText.Paragraph.tagStart.length, indexBoldEnd);
       if (!StringUtils.isEmtpy(paragraph)) {
         list.add(paragraph);
       }
@@ -201,10 +206,10 @@ class ScreenContent extends StatelessWidget {
             top: InvestrendTheme.cardPaddingVertical,
             bottom: paddingBottom),
         //child: Text(content, style: InvestrendTheme.of(context).small_w400_greyDarker,),
-        child: Html(data: 'disclaimers_all_content'.tr(),),
+        child: Html(
+          data: 'disclaimers_all_content'.tr(),
+        ),
       ),
     );
-
-
   }
 }

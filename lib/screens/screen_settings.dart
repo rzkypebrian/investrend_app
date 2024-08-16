@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'dart:async';
 import 'dart:io';
 
@@ -24,10 +26,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info/package_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter_locker/flutter_locker.dart';
+// import 'package:flutter_locker/flutter_locker.dart';
 
 class ScreenSettings extends StatefulWidget {
-  const ScreenSettings({Key key}) : super(key: key);
+  const ScreenSettings({Key? key}) : super(key: key);
 
   @override
   _ScreenSettingsState createState() => _ScreenSettingsState();
@@ -37,6 +39,7 @@ const PROP_SELECTED_AUTO_SCROLL = 'auto_scroll_index';
 
 const PROP_SELECTED_PIN_TIMEOUT = 'pin_timeout_index';
 const ROUTE_SETTINGS = '/settings';
+
 enum TradingTimeoutDuration {
   FiveMinutes,
   TenMinutes,
@@ -150,10 +153,10 @@ class _ScreenSettingsState extends BaseStateNoTabs<ScreenSettings> {
     autoScrollNotifier.dispose();
     final container = ProviderContainer();
     if (onAccountChange != null) {
-      container.read(accountChangeNotifier).removeListener(onAccountChange);
+      container.read(accountChangeNotifier).removeListener(onAccountChange!);
     }
     if (onAccountData != null) {
-      container.read(accountsInfosNotifier).removeListener(onAccountData);
+      container.read(accountsInfosNotifier).removeListener(onAccountData!);
     }
     super.dispose();
   }
@@ -169,20 +172,20 @@ class _ScreenSettingsState extends BaseStateNoTabs<ScreenSettings> {
 
       int indexLanguage = 0;
       if (StringUtils.equalsIgnoreCase(
-          EasyLocalization.of(context).locale.languageCode, 'EN')) {
+          EasyLocalization.of(context)!.locale.languageCode, 'EN')) {
         indexLanguage = 1;
       }
       languageNotifier.value = indexLanguage;
 
       languageNotifier.addListener(() {
         if (languageNotifier.value == 0) {
-          EasyLocalization.of(context).setLocale(Locale('id'));
+          EasyLocalization.of(context)?.setLocale(Locale('id'));
         } else {
-          EasyLocalization.of(context).setLocale(Locale('en'));
+          EasyLocalization.of(context)?.setLocale(Locale('en'));
         }
       });
 
-      //TODO : BIOMETRIC AUTHENTICATION
+      //BIOMETRIC AUTHENTICATION
 
       final pref = await SharedPreferences.getInstance();
       loginMethodNotifier.value =
@@ -256,15 +259,15 @@ class _ScreenSettingsState extends BaseStateNoTabs<ScreenSettings> {
     });
   }
 
-  VoidCallback onAccountChange;
-  VoidCallback onAccountData;
+  VoidCallback? onAccountChange;
+  VoidCallback? onAccountData;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
     if (onAccountChange != null) {
-      context.read(accountChangeNotifier).removeListener(onAccountChange);
+      context.read(accountChangeNotifier).removeListener(onAccountChange!);
     } else {
       onAccountChange = () {
         if (mounted) {
@@ -274,10 +277,10 @@ class _ScreenSettingsState extends BaseStateNoTabs<ScreenSettings> {
         }
       };
     }
-    context.read(accountChangeNotifier).addListener(onAccountChange);
+    context.read(accountChangeNotifier).addListener(onAccountChange!);
 
     if (onAccountData != null) {
-      context.read(accountsInfosNotifier).removeListener(onAccountData);
+      context.read(accountsInfosNotifier).removeListener(onAccountData!);
     } else {
       onAccountData = () {
         if (mounted) {
@@ -285,7 +288,7 @@ class _ScreenSettingsState extends BaseStateNoTabs<ScreenSettings> {
         }
       };
     }
-    context.read(accountsInfosNotifier).addListener(onAccountData);
+    context.read(accountsInfosNotifier).addListener(onAccountData!);
 
     themeNotifier.value = context.read(themeModeNotifier).index;
     /* move to initState
@@ -318,7 +321,7 @@ class _ScreenSettingsState extends BaseStateNoTabs<ScreenSettings> {
   }
 
   @override
-  Widget createAppBar(BuildContext context) {
+  PreferredSizeWidget createAppBar(BuildContext context) {
     double elevation = 0.0;
     Color shadowColor = Theme.of(context).shadowColor;
     if (!InvestrendTheme.tradingHttp.is_production) {
@@ -390,7 +393,7 @@ class _ScreenSettingsState extends BaseStateNoTabs<ScreenSettings> {
                         return ListBottomSheet(languageNotifier, languageText);
                       });
                 },
-                labelRight: languageText.elementAt(value),
+                labelRight: languageText.elementAt(value as int),
                 alwaysShowIcon: true,
               );
             },
@@ -414,7 +417,9 @@ class _ScreenSettingsState extends BaseStateNoTabs<ScreenSettings> {
                     builder: (context) {
                       return ListBottomSheet(themeNotifier, modesText);
                     });
-              }, labelRight: modesText.elementAt(value), alwaysShowIcon: true);
+              },
+                  labelRight: modesText.elementAt(value as int),
+                  alwaysShowIcon: true);
             },
           ),
 
@@ -434,7 +439,7 @@ class _ScreenSettingsState extends BaseStateNoTabs<ScreenSettings> {
                               loginMethodNotifier, loginMethodText);
                         });
                   },
-                  labelRight: loginMethodText.elementAt(value),
+                  labelRight: loginMethodText.elementAt(value as int),
                   alwaysShowIcon: true,
                 );
               }),
@@ -458,7 +463,7 @@ class _ScreenSettingsState extends BaseStateNoTabs<ScreenSettings> {
                       return ListBottomSheet(timeoutNotifier, timeoutsText);
                     });
               },
-                  labelRight: timeoutsText.elementAt(value),
+                  labelRight: timeoutsText.elementAt(value as int),
                   alwaysShowIcon: true);
             },
           ),
@@ -486,7 +491,7 @@ class _ScreenSettingsState extends BaseStateNoTabs<ScreenSettings> {
                       );
                     });
               },
-                  labelRight: autoScrollText.elementAt(value),
+                  labelRight: autoScrollText.elementAt(value as int),
                   alwaysShowIcon: true);
             },
           ),
@@ -511,7 +516,7 @@ class _ScreenSettingsState extends BaseStateNoTabs<ScreenSettings> {
                   print(routeName + ' Token.load error : ' + e.toString());
                   print(e);
                 }
-              }, labelRight: value ?? '-');
+              }, labelRight: value?.toString() ?? '-');
             },
           ),
 
@@ -588,9 +593,9 @@ class _ScreenSettingsState extends BaseStateNoTabs<ScreenSettings> {
               context, 'settings_tnc'.tr(), 'images/icons/settings_tnc.png',
               () {
             String content = 'tnc_content'.tr();
-            String applicationName =
+            String? applicationName =
                 InvestrendTheme.of(context).applicationName;
-            content = content.replaceAll('<APP_NAME/>', applicationName);
+            content = content.replaceAll('<APP_NAME/>', applicationName!);
             Navigator.push(
                 context,
                 CupertinoPageRoute(
@@ -610,8 +615,8 @@ class _ScreenSettingsState extends BaseStateNoTabs<ScreenSettings> {
               phoneParam = 'tel:$phone';
             }
             try {
-              await canLaunch(phoneParam)
-                  ? await launch(phoneParam)
+              await canLaunchUrl(Uri.dataFromString(phoneParam))
+                  ? await launchUrl(Uri.dataFromString(phoneParam))
                   : throw 'Could not launch call ' + phone;
             } catch (error) {
               InvestrendTheme.of(context)
@@ -659,7 +664,7 @@ class _ScreenSettingsState extends BaseStateNoTabs<ScreenSettings> {
                   'settings_application_version'.tr(),
                   'images/icons/settings_version.png',
                   () {},
-                  labelRight: value);
+                  labelRight: value as String);
               //return activeReturn(context, indexSelected);
             },
           ),
@@ -706,7 +711,7 @@ class _ScreenSettingsState extends BaseStateNoTabs<ScreenSettings> {
 
   Widget createRowSetting(
       BuildContext context, String label, String iconLeft, VoidCallback onPress,
-      {String labelRight, bool alwaysShowIcon = false}) {
+      {String? labelRight, bool alwaysShowIcon = false}) {
     List<Widget> rows = List.empty(growable: true);
     rows.add(Image.asset(
       iconLeft,
@@ -722,13 +727,14 @@ class _ScreenSettingsState extends BaseStateNoTabs<ScreenSettings> {
         child: Text(label,
             style: InvestrendTheme.of(context)
                 .regular_w400_compact
-                .copyWith(color: InvestrendTheme.of(context).settingsColor))));
+                ?.copyWith(color: InvestrendTheme.of(context).settingsColor))));
 
     if (!StringUtils.isEmtpy(labelRight)) {
-      rows.add(Text(labelRight,
-          style: InvestrendTheme.of(context).more_support_w400_compact.copyWith(
-                color: InvestrendTheme.of(context).settingsColor,
-              )));
+      rows.add(Text(labelRight!,
+          style:
+              InvestrendTheme.of(context).more_support_w400_compact?.copyWith(
+                    color: InvestrendTheme.of(context).settingsColor,
+                  )));
       if (alwaysShowIcon) {
         rows.add(Padding(
           padding:
@@ -832,7 +838,7 @@ class _ScreenSettingsState extends BaseStateNoTabs<ScreenSettings> {
             valueListenable: _accountNotifier,
             builder: (context, data, child) {
               User user = context.read(dataHolderChangeNotifier).user;
-              Account activeAccount =
+              Account? activeAccount =
                   user.getAccount(context.read(accountChangeNotifier).index);
               String portfolioValue = ' - ';
               String portfolioGainLoss = ' - ';
@@ -840,7 +846,7 @@ class _ScreenSettingsState extends BaseStateNoTabs<ScreenSettings> {
               int gainLossIDR = 0;
               bool hasData = false;
               if (activeAccount != null) {
-                AccountStockPosition accountInfo = context
+                AccountStockPosition? accountInfo = context
                     .read(accountsInfosNotifier)
                     .getInfo(activeAccount.accountcode);
                 if (accountInfo != null) {
@@ -867,12 +873,12 @@ class _ScreenSettingsState extends BaseStateNoTabs<ScreenSettings> {
                       portfolioValue, //InvestrendTheme.formatMoneyDouble(moneyAccount),
                       style: Theme.of(context)
                           .textTheme
-                          .headline5
-                          .copyWith(fontWeight: FontWeight.w600),
+                          .headlineSmall
+                          ?.copyWith(fontWeight: FontWeight.w600),
                     ),
                     Text(
                       portfolioGainLoss,
-                      style: InvestrendTheme.of(context).small_w400.copyWith(
+                      style: InvestrendTheme.of(context).small_w400?.copyWith(
                           color: InvestrendTheme.priceTextColor(gainLossIDR)),
                     ),
                   ],
@@ -899,16 +905,13 @@ class _ScreenSettingsState extends BaseStateNoTabs<ScreenSettings> {
 
   @override
   void onActive() {
-    // TODO: implement onActive
     updateAccountCashPosition(context);
   }
 
   @override
-  void onInactive() {
-    // TODO: implement onInactive
-  }
+  void onInactive() {}
 
-  void refreshToken(String refreshToken) {
+  void refreshToken(String? refreshToken) {
     //showLoading('loading_refresh_token_label'.tr());
 
     // final result = InvestrendTheme.tradingHttp.refresh(
@@ -922,53 +925,53 @@ class _ScreenSettingsState extends BaseStateNoTabs<ScreenSettings> {
       //loadingNotifier.value = true;
       //_loadingNotifier.closeLoading();
       print('refresh--------------------');
-      print('username = ' + value.username);
-      print('realname = ' + value.realname);
+      print('username = ' + value.username!);
+      print('realname = ' + value.realname!);
       print('feepct = ' + value.feepct.toString());
       print('lotsize = ' + value.lotsize.toString());
-      print('access_token = ' + value.token.access_token);
-      print('refresh_token = ' + value.token.refresh_token);
-      print('accounts.length = ' + value.accounts.length.toString());
+      print('access_token = ' + value.token!.access_token!);
+      print('refresh_token = ' + value.token!.refresh_token!);
+      print('accounts.length = ' + value.accounts!.length.toString());
 
-      print('b_ip = ' + value.b_ip);
-      print('b_multi = ' + value.b_multi.length.toString());
-      print('b_pass = ' + value.b_pass);
+      print('b_ip = ' + value.b_ip!);
+      print('b_multi = ' + value.b_multi!.length.toString());
+      print('b_pass = ' + value.b_pass!);
       print('b_port = ' + value.b_port.toString());
-      print('r_ip = ' + value.r_ip);
-      print('r_multi = ' + value.r_multi.length.toString());
+      print('r_ip = ' + value.r_ip!);
+      print('r_multi = ' + value.r_multi!.length.toString());
       print('r_port = ' + value.r_port.toString());
 
       context.read(dataHolderChangeNotifier).user.update(
-          value.username,
-          value.realname,
-          value.feepct,
-          value.lotsize,
-          value.accounts,
-          value.token,
-          value.message,
-          value.email,
-          value.b_ip,
-          value.b_multi,
-          value.b_pass,
-          value.b_port,
-          value.r_ip,
-          value.r_multi,
-          value.r_port);
+          value.username!,
+          value.realname!,
+          value.feepct!,
+          value.lotsize!,
+          value.accounts!,
+          value.token!,
+          value.message!,
+          value.email!,
+          value.b_ip!,
+          value.b_multi!,
+          value.b_pass!,
+          value.b_port!,
+          value.r_ip!,
+          value.r_multi!,
+          value.r_port!);
       print(context.read(dataHolderChangeNotifier).user.toString());
 
       String urlProfile = 'https://' +
           InvestrendTheme.tradingHttp.tradingBaseUrl +
           '/getpic?username=' +
-          value.username +
+          value.username! +
           '&url=&nocache=' +
           DateTime.now().toString();
       context.read(avatarChangeNotifier).setUrl(urlProfile);
       context.read(accountChangeNotifier).setIndex(0);
       reloadAccountNotifier.value =
-          value.accounts.length.toString() + ' ' + 'accounts_lobel'.tr();
+          value.accounts!.length.toString() + ' ' + 'accounts_lobel'.tr();
 
       String info = 'finished_refreshing_accounts'.tr();
-      info = info.replaceFirst('#NO#', value.accounts.length.toString());
+      info = info.replaceFirst('#NO#', value.accounts!.length.toString());
       InvestrendTheme.of(context).showSnackBar(context, info);
     }).onError((error, stackTrace) {
       //_loadingNotifier.closeLoading();

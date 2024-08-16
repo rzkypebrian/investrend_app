@@ -5,41 +5,41 @@ import 'package:reorderables/reorderables.dart';
 
 class FilterPage {
   static Widget filterOverview({
-    Key key,
-    BuildContext context,
-    List<Widget> children,
-    ReorderCallback onReorder,
+    Key? key,
+    BuildContext? context,
+    List<Widget>? children,
+    ReorderCallback? onReorder,
     WrapAlignment alignment = WrapAlignment.start,
     WrapCrossAlignment crossAxisAlignment = WrapCrossAlignment.start,
     Axis direction = Axis.horizontal,
     bool enableReorder = true,
     double spacing = 0.0,
-    ScrollController controller,
-    ValueListenable<dynamic> valueListenable,
-    BuildDraggableFeedback buildDraggableFeedback,
-    BuildItemsContainer buildItemsContainer,
-    ScrollController scrollController,
-    Widget footer,
-    List<Widget> header,
+    ScrollController? controller,
+    ValueListenable<dynamic>? valueListenable,
+    BuildDraggableFeedback? buildDraggableFeedback,
+    BuildItemsContainer? buildItemsContainer,
+    ScrollController? scrollController,
+    Widget? footer,
+    List<Widget>? header,
     bool ignorePrimaryScrollController = false,
-    int maxMainAxisCount,
-    int minMainAxisCount,
+    int? maxMainAxisCount,
+    int? minMainAxisCount,
     bool needsLongPressDraggable = true,
-    NoReorderCallback onNoReorder,
-    ReorderStartedCallback onReorderStarted,
-    EdgeInsets padding,
-    Duration reorderAnimationDuration,
+    NoReorderCallback? onNoReorder,
+    ReorderStartedCallback? onReorderStarted,
+    EdgeInsets? padding,
+    Duration? reorderAnimationDuration,
     double runSpacing = 0.0,
     Duration scrollAnimationDuration = const Duration(milliseconds: 200),
     Axis scrollDirection = Axis.vertical,
-    ScrollPhysics scrollPhysics,
-    TextDirection textDirection,
+    ScrollPhysics? scrollPhysics,
+    TextDirection? textDirection,
     VerticalDirection verticalDirection = VerticalDirection.down,
   }) {
     return IconButton(
       onPressed: () {
         showModalBottomSheet(
-            context: context,
+            context: context!,
             builder: (context) {
               return Container(
                 height: 350,
@@ -55,8 +55,8 @@ class FilterPage {
                   builder: (context, value, child) {
                     return ReorderableWrap(
                       alignment: alignment,
-                      children: children,
-                      onReorder: onReorder,
+                      children: children!,
+                      onReorder: onReorder!,
                       buildDraggableFeedback: buildDraggableFeedback,
                       buildItemsContainer: buildItemsContainer,
                       controller: scrollController,
@@ -74,7 +74,7 @@ class FilterPage {
                       onNoReorder: onNoReorder,
                       onReorderStarted: onReorderStarted,
                       padding: padding,
-                      reorderAnimationDuration: reorderAnimationDuration,
+                      reorderAnimationDuration: reorderAnimationDuration!,
                       runAlignment: alignment,
                       runSpacing: runSpacing,
                       scrollAnimationDuration: scrollAnimationDuration,
@@ -85,7 +85,7 @@ class FilterPage {
                       verticalDirection: verticalDirection,
                     );
                   },
-                  valueListenable: valueListenable,
+                  valueListenable: valueListenable!,
                 ),
               );
             });

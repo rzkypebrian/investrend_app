@@ -1,3 +1,5 @@
+// ignore_for_file: implementation_imports
+
 import 'package:Investrend/component/broker_rank.dart';
 import 'package:Investrend/component/broker_trade_summary.dart';
 import 'package:Investrend/component/chips_range.dart';
@@ -22,7 +24,7 @@ class CardBrokerRankState extends State<CardBrokerRank> {
   final RangeNotifier _rangeBrokerRankNotifier =
       RangeNotifier(Range.createBasic());
 
-  List<BrokerData> brokerData = [];
+  List<BrokerData>? brokerData = [];
   AutoSizeGroup groupValue = AutoSizeGroup();
   AutoSizeGroup groupHeader = AutoSizeGroup();
 
@@ -52,10 +54,10 @@ class CardBrokerRankState extends State<CardBrokerRank> {
     List<Color> colorStock = [
       InvestrendTheme.of(context).whiteColor,
       InvestrendTheme.greenText,
-      InvestrendTheme.of(context).investrendPurpleText,
+      InvestrendTheme.of(context).investrendPurpleText!,
       InvestrendTheme.yellowText,
     ];
-    TextStyle styleHeader = InvestrendTheme.of(context).small_w400_compact;
+    TextStyle? styleHeader = InvestrendTheme.of(context).small_w400_compact;
     double fontSize = 14;
     double width = MediaQuery.of(context).size.width;
     final colors = [
@@ -124,7 +126,7 @@ class CardBrokerRankState extends State<CardBrokerRank> {
                   width: width / 10,
                   child: Text(
                     'NO',
-                    style: styleHeader.copyWith(
+                    style: styleHeader?.copyWith(
                       fontSize: fontSize,
                     ),
                     textAlign: TextAlign.left,
@@ -134,7 +136,7 @@ class CardBrokerRankState extends State<CardBrokerRank> {
                   width: width / 10,
                   child: Text(
                     'BC',
-                    style: styleHeader.copyWith(
+                    style: styleHeader?.copyWith(
                       fontSize: fontSize,
                     ),
                     textAlign: TextAlign.left,
@@ -144,7 +146,7 @@ class CardBrokerRankState extends State<CardBrokerRank> {
                   width: width / 6,
                   child: Text(
                     'NVAL',
-                    style: styleHeader.copyWith(
+                    style: styleHeader?.copyWith(
                       fontSize: fontSize,
                     ),
                     textAlign: TextAlign.right,
@@ -154,7 +156,7 @@ class CardBrokerRankState extends State<CardBrokerRank> {
                   width: width / 6,
                   child: Text(
                     'BVAL',
-                    style: styleHeader.copyWith(
+                    style: styleHeader?.copyWith(
                       fontSize: fontSize,
                     ),
                     textAlign: TextAlign.right,
@@ -164,7 +166,7 @@ class CardBrokerRankState extends State<CardBrokerRank> {
                   width: width / 6,
                   child: Text(
                     'SVAL',
-                    style: styleHeader.copyWith(
+                    style: styleHeader?.copyWith(
                       fontSize: fontSize,
                     ),
                     textAlign: TextAlign.right,
@@ -175,7 +177,7 @@ class CardBrokerRankState extends State<CardBrokerRank> {
                     width: width / 10,
                     child: Text(
                       'TVAL',
-                      style: styleHeader.copyWith(
+                      style: styleHeader?.copyWith(
                         fontSize: fontSize,
                       ),
                       textAlign: TextAlign.right,
@@ -190,9 +192,10 @@ class CardBrokerRankState extends State<CardBrokerRank> {
             children: List.generate(
                 brokerData == null
                     ? 0
-                    : (brokerData.length > 5 ? 5 : brokerData.length), (index) {
+                    : (brokerData!.length > 5 ? 5 : brokerData!.length),
+                (index) {
               brokerData
-                  .sort((a, b) => b.tVal.toInt().compareTo(a.tVal.toInt()));
+                  ?.sort((a, b) => b.tVal!.toInt().compareTo(a.tVal!.toInt()));
               int line = index + 1;
               return Card(
                 child: Column(
@@ -211,7 +214,7 @@ class CardBrokerRankState extends State<CardBrokerRank> {
                                 InvestrendTheme.formatNewComma(line.toDouble()),
                                 style: InvestrendTheme.of(context)
                                     .textLabelStyle
-                                    .copyWith(
+                                    ?.copyWith(
                                       fontSize: 14,
                                       color: InvestrendTheme.blackTextColor,
                                     ),
@@ -233,28 +236,28 @@ class CardBrokerRankState extends State<CardBrokerRank> {
                                       CupertinoPageRoute(
                                         builder: (_) => BrokerTradeSummary(
                                           selectValue:
-                                              brokerData[index].brokerCode,
+                                              brokerData?[index].brokerCode,
                                         ),
                                         settings: RouteSettings(
                                             name: '/brokerTradeSummary'),
                                       ));
                                 },
                                 child: Text(
-                                  brokerData[index].brokerCode,
-                                  style: styleHeader.copyWith(
+                                  brokerData![index].brokerCode!,
+                                  style: styleHeader?.copyWith(
                                       fontSize: fontSize,
                                       color: colorStock[
-                                          brokerData[index].brokerType]),
+                                          brokerData![index].brokerType!]),
                                   textAlign: TextAlign.left,
                                 ),
                               )),
                           SizedBox(
                             width: width / 6,
                             child: Text(
-                              '${brokerData[index].nVal.toString()}' + 'B',
-                              style: styleHeader.copyWith(
+                              '${brokerData![index].nVal.toString()}' + 'B',
+                              style: styleHeader?.copyWith(
                                 fontSize: fontSize,
-                                color: (brokerData[index].nVal)
+                                color: (brokerData![index].nVal)
                                         .toString()
                                         .contains('-')
                                     ? InvestrendTheme.redText
@@ -266,8 +269,8 @@ class CardBrokerRankState extends State<CardBrokerRank> {
                           SizedBox(
                             width: width / 6,
                             child: Text(
-                              '${brokerData[index].bVal}' + 'B',
-                              style: styleHeader.copyWith(
+                              '${brokerData![index].bVal}' + 'B',
+                              style: styleHeader?.copyWith(
                                 fontSize: fontSize,
                                 color: InvestrendTheme.greenText,
                               ),
@@ -277,8 +280,8 @@ class CardBrokerRankState extends State<CardBrokerRank> {
                           SizedBox(
                             width: width / 6,
                             child: Text(
-                              '${brokerData[index].sVal}' + 'B',
-                              style: styleHeader.copyWith(
+                              '${brokerData![index].sVal}' + 'B',
+                              style: styleHeader?.copyWith(
                                 fontSize: fontSize,
                                 color: InvestrendTheme.redText,
                               ),
@@ -291,8 +294,8 @@ class CardBrokerRankState extends State<CardBrokerRank> {
                               child: SizedBox(
                                 width: width / 10,
                                 child: Text(
-                                  '${brokerData[index].tVal.toString()}' + 'B',
-                                  style: styleHeader.copyWith(
+                                  '${brokerData![index].tVal.toString()}' + 'B',
+                                  style: styleHeader?.copyWith(
                                     fontSize: fontSize,
                                     color: InvestrendTheme.blackTextColor,
                                   ),
@@ -322,7 +325,7 @@ class CardBrokerRankState extends State<CardBrokerRank> {
               child: Text(
                 "button_show_more".tr(),
                 textAlign: TextAlign.end,
-                style: InvestrendTheme.of(context).small_w600.copyWith(
+                style: InvestrendTheme.of(context).small_w600?.copyWith(
                     color: InvestrendTheme.of(context)
                         .investrendPurpleText /*, fontWeight: FontWeight.bold*/),
               ),
@@ -336,7 +339,7 @@ class CardBrokerRankState extends State<CardBrokerRank> {
               dateInfo,
               style: InvestrendTheme.of(context)
                   .more_support_w400_compact
-                  .copyWith(
+                  ?.copyWith(
                     fontWeight: FontWeight.w500,
                     color: InvestrendTheme.of(context).greyDarkerTextColor,
                     fontStyle: FontStyle.italic,
@@ -362,7 +365,7 @@ class CardBrokerRankState extends State<CardBrokerRank> {
         context,
         CupertinoPageRoute(
             builder: (_) => BrokerTradeSummary(
-                  selectValue: brokerData[0].brokerCode,
+                  selectValue: brokerData?[0].brokerCode,
                 ),
             settings: RouteSettings(name: 'brokerTradeSummary')));
   }

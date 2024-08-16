@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable, unnecessary_null_comparison
+
 import 'package:Investrend/component/avatar.dart';
 import 'package:Investrend/component/component_app_bar.dart';
 import 'package:Investrend/component/component_creator.dart';
@@ -18,7 +20,6 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
-import 'package:async/async.dart';
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -28,36 +29,36 @@ import 'package:image/image.dart' as imageTools;
 import 'package:http_parser/http_parser.dart';
 
 class ScreenProfile extends StatefulWidget {
-  const ScreenProfile({Key key}) : super(key: key);
+  const ScreenProfile({Key? key}) : super(key: key);
 
   @override
   _ScreenProfileState createState() => _ScreenProfileState();
 }
 
 class _ScreenProfileState extends BaseStateWithTabs<ScreenProfile> {
-  TextEditingController fieldName;
-  TextEditingController fieldUsername;
-  TextEditingController fieldEmail;
-  TextEditingController fieldBiography;
+  TextEditingController? fieldName;
+  TextEditingController? fieldUsername;
+  TextEditingController? fieldEmail;
+  TextEditingController? fieldBiography;
 
   ValueNotifier<bool> editModeNotifier = ValueNotifier<bool>(false);
 
-  ProfileNotifier profileNotifier =
+  ProfileNotifier? profileNotifier =
       ProfileNotifier(Profile('', '', '', '', '', '', '', ''));
 
   final ImagePicker _picker = ImagePicker();
   String noCache = DateTime.now().toString();
 
-  _ScreenProfileState() : super('/profile');
+  _ScreenProfileState() : super('/profile', null, null);
 
   @override
   void dispose() {
     editModeNotifier.dispose();
-    fieldName.dispose();
-    fieldEmail.dispose();
-    fieldUsername.dispose();
-    fieldBiography.dispose();
-    profileNotifier.dispose();
+    fieldName?.dispose();
+    fieldEmail?.dispose();
+    fieldUsername?.dispose();
+    fieldBiography?.dispose();
+    profileNotifier?.dispose();
     super.dispose();
   }
 
@@ -83,15 +84,15 @@ class _ScreenProfileState extends BaseStateWithTabs<ScreenProfile> {
   */
   void doUpdate() {
     final resultProfile = InvestrendTheme.tradingHttp.getProfile();
-    resultProfile.then((value) {
+    resultProfile.then((Profile? value) {
       if (value != null && !value.isEmpty()) {
         if (mounted) {
-          profileNotifier.setValue(value);
+          profileNotifier?.setValue(value);
 
-          fieldName.text = value.realname;
-          fieldUsername.text = value.username;
-          fieldEmail.text = value.email;
-          fieldBiography.text = value.bio;
+          fieldName?.text = value.realname!;
+          fieldUsername?.text = value.username!;
+          fieldEmail?.text = value.email!;
+          fieldBiography?.text = value.bio!;
         }
       } else {
         setNotifierNoData(profileNotifier);
@@ -104,27 +105,42 @@ class _ScreenProfileState extends BaseStateWithTabs<ScreenProfile> {
 
   Future<Null> _cropImage(BuildContext context, File imageFile) async {
     print('Try croping ');
-    File croppedFile = await ImageCropper().cropImage(
-        sourcePath: imageFile.path,
-        aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
-        aspectRatioPresets: Platform.isAndroid
-            ? [
-                CropAspectRatioPreset.square,
-                // CropAspectRatioPreset.ratio3x2,
-                // CropAspectRatioPreset.original,
-                // CropAspectRatioPreset.ratio4x3,
-                // CropAspectRatioPreset.ratio16x9
-              ]
-            : [
-                // CropAspectRatioPreset.original,
-                CropAspectRatioPreset.square,
-                // CropAspectRatioPreset.ratio3x2,
-                // CropAspectRatioPreset.ratio4x3,
-                // CropAspectRatioPreset.ratio5x3,
-                // CropAspectRatioPreset.ratio5x4,
-                // CropAspectRatioPreset.ratio7x5,
-                // CropAspectRatioPreset.ratio16x9
-              ],
+    File? croppedFile = await ImageCropper().cropImage(
+      sourcePath: imageFile.path,
+      aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
+      aspectRatioPresets: Platform.isAndroid
+          ? [
+              CropAspectRatioPreset.square,
+              // CropAspectRatioPreset.ratio3x2,
+              // CropAspectRatioPreset.original,
+              // CropAspectRatioPreset.ratio4x3,
+              // CropAspectRatioPreset.ratio16x9
+            ]
+          : [
+              // CropAspectRatioPreset.original,
+              CropAspectRatioPreset.square,
+              // CropAspectRatioPreset.ratio3x2,
+              // CropAspectRatioPreset.ratio4x3,
+              // CropAspectRatioPreset.ratio5x3,
+              // CropAspectRatioPreset.ratio5x4,
+              // CropAspectRatioPreset.ratio7x5,
+              // CropAspectRatioPreset.ratio16x9
+            ],
+      uiSettings: [
+        AndroidUiSettings(
+            toolbarTitle: 'image_cropper_title'.tr(),
+            toolbarColor: Colors.deepOrange,
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.square,
+            lockAspectRatio: false),
+        IOSUiSettings(
+          title: 'image_cropper_title'.tr(),
+          rectX: 1,
+          rectY: 1,
+          aspectRatioLockEnabled: true,
+        )
+      ],
+      /*
         androidUiSettings: AndroidUiSettings(
             toolbarTitle: 'image_cropper_title'.tr(),
             toolbarColor: Colors.deepOrange,
@@ -136,7 +152,8 @@ class _ScreenProfileState extends BaseStateWithTabs<ScreenProfile> {
           rectX: 1,
           rectY: 1,
           aspectRatioLockEnabled: true,
-        ));
+        )*/
+    ) as File;
     if (croppedFile != null) {
       print('Got cropped image ');
       imageFile = croppedFile;
@@ -167,11 +184,14 @@ class _ScreenProfileState extends BaseStateWithTabs<ScreenProfile> {
   void upload(BuildContext context, File imageFile) async {
     showLoading(context, text: 'uploading_avatar_label'.tr());
 
-    var stream =
-        new http.ByteStream(DelegatingStream.typed(imageFile.openRead()));
+    // var streams =
+    // new http.ByteStream(DelegatingStream.typed(imageFile.openRead()));
+    var stream = new http.ByteStream(Stream.castFrom(imageFile.openRead()));
+    // var stream =
+    //     new http.ByteStream(DelegatingStream.typed(imageFile.openRead()));
     var length = await imageFile.length();
 
-    String auth = 'Bearer ' + InvestrendTheme.tradingHttp.access_token;
+    String? auth = 'Bearer ' + InvestrendTheme.tradingHttp.access_token!;
     var headers = {"Content-Type": "application/json", 'Authorization': auth};
     print(headers);
     //var uri = Uri.parse('http://investrend-prod.teltics.in:8888/uploadpic');
@@ -200,7 +220,7 @@ class _ScreenProfileState extends BaseStateWithTabs<ScreenProfile> {
           String urlProfile = 'https://' +
               InvestrendTheme.tradingHttp.tradingBaseUrl +
               '/getpic?username=' +
-              context.read(dataHolderChangeNotifier).user.username +
+              context.read(dataHolderChangeNotifier).user.username! +
               '&url=&nocache=' +
               noCache;
           context.read(avatarChangeNotifier).setUrl(urlProfile);
@@ -229,13 +249,13 @@ class _ScreenProfileState extends BaseStateWithTabs<ScreenProfile> {
   void uploadResized(BuildContext context, File imageFile) async {
     showLoading(context, text: 'uploading_avatar_label'.tr());
 
-    imageTools.Image resizedFile =
+    imageTools.Image? resizedFile =
         Utils.resizeImageFile(imageFile, maxWidth: 512);
 
     // var stream = new http.ByteStream(DelegatingStream.typed(imageFile.openRead()));
     // var length = await imageFile.length();
 
-    String auth = 'Bearer ' + InvestrendTheme.tradingHttp.access_token;
+    String? auth = 'Bearer ' + InvestrendTheme.tradingHttp.access_token!;
     var headers = {"Content-Type": "application/json", 'Authorization': auth};
     print(headers);
     //var uri = Uri.parse('http://investrend-prod.teltics.in:8888/uploadpic');
@@ -249,7 +269,7 @@ class _ScreenProfileState extends BaseStateWithTabs<ScreenProfile> {
 
     request.headers.addAll(headers);
 
-    List<int> encodedJpeg = imageTools.encodeJpg(resizedFile);
+    List<int> encodedJpeg = imageTools.encodeJpg(resizedFile!);
     var multipartFile = new http.MultipartFile.fromBytes(
       'file',
       encodedJpeg,
@@ -273,7 +293,7 @@ class _ScreenProfileState extends BaseStateWithTabs<ScreenProfile> {
           String urlProfile = 'https://' +
               InvestrendTheme.tradingHttp.tradingBaseUrl +
               '/getpic?username=' +
-              context.read(dataHolderChangeNotifier).user.username +
+              context.read(dataHolderChangeNotifier).user.username! +
               '&url=&nocache=' +
               noCache;
           context.read(avatarChangeNotifier).setUrl(urlProfile);
@@ -301,8 +321,7 @@ class _ScreenProfileState extends BaseStateWithTabs<ScreenProfile> {
 
   void upload2(File imageFile) async {
     // open a bytestream
-    var stream =
-        new http.ByteStream(DelegatingStream.typed(imageFile.openRead()));
+    var stream = new http.ByteStream(Stream.castFrom(imageFile.openRead()));
     // get file length
     var length = await imageFile.length();
 
@@ -485,7 +504,7 @@ class _ScreenProfileState extends BaseStateWithTabs<ScreenProfile> {
             child: ValueListenableBuilder(
                 valueListenable: editModeNotifier,
                 builder: (context, value, child) {
-                  if (value) {
+                  if (value as bool) {
                     return createTopInfoEdit(context);
                   } else {
                     return createTopInfo(context);
@@ -594,15 +613,15 @@ class _ScreenProfileState extends BaseStateWithTabs<ScreenProfile> {
                 url = 'https://' +
                     InvestrendTheme.tradingHttp.tradingBaseUrl +
                     '/getpic?username=' +
-                    context.read(dataHolderChangeNotifier).user.username +
+                    context.read(dataHolderChangeNotifier).user.username! +
                     '&url=&nocache=' +
                     noCache;
               }
               return AvatarProfileButton(
-                fullname: context.read(dataHolderChangeNotifier).user.realname,
+                fullname: context.read(dataHolderChangeNotifier).user.realname!,
                 url: url,
                 size: 82.0,
-                style: Theme.of(context).textTheme.headline2.copyWith(
+                style: Theme.of(context).textTheme.displayMedium?.copyWith(
                     color: Theme.of(context).primaryColor,
                     fontSize: 40.0,
                     fontWeight: FontWeight.w500),
@@ -622,7 +641,7 @@ class _ScreenProfileState extends BaseStateWithTabs<ScreenProfile> {
             ),*/
             OutlinedButton(
                 style: OutlinedButton.styleFrom(
-                  primary: Theme.of(context).colorScheme.secondary,
+                  foregroundColor: Theme.of(context).colorScheme.secondary,
                   minimumSize: Size(50.0, 36.0),
                   side: BorderSide(
                       color: Theme.of(context).colorScheme.secondary,
@@ -639,7 +658,7 @@ class _ScreenProfileState extends BaseStateWithTabs<ScreenProfile> {
                       'button_edit'.tr(),
                       style: InvestrendTheme.of(context)
                           .small_w600_compact
-                          .copyWith(
+                          ?.copyWith(
                               color: Theme.of(context).colorScheme.secondary),
                     ),
                     SizedBox(
@@ -660,7 +679,7 @@ class _ScreenProfileState extends BaseStateWithTabs<ScreenProfile> {
         Row(
           children: [
             Text(
-              context.read(dataHolderChangeNotifier).user.realname,
+              context.read(dataHolderChangeNotifier).user.realname!,
               style: InvestrendTheme.of(context).regular_w600_compact,
             ),
             SizedBox(
@@ -677,25 +696,25 @@ class _ScreenProfileState extends BaseStateWithTabs<ScreenProfile> {
           height: InvestrendTheme.cardPadding,
         ),
         Text(
-          '@' + context.read(dataHolderChangeNotifier).user.username,
+          '@' + context.read(dataHolderChangeNotifier).user.username!,
           style: InvestrendTheme.of(context).more_support_w400_compact,
         ),
         SizedBox(
           height: InvestrendTheme.cardPadding,
         ),
         Text(
-          context.read(dataHolderChangeNotifier).user.email,
+          context.read(dataHolderChangeNotifier).user.email!,
           style:
               InvestrendTheme.of(context).more_support_w400_compact_greyDarker,
         ),
         SizedBox(
           height: InvestrendTheme.cardPaddingGeneral,
         ),
-        ValueListenableBuilder<Profile>(
-            valueListenable: profileNotifier,
+        ValueListenableBuilder<Profile?>(
+            valueListenable: profileNotifier!,
             builder: (context, value, child) {
-              Widget noWidget =
-                  profileNotifier.currentState.getNoWidget(onRetry: () {
+              Widget? noWidget =
+                  profileNotifier?.currentState.getNoWidget(onRetry: () {
                 doUpdate();
               });
               if (noWidget != null) {
@@ -705,10 +724,10 @@ class _ScreenProfileState extends BaseStateWithTabs<ScreenProfile> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    value.bio,
+                    value!.bio!,
                     style: InvestrendTheme.of(context)
                         .more_support_w400
-                        .copyWith(
+                        ?.copyWith(
                             color: InvestrendTheme.of(context)
                                 .greyLighterTextColor),
                   ),
@@ -716,10 +735,10 @@ class _ScreenProfileState extends BaseStateWithTabs<ScreenProfile> {
                     height: InvestrendTheme.cardPaddingGeneral,
                   ),
                   Text(
-                    value.ranking,
+                    value.ranking!,
                     style: InvestrendTheme.of(context)
                         .more_support_w400
-                        .copyWith(
+                        ?.copyWith(
                             color: Theme.of(context).colorScheme.secondary),
                   )
                 ],
@@ -744,7 +763,7 @@ class _ScreenProfileState extends BaseStateWithTabs<ScreenProfile> {
 
   Future pickImage(BuildContext context, ImageSource source) async {
     try {
-      XFile pickedFile = await _picker.pickImage(source: source);
+      XFile? pickedFile = await _picker.pickImage(source: source) as XFile;
       //PickedFile pickedFile = await _picker.getImage(source: source);
       if (pickedFile != null) {
         print('picked image try to uopload');
@@ -820,21 +839,21 @@ class _ScreenProfileState extends BaseStateWithTabs<ScreenProfile> {
       }
       */
 
-    String newBiography = fieldBiography.text;
-    bool changedBio =
-        !StringUtils.equalsIgnoreCase(newBiography, profileNotifier.value.bio);
+    String newBiography = fieldBiography!.text;
+    bool changedBio = !StringUtils.equalsIgnoreCase(
+        newBiography, profileNotifier?.value?.bio);
     if (changedBio) {
-      String platform = InvestrendTheme.of(context).applicationPlatform;
-      String version = InvestrendTheme.of(context).applicationVersion;
+      String? platform = InvestrendTheme.of(context).applicationPlatform;
+      String? version = InvestrendTheme.of(context).applicationVersion;
       showLoading(context, text: '');
-      Future result = InvestrendTheme.tradingHttp
+      Future? result = InvestrendTheme.tradingHttp
           .updateBiography(newBiography, platform, version)
-          .then((value) {
+          ?.then((value) {
         loadingNotifier.value = true;
         if (StringUtils.equalsIgnoreCase(value, 'success')) {
           editModeNotifier.value = false;
-          profileNotifier.value.bio = newBiography;
-          profileNotifier.mustNotifyListeners();
+          profileNotifier?.value?.bio = newBiography;
+          profileNotifier?.mustNotifyListeners();
         }
         InvestrendTheme.of(context).showSnackBar(context, value);
       }).onError((error, stackTrace) {
@@ -870,16 +889,16 @@ class _ScreenProfileState extends BaseStateWithTabs<ScreenProfile> {
                   url = 'https://' +
                       InvestrendTheme.tradingHttp.tradingBaseUrl +
                       '/getpic?username=' +
-                      context.read(dataHolderChangeNotifier).user.username +
+                      context.read(dataHolderChangeNotifier).user.username! +
                       '&url=&nocache=' +
                       noCache;
                 }
                 return AvatarProfileButton(
                   fullname:
-                      context.read(dataHolderChangeNotifier).user.realname,
+                      context.read(dataHolderChangeNotifier).user.realname!,
                   url: url,
                   size: 82.0,
-                  style: Theme.of(context).textTheme.headline2.copyWith(
+                  style: Theme.of(context).textTheme.displayMedium?.copyWith(
                       color: Theme.of(context).primaryColor,
                       fontSize: 40.0,
                       fontWeight: FontWeight.w500),
@@ -941,7 +960,7 @@ class _ScreenProfileState extends BaseStateWithTabs<ScreenProfile> {
             */
             OutlinedButton(
                 style: OutlinedButton.styleFrom(
-                  primary: Theme.of(context).colorScheme.secondary,
+                  foregroundColor: Theme.of(context).colorScheme.secondary,
                   minimumSize: Size(50.0, 36.0),
                   side: BorderSide(
                       color: Theme.of(context).colorScheme.secondary,
@@ -957,7 +976,7 @@ class _ScreenProfileState extends BaseStateWithTabs<ScreenProfile> {
                       'button_done'.tr(),
                       style: InvestrendTheme.of(context)
                           .small_w600_compact
-                          .copyWith(color: Theme.of(context).primaryColor),
+                          ?.copyWith(color: Theme.of(context).primaryColor),
                     ),
                     SizedBox(
                       width: 5.0,
@@ -1021,15 +1040,17 @@ class _ScreenProfileState extends BaseStateWithTabs<ScreenProfile> {
         ),
         Text(
           label,
-          style: InvestrendTheme.of(context).more_support_w400_compact.copyWith(
-              color: InvestrendTheme.of(context).greyLighterTextColor),
+          style: InvestrendTheme.of(context)
+              .more_support_w400_compact
+              ?.copyWith(
+                  color: InvestrendTheme.of(context).greyLighterTextColor),
         ),
       ],
     );
   }
 
   @override
-  Widget createAppBar(BuildContext context) {
+  PreferredSizeWidget createAppBar(BuildContext context) {
     double elevation = 0.0;
     Color shadowColor = Theme.of(context).shadowColor;
     if (!InvestrendTheme.tradingHttp.is_production) {
@@ -1117,7 +1138,7 @@ class _ScreenProfileState extends BaseStateWithTabs<ScreenProfile> {
             if (!hasAccount) {
               return ScreenNoAccount();
             }
-            return ScreenProfileLinkedAccounts(index, pTabController);
+            return ScreenProfileLinkedAccounts(index, pTabController!);
           }
           /*
           if (index == 0) {
@@ -1156,7 +1177,7 @@ class _ScreenProfileState extends BaseStateWithTabs<ScreenProfile> {
   ];
 
   @override
-  Widget createTabs(BuildContext context) {
+  PreferredSizeWidget createTabs(BuildContext context) {
     return PreferredSize(
       preferredSize: Size.fromHeight(InvestrendTheme.appBarTabHeight),
       child: Container(
@@ -1188,14 +1209,12 @@ class _ScreenProfileState extends BaseStateWithTabs<ScreenProfile> {
 
   @override
   void onActive() {
-    if (!profileNotifier.value.loaded) {
-      profileNotifier.setLoading();
+    if (!profileNotifier!.value!.loaded) {
+      profileNotifier?.setLoading();
     }
     doUpdate();
   }
 
   @override
-  void onInactive() {
-    // TODO: implement onInactive
-  }
+  void onInactive() {}
 }

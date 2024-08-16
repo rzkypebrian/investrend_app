@@ -7,7 +7,7 @@ import 'package:image_picker/image_picker.dart';
 //import 'package:video_player/video_player.dart';
 
 class TestImagePickerPage extends StatefulWidget {
-  TestImagePickerPage({Key key, this.title = 'Test'}) : super(key: key);
+  TestImagePickerPage({Key? key, this.title = 'Test'}) : super(key: key);
 
   final String title;
 
@@ -16,9 +16,9 @@ class TestImagePickerPage extends StatefulWidget {
 }
 
 class _TestImagePickerPageState extends State<TestImagePickerPage> {
-  List<PickedFile> _imageFileList;
+  List<XFile>? _imageFileList;
 
-  set _imageFile(PickedFile value) {
+  set _imageFile(XFile? value) {
     _imageFileList = value == null ? null : [value];
   }
 
@@ -27,7 +27,7 @@ class _TestImagePickerPageState extends State<TestImagePickerPage> {
 
   // VideoPlayerController? _controller;
   // VideoPlayerController? _toBeDisposed;
-  String _retrieveDataError;
+  String? _retrieveDataError;
 
   final ImagePicker _picker = ImagePicker();
   final TextEditingController maxWidthController = TextEditingController();
@@ -59,7 +59,7 @@ class _TestImagePickerPageState extends State<TestImagePickerPage> {
   // }
 
   void _onImageButtonPressed(ImageSource source,
-      {BuildContext context, bool isMultiImage = false}) async {
+      {BuildContext? context, bool isMultiImage = false}) async {
     // if (_controller != null) {
     //   await _controller!.setVolume(0.0);
     // }
@@ -69,9 +69,9 @@ class _TestImagePickerPageState extends State<TestImagePickerPage> {
       // await _playVideo(file);
     } else if (isMultiImage) {
       await _displayPickImageDialog(context,
-          (double maxWidth, double maxHeight, int quality) async {
+          (double? maxWidth, double? maxHeight, int? quality) async {
         try {
-          final pickedFileList = await _picker.getMultiImage(
+          final pickedFileList = await _picker.pickMultiImage(
             maxWidth: maxWidth,
             maxHeight: maxHeight,
             imageQuality: quality,
@@ -87,9 +87,9 @@ class _TestImagePickerPageState extends State<TestImagePickerPage> {
       });
     } else {
       await _displayPickImageDialog(context,
-          (double maxWidth, double maxHeight, int quality) async {
+          (double? maxWidth, double? maxHeight, int? quality) async {
         try {
-          final pickedFile = await _picker.getImage(
+          final pickedFile = await _picker.pickImage(
             source: source,
             maxWidth: maxWidth,
             maxHeight: maxHeight,
@@ -126,7 +126,7 @@ class _TestImagePickerPageState extends State<TestImagePickerPage> {
   }
 
   Widget _previewImages() {
-    final Text retrieveError = _getRetrieveErrorWidget();
+    final Text? retrieveError = _getRetrieveErrorWidget();
     if (retrieveError != null) {
       return retrieveError;
     }
@@ -140,11 +140,11 @@ class _TestImagePickerPageState extends State<TestImagePickerPage> {
               return Semantics(
                 label: 'image_picker_example_picked_image',
                 child: kIsWeb
-                    ? Image.network(_imageFileList[index].path)
-                    : Image.file(File(_imageFileList[index].path)),
+                    ? Image.network(_imageFileList![index].path)
+                    : Image.file(File(_imageFileList![index].path)),
               );
             },
-            itemCount: _imageFileList.length,
+            itemCount: _imageFileList?.length,
           ),
           label: 'image_picker_example_picked_images');
     } else if (_pickImageError != null) {
@@ -169,7 +169,7 @@ class _TestImagePickerPageState extends State<TestImagePickerPage> {
   }
 
   Future<void> retrieveLostData() async {
-    final LostData response = await _picker.getLostData();
+    final LostDataResponse response = await _picker.retrieveLostData();
     if (response.isEmpty) {
       return;
     }
@@ -180,11 +180,11 @@ class _TestImagePickerPageState extends State<TestImagePickerPage> {
       } else {
         isVideo = false;
         setState(() {
-          _imageFile = response.file;
+          _imageFile = response.file as XFile;
         });
       }
     } else {
-      _retrieveDataError = response.exception.code;
+      _retrieveDataError = response.exception?.code;
     }
   }
 
@@ -299,9 +299,9 @@ class _TestImagePickerPageState extends State<TestImagePickerPage> {
     );
   }
 
-  Text _getRetrieveErrorWidget() {
+  Text? _getRetrieveErrorWidget() {
     if (_retrieveDataError != null) {
-      final Text result = Text(_retrieveDataError);
+      final Text result = Text(_retrieveDataError!);
       _retrieveDataError = null;
       return result;
     }
@@ -309,9 +309,9 @@ class _TestImagePickerPageState extends State<TestImagePickerPage> {
   }
 
   Future<void> _displayPickImageDialog(
-      BuildContext context, OnPickImageCallback onPick) async {
+      BuildContext? context, OnPickImageCallback onPick) async {
     return showDialog(
-        context: context,
+        context: context!,
         builder: (context) {
           return AlertDialog(
             title: Text('Add optional parameters'),
@@ -347,13 +347,13 @@ class _TestImagePickerPageState extends State<TestImagePickerPage> {
               TextButton(
                   child: const Text('PICK'),
                   onPressed: () {
-                    double width = maxWidthController.text.isNotEmpty
+                    double? width = maxWidthController.text.isNotEmpty
                         ? double.parse(maxWidthController.text)
                         : null;
-                    double height = maxHeightController.text.isNotEmpty
+                    double? height = maxHeightController.text.isNotEmpty
                         ? double.parse(maxHeightController.text)
                         : null;
-                    int quality = qualityController.text.isNotEmpty
+                    int? quality = qualityController.text.isNotEmpty
                         ? int.parse(qualityController.text)
                         : null;
                     onPick(width, height, quality);
@@ -366,7 +366,7 @@ class _TestImagePickerPageState extends State<TestImagePickerPage> {
 }
 
 typedef void OnPickImageCallback(
-    double maxWidth, double maxHeight, int quality);
+    double? maxWidth, double? maxHeight, int? quality);
 
 // class AspectRatioVideo extends StatefulWidget {
 //   AspectRatioVideo(this.controller);
@@ -411,7 +411,7 @@ typedef void OnPickImageCallback(
 //           aspectRatio: controller!.value.aspectRatio,
 //           child: VideoPlayer(controller!),
 //         ),
-//       );
+//       );   
 //     } else {
 //       return Container();
 //     }

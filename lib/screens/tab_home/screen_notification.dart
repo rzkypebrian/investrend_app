@@ -1,4 +1,4 @@
-
+// ignore_for_file: unused_local_variable, non_constant_identifier_names
 
 import 'package:Investrend/component/component_app_bar.dart';
 import 'package:Investrend/component/empty_label.dart';
@@ -14,7 +14,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ScreenNotification extends StatefulWidget {
-  const ScreenNotification({Key key}) : super(key: key);
+  const ScreenNotification({Key? key}) : super(key: key);
 
   @override
   _ScreenNotificationState createState() => _ScreenNotificationState();
@@ -29,7 +29,7 @@ class _ScreenNotificationState extends BaseStateNoTabs<ScreenNotification> {
   // }
 
   @override
-  Widget createAppBar(BuildContext context) {
+  PreferredSizeWidget createAppBar(BuildContext context) {
     double elevation = 0.0;
     Color shadowColor = Theme.of(context).shadowColor;
     if (!InvestrendTheme.tradingHttp.is_production) {
@@ -45,53 +45,59 @@ class _ScreenNotificationState extends BaseStateNoTabs<ScreenNotification> {
     );
   }
 
-  ScrollController _scrollController;
+  ScrollController? _scrollController;
 
   void _scrollToTop() {
-    _scrollController.animateTo(0,
+    _scrollController?.animateTo(0,
         duration: Duration(seconds: 2), curve: Curves.easeInOutQuint);
   }
+
   void scrollListener() {
-    if (_scrollController.offset >= _scrollController.position.maxScrollExtent &&
-        !_scrollController.position.outOfRange) {
+    if (_scrollController!.offset >=
+            _scrollController!.position.maxScrollExtent &&
+        !_scrollController!.position.outOfRange) {
       // setState(() {
       //   message = "reach the bottom";
       // });
-      if(mounted){
+      if (mounted) {
         fetchNextPage();
       }
     }
-    if (_scrollController.offset <= _scrollController.position.minScrollExtent &&
-        !_scrollController.position.outOfRange) {
-
+    if (_scrollController!.offset <=
+            _scrollController!.position.minScrollExtent &&
+        !_scrollController!.position.outOfRange) {
       // setState(() {
       //   message = "reach the top";
       // });
     }
   }
+
   bool showedLastPageInfo = false;
-  void fetchNextPage(){
-    if(context.read(inboxChangeNotifier).loadingBottom){
-      print('scrollListener nextPage onProgress : '+context.read(inboxChangeNotifier).loadingBottom.toString());
+  void fetchNextPage() {
+    if (context.read(inboxChangeNotifier).loadingBottom) {
+      print('scrollListener nextPage onProgress : ' +
+          context.read(inboxChangeNotifier).loadingBottom.toString());
       return;
     }
     print('reach the bottom');
-
-
-
 
     // String next_page_url = context.read(sosmedFeedChangeNotifier).next_page_url;
     // int current_page = context.read(sosmedFeedChangeNotifier).current_page;
     // int last_page = context.read(sosmedFeedChangeNotifier).last_page;
     // if(current_page == last_page){
-    String dateNext = context.read(inboxChangeNotifier).date_next;
-    if(StringUtils.isEmtpy(dateNext)){
-      if(showedLastPageInfo){
+    String? dateNext = context.read(inboxChangeNotifier).date_next;
+    if (StringUtils.isEmtpy(dateNext)) {
+      if (showedLastPageInfo) {
         return;
       }
       showedLastPageInfo = true;
-      InvestrendTheme.of(context).showSnackBar(context, 'notification_label_all_retrieved'.tr(), buttonOnPress: _scrollToTop, buttonLabel: 'button_latest_notification'.tr(), buttonColor: Colors.orange, seconds: 5);
-      Future.delayed(Duration(seconds: 1),(){
+      InvestrendTheme.of(context).showSnackBar(
+          context, 'notification_label_all_retrieved'.tr(),
+          buttonOnPress: _scrollToTop,
+          buttonLabel: 'button_latest_notification'.tr(),
+          buttonColor: Colors.orange,
+          seconds: 5);
+      Future.delayed(Duration(seconds: 1), () {
         context.read(sosmedFeedChangeNotifier).showLoadingBottom(false);
       });
       return;
@@ -99,33 +105,33 @@ class _ScreenNotificationState extends BaseStateNoTabs<ScreenNotification> {
     context.read(sosmedFeedChangeNotifier).showLoadingBottom(true);
     //int next_page = current_page + 1;
     final result = doUpdate(date_next: dateNext);
-
   }
-  Future doUpdate({bool pullToRefresh = false, String date_next=''}) async {
+
+  Future doUpdate({bool pullToRefresh = false, String? date_next = ''}) async {
     print(routeName + '.doUpdate');
     showedLastPageInfo = false;
-    try{
+    try {
       context.read(inboxChangeNotifier).showLoadingBottom(true);
       //final fetchPost = await SosMedHttp.sosmedFetchPost('123', InvestrendTheme.of(context).applicationPlatform, InvestrendTheme.of(context).applicationVersion, page: nextPage, language: EasyLocalization.of(context).locale.languageCode);
 
-      String username = context.read(dataHolderChangeNotifier).user.username;
+      String? username = context.read(dataHolderChangeNotifier).user.username;
 
-      final result = await InvestrendTheme.datafeedHttp.fetchInbox(username, date_next);
-      if(result != null ){
-        print('fetchInbox got --> '+result.count().toString());
+      final ResultInbox? result =
+          await InvestrendTheme.datafeedHttp.fetchInbox(username!, date_next);
+      if (result != null) {
+        print('fetchInbox got --> ' + result.count().toString());
         //_pageSize = fetchPost.result.per_page;
         showLoadingFirstTime = false;
         context.read(inboxChangeNotifier).setResult(result);
         // Future.delayed(Duration(seconds: 2),(){
         context.read(inboxChangeNotifier).showLoadingBottom(false);
         // });
-
       }
-    }catch(error){
-      print(routeName + '.doUpdate Exception fetchInbox : '+error.toString());
+    } catch (error) {
+      print(routeName + '.doUpdate Exception fetchInbox : ' + error.toString());
       //context.read(sosmedPostChangeNotifier).showLoadingBottom(false);
       showLoadingFirstTime = false;
-      if(mounted){
+      if (mounted) {
         //InvestrendTheme.of(context).showSnackBar(context, 'Error : '+error.toString());
         // Future.delayed(Duration(seconds: 2),(){
         //context.read(sosmedPostChangeNotifier).showLoadingBottom(false);
@@ -133,17 +139,16 @@ class _ScreenNotificationState extends BaseStateNoTabs<ScreenNotification> {
         // });
         handleNetworkError(context, error);
         return;
-
       }
 
       // _pagingController.error = error;
     }
 
-
     print(routeName + '.doUpdate finished. pullToRefresh : $pullToRefresh');
 
     return true;
   }
+
   @override
   Widget createBody(BuildContext context, double paddingBottom) {
     return RefreshIndicator(
@@ -160,25 +165,30 @@ class _ScreenNotificationState extends BaseStateNoTabs<ScreenNotification> {
         //   );
         // }
 
-        int totalCount = notifier.countData() ;
-        if(notifier.loadingBottom || notifier.retryBottom){
-          totalCount  = totalCount + 1;
+        int? totalCount = notifier.countData();
+        if (notifier.loadingBottom || notifier.retryBottom) {
+          totalCount = totalCount! + 1;
         }
         return ListView.builder(
             controller: _scrollController,
             shrinkWrap: false,
-            padding: const EdgeInsets.only(/*left: InvestrendTheme.cardMargin, right: InvestrendTheme.cardMargin,*/ top: InvestrendTheme.cardMargin, bottom: (InvestrendTheme.cardMargin + 100.0)),
+            padding: const EdgeInsets.only(
+                /*left: InvestrendTheme.cardMargin, right: InvestrendTheme.cardMargin,*/ top:
+                    InvestrendTheme.cardMargin,
+                bottom: (InvestrendTheme.cardMargin + 100.0)),
             //itemCount: notifier.countPost() + pre_childs.length ,
-            itemCount:totalCount,
+            itemCount: totalCount,
             itemBuilder: (BuildContext context, int index) {
-              if(index < notifier.countData()){
-                InboxMessage inboxMessage = notifier.datas().elementAt(index);
-                if(inboxMessage != null){
+              if (index < notifier.countData()!) {
+                InboxMessage? inboxMessage = notifier.datas()?.elementAt(index);
+                if (inboxMessage != null) {
                   //return EmptyLabel(text: 'InboxMessage index $index ADA',);
                   //return listTile(context, inboxMessage.created_at, inboxMessage.fcm_title , null, inboxMessage.fcm_body);
                   return listTile(context, inboxMessage);
-                }else{
-                  return EmptyLabel(text: 'InboxMessage index $index is null',);
+                } else {
+                  return EmptyLabel(
+                    text: 'InboxMessage index $index is null',
+                  );
                 }
                 /*
                 int indexPost = index - pre_childs.length;
@@ -230,45 +240,85 @@ class _ScreenNotificationState extends BaseStateNoTabs<ScreenNotification> {
                   return EmptyLabel(text: 'post index $index is null',);
                 }
                 */
-              }else{
-                if(notifier.loadingBottom){
-                  if(index == 0){
+              } else {
+                if (notifier.loadingBottom) {
+                  if (index == 0) {
                     return Padding(
-                      padding:  EdgeInsets.only(top: MediaQuery.of(context).size.width / 4),
-                      child: Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.secondary, backgroundColor: Theme.of(context).colorScheme.secondary.withOpacity(0.2),)),
+                      padding: EdgeInsets.only(
+                          top: MediaQuery.of(context).size.width / 4),
+                      child: Center(
+                          child: CircularProgressIndicator(
+                        color: Theme.of(context).colorScheme.secondary,
+                        backgroundColor: Theme.of(context)
+                            .colorScheme
+                            .secondary
+                            .withOpacity(0.2),
+                      )),
                     );
-                  }else{
-                    return Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.secondary, backgroundColor: Theme.of(context).colorScheme.secondary.withOpacity(0.2),));
+                  } else {
+                    return Center(
+                        child: CircularProgressIndicator(
+                      color: Theme.of(context).colorScheme.secondary,
+                      backgroundColor: Theme.of(context)
+                          .colorScheme
+                          .secondary
+                          .withOpacity(0.2),
+                    ));
                   }
-
-                }else if(notifier.retryBottom){
-                  return Center(child: TextButton(child: Text('button_retry'.tr(), style: InvestrendTheme.of(context).small_w400_compact.copyWith(color: Theme.of(context).colorScheme.secondary),), onPressed: (){
-                    fetchNextPage();
-                  },));
-                }else{
-                  return Center(child: EmptyLabel(text: 'infinity_label️'.tr(),));
+                } else if (notifier.retryBottom) {
+                  return Center(
+                      child: TextButton(
+                    child: Text(
+                      'button_retry'.tr(),
+                      style: InvestrendTheme.of(context)
+                          .small_w400_compact
+                          ?.copyWith(
+                              color: Theme.of(context).colorScheme.secondary),
+                    ),
+                    onPressed: () {
+                      fetchNextPage();
+                    },
+                  ));
+                } else {
+                  return Center(
+                      child: EmptyLabel(
+                    text: 'infinity_label️'.tr(),
+                  ));
                 }
               }
-
-
             });
       }),
     );
   }
-  Widget listTile(BuildContext context, BaseMessage message /* String date, String title, Image titleIcon, String message*/, {bool selected=false}){
-    TextStyle moreSupport400 = InvestrendTheme.of(context).more_support_w400.copyWith(fontSize:11.0,letterSpacing: -0.2, color: InvestrendTheme.of(context).greyLighterTextColor);
-    TextStyle moreSupport400Darker = moreSupport400.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor);
+
+  Widget listTile(
+      BuildContext context,
+      BaseMessage
+          message /* String date, String title, Image titleIcon, String message*/,
+      {bool selected = false}) {
+    TextStyle? moreSupport400 = InvestrendTheme.of(context)
+        .more_support_w400
+        ?.copyWith(
+            fontSize: 11.0,
+            letterSpacing: -0.2,
+            color: InvestrendTheme.of(context).greyLighterTextColor);
+    TextStyle? moreSupport400Darker = moreSupport400?.copyWith(
+        color: InvestrendTheme.of(context).greyDarkerTextColor);
     return ListTile(
       selectedTileColor: InvestrendTheme.of(context).oddColor,
-      contentPadding: EdgeInsets.only(left: 12.0, right: 12.0, top: 8.0,bottom: 8.0),
+      contentPadding:
+          EdgeInsets.only(left: 12.0, right: 12.0, top: 8.0, bottom: 8.0),
       enabled: true,
       selected: selected,
-      onTap: (){
+      onTap: () {
         //InvestrendTheme.of(context).showSnackBar(context, 'Click message : '+message.fcm_title);
         Navigator.push(
             context,
             CupertinoPageRoute(
-              builder: (_) => ScreenMessage(baseMessage: message, caller: 'ListTileNotification',),
+              builder: (_) => ScreenMessage(
+                baseMessage: message,
+                caller: 'ListTileNotification',
+              ),
               settings: RouteSettings(name: '/message'),
             ));
       },
@@ -280,22 +330,27 @@ class _ScreenNotificationState extends BaseStateNoTabs<ScreenNotification> {
         maxLines: 3,
         text: TextSpan(
           text: message.fcm_title,
-          style: InvestrendTheme.of(context).small_w400.copyWith(fontSize: 15.0),
+          style:
+              InvestrendTheme.of(context).small_w400?.copyWith(fontSize: 15.0),
           children: <TextSpan>[
             // WidgetSpan(
             //   child: Icon(icon, size: 14),
             // ),
-            TextSpan(text: '\n'+message.fcm_body, style: moreSupport400Darker,)
-
+            TextSpan(
+              text: '\n' + message.fcm_body,
+              style: moreSupport400Darker,
+            )
           ],
         ),
       ),
     );
   }
+
   Future onRefresh() {
     return doUpdate(pullToRefresh: true);
     //return Future.delayed(Duration(seconds: 3));
   }
+
   @override
   void initState() {
     super.initState();
@@ -303,7 +358,7 @@ class _ScreenNotificationState extends BaseStateNoTabs<ScreenNotification> {
     //   _fetchPage(pageKey);
     // });
     _scrollController = ScrollController();
-    _scrollController.addListener(scrollListener);
+    _scrollController?.addListener(scrollListener);
 
     //doUpdate();
     runPostFrame(doUpdate);
@@ -314,19 +369,16 @@ class _ScreenNotificationState extends BaseStateNoTabs<ScreenNotification> {
 
   @override
   void dispose() {
-    _scrollController.dispose();
+    _scrollController?.dispose();
     // _pagingController.dispose();
     super.dispose();
   }
-  @override
-  void onActive() {
-    // TODO: implement onActive
-  }
 
   @override
-  void onInactive() {
-    // TODO: implement onInactive
-  }
+  void onActive() {}
+
+  @override
+  void onInactive() {}
 }
 
 

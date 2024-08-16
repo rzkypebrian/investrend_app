@@ -1,17 +1,19 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:Investrend/utils/string_utils.dart';
 import 'package:Investrend/utils/utils.dart';
 import 'package:flutter/material.dart';
 
 class FormatTextBullet extends StatelessWidget {
-  final String text;
-  TextStyle style;
-  FormatTextBullet(this.text, {this.style, Key key}) : super(key: key);
+  final String? text;
+  TextStyle? style;
+  FormatTextBullet(this.text, {this.style, Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return formattedWidget(context, text);
   }
 
-  Widget formattedWidget(BuildContext context, String text) {
+  Widget formattedWidget(BuildContext context, String? text) {
     if (StringUtils.isEmtpy(text)) {
       return SizedBox(
         width: 1.0,
@@ -20,8 +22,8 @@ class FormatTextBullet extends StatelessWidget {
     List<Widget> list = List.empty(growable: true);
 
     String lastBullet = '';
-    List<String> lines = text.split('\n');
-    lines.forEach((line) {
+    List<String>? lines = text?.split('\n');
+    lines?.forEach((line) {
       if (line.startsWith('• ')) {
         line = line.replaceFirst('• ', '');
         list.add(bulletOrLine(context, '•', line));
@@ -30,7 +32,7 @@ class FormatTextBullet extends StatelessWidget {
         line = line.replaceFirst('   ', '');
         if (StringUtils.isEmtpy(lastBullet)) {
           list.add(Text(line,
-              style: style ??= Theme.of(context).textTheme.bodyText2));
+              style: style ??= Theme.of(context).textTheme.bodyMedium));
         } else {
           list.add(
               bulletOrLine(context, lastBullet, line, showBulletLine: false));
@@ -50,7 +52,7 @@ class FormatTextBullet extends StatelessWidget {
         }
         if (!marked) {
           list.add(Text(line,
-              style: style ??= Theme.of(context).textTheme.bodyText2));
+              style: style ??= Theme.of(context).textTheme.bodyMedium));
         }
       }
     });
@@ -63,7 +65,7 @@ class FormatTextBullet extends StatelessWidget {
 
   Widget bulletOrLine(BuildContext context, String bulletLine, String text,
       {bool showBulletLine = true}) {
-    TextStyle bulletStyle = style ??= Theme.of(context).textTheme.bodyText2;
+    TextStyle bulletStyle = style ??= Theme.of(context).textTheme.bodyMedium!;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -83,7 +85,7 @@ class FormatTextBullet extends StatelessWidget {
           flex: 1,
           child: Text(
             text,
-            style: style ??= Theme.of(context).textTheme.bodyText2,
+            style: style ??= Theme.of(context).textTheme.bodyMedium,
           ),
         ),
       ],
@@ -93,8 +95,8 @@ class FormatTextBullet extends StatelessWidget {
 
 class BulletText extends StatelessWidget {
   final String text;
-  TextStyle style;
-  BulletText(this.text, {this.style, Key key}) : super(key: key);
+  TextStyle? style;
+  BulletText(this.text, {this.style, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -103,7 +105,7 @@ class BulletText extends StatelessWidget {
       children: [
         Text(
           '•  ',
-          style: style ??= Theme.of(context).textTheme.bodyText2,
+          style: style ??= Theme.of(context).textTheme.bodyMedium,
         ),
         SizedBox(
           width: 5.0,
@@ -112,7 +114,7 @@ class BulletText extends StatelessWidget {
           flex: 1,
           child: Text(
             text,
-            style: style ??= Theme.of(context).textTheme.bodyText2,
+            style: style ??= Theme.of(context).textTheme.bodyMedium,
           ),
         ),
       ],

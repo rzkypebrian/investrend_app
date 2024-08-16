@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable, must_be_immutable, non_constant_identifier_names
+
 import 'dart:math';
 
 import 'package:Investrend/component/avatar.dart';
@@ -31,15 +33,19 @@ class NewCardSocialText extends StatelessWidget {
   final int likedCount;
   final List<Comment> comments;
   */
-  final VoidCallback commentClick;
-  final VoidCallback likeClick;
-  final VoidCallback shareClick;
-  final VoidCallback onTap;
+  final VoidCallback? commentClick;
+  final VoidCallback? likeClick;
+  final VoidCallback? shareClick;
+  final VoidCallback? onTap;
 
   final Post post;
 
   NewCardSocialText(this.post,
-      {Key key, this.commentClick, this.likeClick, this.shareClick, this.onTap})
+      {Key? key,
+      this.commentClick,
+      this.likeClick,
+      this.shareClick,
+      this.onTap})
       : super(key: key);
 
   // 48
@@ -55,26 +61,26 @@ class NewCardSocialText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     int topCommentsCount =
-        post.top_comments != null ? post.top_comments.length : 0;
+        post.top_comments != null ? post.top_comments!.length : 0;
     Color verticalDividerColor = topCommentsCount <= 0
         ? Colors.transparent
         : Theme.of(context).dividerColor;
     //Color verticalDividerColor =  Colors.transparent;
 
     //String avatarUrl = post.user.featured_attachment;
-    String avatarUrl = post.user.thumbnail;
-    final String name = post.user.name;
-    final String username = post.user.username;
+    String avatarUrl = post.user!.thumbnail;
+    final String name = post.user!.name;
+    final String username = post.user!.username;
     //final String label = post.is_featured == 1 ? 'Featured' : (post.is_trending == 1 ? 'Trending' : 'not featured/trending');
-    final String label = post?.is_featured == 1
+    final String label = post.is_featured == 1
         ? 'sosmed_label_featured'.tr()
         : (post.is_trending == 1
             ? 'sosmed_label_trending'.tr()
             : 'sosmed_label_not_freatured_not_trending'.tr());
     //final String datetime = post.created_at;
     final String datetime =
-        Utils.displayPostDate(post?.created_at); //post?.created_at;
-    final String text = post.text;
+        Utils.displayPostDate(post.created_at!); //post?.created_at;
+    final String text = post.text!;
 
     return Padding(
       padding: const EdgeInsets.only(
@@ -126,7 +132,7 @@ class NewCardSocialText extends StatelessWidget {
                           label,
                           style: InvestrendTheme.of(context)
                               .more_support_w400_compact
-                              .copyWith(
+                              ?.copyWith(
                                   color: InvestrendTheme.of(context)
                                       .greyDarkerTextColor,
                                   fontSize: 10.0),
@@ -160,7 +166,7 @@ class NewCardSocialText extends StatelessWidget {
                           height: 20.0,
                         ),
                         TapableWidget(
-                          onTap: onTap,
+                          onTap: onTap!,
                           child: Container(
                             width: double.maxFinite,
                             child: Text(text,
@@ -168,7 +174,7 @@ class NewCardSocialText extends StatelessWidget {
                                 //maxLines: 10,
                                 style: InvestrendTheme.of(context)
                                     .small_w400
-                                    .copyWith(
+                                    ?.copyWith(
                                         color: InvestrendTheme.of(context)
                                             .greyDarkerTextColor)),
                           ),
@@ -177,12 +183,12 @@ class NewCardSocialText extends StatelessWidget {
                           height: 12.0,
                         ),
                         LikeCommentShareWidget(
-                          post.like_count,
-                          post.comment_count,
+                          post.like_count!,
+                          post.comment_count!,
                           post.liked,
-                          likeClick: likeClick,
-                          commentClick: commentClick,
-                          shareClick: shareClick,
+                          likeClick: likeClick!,
+                          commentClick: commentClick!,
+                          shareClick: shareClick!,
                           post: post,
                         ),
                       ],
@@ -216,11 +222,11 @@ class CardSocialText extends StatelessWidget {
   final String text;
   final int commentCount;
   final int likedCount;
-  final VoidCallback commentClick;
-  final VoidCallback likeClick;
-  final VoidCallback shareClick;
-  final VoidCallback onTap;
-  final List<CommentOld> comments;
+  final VoidCallback? commentClick;
+  final VoidCallback? likeClick;
+  final VoidCallback? shareClick;
+  final VoidCallback? onTap;
+  final List<CommentOld>? comments;
 
   CardSocialText(
       this.avatarUrl,
@@ -232,7 +238,7 @@ class CardSocialText extends StatelessWidget {
       this.commentCount,
       this.likedCount,
       this.comments,
-      {Key key,
+      {Key? key,
       this.commentClick,
       this.likeClick,
       this.shareClick,
@@ -251,8 +257,8 @@ class CardSocialText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    int commentsCount = comments != null ? comments.length : 0;
-    Color verticalDividerColor = commentsCount <= 0
+    int? commentsCount = comments != null ? comments?.length : 0;
+    Color verticalDividerColor = commentsCount! <= 0
         ? Colors.transparent
         : Theme.of(context).dividerColor;
     //Color verticalDividerColor =  Colors.transparent;
@@ -305,7 +311,7 @@ class CardSocialText extends StatelessWidget {
                           label,
                           style: InvestrendTheme.of(context)
                               .more_support_w400_compact
-                              .copyWith(
+                              ?.copyWith(
                                   color: InvestrendTheme.of(context)
                                       .greyDarkerTextColor,
                                   fontSize: 10.0),
@@ -319,7 +325,7 @@ class CardSocialText extends StatelessWidget {
                                 text: username + ' ',
                                 style: InvestrendTheme.of(context)
                                     .small_w400
-                                    .copyWith(
+                                    ?.copyWith(
                                         color: InvestrendTheme.of(context)
                                             .greyLighterTextColor),
                               ),
@@ -331,7 +337,7 @@ class CardSocialText extends StatelessWidget {
                                 text: ' ' + datetime,
                                 style: InvestrendTheme.of(context)
                                     .more_support_w400_compact
-                                    .copyWith(
+                                    ?.copyWith(
                                         color: InvestrendTheme.of(context)
                                             .greyLighterTextColor),
                               ),
@@ -342,11 +348,11 @@ class CardSocialText extends StatelessWidget {
                           height: 20.0,
                         ),
                         TapableWidget(
-                          onTap: onTap,
+                          onTap: onTap!,
                           child: Text(text,
                               style: InvestrendTheme.of(context)
                                   .small_w400
-                                  .copyWith(
+                                  ?.copyWith(
                                       color: InvestrendTheme.of(context)
                                           .greyDarkerTextColor)),
                         ),
@@ -357,9 +363,9 @@ class CardSocialText extends StatelessWidget {
                           likedCount,
                           commentCount,
                           false,
-                          likeClick: likeClick,
-                          commentClick: commentClick,
-                          shareClick: shareClick,
+                          likeClick: likeClick!,
+                          commentClick: commentClick!,
+                          shareClick: shareClick!,
                         ),
                       ],
                     ),
@@ -383,11 +389,11 @@ class CardSocialText extends StatelessWidget {
 }
 
 class NameUsernameCreated extends StatelessWidget {
-  final String name;
-  final String username;
-  final String created;
+  final String? name;
+  final String? username;
+  final String? created;
 
-  const NameUsernameCreated(this.name, this.username, this.created, {Key key})
+  const NameUsernameCreated(this.name, this.username, this.created, {Key? key})
       : super(key: key);
 
   @override
@@ -395,12 +401,12 @@ class NameUsernameCreated extends StatelessWidget {
     return RichText(
       //textAlign: TextAlign.center,
       text: TextSpan(
-        text: name + ' ',
+        text: name! + ' ',
         style: InvestrendTheme.of(context).small_w400,
         children: [
           TextSpan(
-            text: '@' + username + ' ',
-            style: InvestrendTheme.of(context).small_w400_compact.copyWith(
+            text: '@' + username! + ' ',
+            style: InvestrendTheme.of(context).small_w400_compact?.copyWith(
                 color: InvestrendTheme.of(context).greyDarkerTextColor),
           ),
           TextSpan(
@@ -409,10 +415,10 @@ class NameUsernameCreated extends StatelessWidget {
                 .more_support_w400_compact, //.copyWith(fontSize: 8.0),
           ),
           TextSpan(
-            text: ' ' + created,
+            text: ' ' + created!,
             style: InvestrendTheme.of(context)
                 .more_support_w400_compact
-                .copyWith(
+                ?.copyWith(
                     color: InvestrendTheme.of(context).greyLighterTextColor),
           ),
         ],
@@ -422,35 +428,35 @@ class NameUsernameCreated extends StatelessWidget {
 }
 
 class TopCommentsWidget extends StatelessWidget {
-  final List<PostComment> top_comments;
-  final VoidCallback onTap;
-  final int comment_count;
+  final List<PostComment>? top_comments;
+  final VoidCallback? onTap;
+  final int? comment_count;
 
   const TopCommentsWidget(this.top_comments, this.comment_count,
-      {this.onTap, Key key})
+      {this.onTap, Key? key})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     List<Widget> list = List.empty(growable: true);
-    int count = top_comments != null ? top_comments.length : 0;
+    int count = top_comments != null ? top_comments!.length : 0;
     //int loop = min(count, 2);
     int loop = count;
     for (int i = 0; i < loop; i++) {
-      PostComment comment = top_comments.elementAt(i);
+      PostComment comment = top_comments!.elementAt(i);
       list.add(
-          createComment(context, comment, showLine: (i + 1) < comment_count));
+          createComment(context, comment, showLine: (i + 1) < comment_count!));
     }
     //"view_all_comments_label": "View All <COUNT> Comments",
     //if (count > loop) {
     //  int gap = count - loop;
-    if (comment_count > loop) {
+    if (comment_count! > loop) {
       //int gap = comment_count - loop;
       String more = 'view_all_comments_label'.tr();
       //more = more.replaceFirst('<COUNT>', gap.toString());
       more = more.replaceFirst('<COUNT>', comment_count.toString());
       list.add(TapableWidget(
-        onTap: onTap,
+        onTap: onTap!,
         child: Row(
           children: [
             Padding(
@@ -468,7 +474,7 @@ class TopCommentsWidget extends StatelessWidget {
               more,
               style: InvestrendTheme.of(context)
                   .more_support_w600_compact
-                  .copyWith(
+                  ?.copyWith(
                       color: Theme.of(context).colorScheme.secondary,
                       fontSize: 12.0),
             )
@@ -489,7 +495,7 @@ class TopCommentsWidget extends StatelessWidget {
     Color verticalDividerColor =
         !showLine ? Colors.transparent : Theme.of(context).dividerColor;
     //final String label = comment.user.is_featured == 1 ? 'Featured' : 'not featured';
-    final String label = comment.user.is_featured == 1
+    final String label = comment.user?.is_featured == 1
         ? 'sosmed_label_featured'.tr()
         : 'sosmed_label_not_freatured_not_trending'.tr();
 
@@ -515,9 +521,9 @@ class TopCommentsWidget extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(left: 8.0, right: 8.0),
               child: AvatarProfileButton(
-                fullname: comment.user.name,
+                fullname: comment.user?.name,
                 //url: comment.user.featured_attachment,
-                url: comment.user.thumbnail,
+                url: comment.user?.thumbnail,
                 size: 32.0,
               ),
               // child: AvatarIcon(
@@ -537,13 +543,15 @@ class TopCommentsWidget extends StatelessWidget {
                     label,
                     style: InvestrendTheme.of(context)
                         .more_support_w400_compact
-                        .copyWith(
+                        ?.copyWith(
                             color:
                                 InvestrendTheme.of(context).greyDarkerTextColor,
                             fontSize: 10.0),
                   ),
-                  NameUsernameCreated(comment.user.name, comment.user.username,
-                      Utils.displayPostDate(comment?.created_at)),
+                  NameUsernameCreated(
+                      comment.user?.name,
+                      comment.user?.username,
+                      Utils.displayPostDate(comment.created_at)),
                   /*
                   RichText(
                     text: TextSpan(
@@ -570,7 +578,7 @@ class TopCommentsWidget extends StatelessWidget {
                     height: 20.0,
                   ),
                   Text(comment.text,
-                      style: InvestrendTheme.of(context).small_w400.copyWith(
+                      style: InvestrendTheme.of(context).small_w400?.copyWith(
                           color:
                               InvestrendTheme.of(context).greyDarkerTextColor)),
                   SizedBox(
@@ -587,9 +595,9 @@ class TopCommentsWidget extends StatelessWidget {
 }
 
 class CommentWidget extends StatelessWidget {
-  final PostComment comment;
+  final PostComment? comment;
 
-  const CommentWidget(this.comment, {Key key}) : super(key: key);
+  const CommentWidget(this.comment, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -625,14 +633,14 @@ class CommentWidget extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Text(
-                      comment?.user?.name,
+                      comment!.user!.name,
                       style: InvestrendTheme.of(context).small_w400_compact,
                     ),
                     Text(
-                      Utils.displayPostDateDetail(comment?.created_at),
+                      Utils.displayPostDateDetail(comment!.created_at),
                       style: InvestrendTheme.of(context)
                           .more_support_w400_compact
-                          .copyWith(
+                          ?.copyWith(
                               fontSize: 10.0,
                               color: InvestrendTheme.of(context)
                                   .greyLighterTextColor),
@@ -646,8 +654,8 @@ class CommentWidget extends StatelessWidget {
             padding: const EdgeInsets.only(
               left: 55.0,
             ),
-            child: Text(comment.text,
-                style: InvestrendTheme.of(context).small_w400.copyWith(
+            child: Text(comment!.text,
+                style: InvestrendTheme.of(context).small_w400?.copyWith(
                     color: InvestrendTheme.of(context).greyDarkerTextColor)),
           ),
         ],
@@ -699,19 +707,19 @@ class CommentWidget extends StatelessWidget {
 }
 
 class CommentsWidgetOld extends StatelessWidget {
-  final List<CommentOld> comments;
-  final VoidCallback onTap;
+  final List<CommentOld>? comments;
+  final VoidCallback? onTap;
 
-  const CommentsWidgetOld(this.comments, {this.onTap, Key key})
+  const CommentsWidgetOld(this.comments, {this.onTap, Key? key})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     List<Widget> list = List.empty(growable: true);
-    int count = comments != null ? comments.length : 0;
+    int count = comments != null ? comments!.length : 0;
     int loop = min(count, 2);
     for (int i = 0; i < loop; i++) {
-      CommentOld comment = comments.elementAt(i);
+      CommentOld comment = comments!.elementAt(i);
       list.add(createComment(context, comment, showLine: (i + 1) < count));
     }
     //"view_all_comments_label": "View All <COUNT> Comments",
@@ -720,7 +728,7 @@ class CommentsWidgetOld extends StatelessWidget {
       String more = 'view_all_comments_label'.tr();
       more = more.replaceFirst('<COUNT>', gap.toString());
       list.add(TapableWidget(
-        onTap: onTap,
+        onTap: onTap!,
         child: Row(
           children: [
             Padding(
@@ -738,7 +746,7 @@ class CommentsWidgetOld extends StatelessWidget {
               more,
               style: InvestrendTheme.of(context)
                   .more_support_w600_compact
-                  .copyWith(
+                  ?.copyWith(
                       color: Theme.of(context).colorScheme.secondary,
                       fontSize: 12.0),
             )
@@ -802,7 +810,7 @@ class CommentsWidgetOld extends StatelessWidget {
                     comment.label,
                     style: InvestrendTheme.of(context)
                         .more_support_w400_compact
-                        .copyWith(
+                        ?.copyWith(
                             color:
                                 InvestrendTheme.of(context).greyDarkerTextColor,
                             fontSize: 10.0),
@@ -816,7 +824,7 @@ class CommentsWidgetOld extends StatelessWidget {
                           text: comment.username + ' ',
                           style: InvestrendTheme.of(context)
                               .small_w400
-                              .copyWith(
+                              ?.copyWith(
                                   color: InvestrendTheme.of(context)
                                       .greyLighterTextColor),
                         ),
@@ -828,7 +836,7 @@ class CommentsWidgetOld extends StatelessWidget {
                           text: ' ' + comment.datetime,
                           style: InvestrendTheme.of(context)
                               .small_w400
-                              .copyWith(
+                              ?.copyWith(
                                   color: InvestrendTheme.of(context)
                                       .greyLighterTextColor),
                         ),
@@ -839,7 +847,7 @@ class CommentsWidgetOld extends StatelessWidget {
                     height: 20.0,
                   ),
                   Text(comment.text,
-                      style: InvestrendTheme.of(context).small_w400.copyWith(
+                      style: InvestrendTheme.of(context).small_w400?.copyWith(
                           color:
                               InvestrendTheme.of(context).greyDarkerTextColor)),
                   SizedBox(
@@ -864,12 +872,12 @@ class CardSocialTextPrediction extends StatelessWidget {
   final String text;
   final int commentCount;
   final int likedCount;
-  final VoidCallback commentClick;
-  final VoidCallback likeClick;
-  final VoidCallback shareClick;
-  final VoidCallback onTap;
+  final VoidCallback? commentClick;
+  final VoidCallback? likeClick;
+  final VoidCallback? shareClick;
+  final VoidCallback? onTap;
   final Prediction prediction;
-  final List<CommentOld> comments;
+  final List<CommentOld>? comments;
 
   const CardSocialTextPrediction(
       this.prediction,
@@ -882,7 +890,7 @@ class CardSocialTextPrediction extends StatelessWidget {
       this.commentCount,
       this.likedCount,
       this.comments,
-      {Key key,
+      {Key? key,
       this.commentClick,
       this.likeClick,
       this.shareClick,
@@ -898,8 +906,8 @@ class CardSocialTextPrediction extends StatelessWidget {
   // 14.0
   @override
   Widget build(BuildContext context) {
-    int commentsCount = comments != null ? comments.length : 0;
-    Color verticalDividerColor = commentsCount <= 0
+    int? commentsCount = comments != null ? comments?.length : 0;
+    Color verticalDividerColor = commentsCount! <= 0
         ? Colors.transparent
         : Theme.of(context).dividerColor;
     return Padding(
@@ -951,7 +959,7 @@ class CardSocialTextPrediction extends StatelessWidget {
                           label,
                           style: InvestrendTheme.of(context)
                               .more_support_w400_compact
-                              .copyWith(
+                              ?.copyWith(
                                   color: InvestrendTheme.of(context)
                                       .greyDarkerTextColor,
                                   fontSize: 10.0),
@@ -965,7 +973,7 @@ class CardSocialTextPrediction extends StatelessWidget {
                                 text: '@' + username + ' ',
                                 style: InvestrendTheme.of(context)
                                     .small_w400
-                                    .copyWith(
+                                    ?.copyWith(
                                         color: InvestrendTheme.of(context)
                                             .greyLighterTextColor),
                               ),
@@ -977,7 +985,7 @@ class CardSocialTextPrediction extends StatelessWidget {
                                 text: ' ' + datetime,
                                 style: InvestrendTheme.of(context)
                                     .more_support_w400_compact
-                                    .copyWith(
+                                    ?.copyWith(
                                         color: InvestrendTheme.of(context)
                                             .greyLighterTextColor),
                               ),
@@ -988,13 +996,13 @@ class CardSocialTextPrediction extends StatelessWidget {
                           height: 20.0,
                         ),
                         TapableWidget(
-                          onTap: onTap,
+                          onTap: onTap!,
                           child: Column(
                             children: [
                               Text(text,
                                   style: InvestrendTheme.of(context)
                                       .small_w400
-                                      .copyWith(
+                                      ?.copyWith(
                                           color: InvestrendTheme.of(context)
                                               .greyDarkerTextColor)),
                               SizedBox(
@@ -1044,16 +1052,16 @@ class NewCardSocialTextPrediction extends StatelessWidget {
   // final String text;
   // final int commentCount;
   // final int likedCount;
-  final VoidCallback commentClick;
-  final VoidCallback likeClick;
-  final VoidCallback shareClick;
-  final VoidCallback onTap;
+  final VoidCallback? commentClick;
+  final VoidCallback? likeClick;
+  final VoidCallback? shareClick;
+  final VoidCallback? onTap;
 
   // final Prediction prediction;
   // final List<Comment> comments;
   NewCardSocialTextPrediction(this.post,
       //this.prediction, this.avatarUrl, this.name, this.username, this.label, this.datetime, this.text, this.commentCount, this.likedCount,this.comments,
-      {Key key,
+      {Key? key,
       this.commentClick,
       this.likeClick,
       this.shareClick,
@@ -1071,22 +1079,22 @@ class NewCardSocialTextPrediction extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     int topCommentsCount =
-        post.top_comments != null ? post.top_comments.length : 0;
+        post.top_comments != null ? post.top_comments!.length : 0;
     Color verticalDividerColor = topCommentsCount <= 0
         ? Colors.transparent
         : Theme.of(context).dividerColor;
 
     //final String avatarUrl = post?.user?.featured_attachment;
-    final String avatarUrl = post?.user?.thumbnail;
-    final String name = post?.user?.name;
-    final String username = post?.user?.username;
-    final String label = post?.is_featured == 1
+    final String avatarUrl = post.user!.thumbnail;
+    final String name = post.user!.name;
+    final String username = post.user!.username;
+    final String label = post.is_featured == 1
         ? 'sosmed_label_featured'.tr()
         : (post.is_trending == 1
             ? 'sosmed_label_trending'.tr()
             : 'sosmed_label_not_freatured_not_trending'.tr());
-    final String datetime = Utils.displayPostDate(post?.created_at);
-    final String text = post?.text;
+    final String datetime = Utils.displayPostDate(post.created_at!);
+    final String text = post.text!;
 
     return Padding(
       padding: const EdgeInsets.only(
@@ -1137,7 +1145,7 @@ class NewCardSocialTextPrediction extends StatelessWidget {
                           label,
                           style: InvestrendTheme.of(context)
                               .more_support_w400_compact
-                              .copyWith(
+                              ?.copyWith(
                                   color: InvestrendTheme.of(context)
                                       .greyDarkerTextColor,
                                   fontSize: 10.0),
@@ -1169,14 +1177,14 @@ class NewCardSocialTextPrediction extends StatelessWidget {
                           height: 20.0,
                         ),
                         TapableWidget(
-                          onTap: onTap,
+                          onTap: onTap!,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(text,
                                   style: InvestrendTheme.of(context)
                                       .small_w400
-                                      .copyWith(
+                                      ?.copyWith(
                                           color: InvestrendTheme.of(context)
                                               .greyDarkerTextColor)),
                               SizedBox(
@@ -1190,8 +1198,8 @@ class NewCardSocialTextPrediction extends StatelessWidget {
                           height: 12.0,
                         ),
                         LikeCommentShareWidget(
-                          post.like_count,
-                          post.comment_count,
+                          post.like_count!,
+                          post.comment_count!,
                           post.liked,
                           likeClick: likeClick,
                           commentClick: commentClick,
@@ -1310,14 +1318,14 @@ class CardSocialTextActivity extends StatelessWidget {
   final String text;
   final int commentCount;
   final int likedCount;
-  final VoidCallback commentClick;
-  final VoidCallback likeClick;
-  final VoidCallback shareClick;
-  final VoidCallback onTap;
+  final VoidCallback? commentClick;
+  final VoidCallback? likeClick;
+  final VoidCallback? shareClick;
+  final VoidCallback? onTap;
   final ActivityType activityType;
   final String activityCode;
   final String activityPercent;
-  final List<CommentOld> comments;
+  final List<CommentOld>? comments;
 
   CardSocialTextActivity(
     this.activityType,
@@ -1331,7 +1339,7 @@ class CardSocialTextActivity extends StatelessWidget {
     this.commentCount,
     this.likedCount,
     this.comments, {
-    Key key,
+    Key? key,
     this.commentClick,
     this.likeClick,
     this.shareClick,
@@ -1350,16 +1358,16 @@ class CardSocialTextActivity extends StatelessWidget {
   // 14.0
   @override
   Widget build(BuildContext context) {
-    int commentsCount = comments != null ? comments.length : 0;
+    int commentsCount = comments != null ? comments!.length : 0;
     Color verticalDividerColor = commentsCount <= 0
         ? Colors.transparent
         : Theme.of(context).dividerColor;
-    TextStyle stylePlain = InvestrendTheme.of(context)
+    TextStyle? stylePlain = InvestrendTheme.of(context)
         .more_support_w400_compact
-        .copyWith(fontSize: 12.0, color: activityType.colorText);
-    TextStyle styleBold = InvestrendTheme.of(context)
+        ?.copyWith(fontSize: 12.0, color: activityType.colorText);
+    TextStyle? styleBold = InvestrendTheme.of(context)
         .more_support_w600_compact
-        .copyWith(fontSize: 12.0, color: activityType.colorText);
+        ?.copyWith(fontSize: 12.0, color: activityType.colorText);
     String activityText = '';
     if (activityType == ActivityType.Invested) {
       activityText = 'sosmed_label_invested_in'.tr() + ' ';
@@ -1431,7 +1439,7 @@ class CardSocialTextActivity extends StatelessWidget {
                           label,
                           style: InvestrendTheme.of(context)
                               .more_support_w400_compact
-                              .copyWith(
+                              ?.copyWith(
                                   color: InvestrendTheme.of(context)
                                       .greyDarkerTextColor,
                                   fontSize: 10.0),
@@ -1445,7 +1453,7 @@ class CardSocialTextActivity extends StatelessWidget {
                                 text: username + ' ',
                                 style: InvestrendTheme.of(context)
                                     .small_w400
-                                    .copyWith(
+                                    ?.copyWith(
                                         color: InvestrendTheme.of(context)
                                             .greyLighterTextColor),
                               ),
@@ -1457,7 +1465,7 @@ class CardSocialTextActivity extends StatelessWidget {
                                 text: ' ' + datetime,
                                 style: InvestrendTheme.of(context)
                                     .more_support_w400_compact
-                                    .copyWith(
+                                    ?.copyWith(
                                         color: InvestrendTheme.of(context)
                                             .greyLighterTextColor),
                               ),
@@ -1468,7 +1476,7 @@ class CardSocialTextActivity extends StatelessWidget {
                           height: 15.0,
                         ),
                         TapableWidget(
-                          onTap: onTap,
+                          onTap: onTap!,
                           child: Column(
                             children: [
                               Container(
@@ -1510,7 +1518,7 @@ class CardSocialTextActivity extends StatelessWidget {
                               Text(text,
                                   style: InvestrendTheme.of(context)
                                       .small_w400
-                                      .copyWith(
+                                      ?.copyWith(
                                           color: InvestrendTheme.of(context)
                                               .greyDarkerTextColor)),
                             ],
@@ -1549,13 +1557,13 @@ class CardSocialTextActivity extends StatelessWidget {
 }
 
 class ActivityWidget extends StatelessWidget {
-  final ActivityType activityType;
-  final String activityPercent;
-  final String activityCode;
+  final ActivityType? activityType;
+  final String? activityPercent;
+  final String? activityCode;
 
   const ActivityWidget(
       this.activityType, this.activityCode, this.activityPercent,
-      {Key key})
+      {Key? key})
       : super(key: key);
 
   @override
@@ -1584,19 +1592,19 @@ class ActivityWidget extends StatelessWidget {
           'sosmed_label_from'.tr() +
           ' ';
     }
-    TextStyle stylePlain = InvestrendTheme.of(context)
+    TextStyle? stylePlain = InvestrendTheme.of(context)
         .more_support_w400_compact
-        .copyWith(fontSize: 12.0, color: activityType.colorText);
-    TextStyle styleBold = InvestrendTheme.of(context)
+        ?.copyWith(fontSize: 12.0, color: activityType?.colorText);
+    TextStyle? styleBold = InvestrendTheme.of(context)
         .more_support_w600_compact
-        .copyWith(fontSize: 12.0, color: activityType.colorText);
+        ?.copyWith(fontSize: 12.0, color: activityType?.colorText);
     return Container(
       //height: 46.0,
       padding:
           EdgeInsets.only(left: 14.0, right: 14.0, top: 14.0, bottom: 14.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10.0),
-        color: activityType.colorBackground,
+        color: activityType?.colorBackground,
       ),
       child: Row(
         children: [
@@ -1605,7 +1613,7 @@ class ActivityWidget extends StatelessWidget {
             style: stylePlain,
           ),
           Text(
-            activityCode,
+            activityCode!,
             style: styleBold,
           ),
           Spacer(
@@ -1613,10 +1621,10 @@ class ActivityWidget extends StatelessWidget {
           ),
           Image.asset(
             //'images/sosmed/activity_chart.png',
-            activityType.imagePath,
+            activityType!.imagePath,
             width: 14.0,
             height: 14.0,
-            color: activityType.colorText,
+            color: activityType?.colorText,
           ),
         ],
       ),
@@ -1634,10 +1642,10 @@ class NewCardSocialTextActivity extends StatelessWidget {
   // final String text;
   // final int commentCount;
   // final int likedCount;
-  final VoidCallback commentClick;
-  final VoidCallback likeClick;
-  final VoidCallback shareClick;
-  final VoidCallback onTap;
+  final VoidCallback? commentClick;
+  final VoidCallback? likeClick;
+  final VoidCallback? shareClick;
+  final VoidCallback? onTap;
 
   // final ActivityType activityType;
   // final String activityCode;
@@ -1659,7 +1667,7 @@ class NewCardSocialTextActivity extends StatelessWidget {
     // this.likedCount,
     //   this.comments,
     {
-    Key key,
+    Key? key,
     this.commentClick,
     this.likeClick,
     this.shareClick,
@@ -1679,38 +1687,38 @@ class NewCardSocialTextActivity extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     int topCommentsCount =
-        post.top_comments != null ? post.top_comments.length : 0;
+        post.top_comments != null ? post.top_comments!.length : 0;
     Color verticalDividerColor = topCommentsCount <= 0
         ? Colors.transparent
         : Theme.of(context).dividerColor;
 
     //String avatarUrl = post?.user?.featured_attachment;
-    String avatarUrl = post?.user?.thumbnail;
-    final String name = post?.user?.name;
-    final String username = post?.user?.username;
+    String avatarUrl = post.user!.thumbnail;
+    final String name = post.user!.name;
+    final String username = post.user!.username;
     //final String label = post?.is_featured == 1 ? 'Featured' : (post.is_trending == 1 ? 'Trending' : 'not featured/trending');
-    final String label = post?.is_featured == 1
+    final String label = post.is_featured == 1
         ? 'sosmed_label_featured'.tr()
         : (post.is_trending == 1
             ? 'sosmed_label_trending'.tr()
             : 'sosmed_label_not_freatured_not_trending'.tr());
     final String datetime =
-        Utils.displayPostDate(post?.created_at); //post?.created_at;
-    final String text = post?.text;
-    final String activityCode = post?.code;
+        Utils.displayPostDate(post.created_at!); //post?.created_at;
+    final String text = post.text!;
+    final String activityCode = post.code!;
 
     String activityPercent = '';
     ActivityType activityType;
-    if (StringUtils.equalsIgnoreCase(post.transaction_type, 'BUY')) {
+    if (StringUtils.equalsIgnoreCase(post.transaction_type!, 'BUY')) {
       activityType = ActivityType.Invested;
-    } else if (StringUtils.equalsIgnoreCase(post.transaction_type, 'SELL')) {
+    } else if (StringUtils.equalsIgnoreCase(post.transaction_type!, 'SELL')) {
       // int start_price = post.start_price;
       // int sell_price = post.sell_price;
-      int change = post.sell_price - post.start_price;
+      int change = post.sell_price! - post.start_price!;
       // double percentChange = ((change / start_price) * 100).toDouble();
 
       double percentChange =
-          Utils.calculatePercent(post.start_price, post.sell_price);
+          Utils.calculatePercent(post.start_price!, post.sell_price!);
 
       activityPercent = InvestrendTheme.formatPercentChange(percentChange);
       if (change > 0) {
@@ -1724,12 +1732,12 @@ class NewCardSocialTextActivity extends StatelessWidget {
       activityType = ActivityType.Unknown;
     }
 
-    TextStyle stylePlain = InvestrendTheme.of(context)
+    TextStyle? stylePlain = InvestrendTheme.of(context)
         .more_support_w400_compact
-        .copyWith(fontSize: 12.0, color: activityType.colorText);
-    TextStyle styleBold = InvestrendTheme.of(context)
+        ?.copyWith(fontSize: 12.0, color: activityType.colorText);
+    TextStyle? styleBold = InvestrendTheme.of(context)
         .more_support_w600_compact
-        .copyWith(fontSize: 12.0, color: activityType.colorText);
+        ?.copyWith(fontSize: 12.0, color: activityType.colorText);
     String activityText = '';
     // if (activityType == ActivityType.Invested) {
     //   activityText = 'Invested in ';
@@ -1811,7 +1819,7 @@ class NewCardSocialTextActivity extends StatelessWidget {
                           label,
                           style: InvestrendTheme.of(context)
                               .more_support_w400_compact
-                              .copyWith(
+                              ?.copyWith(
                                   color: InvestrendTheme.of(context)
                                       .greyDarkerTextColor,
                                   fontSize: 10.0),
@@ -1843,7 +1851,7 @@ class NewCardSocialTextActivity extends StatelessWidget {
                           height: 15.0,
                         ),
                         TapableWidget(
-                          onTap: onTap,
+                          onTap: onTap!,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -1886,7 +1894,7 @@ class NewCardSocialTextActivity extends StatelessWidget {
                               Text(text,
                                   style: InvestrendTheme.of(context)
                                       .small_w400
-                                      .copyWith(
+                                      ?.copyWith(
                                           color: InvestrendTheme.of(context)
                                               .greyDarkerTextColor)),
                             ],
@@ -1896,9 +1904,9 @@ class NewCardSocialTextActivity extends StatelessWidget {
                           height: 12.0,
                         ),
                         LikeCommentShareWidget(
-                          post?.like_count,
-                          post?.comment_count,
-                          post?.liked,
+                          post.like_count!,
+                          post.comment_count!,
+                          post.liked,
                           likeClick: likeClick,
                           commentClick: commentClick,
                           shareClick: shareClick,
@@ -1935,10 +1943,10 @@ class NewCardSocialTextPoll extends StatelessWidget {
   // final String text;
   // final int commentCount;
   // final int likedCount;
-  final VoidCallback commentClick;
-  final VoidCallback likeClick;
-  final VoidCallback shareClick;
-  final VoidCallback onTap;
+  final VoidCallback? commentClick;
+  final VoidCallback? likeClick;
+  final VoidCallback? shareClick;
+  final VoidCallback? onTap;
 
   // final Votes votes;
   // final List<Comment> comments;
@@ -1946,7 +1954,7 @@ class NewCardSocialTextPoll extends StatelessWidget {
 
   NewCardSocialTextPoll(this.post,
       //this.votes, this.avatarUrl, this.name, this.username, this.label, this.datetime, this.text, this.commentCount, this.likedCount,this.comments,
-      {Key key,
+      {Key? key,
       this.commentClick,
       this.likeClick,
       this.shareClick,
@@ -1968,28 +1976,28 @@ class NewCardSocialTextPoll extends StatelessWidget {
     print(post.toString());
     final String infoVotes = post.voter_count.toString() +
         ' votes • ' +
-        Utils.displayExpireDate(post.expired_at);
+        Utils.displayExpireDate(post.expired_at!);
 
     //final String avatarUrl = post.user.featured_attachment;
-    final String avatarUrl = post.user.thumbnail;
-    final String name = post.user.name;
-    final String username = post.user.username;
+    final String avatarUrl = post.user!.thumbnail;
+    final String name = post.user!.name;
+    final String username = post.user!.username;
     //final String label = post.is_featured == 1 ? 'Featured' : 'not featured';
     //final String label = post.is_featured == 1 ? 'Featured' : (post.is_trending == 1 ? 'Trending' : 'not featured/trending');
-    final String label = post?.is_featured == 1
+    final String label = post.is_featured == 1
         ? 'sosmed_label_featured'.tr()
         : (post.is_trending == 1
             ? 'sosmed_label_trending'.tr()
             : 'sosmed_label_not_freatured_not_trending'.tr());
     //final String datetime = post.created_at;
     final String datetime =
-        Utils.displayPostDate(post?.created_at); //post?.created_at;
-    final String text = post.text;
+        Utils.displayPostDate(post.created_at!); //post?.created_at;
+    final String text = post.text!;
 
     List<Widget> list = List.empty(growable: true);
     list.add(Text(
       label,
-      style: InvestrendTheme.of(context).more_support_w400_compact.copyWith(
+      style: InvestrendTheme.of(context).more_support_w400_compact?.copyWith(
           color: InvestrendTheme.of(context).greyDarkerTextColor,
           fontSize: 10.0),
     ));
@@ -2021,12 +2029,12 @@ class NewCardSocialTextPoll extends StatelessWidget {
     ));
 
     list.add(TapableWidget(
-      onTap: onTap,
+      onTap: onTap!,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(text,
-              style: InvestrendTheme.of(context).small_w400.copyWith(
+              style: InvestrendTheme.of(context).small_w400?.copyWith(
                   color: InvestrendTheme.of(context).greyDarkerTextColor)),
           SizedBox(
             height: 12.0,
@@ -2041,12 +2049,12 @@ class NewCardSocialTextPoll extends StatelessWidget {
       height: 12.0,
     ));
     list.add(Text(infoVotes,
-        style: InvestrendTheme.of(context).more_support_w400_compact.copyWith(
+        style: InvestrendTheme.of(context).more_support_w400_compact?.copyWith(
             color: InvestrendTheme.of(context).greyLighterTextColor,
             fontSize: 11.0)));
     list.add(LikeCommentShareWidget(
-      post.like_count,
-      post.comment_count,
+      post.like_count!,
+      post.comment_count!,
       post.liked,
       likeClick: likeClick,
       commentClick: commentClick,
@@ -2054,7 +2062,7 @@ class NewCardSocialTextPoll extends StatelessWidget {
       post: post,
     ));
     int topCommentsCount =
-        post.top_comments != null ? post.top_comments.length : 0;
+        post.top_comments != null ? post.top_comments!.length : 0;
     Color verticalDividerColor = topCommentsCount <= 0
         ? Colors.transparent
         : Theme.of(context).dividerColor;
@@ -2126,7 +2134,7 @@ class PollWidget extends StatefulWidget {
 
   // final bool voted;
   const PollWidget(this.post,
-      /*this.voter_count, this.votes, this.voted,*/ {Key key})
+      /*this.voter_count, this.votes, this.voted,*/ {Key? key})
       : super(key: key);
 
   @override
@@ -2134,29 +2142,29 @@ class PollWidget extends StatefulWidget {
 }
 
 class _PollWidgetState extends State<PollWidget> {
-  ValueNotifier<bool> votedNotifier;
+  ValueNotifier<bool>? votedNotifier;
 
   @override
   void initState() {
     super.initState();
-    votedNotifier = ValueNotifier(widget.post.voted);
+    votedNotifier = ValueNotifier(widget.post.voted!);
   }
 
   @override
   void dispose() {
-    votedNotifier.dispose();
+    votedNotifier!.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<bool>(
-        valueListenable: votedNotifier,
+        valueListenable: votedNotifier!,
         builder: (context, voted, child) {
           List<Widget> list = List.empty(growable: true);
 
-          for (int i = 0; i < widget.post.pollsCount(); i++) {
-            Poll vote = widget.post.polls.elementAt(i);
+          for (int i = 0; i < widget.post.pollsCount()!; i++) {
+            Poll vote = widget.post.polls!.elementAt(i);
             if (voted) {
               list.add(Padding(
                 padding: const EdgeInsets.only(
@@ -2191,22 +2199,22 @@ class _PollWidgetState extends State<PollWidget> {
         });
     try {
       //SubmitVote submitResult = await SosMedHttp.sosmedVote('123',poll.id, InvestrendTheme.of(context).applicationPlatform, InvestrendTheme.of(context).applicationVersion, language: EasyLocalization.of(context).locale.languageCode);
-      SubmitVote submitResult = await InvestrendTheme.tradingHttp.sosmedVote(
+      SubmitVote? submitResult = await InvestrendTheme.tradingHttp.sosmedVote(
           poll.id,
           InvestrendTheme.of(context).applicationPlatform,
           InvestrendTheme.of(context).applicationVersion,
-          language: EasyLocalization.of(context).locale.languageCode);
+          language: EasyLocalization.of(context)!.locale.languageCode);
       if (submitResult != null) {
         print('submitResult = ' + submitResult.toString());
         bool success =
-            submitResult.status == 200 && submitResult?.result?.id >= 0;
+            submitResult.status == 200 && submitResult.result!.id >= 0;
 
         if (success) {
           poll.voteSuccess();
           //post.voter_count++;
           //post.generateKeyString();
           post.voteSuccess();
-          votedNotifier.value = true;
+          votedNotifier!.value = true;
           if (mounted) {
             context.read(sosmedFeedChangeNotifier).mustNotifyListener();
           }
@@ -2238,7 +2246,7 @@ class _PollWidgetState extends State<PollWidget> {
         style: OutlinedButton.styleFrom(
           //visualDensity: VisualDensity.comfortable,
           //padding: EdgeInsets.all(0.0),
-          primary: Theme.of(context).colorScheme.secondary,
+          foregroundColor: Theme.of(context).colorScheme.secondary,
           minimumSize: Size(50.0, 40.0),
           side: BorderSide(
               color: Theme.of(context).colorScheme.secondary, width: 1.0),
@@ -2253,7 +2261,7 @@ class _PollWidgetState extends State<PollWidget> {
           vote.text,
           style: InvestrendTheme.of(context)
               .small_w400_compact
-              .copyWith(color: Theme.of(context).colorScheme.secondary),
+              ?.copyWith(color: Theme.of(context).colorScheme.secondary),
         ),
       ),
     );
@@ -2262,8 +2270,8 @@ class _PollWidgetState extends State<PollWidget> {
   Widget polledWidget(BuildContext context, Poll vote, Post post) {
     // A value of 0.0 means no progress and 1.0 means that progress is complete.
     double progress = 0.0;
-    if (vote.count > 0 && post.voter_count > 0) {
-      progress = vote.count.toDouble() / post.voter_count.toDouble();
+    if (vote.count > 0 && post.voter_count! > 0) {
+      progress = vote.count.toDouble() / post.voter_count!.toDouble();
     }
     return Container(
       padding: EdgeInsets.all(1.0),
@@ -2280,7 +2288,7 @@ class _PollWidgetState extends State<PollWidget> {
               curve: Curves.easeInOutQuint,
               tween: Tween<double>(begin: 0.0, end: progress),
               duration: const Duration(seconds: 1),
-              builder: (BuildContext context, double size, Widget child) {
+              builder: (BuildContext context, double size, Widget? child) {
                 //print('animation size : $size');
                 return LinearProgressIndicator(
                   minHeight: 35.0,
@@ -2330,13 +2338,13 @@ class _PollWidgetState extends State<PollWidget> {
                       vote.text,
                       style: InvestrendTheme.of(context)
                           .small_w400_compact
-                          .copyWith(
+                          ?.copyWith(
                               color: Theme.of(context).colorScheme.secondary),
                     )),
                 Text(vote.count.toString(),
                     style: InvestrendTheme.of(context)
                         .small_w400_compact
-                        .copyWith(
+                        ?.copyWith(
                             color: Theme.of(context).colorScheme.secondary)),
               ],
             ),
@@ -2356,12 +2364,12 @@ class CardSocialTextVote extends StatelessWidget {
   final String text;
   final int commentCount;
   final int likedCount;
-  final VoidCallback commentClick;
-  final VoidCallback likeClick;
-  final VoidCallback shareClick;
-  final VoidCallback onTap;
+  final VoidCallback? commentClick;
+  final VoidCallback? likeClick;
+  final VoidCallback? shareClick;
+  final VoidCallback? onTap;
   final Votes votes;
-  final List<CommentOld> comments;
+  final List<CommentOld>? comments;
 
   CardSocialTextVote(
       this.votes,
@@ -2374,7 +2382,7 @@ class CardSocialTextVote extends StatelessWidget {
       this.commentCount,
       this.likedCount,
       this.comments,
-      {Key key,
+      {Key? key,
       this.commentClick,
       this.likeClick,
       this.shareClick,
@@ -2398,7 +2406,7 @@ class CardSocialTextVote extends StatelessWidget {
     List<Widget> list = List.empty(growable: true);
     list.add(Text(
       label,
-      style: InvestrendTheme.of(context).more_support_w400_compact.copyWith(
+      style: InvestrendTheme.of(context).more_support_w400_compact?.copyWith(
           color: InvestrendTheme.of(context).greyDarkerTextColor,
           fontSize: 10.0),
     ));
@@ -2409,7 +2417,7 @@ class CardSocialTextVote extends StatelessWidget {
         children: [
           TextSpan(
             text: username + ' ',
-            style: InvestrendTheme.of(context).small_w400.copyWith(
+            style: InvestrendTheme.of(context).small_w400?.copyWith(
                 color: InvestrendTheme.of(context).greyLighterTextColor),
           ),
           TextSpan(
@@ -2420,7 +2428,7 @@ class CardSocialTextVote extends StatelessWidget {
             text: ' ' + datetime,
             style: InvestrendTheme.of(context)
                 .more_support_w400_compact
-                .copyWith(
+                ?.copyWith(
                     color: InvestrendTheme.of(context).greyLighterTextColor),
           ),
         ],
@@ -2431,11 +2439,11 @@ class CardSocialTextVote extends StatelessWidget {
     ));
 
     list.add(TapableWidget(
-      onTap: onTap,
+      onTap: onTap!,
       child: Column(
         children: [
           Text(text,
-              style: InvestrendTheme.of(context).small_w400.copyWith(
+              style: InvestrendTheme.of(context).small_w400?.copyWith(
                   color: InvestrendTheme.of(context).greyDarkerTextColor)),
           SizedBox(
             height: 12.0,
@@ -2449,7 +2457,7 @@ class CardSocialTextVote extends StatelessWidget {
       height: 12.0,
     ));
     list.add(Text(infoVotes,
-        style: InvestrendTheme.of(context).more_support_w400_compact.copyWith(
+        style: InvestrendTheme.of(context).more_support_w400_compact?.copyWith(
             color: InvestrendTheme.of(context).greyLighterTextColor,
             fontSize: 11.0)));
     list.add(LikeCommentShareWidget(
@@ -2460,8 +2468,8 @@ class CardSocialTextVote extends StatelessWidget {
       commentClick: commentClick,
       shareClick: shareClick,
     ));
-    int commentsCount = comments != null ? comments.length : 0;
-    Color verticalDividerColor = commentsCount <= 0
+    int? commentsCount = comments != null ? comments?.length : 0;
+    Color verticalDividerColor = commentsCount! <= 0
         ? Colors.transparent
         : Theme.of(context).dividerColor;
     return Padding(
@@ -2528,14 +2536,14 @@ class VoteWidget extends StatefulWidget {
   final Votes votes;
   final bool voted;
 
-  const VoteWidget(this.votes, this.voted, {Key key}) : super(key: key);
+  const VoteWidget(this.votes, this.voted, {Key? key}) : super(key: key);
 
   @override
   _VoteWidgetState createState() => _VoteWidgetState();
 }
 
 class _VoteWidgetState extends State<VoteWidget> {
-  ValueNotifier<bool> votedNotifier;
+  ValueNotifier<bool>? votedNotifier;
 
   @override
   void initState() {
@@ -2545,14 +2553,14 @@ class _VoteWidgetState extends State<VoteWidget> {
 
   @override
   void dispose() {
-    votedNotifier.dispose();
+    votedNotifier!.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<bool>(
-        valueListenable: votedNotifier,
+        valueListenable: votedNotifier!,
         builder: (context, voted, child) {
           List<Widget> list = List.empty(growable: true);
 
@@ -2583,7 +2591,7 @@ class _VoteWidgetState extends State<VoteWidget> {
         style: OutlinedButton.styleFrom(
           //visualDensity: VisualDensity.comfortable,
           //padding: EdgeInsets.all(0.0),
-          primary: Theme.of(context).colorScheme.secondary,
+          foregroundColor: Theme.of(context).colorScheme.secondary,
           minimumSize: Size(50.0, 40.0),
           side: BorderSide(
               color: Theme.of(context).colorScheme.secondary, width: 1.0),
@@ -2592,13 +2600,13 @@ class _VoteWidgetState extends State<VoteWidget> {
               borderRadius: BorderRadius.all(Radius.circular(24.0))),
         ),
         onPressed: () {
-          votedNotifier.value = true;
+          votedNotifier!.value = true;
         },
         child: Text(
           vote.code,
           style: InvestrendTheme.of(context)
               .small_w400_compact
-              .copyWith(color: Theme.of(context).colorScheme.secondary),
+              ?.copyWith(color: Theme.of(context).colorScheme.secondary),
         ),
       ),
     );
@@ -2634,13 +2642,13 @@ class _VoteWidgetState extends State<VoteWidget> {
                       vote.code,
                       style: InvestrendTheme.of(context)
                           .small_w400_compact
-                          .copyWith(
+                          ?.copyWith(
                               color: Theme.of(context).colorScheme.secondary),
                     )),
                 Text(vote.count.toString(),
                     style: InvestrendTheme.of(context)
                         .small_w400_compact
-                        .copyWith(
+                        ?.copyWith(
                             color: Theme.of(context).colorScheme.secondary)),
               ],
             ),
@@ -2661,11 +2669,11 @@ class CardSocialTextImage extends StatelessWidget {
   final String text;
   final int commentCount;
   final int likedCount;
-  final VoidCallback commentClick;
-  final VoidCallback likeClick;
-  final VoidCallback shareClick;
-  final VoidCallback onTap;
-  final List<CommentOld> comments;
+  final VoidCallback? commentClick;
+  final VoidCallback? likeClick;
+  final VoidCallback? shareClick;
+  final VoidCallback? onTap;
+  final List<CommentOld>? comments;
 
   CardSocialTextImage(
       this.imageUrl,
@@ -2678,7 +2686,7 @@ class CardSocialTextImage extends StatelessWidget {
       this.commentCount,
       this.likedCount,
       this.comments,
-      {Key key,
+      {Key? key,
       this.commentClick,
       this.likeClick,
       this.shareClick,
@@ -2696,8 +2704,8 @@ class CardSocialTextImage extends StatelessWidget {
   // 14.0
   @override
   Widget build(BuildContext context) {
-    int commentsCount = comments != null ? comments.length : 0;
-    Color verticalDividerColor = commentsCount <= 0
+    int? commentsCount = comments != null ? comments?.length : 0;
+    Color verticalDividerColor = commentsCount! <= 0
         ? Colors.transparent
         : Theme.of(context).dividerColor;
     return Padding(
@@ -2744,7 +2752,7 @@ class CardSocialTextImage extends StatelessWidget {
                           label,
                           style: InvestrendTheme.of(context)
                               .more_support_w400_compact
-                              .copyWith(
+                              ?.copyWith(
                                   color: InvestrendTheme.of(context)
                                       .greyDarkerTextColor,
                                   fontSize: 10.0),
@@ -2758,7 +2766,7 @@ class CardSocialTextImage extends StatelessWidget {
                                 text: username + ' ',
                                 style: InvestrendTheme.of(context)
                                     .small_w400
-                                    .copyWith(
+                                    ?.copyWith(
                                         color: InvestrendTheme.of(context)
                                             .greyLighterTextColor),
                               ),
@@ -2770,7 +2778,7 @@ class CardSocialTextImage extends StatelessWidget {
                                 text: ' ' + datetime,
                                 style: InvestrendTheme.of(context)
                                     .more_support_w400_compact
-                                    .copyWith(
+                                    ?.copyWith(
                                         color: InvestrendTheme.of(context)
                                             .greyLighterTextColor),
                               ),
@@ -2781,13 +2789,13 @@ class CardSocialTextImage extends StatelessWidget {
                           height: 20.0,
                         ),
                         TapableWidget(
-                          onTap: onTap,
+                          onTap: onTap!,
                           child: Column(
                             children: [
                               Text(text,
                                   style: InvestrendTheme.of(context)
                                       .small_w400
-                                      .copyWith(
+                                      ?.copyWith(
                                           color: InvestrendTheme.of(context)
                                               .greyDarkerTextColor)),
                               SizedBox(
@@ -2846,11 +2854,11 @@ class CardSocialTextImages extends StatelessWidget {
   final String text;
   final int commentCount;
   final int likedCount;
-  final VoidCallback commentClick;
-  final VoidCallback likeClick;
-  final VoidCallback shareClick;
-  final VoidCallback onTap;
-  final List<CommentOld> comments;
+  final VoidCallback? commentClick;
+  final VoidCallback? likeClick;
+  final VoidCallback? shareClick;
+  final VoidCallback? onTap;
+  final List<CommentOld>? comments;
 
   CardSocialTextImages(
       this.imageUrls,
@@ -2863,7 +2871,7 @@ class CardSocialTextImages extends StatelessWidget {
       this.commentCount,
       this.likedCount,
       this.comments,
-      {Key key,
+      {Key? key,
       this.commentClick,
       this.likeClick,
       this.shareClick,
@@ -2996,7 +3004,7 @@ class CardSocialTextImages extends StatelessWidget {
                         '+' + more.toString(),
                         style: InvestrendTheme.of(context)
                             .small_w600_compact
-                            .copyWith(
+                            ?.copyWith(
                                 color: Theme.of(context).colorScheme.secondary),
                       ))
                   : SizedBox(
@@ -3007,8 +3015,8 @@ class CardSocialTextImages extends StatelessWidget {
         },
       );
     }
-    int commentsCount = comments != null ? comments.length : 0;
-    Color verticalDividerColor = commentsCount <= 0
+    int? commentsCount = comments != null ? comments?.length : 0;
+    Color verticalDividerColor = commentsCount! <= 0
         ? Colors.transparent
         : Theme.of(context).dividerColor;
     return Padding(
@@ -3057,7 +3065,7 @@ class CardSocialTextImages extends StatelessWidget {
                           label,
                           style: InvestrendTheme.of(context)
                               .more_support_w400_compact
-                              .copyWith(
+                              ?.copyWith(
                                   color: InvestrendTheme.of(context)
                                       .greyDarkerTextColor,
                                   fontSize: 10.0),
@@ -3071,7 +3079,7 @@ class CardSocialTextImages extends StatelessWidget {
                                 text: username + ' ',
                                 style: InvestrendTheme.of(context)
                                     .small_w400
-                                    .copyWith(
+                                    ?.copyWith(
                                         color: InvestrendTheme.of(context)
                                             .greyLighterTextColor),
                               ),
@@ -3083,7 +3091,7 @@ class CardSocialTextImages extends StatelessWidget {
                                 text: ' ' + datetime,
                                 style: InvestrendTheme.of(context)
                                     .more_support_w400_compact
-                                    .copyWith(
+                                    ?.copyWith(
                                         color: InvestrendTheme.of(context)
                                             .greyLighterTextColor),
                               ),
@@ -3094,13 +3102,13 @@ class CardSocialTextImages extends StatelessWidget {
                           height: 20.0,
                         ),
                         TapableWidget(
-                          onTap: onTap,
+                          onTap: onTap!,
                           child: Column(
                             children: [
                               Text(text,
                                   style: InvestrendTheme.of(context)
                                       .small_w400
-                                      .copyWith(
+                                      ?.copyWith(
                                           color: InvestrendTheme.of(context)
                                               .greyDarkerTextColor)),
                               SizedBox(
@@ -3155,10 +3163,10 @@ class NewCardSocialTextImages extends StatelessWidget {
   // final String text;
   // final int commentCount;
   // final int likedCount;
-  final VoidCallback commentClick;
-  final VoidCallback likeClick;
-  final VoidCallback shareClick;
-  final VoidCallback onTap;
+  final VoidCallback? commentClick;
+  final VoidCallback? likeClick;
+  final VoidCallback? shareClick;
+  final VoidCallback? onTap;
 
   //final List<Comment> comments;
   final Post post;
@@ -3166,7 +3174,7 @@ class NewCardSocialTextImages extends StatelessWidget {
   NewCardSocialTextImages(
       //this.imageUrls, this.avatarUrl, this.name, this.username, this.label, this.datetime, this.text, this.commentCount, this.likedCount,this.comments,
       this.post,
-      {Key key,
+      {Key? key,
       this.commentClick,
       this.likeClick,
       this.shareClick,
@@ -3185,27 +3193,27 @@ class NewCardSocialTextImages extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //String avatarUrl = post.user.featured_attachment;
-    String avatarUrl = post.user.thumbnail;
-    final String name = post.user.name;
-    final String username = post.user.username;
+    String avatarUrl = post.user!.thumbnail;
+    final String name = post.user!.name;
+    final String username = post.user!.username;
     //final String label = post.is_featured == 1 ? 'Featured' : (post.is_trending == 1 ? 'Trending' : 'not featured/trending');
-    final String label = post?.is_featured == 1
+    final String label = post.is_featured == 1
         ? 'sosmed_label_featured'.tr()
         : (post.is_trending == 1
             ? 'sosmed_label_trending'.tr()
             : 'sosmed_label_not_freatured_not_trending'.tr());
     //final String datetime = post.created_at;
     final String datetime =
-        Utils.displayPostDate(post?.created_at); //post?.created_at;
-    final String text = post.text;
+        Utils.displayPostDate(post.created_at!); //post?.created_at;
+    final String text = post.text!;
 
     Widget imageWidget;
-    if (post.attachments.length == 0) {
+    if (post.attachments!.length == 0) {
       imageWidget = SizedBox(
         width: 1.0,
       );
-    } else if (post.attachments.length == 1) {
-      String urlImage = post.attachments.first.attachment_list;
+    } else if (post.attachments!.length == 1) {
+      String urlImage = post.attachments!.first!.attachment_list;
       imageWidget = AspectRatio(
         aspectRatio: 2 / 1,
         child: !StringUtils.isEmtpy(urlImage)
@@ -3219,7 +3227,7 @@ class NewCardSocialTextImages extends StatelessWidget {
         //   fit: BoxFit.cover,
         // ),
       );
-    } else if (post.attachments.length == 2) {
+    } else if (post.attachments!.length == 2) {
       imageWidget = LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
           double width = constraints.maxWidth;
@@ -3232,7 +3240,7 @@ class NewCardSocialTextImages extends StatelessWidget {
                 width: widthTile,
                 height: height,
                 child: ComponentCreator.imageNetwork(
-                    post.attachments.first.attachment_list,
+                    post.attachments!.first!.attachment_list,
                     fit: BoxFit.cover),
                 // child: Image.network(
                 //   post.attachments.first.attachment_list,
@@ -3247,7 +3255,7 @@ class NewCardSocialTextImages extends StatelessWidget {
                 width: widthTile,
                 height: height,
                 child: ComponentCreator.imageNetwork(
-                    post.attachments.last.attachment_list,
+                    post.attachments!.last!.attachment_list,
                     fit: BoxFit.cover),
                 // child: Image.network(
                 //   post.attachments.last.attachment_list,
@@ -3266,7 +3274,7 @@ class NewCardSocialTextImages extends StatelessWidget {
           double widthTile = (constraints.maxWidth - 4.0) / 2;
           double height = width / 2;
           double heightHalf = (height - 4.0) / 2;
-          int more = post.attachments.length - 3;
+          int more = post.attachments!.length - 3;
 
           return Stack(
             alignment: Alignment.bottomRight,
@@ -3277,7 +3285,7 @@ class NewCardSocialTextImages extends StatelessWidget {
                     width: widthTile,
                     height: height,
                     child: ComponentCreator.imageNetwork(
-                        post.attachments.first.attachment_list,
+                        post.attachments!.first!.attachment_list,
                         fit: BoxFit.cover),
                     // child: Image.network(
                     //   post.attachments.first.attachment_list,
@@ -3294,7 +3302,7 @@ class NewCardSocialTextImages extends StatelessWidget {
                         width: widthTile,
                         height: heightHalf,
                         child: ComponentCreator.imageNetwork(
-                            post.attachments.elementAt(1).attachment_small,
+                            post.attachments!.elementAt(1)!.attachment_small,
                             fit: BoxFit.cover),
                         // child: Image.network(
                         //   post.attachments.elementAt(1).attachment_small,
@@ -3309,7 +3317,7 @@ class NewCardSocialTextImages extends StatelessWidget {
                         width: widthTile,
                         height: heightHalf,
                         child: ComponentCreator.imageNetwork(
-                            post.attachments.elementAt(2).attachment_small,
+                            post.attachments!.elementAt(2)!.attachment_small,
                             fit: BoxFit.cover),
                         // child: Image.network(
                         //   post.attachments.elementAt(2).attachment_small,
@@ -3333,7 +3341,7 @@ class NewCardSocialTextImages extends StatelessWidget {
                         '+' + more.toString(),
                         style: InvestrendTheme.of(context)
                             .small_w600_compact
-                            .copyWith(
+                            ?.copyWith(
                                 color: Theme.of(context).colorScheme.secondary),
                       ))
                   : SizedBox(
@@ -3345,7 +3353,7 @@ class NewCardSocialTextImages extends StatelessWidget {
       );
     }
     int topCommentsCount =
-        post.top_comments != null ? post.top_comments.length : 0;
+        post.top_comments != null ? post.top_comments!.length : 0;
     Color verticalDividerColor = topCommentsCount <= 0
         ? Colors.transparent
         : Theme.of(context).dividerColor;
@@ -3395,7 +3403,7 @@ class NewCardSocialTextImages extends StatelessWidget {
                           label,
                           style: InvestrendTheme.of(context)
                               .more_support_w400_compact
-                              .copyWith(
+                              ?.copyWith(
                                   color: InvestrendTheme.of(context)
                                       .greyDarkerTextColor,
                                   fontSize: 10.0),
@@ -3409,7 +3417,7 @@ class NewCardSocialTextImages extends StatelessWidget {
                                 text: username + ' ',
                                 style: InvestrendTheme.of(context)
                                     .small_w400
-                                    .copyWith(
+                                    ?.copyWith(
                                         color: InvestrendTheme.of(context)
                                             .greyLighterTextColor),
                               ),
@@ -3421,7 +3429,7 @@ class NewCardSocialTextImages extends StatelessWidget {
                                 text: ' ' + datetime,
                                 style: InvestrendTheme.of(context)
                                     .more_support_w400_compact
-                                    .copyWith(
+                                    ?.copyWith(
                                         color: InvestrendTheme.of(context)
                                             .greyLighterTextColor),
                               ),
@@ -3432,14 +3440,14 @@ class NewCardSocialTextImages extends StatelessWidget {
                           height: 20.0,
                         ),
                         TapableWidget(
-                          onTap: onTap,
+                          onTap: onTap!,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(text,
                                   style: InvestrendTheme.of(context)
                                       .small_w400
-                                      .copyWith(
+                                      ?.copyWith(
                                           color: InvestrendTheme.of(context)
                                               .greyDarkerTextColor)),
                               SizedBox(
@@ -3456,8 +3464,8 @@ class NewCardSocialTextImages extends StatelessWidget {
                           height: 12.0,
                         ),
                         LikeCommentShareWidget(
-                          post.like_count,
-                          post.comment_count,
+                          post.like_count!,
+                          post.comment_count!,
                           post.liked,
                           likeClick: likeClick,
                           commentClick: commentClick,
@@ -3487,25 +3495,29 @@ class NewCardSocialTextImages extends StatelessWidget {
 }
 
 class LikeCommentShareWidget extends StatelessWidget {
-  final VoidCallback commentClick;
-  final VoidCallback likeClick;
-  final VoidCallback shareClick;
+  final VoidCallback? commentClick;
+  final VoidCallback? likeClick;
+  final VoidCallback? shareClick;
   final int likedCount;
   final int commentCount;
-  final bool liked;
-  final Post post;
-  final PostComment comment;
+  final bool? liked;
+  final Post? post;
+  final PostComment? comment;
 
-  LikeCommentShareWidget(this.likedCount, this.commentCount, this.liked,
-      {this.commentClick,
-      this.likeClick,
-      this.shareClick,
-      Key key,
-      this.post,
-      this.comment})
-      : super(key: key);
+  LikeCommentShareWidget(
+    this.likedCount,
+    this.commentCount,
+    this.liked, {
+    this.commentClick,
+    this.likeClick,
+    this.shareClick,
+    Key? key,
+    this.post,
+    this.comment,
+    this.currentContext,
+  }) : super(key: key);
 
-  BuildContext currentContext;
+  BuildContext? currentContext;
 
   @override
   Widget build(BuildContext context) {
@@ -3522,7 +3534,7 @@ class LikeCommentShareWidget extends StatelessWidget {
         ),
         Text(
           commentCount.toString(),
-          style: InvestrendTheme.of(context).small_w400_compact.copyWith(
+          style: InvestrendTheme.of(context).small_w400_compact?.copyWith(
               color: InvestrendTheme.of(context).greyLighterTextColor),
         ),
         /*
@@ -3575,14 +3587,14 @@ class LikeCommentShareWidget extends StatelessWidget {
                     : InvestrendTheme.of(context).greyLighterTextColor,
               );
             },
-            countBuilder: (int count, bool isLiked, String text) {
+            countBuilder: (int? count, bool? isLiked, String? text) {
               return Padding(
                 padding: const EdgeInsets.only(left: 8.0),
                 child: Text(
                   count.toString(),
                   style: InvestrendTheme.of(context)
                       .small_w400_compact
-                      .copyWith(
+                      ?.copyWith(
                           color:
                               InvestrendTheme.of(context).greyLighterTextColor),
                 ),
@@ -3615,19 +3627,19 @@ class LikeCommentShareWidget extends StatelessWidget {
 
     //bool resultLiked = post.liked;
     try {
-      String applicationPlatform = currentContext != null
-          ? InvestrendTheme.of(currentContext).applicationPlatform
+      String? applicationPlatform = currentContext != null
+          ? InvestrendTheme.of(currentContext!).applicationPlatform
           : '-';
-      String applicationVersion = currentContext != null
-          ? InvestrendTheme.of(currentContext).applicationVersion
+      String? applicationVersion = currentContext != null
+          ? InvestrendTheme.of(currentContext!).applicationVersion
           : '-';
       String languageCode = currentContext != null
-          ? EasyLocalization.of(currentContext).locale.languageCode
+          ? EasyLocalization.of(currentContext!)!.locale.languageCode
           : 'id';
 
       //SubmitLike submitResult = await SosMedHttp.sosmedLike(!post.liked ,'123',post.id, applicationPlatform, applicationVersion, language: languageCode);
-      SubmitLike submitResult = await InvestrendTheme.tradingHttp.sosmedLike(
-          !post.liked, post.id, applicationPlatform, applicationVersion,
+      SubmitLike? submitResult = await InvestrendTheme.tradingHttp.sosmedLike(
+          post!.liked!, post!.id!, applicationPlatform, applicationVersion,
           language: languageCode);
       if (submitResult != null) {
         print('submitResult = ' + submitResult.toString());
@@ -3639,10 +3651,10 @@ class LikeCommentShareWidget extends StatelessWidget {
         if (success) {
           if (StringUtils.equalsIgnoreCase(
               submitResult.message, 'Like deleted!')) {
-            post.likedUndoed();
+            post!.likedUndoed();
           } else if (StringUtils.equalsIgnoreCase(
               submitResult.message, 'Like created!')) {
-            post.likedSuccess();
+            post!.likedSuccess();
           }
           //success? !isLiked:isLiked;
           //resultLiked = post.liked;
@@ -3657,7 +3669,7 @@ class LikeCommentShareWidget extends StatelessWidget {
         Future.delayed(Duration(milliseconds: 500), () {
           if (likeClick != null) {
             try {
-              likeClick();
+              likeClick!();
             } catch (e) {}
           }
         });
@@ -3670,38 +3682,38 @@ class LikeCommentShareWidget extends StatelessWidget {
       //Navigator.of(context).pop();
       //
     }
-    return post.liked;
+    return post!.liked!;
   }
 }
 
 class NewPredictionWidget extends StatelessWidget {
   final Post post;
 
-  const NewPredictionWidget(this.post, {Key key}) : super(key: key);
+  const NewPredictionWidget(this.post, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     String infoVotes = post.voter_count.toString() +
         ' votes • ' +
-        Utils.displayExpireDate(post.expired_at);
+        Utils.displayExpireDate(post.expired_at!);
     //double upsidePercentage = ((post.target_price - post.start_price) / post.start_price) * 100;
     double upsidePercentage =
-        Utils.calculatePercent(post.start_price, post.target_price);
+        Utils.calculatePercent(post.start_price!, post.target_price!);
 
-    String timing = Utils.displayTimingDays(post.created_at, post.expired_at);
+    String timing = Utils.displayTimingDays(post.created_at!, post.expired_at!);
     // Votes votes = Votes(post.expires, prediction.totalVotes);
     // votes.addVote(Vote('agree_label'.tr(), prediction.countAgree));
     // votes.addVote(Vote('disagree_label'.tr(), prediction.countDisagree));
-    TextStyle small400 = InvestrendTheme.of(context)
+    TextStyle? small400 = InvestrendTheme.of(context)
         .small_w400
-        .copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor);
-    TextStyle reguler700 = InvestrendTheme.of(context)
+        ?.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor);
+    TextStyle? reguler700 = InvestrendTheme.of(context)
         .regular_w600
-        .copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor);
+        ?.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor);
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
-            color: InvestrendTheme.of(context).greyLighterTextColor,
+            color: InvestrendTheme.of(context).greyLighterTextColor!,
             width: 0.5),
         borderRadius: BorderRadius.circular(14.0),
         //color: InvestrendTheme.of(context).greyLighterTextColor,
@@ -3716,7 +3728,7 @@ class NewPredictionWidget extends StatelessWidget {
               'emiten_label'.tr(),
               style: InvestrendTheme.of(context)
                   .more_support_w400_compact
-                  .copyWith(
+                  ?.copyWith(
                       color: InvestrendTheme.of(context).greyLighterTextColor),
             ),
           ),
@@ -3724,11 +3736,11 @@ class NewPredictionWidget extends StatelessWidget {
             padding: const EdgeInsets.only(left: 14.0, right: 14.0),
             child: RichText(
                 text: TextSpan(
-                    text: post?.code + ' ',
+                    text: post.code! + ' ',
                     style: reguler700,
                     children: [
                   TextSpan(
-                    text: post?.stock_name,
+                    text: post.stock_name,
                     style: small400,
                   ),
                 ])),
@@ -3749,7 +3761,7 @@ class NewPredictionWidget extends StatelessWidget {
                         'target_price_label'.tr(),
                         style: InvestrendTheme.of(context)
                             .more_support_w400_compact
-                            .copyWith(
+                            ?.copyWith(
                                 color: InvestrendTheme.of(context)
                                     .greyLighterTextColor),
                       ),
@@ -3757,18 +3769,21 @@ class NewPredictionWidget extends StatelessWidget {
                         height: 8.0,
                       ),
                       Text(
-                        InvestrendTheme.formatPrice(post?.target_price),
-                        style: Theme.of(context).textTheme.headline4.copyWith(
-                            fontWeight: FontWeight.w600,
-                            color: InvestrendTheme.of(context)
-                                .greyDarkerTextColor),
+                        InvestrendTheme.formatPrice(post.target_price!),
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineMedium!
+                            .copyWith(
+                                fontWeight: FontWeight.w600,
+                                color: InvestrendTheme.of(context)
+                                    .greyDarkerTextColor),
                       ),
                     ],
                   ),
                 ),
                 OutlinedButton(
                   style: OutlinedButton.styleFrom(
-                    primary: Theme.of(context).primaryColor,
+                    foregroundColor: Theme.of(context).primaryColor,
                     minimumSize: Size(50.0, 36.0),
                     side: BorderSide(
                         color: Theme.of(context).colorScheme.secondary,
@@ -3778,11 +3793,11 @@ class NewPredictionWidget extends StatelessWidget {
                         borderRadius: BorderRadius.all(Radius.circular(16.0))),
                   ),
                   onPressed: () {
-                    Stock stock =
-                        InvestrendTheme.storedData.findStock(post.code);
+                    Stock? stock =
+                        InvestrendTheme.storedData?.findStock(post.code!);
                     if (stock == null) {
                       print('buy clicked code : ' +
-                          post.code +
+                          post.code! +
                           ' aborted, not find stock on StockStorer');
                       return;
                     }
@@ -3797,7 +3812,7 @@ class NewPredictionWidget extends StatelessWidget {
                     InvestrendTheme.pushScreenTrade(context, hasAccount,
                         type: OrderType.Buy,
                         initialPriceLot:
-                            PriceLot(post?.target_price.toInt(), 0));
+                            PriceLot(post.target_price?.toInt(), 0));
                     /*
                     Navigator.push(
                         context,
@@ -3811,14 +3826,14 @@ class NewPredictionWidget extends StatelessWidget {
                     'button_buy'.tr(),
                     style: InvestrendTheme.of(context)
                         .small_w600_compact
-                        .copyWith(color: Theme.of(context).primaryColor),
+                        ?.copyWith(color: Theme.of(context).primaryColor),
                   ),
                 ),
               ],
             ),
           ),
           labelValue(context, 'start_price_label'.tr(),
-              InvestrendTheme.formatPrice(post?.start_price)),
+              InvestrendTheme.formatPrice(post.start_price!)),
           labelValue(
               context,
               'upside_label'.tr(),
@@ -3840,7 +3855,7 @@ class NewPredictionWidget extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only(left: 14.0, right: 14.0, top: 8.0),
             child: Text(infoVotes,
-                style: InvestrendTheme.of(context).more_support_w400.copyWith(
+                style: InvestrendTheme.of(context).more_support_w400?.copyWith(
                     color: InvestrendTheme.of(context).greyLighterTextColor,
                     fontSize: 11.0)),
           )
@@ -3861,7 +3876,7 @@ class NewPredictionWidget extends StatelessWidget {
         children: [
           Text(
             label,
-            style: InvestrendTheme.of(context).small_w400_compact.copyWith(
+            style: InvestrendTheme.of(context).small_w400_compact?.copyWith(
                 color: InvestrendTheme.of(context).greyLighterTextColor),
           ),
           Expanded(
@@ -3881,7 +3896,7 @@ class NewPredictionWidget extends StatelessWidget {
 class PredictionWidget extends StatelessWidget {
   final Prediction prediction;
 
-  const PredictionWidget(this.prediction, {Key key}) : super(key: key);
+  const PredictionWidget(this.prediction, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -3890,16 +3905,16 @@ class PredictionWidget extends StatelessWidget {
     Votes votes = Votes(prediction.expires, prediction.totalVotes);
     votes.addVote(Vote('agree_label'.tr(), prediction.countAgree));
     votes.addVote(Vote('disagree_label'.tr(), prediction.countDisagree));
-    TextStyle small400 = InvestrendTheme.of(context)
+    TextStyle? small400 = InvestrendTheme.of(context)
         .small_w400
-        .copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor);
-    TextStyle reguler700 = InvestrendTheme.of(context)
+        ?.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor);
+    TextStyle? reguler700 = InvestrendTheme.of(context)
         .regular_w600
-        .copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor);
+        ?.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor);
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
-            color: InvestrendTheme.of(context).greyLighterTextColor,
+            color: InvestrendTheme.of(context).greyLighterTextColor!,
             width: 0.5),
         borderRadius: BorderRadius.circular(14.0),
         //color: InvestrendTheme.of(context).greyLighterTextColor,
@@ -3914,7 +3929,7 @@ class PredictionWidget extends StatelessWidget {
               'emiten_label'.tr(),
               style: InvestrendTheme.of(context)
                   .more_support_w400_compact
-                  .copyWith(
+                  ?.copyWith(
                       color: InvestrendTheme.of(context).greyLighterTextColor),
             ),
           ),
@@ -3947,7 +3962,7 @@ class PredictionWidget extends StatelessWidget {
                         'target_price_label'.tr(),
                         style: InvestrendTheme.of(context)
                             .more_support_w400_compact
-                            .copyWith(
+                            ?.copyWith(
                                 color: InvestrendTheme.of(context)
                                     .greyLighterTextColor),
                       ),
@@ -3956,17 +3971,20 @@ class PredictionWidget extends StatelessWidget {
                       ),
                       Text(
                         InvestrendTheme.formatPrice(prediction.targetPrice),
-                        style: Theme.of(context).textTheme.headline4.copyWith(
-                            fontWeight: FontWeight.w600,
-                            color: InvestrendTheme.of(context)
-                                .greyDarkerTextColor),
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineMedium!
+                            .copyWith(
+                                fontWeight: FontWeight.w600,
+                                color: InvestrendTheme.of(context)
+                                    .greyDarkerTextColor),
                       ),
                     ],
                   ),
                 ),
                 OutlinedButton(
                   style: OutlinedButton.styleFrom(
-                    primary: Theme.of(context).colorScheme.secondary,
+                    foregroundColor: Theme.of(context).colorScheme.secondary,
                     minimumSize: Size(50.0, 36.0),
                     side: BorderSide(
                         color: Theme.of(context).colorScheme.secondary,
@@ -3980,7 +3998,7 @@ class PredictionWidget extends StatelessWidget {
                     'button_buy'.tr(),
                     style: InvestrendTheme.of(context)
                         .small_w600_compact
-                        .copyWith(color: Theme.of(context).primaryColor),
+                        ?.copyWith(color: Theme.of(context).primaryColor),
                   ),
                 ),
               ],
@@ -4009,7 +4027,7 @@ class PredictionWidget extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only(left: 14.0, right: 14.0, top: 8.0),
             child: Text(infoVotes,
-                style: InvestrendTheme.of(context).more_support_w400.copyWith(
+                style: InvestrendTheme.of(context).more_support_w400?.copyWith(
                     color: InvestrendTheme.of(context).greyLighterTextColor,
                     fontSize: 11.0)),
           )
@@ -4030,7 +4048,7 @@ class PredictionWidget extends StatelessWidget {
         children: [
           Text(
             label,
-            style: InvestrendTheme.of(context).small_w400_compact.copyWith(
+            style: InvestrendTheme.of(context).small_w400_compact?.copyWith(
                 color: InvestrendTheme.of(context).greyLighterTextColor),
           ),
           Expanded(

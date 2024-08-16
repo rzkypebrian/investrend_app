@@ -19,19 +19,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class CardEIPO extends StatelessWidget {
   //final List<HomeEIPO> listEIPO;
-  final String title;
-  final VoidCallback onRetry;
+  final String? title;
+  final VoidCallback? onRetry;
 
-  const CardEIPO(this.title, /*this.listEIPO,*/ {this.onRetry, Key key}) : super(key: key);
+  const CardEIPO(this.title, /*this.listEIPO,*/ {this.onRetry, Key? key})
+      : super(key: key);
 
   void showHelpEIPO(BuildContext context) {
     int defaultMenuIndex = 0;
-    if (context.read(helpNotifier).data.loaded) {
-      int count = context.read(helpNotifier).data.countMenus();
-      for (int i = 0; i < count; i++) {
-        HelpMenu menu = context.read(helpNotifier).data.menus.elementAt(i);
+    if (context.read(helpNotifier).data!.loaded) {
+      int? count = context.read(helpNotifier).data?.countMenus();
+      for (int i = 0; i < count!; i++) {
+        HelpMenu? menu = context.read(helpNotifier).data?.menus?.elementAt(i);
         if (menu != null) {
-          if (StringUtils.equalsIgnoreCase(menu.id, '6')) {
+          if (StringUtils.equalsIgnoreCase(menu.id!, '6')) {
             // id 6 --> E-IPO
             defaultMenuIndex = i;
             break;
@@ -55,12 +56,14 @@ class CardEIPO extends StatelessWidget {
     //double tileWidth = width * 0.7;
 
     return Consumer(builder: (context, watch, child) {
-      final notifier = watch(eipoNotifier);
+      final EIPONotifier? notifier = watch(eipoNotifier);
 
-      Widget noWidget = notifier.currentState.getNoWidget(onRetry: onRetry);
+      Widget? noWidget = notifier?.currentState.getNoWidget(onRetry: onRetry!);
       if (noWidget != null) {
-        if(notifier.currentState.isNoData() ){
-          return SizedBox(width: 1,);
+        if (notifier!.currentState.isNoData()) {
+          return SizedBox(
+            width: 1,
+          );
         }
         return Center(
           child: noWidget,
@@ -68,14 +71,18 @@ class CardEIPO extends StatelessWidget {
       }
 
       return Container(
-        margin: const EdgeInsets.only(bottom: InvestrendTheme.cardPaddingVertical),
+        margin:
+            const EdgeInsets.only(bottom: InvestrendTheme.cardPaddingVertical),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
               padding: const EdgeInsets.only(
-                  left: InvestrendTheme.cardPaddingGeneral, /*right: InvestrendTheme.cardPaddingGeneral,*/ bottom: InvestrendTheme.cardPadding),
-              child: ComponentCreator.subtitleButtonMore(context, title, () => showHelpEIPO(context),
+                  left: InvestrendTheme.cardPaddingGeneral,
+                  /*right: InvestrendTheme.cardPaddingGeneral,*/ bottom:
+                      InvestrendTheme.cardPadding),
+              child: ComponentCreator.subtitleButtonMore(
+                  context, title!, () => showHelpEIPO(context),
                   image: '', textButton: 'eipo_learn_button'.tr()),
             ),
             LayoutBuilder(builder: (context, constrains) {
@@ -84,20 +91,19 @@ class CardEIPO extends StatelessWidget {
               //double height = 180.0;
               double height = tileWidth * 0.5;
 
-
-
               return SizedBox(
                   height: height,
                   child: ListView.builder(
                     physics: BouncingScrollPhysics(),
                     shrinkWrap: true,
                     scrollDirection: Axis.horizontal,
-                    itemCount: notifier.count(),
+                    itemCount: notifier?.count(),
                     itemBuilder: (BuildContext context, int index) {
                       //double left = index == 0 ? InvestrendTheme.cardPaddingPlusMargin : 0.0;
                       bool isFirst = index == 0;
-                      bool isLast = index == notifier.list.length - 1;
-                      return tileEIPO(context, notifier.list.elementAt(index), isFirst, isLast, tileWidth, height);
+                      bool isLast = index == notifier!.list!.length - 1;
+                      return tileEIPO(context, notifier.list!.elementAt(index),
+                          isFirst, isLast, tileWidth, height);
                     },
                   ));
             }),
@@ -105,16 +111,20 @@ class CardEIPO extends StatelessWidget {
         ),
       );
     });
-
+    /*
     return Container(
-      margin: const EdgeInsets.only(bottom: InvestrendTheme.cardPaddingVertical),
+      margin:
+          const EdgeInsets.only(bottom: InvestrendTheme.cardPaddingVertical),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
             padding: const EdgeInsets.only(
-                left: InvestrendTheme.cardPaddingGeneral, /*right: InvestrendTheme.cardPaddingGeneral,*/ bottom: InvestrendTheme.cardPadding),
-            child: ComponentCreator.subtitleButtonMore(context, title, () => showHelpEIPO(context),
+                left: InvestrendTheme.cardPaddingGeneral,
+                /*right: InvestrendTheme.cardPaddingGeneral,*/ bottom:
+                    InvestrendTheme.cardPadding),
+            child: ComponentCreator.subtitleButtonMore(
+                context, title!, () => showHelpEIPO(context),
                 image: '', textButton: 'eipo_learn_button'.tr()),
           ),
           LayoutBuilder(builder: (context, constrains) {
@@ -128,7 +138,8 @@ class CardEIPO extends StatelessWidget {
                 child: Consumer(builder: (context, watch, child) {
                   final notifier = watch(eipoNotifier);
 
-                  Widget noWidget = notifier.currentState.getNoWidget(onRetry: onRetry);
+                  Widget noWidget =
+                      notifier.currentState.getNoWidget(onRetry: onRetry!);
                   if (noWidget != null) {
                     return Center(
                       child: noWidget,
@@ -143,8 +154,9 @@ class CardEIPO extends StatelessWidget {
                     itemBuilder: (BuildContext context, int index) {
                       //double left = index == 0 ? InvestrendTheme.cardPaddingPlusMargin : 0.0;
                       bool isFirst = index == 0;
-                      bool isLast = index == notifier.list.length - 1;
-                      return tileEIPO(context, notifier.list.elementAt(index), isFirst, isLast, tileWidth, height);
+                      bool isLast = index == notifier.list!.length - 1;
+                      return tileEIPO(context, notifier.list!.elementAt(index),
+                          isFirst, isLast, tileWidth, height);
                     },
                   );
                 }));
@@ -152,6 +164,7 @@ class CardEIPO extends StatelessWidget {
         ],
       ),
     );
+  */
   }
 
   Widget buildOld(BuildContext context) {
@@ -159,7 +172,8 @@ class CardEIPO extends StatelessWidget {
     //double tileWidth = width * 0.7;
 
     return Container(
-      margin: const EdgeInsets.only(bottom: InvestrendTheme.cardPaddingVertical),
+      margin:
+          const EdgeInsets.only(bottom: InvestrendTheme.cardPaddingVertical),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -168,8 +182,11 @@ class CardEIPO extends StatelessWidget {
           // }),
           Padding(
             padding: const EdgeInsets.only(
-                left: InvestrendTheme.cardPaddingGeneral, /*right: InvestrendTheme.cardPaddingGeneral,*/ bottom: InvestrendTheme.cardPadding),
-            child: ComponentCreator.subtitleButtonMore(context, title, () => showHelpEIPO(context),
+                left: InvestrendTheme.cardPaddingGeneral,
+                /*right: InvestrendTheme.cardPaddingGeneral,*/ bottom:
+                    InvestrendTheme.cardPadding),
+            child: ComponentCreator.subtitleButtonMore(
+                context, title!, () => showHelpEIPO(context),
                 image: '', textButton: 'eipo_learn_button'.tr()),
             /*
             child: Row(
@@ -200,9 +217,10 @@ class CardEIPO extends StatelessWidget {
             return SizedBox(
                 height: height,
                 child: Consumer(builder: (context, watch, child) {
-                  final notifier = watch(eipoNotifier);
+                  final EIPONotifier? notifier = watch(eipoNotifier);
 
-                  Widget noWidget = notifier.currentState.getNoWidget(onRetry: onRetry);
+                  Widget? noWidget =
+                      notifier?.currentState.getNoWidget(onRetry: onRetry!);
                   if (noWidget != null) {
                     return Center(
                       child: noWidget,
@@ -215,12 +233,13 @@ class CardEIPO extends StatelessWidget {
                     physics: BouncingScrollPhysics(),
                     shrinkWrap: true,
                     scrollDirection: Axis.horizontal,
-                    itemCount: notifier.count(),
+                    itemCount: notifier?.count(),
                     itemBuilder: (BuildContext context, int index) {
                       //double left = index == 0 ? InvestrendTheme.cardPaddingPlusMargin : 0.0;
                       bool isFirst = index == 0;
-                      bool isLast = index == notifier.list.length - 1;
-                      return tileEIPO(context, notifier.list.elementAt(index), isFirst, isLast, tileWidth, height);
+                      bool isLast = index == notifier!.list!.length - 1;
+                      return tileEIPO(context, notifier.list!.elementAt(index),
+                          isFirst, isLast, tileWidth, height);
                     },
                   );
                 }));
@@ -230,7 +249,8 @@ class CardEIPO extends StatelessWidget {
     );
   }
 
-  Widget tileEIPO(BuildContext context, ListEIPO ipo, bool isFirst, bool isLast, double width, double height) {
+  Widget tileEIPO(BuildContext context, ListEIPO ipo, bool isFirst, bool isLast,
+      double width, double height) {
     double left;
     double right;
     if (isFirst) {
@@ -261,19 +281,19 @@ class CardEIPO extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: new BorderRadius.circular(10.0),
           side: BorderSide(
-            color: InvestrendTheme.of(context).tileBackground,
+            color: InvestrendTheme.of(context).tileBackground!,
             width: 0.0,
           ),
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            StringUtils.isEmtpy(ipo.company_icon)
+            StringUtils.isEmtpy(ipo.company_icon!)
                 ? SizedBox(
                     width: 24.0,
                     height: 24.0,
                   )
-                : ComponentCreator.imageNetworkCached(ipo.company_icon,
+                : ComponentCreator.imageNetworkCached(ipo.company_icon!,
                     width: 24.0,
                     height: 24.0,
                     errorWidget: SizedBox(
@@ -294,9 +314,11 @@ class CardEIPO extends StatelessWidget {
                   // ),
                   Flexible(
                     child: AutoSizeText(
-                      ipo.name,
+                      ipo.name!,
                       minFontSize: 8.0,
-                      style: InvestrendTheme.of(context).small_w500.copyWith(height: 1.27),
+                      style: InvestrendTheme.of(context)
+                          .small_w500
+                          ?.copyWith(height: 1.27),
                       maxLines: 2,
                     ),
                   ),
@@ -306,14 +328,18 @@ class CardEIPO extends StatelessWidget {
                   AutoSizeText(
                     'card_eipo_offering_ends'.tr(),
                     minFontSize: 8.0,
-                    style: InvestrendTheme.of(context).more_support_w400.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor),
+                    style: InvestrendTheme.of(context)
+                        .more_support_w400
+                        ?.copyWith(
+                            color: InvestrendTheme.of(context)
+                                .greyLighterTextColor),
                     maxLines: 1,
                   ),
                   SizedBox(
                     height: 5.0,
                   ),
                   AutoSizeText(
-                    ipo.offering_date_end,
+                    ipo.offering_date_end!,
                     minFontSize: 8.0,
                     style: InvestrendTheme.of(context).more_support_w400,
                     maxLines: 1,

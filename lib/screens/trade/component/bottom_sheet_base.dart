@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
 class BaseTradeBottomSheet extends StatelessWidget {
-  const BaseTradeBottomSheet({Key key}) : super(key: key);
+  const BaseTradeBottomSheet({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {}
+  Widget build(BuildContext context) {
+    return SizedBox();
+  }
 
 // Widget TradeComponentCreator.popupRow(BuildContext context, String label, String value) {
 //   return Container(

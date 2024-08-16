@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'package:Investrend/component/component_app_bar.dart';
 import 'package:Investrend/component/component_creator.dart';
 import 'package:Investrend/objects/riverpod_change_notifier.dart';
@@ -11,7 +13,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ScreenChangePassword extends StatefulWidget {
-  const ScreenChangePassword({Key key}) : super(key: key);
+  const ScreenChangePassword({Key? key}) : super(key: key);
 
   @override
   State<ScreenChangePassword> createState() => _ScreenChangePasswordState();
@@ -90,7 +92,7 @@ class _ScreenChangePasswordState extends State<ScreenChangePassword> {
     );
   }
 
-  Widget createBottomSheet(BuildContext context, double paddingBottom) {
+  Widget? createBottomSheet(BuildContext context, double paddingBottom) {
     return null;
   }
 
@@ -137,7 +139,7 @@ class _ScreenChangePasswordState extends State<ScreenChangePassword> {
               // on presss
               //EasyLocalization.of(context).setLocale(Locale('en'));
               //showRegisterPage(context);
-              if (_formChangePasswordKey.currentState.validate()) {
+              if (_formChangePasswordKey.currentState!.validate()) {
                 //onLoginClicked(context);
                 //print('form change pin sesuai');
                 changePasswrod();
@@ -150,7 +152,7 @@ class _ScreenChangePasswordState extends State<ScreenChangePassword> {
           ),
           TextButton(
             style: TextButton.styleFrom(
-                primary: InvestrendTheme.of(context).hyperlink,
+                foregroundColor: InvestrendTheme.of(context).hyperlink,
                 animationDuration: Duration(milliseconds: 500),
                 backgroundColor: Colors.transparent,
                 textStyle:
@@ -307,7 +309,7 @@ class _ScreenChangePasswordState extends State<ScreenChangePassword> {
 
   Future changePasswrod() {
     Future reply = InvestrendTheme.tradingHttp.changePassword(
-        context.read(dataHolderChangeNotifier).user.username,
+        context.read(dataHolderChangeNotifier).user.username!,
         fieldOld.text,
         fieldNew.text,
         InvestrendTheme.of(context).applicationPlatform,
@@ -357,14 +359,14 @@ class _ScreenChangePasswordState extends State<ScreenChangePassword> {
     String hintText,
     String helperText,
     String errorText, {
-    bool obscureText,
-    TextInputType keyboardType,
-    TextInputAction textInputAction,
-    FormFieldValidator<String> validator,
-    TextEditingController controller,
-    GestureTapCallback onTap,
-    FocusNode focusNode,
-    Widget suffixIcon,
+    bool? obscureText,
+    TextInputType? keyboardType,
+    TextInputAction? textInputAction,
+    FormFieldValidator<String>? validator,
+    TextEditingController? controller,
+    GestureTapCallback? onTap,
+    FocusNode? focusNode,
+    Widget? suffixIcon,
   }) {
     if (obscureText == null) obscureText = false;
     if (keyboardType == null) keyboardType = TextInputType.visiblePassword;
@@ -390,8 +392,8 @@ class _ScreenChangePasswordState extends State<ScreenChangePassword> {
 
   void launchURL(BuildContext context, String _url) async {
     try {
-      await canLaunch(_url)
-          ? await launch(_url)
+      await canLaunchUrl(Uri.dataFromString(_url))
+          ? await launchUrl(Uri.dataFromString(_url))
           : throw 'Could not launch $_url';
     } catch (error) {
       InvestrendTheme.of(context).showSnackBar(context, error.toString());

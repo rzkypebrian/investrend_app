@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable, unnecessary_null_comparison, non_constant_identifier_names
+
 import 'dart:async';
 
 import 'package:Investrend/objects/data_object.dart';
@@ -20,9 +22,9 @@ import 'package:image/image.dart' as imageTools;
 //dart:html
 class TradingHttpException implements IOException {
   final int code;
-  final String reasonPhrase;
+  final String? reasonPhrase;
   final String body;
-  final Uri uri;
+  final Uri? uri;
 
   const TradingHttpException(this.code, this.reasonPhrase, this.body,
       {this.uri});
@@ -36,9 +38,9 @@ class TradingHttpException implements IOException {
     return code == 500;
   }
 
-  String message() {
+  String? message() {
     if (code == 500 || code == 401) {
-      Map<String, dynamic> parsedJson = jsonDecode(body);
+      Map<String, dynamic>? parsedJson = jsonDecode(body);
       if (parsedJson != null) {
         return StringUtils.noNullString(parsedJson['message']);
       }
@@ -59,651 +61,8 @@ class TradingHttpException implements IOException {
   }
 }
 
-/*
-class SosMedHttp{
-  static String _sosmedBaseUrl = 'investrend-prod.teltics.in'; // http://investrend.teltics.in/api/
-  static int sosmed_timeout_in_seconds = 30;
-
-  static Future<FetchComment> sosmedFetchComment(String filter_post_id, String access_token, String platform, String version,{int page, String language=''}) async {
-
-    String path = 'api/post-comments';
-    DebugWriter.info('path = $_sosmedBaseUrl/$path');
-    var parameters;
-    if(page != null ){
-      parameters = {
-        'access_token': access_token,
-        'filter_post_id': filter_post_id,
-        'page': page.toString(),
-
-        'language' : language,
-        'platform' : platform,
-        'version' : version,
-      };
-    }else{
-      parameters = {
-        'access_token': access_token,
-        'filter_post_id': filter_post_id,
-
-        'language' : language,
-        'platform' : platform,
-        'version' : version,
-      };
-    }
-
-    final response = await http.get(Uri.http(_sosmedBaseUrl, path, parameters)).timeout(Duration(seconds: sosmed_timeout_in_seconds));
-
-    if (response.statusCode == 200) {
-      // If the server did return a 200 OK response,
-      // then parse the JSON.
-      //listWorldIndices.clear();
-      DebugWriter.info('fetch_comment --> '+response.body);
-
-      FetchComment fetchComment = FetchComment.fromJson(jsonDecode(response.body));
-
-      DebugWriter.info('fetch_comment --> \n'+fetchComment.toString());
-      // String _access_token = user.token.access_token;
-      // String _refresh_token = user.token.refresh_token;
-      // token.update(_access_token, _refresh_token);
-      // token.save();
-      return fetchComment;
-
-      // return document.findAllElements('a')
-      //     .map((element) => new HomeWorldIndices.fromXml(element)).toList();
-    } else {
-      // If the server did not return a 200 OK response,
-      throw Exception('Error : ' + response.statusCode.toString() + '  ' + response.reasonPhrase);
-    }
-  }
-
-  static Future<FetchPost> sosmedFetchPost(String access_token, String platform, String version,{int page, String language=''}) async {
-
-    String path = 'api/posts';
-    DebugWriter.info('path = $_sosmedBaseUrl/$path');
-    var parameters;
-    if(page != null ){
-      parameters = {
-        'access_token': access_token,
-        'page': page.toString(),
-
-        'language' : language,
-        'platform' : platform,
-        'version' : version,
-      };
-    }else{
-      parameters = {
-        'access_token': access_token,
-
-        'language' : language,
-        'platform' : platform,
-        'version' : version,
-      };
-    }
-
-    final response = await http.get(Uri.http(_sosmedBaseUrl, path, parameters)).timeout(Duration(seconds: sosmed_timeout_in_seconds));
-
-    if (response.statusCode == 200) {
-      // If the server did return a 200 OK response,
-      // then parse the JSON.
-      //listWorldIndices.clear();
-      DebugWriter.info('fetch_post --> '+response.body);
-
-      FetchPost fetchPost = FetchPost.fromJson(jsonDecode(response.body));
-
-      DebugWriter.info('fetch_post --> \n'+fetchPost.toString());
-      // String _access_token = user.token.access_token;
-      // String _refresh_token = user.token.refresh_token;
-      // token.update(_access_token, _refresh_token);
-      // token.save();
-      return fetchPost;
-
-      // return document.findAllElements('a')
-      //     .map((element) => new HomeWorldIndices.fromXml(element)).toList();
-    } else {
-      // If the server did not return a 200 OK response,
-      throw Exception('Error : ' + response.statusCode.toString() + '  ' + response.reasonPhrase);
-    }
-  }
-
-  static Future<SubmitLike> sosmedLike(bool flag,String access_token, int post_id, String platform, String version,{String language=''}) async {
-
-    String path = 'api/posts/like';
-    DebugWriter.info('path = $_sosmedBaseUrl/$path');
-
-    var parameters = {
-      'access_token': access_token,
-      'post_id': post_id.toString(),
-      //'flag': flag.toString(),
-      'state': flag ? '1' : '0',
-
-      'language' : language,
-      'platform' : platform,
-      'version' : version,
-    };
-    DebugWriter.info(parameters);
-    final response = await http.post(Uri.http(_sosmedBaseUrl, path, parameters)).timeout(Duration(seconds: sosmed_timeout_in_seconds));
-    //{"status":200,"message":"Like created!","result":{"user_id":1,"post_id":"24","updated_at":"2021-07-27T05:15:02.000000Z","created_at":"2021-07-27T05:15:02.000000Z","id":9}}
-    if (response.statusCode == 200) {
-      // If the server did return a 200 OK response,
-      // then parse the JSON.
-      //listWorldIndices.clear();
-      DebugWriter.info('like --> '+response.body);
-
-      SubmitLike result = SubmitLike.fromJson(jsonDecode(response.body));
-
-      //print('fetch_post --> \n'+fetchPost.toString());
-      // String _access_token = user.token.access_token;
-      // String _refresh_token = user.token.refresh_token;
-      // token.update(_access_token, _refresh_token);
-      // token.save();
-      //return fetchPost;
-      return result;
-
-      // return document.findAllElements('a')
-      //     .map((element) => new HomeWorldIndices.fromXml(element)).toList();
-    } else {
-      // If the server did not return a 200 OK response,
-      throw Exception('Error : ' + response.statusCode.toString() + '  ' + response.reasonPhrase);
-    }
-  }
-
-  static Future<SubmitVote> sosmedVote(String access_token, int poll_id, String platform, String version,{String language=''}) async {
-
-    String path = 'api/posts/vote';
-    DebugWriter.info('path = $_sosmedBaseUrl/$path');
-
-    var parameters = {
-      'access_token': access_token,
-      'post_poll_id': poll_id.toString(),
-
-      'language' : language,
-      'platform' : platform,
-      'version' : version,
-    };
-    final response = await http.post(Uri.http(_sosmedBaseUrl, path, parameters)).timeout(Duration(seconds: sosmed_timeout_in_seconds));
-    //{"status":200,"message":"Like created!","result":{"user_id":1,"post_id":"24","updated_at":"2021-07-27T05:15:02.000000Z","created_at":"2021-07-27T05:15:02.000000Z","id":9}}
-    /*
-    {
-      "status": 200,
-      "message": "Poll created!",
-      "result": {
-        "user_id": 1,
-        "post_poll_id": "1",
-        "updated_at": "2021-07-27T15:35:36.000000Z",
-        "created_at": "2021-07-27T15:35:36.000000Z",
-        "id": 8
-      }
-    }
-    */
-    if (response.statusCode == 200) {
-      // If the server did return a 200 OK response,
-      // then parse the JSON.
-      //listWorldIndices.clear();
-      DebugWriter.info('vote --> '+response.body);
-
-      SubmitVote result = SubmitVote.fromJson(jsonDecode(response.body));
-
-      //print('fetch_post --> \n'+fetchPost.toString());
-      // String _access_token = user.token.access_token;
-      // String _refresh_token = user.token.refresh_token;
-      // token.update(_access_token, _refresh_token);
-      // token.save();
-      //return fetchPost;
-      return result;
-
-      // return document.findAllElements('a')
-      //     .map((element) => new HomeWorldIndices.fromXml(element)).toList();
-    } else {
-      // If the server did not return a 200 OK response,
-      throw Exception('Error : ' + response.statusCode.toString() + '  ' + response.reasonPhrase);
-    }
-  }
-
-  static Future<SubmitCreateComment> sosmedCreateComment(String access_token, int post_id, String text, String platform, String version,{String language=''}) async {
-
-    String path = 'api/post-comments/create';
-    DebugWriter.info('path = $_sosmedBaseUrl/$path');
-
-    var parameters = {
-      'access_token': access_token,
-      'post_id': post_id.toString(),
-      'text': text,
-      'language' : language,
-      'platform' : platform,
-      'version' : version,
-    };
-    final response = await http.post(Uri.http(_sosmedBaseUrl, path, parameters)).timeout(Duration(seconds: sosmed_timeout_in_seconds));
-    //{"status":200,"message":"Like created!","result":{"user_id":1,"post_id":"24","updated_at":"2021-07-27T05:15:02.000000Z","created_at":"2021-07-27T05:15:02.000000Z","id":9}}
-    /*
-    {
-      "status": 200,
-      "message": "Poll created!",
-      "result": {
-        "user_id": 1,
-        "post_poll_id": "1",
-        "updated_at": "2021-07-27T15:35:36.000000Z",
-        "created_at": "2021-07-27T15:35:36.000000Z",
-        "id": 8
-      }
-    }
-    */
-    if (response.statusCode == 200) {
-      // If the server did return a 200 OK response,
-      // then parse the JSON.
-      //listWorldIndices.clear();
-      DebugWriter.info('create_comment --> '+response.body);
-
-      SubmitCreateComment result = SubmitCreateComment.fromJson(jsonDecode(response.body));
-
-      //print('fetch_post --> \n'+fetchPost.toString());
-      // String _access_token = user.token.access_token;
-      // String _refresh_token = user.token.refresh_token;
-      // token.update(_access_token, _refresh_token);
-      // token.save();
-      //return fetchPost;
-      return result;
-
-      // return document.findAllElements('a')
-      //     .map((element) => new HomeWorldIndices.fromXml(element)).toList();
-    } else {
-      // If the server did not return a 200 OK response,
-      throw Exception('Error : ' + response.statusCode.toString() + '  ' + response.reasonPhrase);
-    }
-  }
-
-  static Future<SubmitCreateText> createPostTextWithAttachments(String text, List<String> attachments, String access_token, String platform, String version,{String language=''}) async {
-
-    String path = 'api/posts/create';
-    DebugWriter.info('path = $_sosmedBaseUrl/$path');
-
-    var parameters = {
-      'access_token': access_token,
-      'type': 'TEXT',
-      'text': text,
-
-      'language' : language,
-      'platform' : platform,
-      'version' : version,
-    };
-
-    DebugWriter.info(parameters);
-    var uri = Uri.http(_sosmedBaseUrl, path, parameters);
-    var request = new http.MultipartRequest("POST", uri);
-
-    int countAttachments = Utils.safeLenght(attachments);
-    for(int i=0 ; i < countAttachments ; i++){
-      //final File file = File(pickedFile.path);
-      File imageFile = File(attachments.elementAt(i));
-      if(imageFile != null){
-        bool exist = imageFile.existsSync();
-        if(exist){
-          var stream = new http.ByteStream(DelegatingStream.typed(imageFile.openRead()));
-          var length = await imageFile.length();
-          var multipartFile = new http.MultipartFile('attachments[]', stream, length, filename: basename(imageFile.path));
-          request.files.add(multipartFile);
-          DebugWriter.info('create_text_attachments adding imageFile : '+imageFile.path+'  length : $length');
-        }else{
-          DebugWriter.info('create_text_attachments NOT adding imageFile[$i] existsSync : $exist');
-        }
-      }else{
-        DebugWriter.info('create_text_attachments NOT adding imageFile[$i] file is NULL');
-      }
-    }
-
-
-    //var msStream = request.finalize();
-    var totalByteLength = request.contentLength;
-    //request.contentLength = totalByteLength;
-
-    //request.headers.set(HttpHeaders.contentTypeHeader, requestMultipart.headers[HttpHeaders.contentTypeHeader]);
-    int byteCount = 0;
-    // Stream<List<int>> streamUpload = msStream.transform(
-    //   new StreamTransformer.fromHandlers(
-    //     handleData: (data, sink) {
-    //       sink.add(data);
-    //
-    //       byteCount += data.length;
-    //       DebugWriter.info('onUploadProgress : $byteCount / $totalByteLength');
-    //       // if (onUploadProgress != null) {
-    //       //   onUploadProgress(byteCount, totalByteLength);
-    //       //   // CALL STATUS CALLBACK;
-    //       // }
-    //     },
-    //     handleError: (error, stack, sink) {
-    //       throw error;
-    //     },
-    //     handleDone: (sink) {
-    //       sink.close();
-    //       // UPLOAD DONE;
-    //     },
-    //   ),
-    // );
-
-    //await request.addStream(streamUpload);
-    //request.headers.addAll(headers);
-
-    // asli
-    var response = await request.send();
-
-    // coba progress upload
-    /*
-    var response = request.send();
-    await response.asStream().transform(new StreamTransformer.fromHandlers(
-      handleData: (data, sink) {
-        sink.add(data);
-
-        byteCount += data.contentLength;
-        DebugWriter.info('onUploadProgress : $byteCount / $totalByteLength');
-        // if (onUploadProgress != null) {
-        //   onUploadProgress(byteCount, totalByteLength);
-        //   // CALL STATUS CALLBACK;
-        // }
-      },
-      handleError: (error, stack, sink) {
-        throw error;
-      },
-      handleDone: (sink) {
-        sink.close();
-        // UPLOAD DONE;
-      },
-    ));
-    */
-    DebugWriter.info('create_text_attachments --> response.statusCode : ' + response.statusCode.toString());
-    if (response.statusCode == 200) {
-      // await for (var value in response.stream) {
-      //   sum += value;
-      // }
-
-       final body = await response.stream.bytesToString();
-      //var body = await http.Response.fromStream(response);
-
-      SubmitCreateText result = SubmitCreateText.fromJson(jsonDecode(body));
-
-      return result;
-
-      /*
-      response.stream.transform(utf8.decoder).listen((body) {
-        DebugWriter.info('create_text_attachments --> ' + body);
-
-        SubmitCreateText result = SubmitCreateText.fromJson(jsonDecode(body));
-
-        return result;
-      });
-      */
-    } else {
-      throw Exception('Error : ' + response.statusCode.toString() + '  ' + response.reasonPhrase);
-    }
-
-
-
-    /*
-    final response = await http.post(uri).timeout(Duration(seconds: timeout_in_seconds));
-
-    if (response.statusCode == 200) {
-      DebugWriter.info('create_text --> '+response.body);
-
-      SubmitCreateText result = SubmitCreateText.fromJson(jsonDecode(response.body));
-
-      return result;
-    } else {
-      throw Exception('Error : ' + response.statusCode.toString() + '  ' + response.reasonPhrase);
-    }
-     */
-  }
-
-  static Future<SubmitCreateText> createPostText(String text,String access_token, String platform, String version,{String language=''}) async {
-
-    // if(Utils.safeLenght(attachments) > 0){
-    //   return await _createPostTextWithAttachments(text, attachments, access_token, platform, version);
-    // }
-    String path = 'api/posts/create';
-    DebugWriter.info('path = $_sosmedBaseUrl/$path');
-
-    var parameters = {
-      'access_token': access_token,
-      'type': 'TEXT',
-      'text': text,
-
-      'language' : language,
-      'platform' : platform,
-      'version' : version,
-    };
-    var uri = Uri.http(_sosmedBaseUrl, path, parameters);
-    final response = await http.post(uri).timeout(Duration(seconds: sosmed_timeout_in_seconds));
-
-    /*
-    {
-      "status": 200,
-      "message": "Poll created!",
-      "result": {
-        "user_id": 1,
-        "post_poll_id": "1",
-        "updated_at": "2021-07-27T15:35:36.000000Z",
-        "created_at": "2021-07-27T15:35:36.000000Z",
-        "id": 8
-      }
-    }
-    */
-    if (response.statusCode == 200) {
-      DebugWriter.info('create_text --> '+response.body);
-
-      SubmitCreateText result = SubmitCreateText.fromJson(jsonDecode(response.body));
-
-      return result;
-    } else {
-      throw Exception('Error : ' + response.statusCode.toString() + '  ' + response.reasonPhrase);
-    }
-  }
-
-  static Future<SubmitCreateTransaction> createPostTransaction(
-      String code, String transaction_type, int buy_price, int sell_price,
-      String text, String order_id, String publish_time, String order_date,
-      String access_token, String platform, String version,
-      {String language=''}) async {
-
-    String path = 'api/posts/create';
-    DebugWriter.info('path = $_sosmedBaseUrl/$path');
-
-    var parameters = {
-      'access_token': access_token,
-      'type': 'TRANSACTION',
-      'code': code,
-      'start_price': buy_price.toString(),
-      'transaction_type': transaction_type, // BUY  or SELL
-      'text': text,
-      'sell_price': sell_price.toString(),
-
-      'publish_time' : publish_time, // NOW  or PENDING
-      'order_id' : order_id,
-      'order_date' : order_date,
-
-
-      'language' : language,
-      'platform' : platform,
-      'version' : version,
-    };
-
-    DebugWriter.info(parameters);
-    final response = await http.post(Uri.http(_sosmedBaseUrl, path, parameters)).timeout(Duration(seconds: sosmed_timeout_in_seconds));
-    /*
-    {
-        "status": 200,
-        "message": "Post created!",
-        "result": {
-            "slug": "TRANSACTION-1627543115-3919",
-            "user_id": 1,
-            "type": "TRANSACTION",
-            "text": "Coba beli",
-            "code": "BBCA",
-            "start_price": "32500",
-            "transaction_type": "BUY",
-            "sell_price": 0,
-            "updated_at": "2021-07-29T07:18:35.000000Z",
-            "created_at": "2021-07-29T07:18:35.000000Z",
-            "id": 55,
-            "polls": [],
-            "top_comments": [],
-            "liked": false,
-            "voted": false
-        }
-    }
-    */
-    if (response.statusCode == 200) {
-      // If the server did return a 200 OK response,
-      // then parse the JSON.
-      DebugWriter.info('create_transaction --> '+response.body);
-
-      SubmitCreateTransaction result = SubmitCreateTransaction.fromJson(jsonDecode(response.body));
-
-      return result;
-    } else {
-      // If the server did not return a 200 OK response,
-      throw Exception('Error : ' + response.statusCode.toString() + '  ' + response.reasonPhrase);
-    }
-  }
-
-  static Future<SubmitCreatePolls> createPostPoll(String text,List<String> polls, String expire_at, String access_token, String platform, String version,{String language=''}) async {
-
-    String path = 'api/posts/create';
-    DebugWriter.info('path = $_sosmedBaseUrl/$path');
-
-    var parameters = {
-      'access_token': access_token,
-      'type': 'POLL',
-      'text': text,
-      'expired_at': expire_at,
-      'polls': polls.join(','),
-
-
-      'language' : language,
-      'platform' : platform,
-      'version' : version,
-    };
-    DebugWriter.info(parameters);
-    final response = await http.post(Uri.http(_sosmedBaseUrl, path, parameters)).timeout(Duration(seconds: sosmed_timeout_in_seconds));
-    /*
-    {
-      "status": 200,
-      "message": "200_post_created",
-      "result": {
-          "slug": "POLL-1627488135-805",
-          "user_id": 1,
-          "type": "POLL",
-          "text": "Pada dapat BBCA gk?",
-          "updated_at": "2021-07-28T16:02:15.000000Z",
-          "created_at": "2021-07-28T16:02:15.000000Z",
-          "id": 15,
-          "polls": [
-              {
-                  "id": 7,
-                  "post_id": 15,
-                  "text": "YA",
-                  "count": 0,
-                  "created_at": "2021-07-28T16:02:15.000000Z",
-                  "updated_at": "2021-07-28T16:02:15.000000Z"
-              },
-              {
-                  "id": 8,
-                  "post_id": 15,
-                  "text": "TIDAK",
-                  "count": 0,
-                  "created_at": "2021-07-28T16:02:15.000000Z",
-                  "updated_at": "2021-07-28T16:02:15.000000Z"
-              }
-          ],
-          "top_comments": []
-      }
-    }
-    */
-    if (response.statusCode == 200) {
-      // If the server did return a 200 OK response,
-      // then parse the JSON.
-      DebugWriter.info('create_polls --> '+response.body);
-
-      SubmitCreatePolls result = SubmitCreatePolls.fromJson(jsonDecode(response.body));
-
-      return result;
-    } else {
-      // If the server did not return a 200 OK response,
-      throw Exception('Error : ' + response.statusCode.toString() + '  ' + response.reasonPhrase);
-    }
-  }
-  static Future<SubmitCreatePrediction> createPostPrediction(String transaction_type,
-      String text, String code, int start_price, int target_price,  String expire_at, String access_token,
-      String platform, String version,{String language=''}) async {
-
-    String path = 'api/posts/create';
-    DebugWriter.info('path = $_sosmedBaseUrl/$path');
-
-    var parameters = {
-      'access_token': access_token,
-      'type': 'PREDICTION',
-      'text': text,
-      'code': code,
-      'transaction_type': transaction_type,
-      'target_price': target_price.toString(),
-      'start_price': start_price.toString(),
-      'expired_at': expire_at,
-
-
-
-      'language' : language,
-      'platform' : platform,
-      'version' : version,
-    };
-    DebugWriter.info(parameters);
-    final response = await http.post(Uri.http(_sosmedBaseUrl, path, parameters)).timeout(Duration(seconds: sosmed_timeout_in_seconds));
-    /*
-    {
-      "status": 200,
-      "message": "200_post_created",
-      "result": {
-          "slug": "POLL-1627488135-805",
-          "user_id": 1,
-          "type": "POLL",
-          "text": "Pada dapat BBCA gk?",
-          "updated_at": "2021-07-28T16:02:15.000000Z",
-          "created_at": "2021-07-28T16:02:15.000000Z",
-          "id": 15,
-          "polls": [
-              {
-                  "id": 7,
-                  "post_id": 15,
-                  "text": "YA",
-                  "count": 0,
-                  "created_at": "2021-07-28T16:02:15.000000Z",
-                  "updated_at": "2021-07-28T16:02:15.000000Z"
-              },
-              {
-                  "id": 8,
-                  "post_id": 15,
-                  "text": "TIDAK",
-                  "count": 0,
-                  "created_at": "2021-07-28T16:02:15.000000Z",
-                  "updated_at": "2021-07-28T16:02:15.000000Z"
-              }
-          ],
-          "top_comments": []
-      }
-    }
-    */
-    if (response.statusCode == 200) {
-      // If the server did return a 200 OK response,
-      // then parse the JSON.
-      DebugWriter.info('create_prediction --> '+response.body);
-
-      SubmitCreatePrediction result = SubmitCreatePrediction.fromJson(jsonDecode(response.body));
-
-      return result;
-    } else {
-      // If the server did not return a 200 OK response,
-      throw Exception('Error : ' + response.statusCode.toString() + '  ' + response.reasonPhrase);
-    }
-  }
-}
-*/
-
 class TradingHttp {
-  Token token = Token('', '');
+  Token? token = Token('', '');
 
   // bali
   // final String _tradingBaseUrl = 'dev.buanacapital.com:8888';
@@ -747,21 +106,21 @@ class TradingHttp {
   static int trading_timeout_in_seconds = 60;
 
   TradingHttp() {
-    token.load();
+    token?.load();
   }
 
   bool hasToken() {
-    return !StringUtils.isEmtpy(token.access_token) &&
-        !StringUtils.isEmtpy(token.refresh_token);
+    return !StringUtils.isEmtpy(token?.access_token) &&
+        !StringUtils.isEmtpy(token?.refresh_token);
   }
 
   //String get refresh_token => _refresh_token;
-  String get refresh_token => token.refresh_token;
+  String? get refresh_token => token?.refresh_token;
 
   String get tradingBaseUrl => _tradingBaseUrl;
   //TODO : ACCESS TOKEN
   //String get access_token => _access_token;
-  String get access_token => token.access_token;
+  String? get access_token => token?.access_token;
 
   // set tradingBaseUrlNew(String newUrl) {
   //   _tradingBaseUrl = newUrl;
@@ -772,14 +131,14 @@ class TradingHttp {
   // ====================================================================
 
   Future<FetchComment> sosmedFetchComment(String filterPostId,
-      /*String access_token,*/ String platform, String version,
-      {int page, String language = ''}) async {
+      /*String access_token,*/ String? platform, String? version,
+      {int? page, String language = ''}) async {
     String path = 'api/post-comments';
     DebugWriter.info('path = $_sosmedBaseUrl/$path');
     var parameters;
     if (page != null) {
       parameters = {
-        'access_token': token.access_token,
+        'access_token': token?.access_token,
         'filter_post_id': filterPostId,
         'page': page.toString(),
         'language': language,
@@ -788,7 +147,7 @@ class TradingHttp {
       };
     } else {
       parameters = {
-        'access_token': token.access_token,
+        'access_token': token?.access_token,
         'filter_post_id': filterPostId,
         'language': language,
         'platform': platform,
@@ -810,7 +169,7 @@ class TradingHttp {
           FetchComment.fromJson(jsonDecode(response.body));
 
       DebugWriter.info('fetch_comment --> \n' + fetchComment.toString());
-      // String _access_token = user.token.access_token;
+      // String _access_token = user.token?.access_token;
       // String _refresh_token = user.token.refresh_token;
       // token.update(_access_token, _refresh_token);
       // token.save();
@@ -827,14 +186,14 @@ class TradingHttp {
   }
 
   Future<FetchPost> sosmedFetchPost(
-      /*String access_token,*/ String platform, String version,
-      {int page, String language = '', bool mine = false}) async {
+      /*String access_token,*/ String? platform, String? version,
+      {int? page, String? language = '', bool mine = false}) async {
     String path = 'api/posts';
     DebugWriter.info('path = $_sosmedBaseUrl/$path');
     var parameters;
     if (page != null) {
       parameters = {
-        'access_token': token.access_token,
+        'access_token': token?.access_token,
         'page': page.toString(),
         'mine': (mine ? '1' : ''),
         'language': language,
@@ -843,7 +202,7 @@ class TradingHttp {
       };
     } else {
       parameters = {
-        'access_token': token.access_token,
+        'access_token': token?.access_token,
         'mine': (mine ? '1' : ''),
         'language': language,
         'platform': platform,
@@ -864,7 +223,7 @@ class TradingHttp {
       FetchPost fetchPost = FetchPost.fromJson(jsonDecode(response.body));
 
       DebugWriter.info('fetch_post --> \n' + fetchPost.toString());
-      // String _access_token = user.token.access_token;
+      // String _access_token = user.token?.access_token;
       // String _refresh_token = user.token.refresh_token;
       // token.update(_access_token, _refresh_token);
       // token.save();
@@ -886,7 +245,7 @@ class TradingHttp {
     DebugWriter.info('path = $_sosmedBaseUrl/$path');
 
     var parameters = {
-      'access_token': token.access_token,
+      'access_token': token?.access_token,
       'id': id.toString(),
       'language': language,
       'platform': platform,
@@ -919,7 +278,7 @@ class TradingHttp {
     DebugWriter.info('path = $_sosmedBaseUrl/$path');
 
     var parameters = {
-      'access_token': token.access_token,
+      'access_token': token?.access_token,
       'user_id': userId.toString(),
       'state': flag ? '1' : '0',
       'language': language,
@@ -946,14 +305,14 @@ class TradingHttp {
     }
   }
 
-  Future<SubmitLike> sosmedLike(bool flag, /*String access_token,*/ int postId,
-      String platform, String version,
+  Future<SubmitLike>? sosmedLike(bool flag,
+      /*String access_token,*/ int? postId, String? platform, String? version,
       {String language = ''}) async {
     String path = 'api/posts/like';
     DebugWriter.info('path = $_sosmedBaseUrl/$path');
 
     var parameters = {
-      'access_token': token.access_token,
+      'access_token': token?.access_token,
       'post_id': postId.toString(),
       //'flag': flag.toString(),
       'state': flag ? '1' : '0',
@@ -976,7 +335,7 @@ class TradingHttp {
       SubmitLike result = SubmitLike.fromJson(jsonDecode(response.body));
 
       //print('fetch_post --> \n'+fetchPost.toString());
-      // String _access_token = user.token.access_token;
+      // String _access_token = user.token?.access_token;
       // String _refresh_token = user.token.refresh_token;
       // token.update(_access_token, _refresh_token);
       // token.save();
@@ -993,14 +352,14 @@ class TradingHttp {
     }
   }
 
-  Future<SubmitVote> sosmedVote(
-      /*String access_token,*/ int pollId, String platform, String version,
+  Future<SubmitVote>? sosmedVote(
+      /*String access_token,*/ int? pollId, String? platform, String? version,
       {String language = ''}) async {
     String path = 'api/posts/vote';
     DebugWriter.info('path = $_sosmedBaseUrl/$path');
 
     var parameters = {
-      'access_token': token.access_token,
+      'access_token': token?.access_token,
       'post_poll_id': pollId.toString(),
       'language': language,
       'platform': platform,
@@ -1032,7 +391,7 @@ class TradingHttp {
       SubmitVote result = SubmitVote.fromJson(jsonDecode(response.body));
 
       //print('fetch_post --> \n'+fetchPost.toString());
-      // String _access_token = user.token.access_token;
+      // String _access_token = user.token?.access_token;
       // String _refresh_token = user.token.refresh_token;
       // token.update(_access_token, _refresh_token);
       // token.save();
@@ -1049,11 +408,11 @@ class TradingHttp {
     }
   }
 
-  Future<SubmitCreateComment> sosmedCreateComment(
+  Future<SubmitCreateComment>? sosmedCreateComment(
       /*String access_token,*/ int postId,
       String text,
-      String platform,
-      String version,
+      String? platform,
+      String? version,
       {String language = ''}) async {
     String path = 'api/post-comments/create';
     DebugWriter.info('path = $_sosmedBaseUrl/$path');
@@ -1093,7 +452,7 @@ class TradingHttp {
           SubmitCreateComment.fromJson(jsonDecode(response.body));
 
       //print('fetch_post --> \n'+fetchPost.toString());
-      // String _access_token = user.token.access_token;
+      // String _access_token = user.token?.access_token;
       // String _refresh_token = user.token.refresh_token;
       // token.update(_access_token, _refresh_token);
       // token.save();
@@ -1110,17 +469,17 @@ class TradingHttp {
     }
   }
 
-  Future<SubmitCreateText> sosmedCreatePostTextWithAttachments(
+  Future<SubmitCreateText>? sosmedCreatePostTextWithAttachments(
       String text,
       List<String> attachments,
-      /*String access_token,*/ String platform,
-      String version,
+      /*String access_token,*/ String? platform,
+      String? version,
       {String language = ''}) async {
     String path = 'api/posts/create';
     DebugWriter.info('path = $_sosmedBaseUrl/$path');
 
     var parameters = {
-      'access_token': token.access_token,
+      'access_token': token?.access_token,
       'type': 'TEXT',
       'text': text,
       'language': language,
@@ -1136,7 +495,7 @@ class TradingHttp {
     for (int i = 0; i < countAttachments; i++) {
       //final File file = File(pickedFile.path);
       String filePath = attachments.elementAt(i);
-      imageTools.Image imageFile = Utils.resizeImage(filePath);
+      imageTools.Image? imageFile = Utils.resizeImage(filePath);
 
       //File imageFile = File(attachments.elementAt(i));
       if (imageFile != null) {
@@ -1182,11 +541,11 @@ class TradingHttp {
     */
 
     //var msStream = request.finalize();
-    var totalByteLength = request.contentLength;
+    // var totalByteLength = request.contentLength;
     //request.contentLength = totalByteLength;
 
     //request.headers.set(HttpHeaders.contentTypeHeader, requestMultipart.headers[HttpHeaders.contentTypeHeader]);
-    int byteCount = 0;
+    // int byteCount = 0;
     // Stream<List<int>> streamUpload = msStream.transform(
     //   new StreamTransformer.fromHandlers(
     //     handleData: (data, sink) {
@@ -1284,7 +643,7 @@ class TradingHttp {
   }
 
   Future<SubmitCreateText> sosmedCreatePostText(
-      String text, /*String access_token,*/ String platform, String version,
+      String text, /*String access_token,*/ String? platform, String? version,
       {String language = ''}) async {
     // if(Utils.safeLenght(attachments) > 0){
     //   return await _createPostTextWithAttachments(text, attachments, access_token, platform, version);
@@ -1293,7 +652,7 @@ class TradingHttp {
     DebugWriter.info('path = $_sosmedBaseUrl/$path');
 
     var parameters = {
-      'access_token': token.access_token,
+      'access_token': token?.access_token,
       'type': 'TEXT',
       'text': text,
       'language': language,
@@ -1332,17 +691,17 @@ class TradingHttp {
     }
   }
 
-  Future<SubmitCreateTransaction> sosmedCreatePostTransaction(
-      String code,
+  Future<SubmitCreateTransaction>? sosmedCreatePostTransaction(
+      String? code,
       String transactionType,
-      int buyPrice,
-      int sellPrice,
+      int? buyPrice,
+      int? sellPrice,
       String text,
-      String orderId,
+      String? orderId,
       String publishTime,
-      String orderDate,
-      String platform,
-      String version,
+      String? orderDate,
+      String? platform,
+      String? version,
       {String language = ''}) async {
     String path = 'api/posts/create';
     DebugWriter.info('path = $_sosmedBaseUrl/$path');
@@ -1409,12 +768,12 @@ class TradingHttp {
     }
   }
 
-  Future<SubmitCreatePolls> sosmedCreatePostPoll(
+  Future<SubmitCreatePolls>? sosmedCreatePostPoll(
       String text,
       List<String> polls,
       String expireAt,
-      /*String access_token,*/ String platform,
-      String version,
+      /*String access_token,*/ String? platform,
+      String? version,
       {String language = ''}) async {
     String path = 'api/posts/create';
     DebugWriter.info('path = $_sosmedBaseUrl/$path');
@@ -1485,7 +844,7 @@ class TradingHttp {
     }
   }
 
-  Future<SubmitCreatePrediction> sosmedCreatePostPrediction(
+  Future<SubmitCreatePrediction>? sosmedCreatePostPrediction(
       String transactionType,
       String text,
       String code,
@@ -1493,8 +852,8 @@ class TradingHttp {
       int targetPrice,
       String expireAt,
       /*String access_token,*/
-      String platform,
-      String version,
+      String? platform,
+      String? version,
       {String language = ''}) async {
     String path = 'api/posts/create';
     DebugWriter.info('path = $_sosmedBaseUrl/$path');
@@ -1571,15 +930,15 @@ class TradingHttp {
   // ====================================================================
 
   Future<RegisterReply> register(
-      String username,
-      String realname,
-      String handphone,
-      String email,
-      String password,
-      String referral,
-      String platform,
-      String version,
-      {String invitation = ''}) async {
+      String? username,
+      String? realname,
+      String? handphone,
+      String? email,
+      String? password,
+      String? referral,
+      String? platform,
+      String? version,
+      {String? invitation = ''}) async {
     //POST: http://investrend-prod.teltics.in:8888/register
 
     /*
@@ -1617,9 +976,9 @@ class TradingHttp {
       // then parse the JSON.
       DebugWriter.info('register --> ' + response.body);
       //return response.body;
-      Map<String, dynamic> parsedJson = jsonDecode(response.body);
-      return RegisterReply(
-          parsedJson['message'], parsedJson['username'], parsedJson['email']);
+      Map<String, dynamic>? parsedJson = jsonDecode(response.body);
+      return RegisterReply(parsedJson?['message'], parsedJson?['username'],
+          parsedJson?['email']);
     } else {
       // If the server did not return a 200 OK response,
       // then throw an exception.
@@ -1631,7 +990,7 @@ class TradingHttp {
   }
 
   Future<RegisterReply> registerPin(
-      String username, String pin, String platform, String version) async {
+      String? username, String? pin, String? platform, String? version) async {
     //POST: http://investrend-prod.teltics.in:8888/registerpin
     /*
     {
@@ -1682,7 +1041,7 @@ class TradingHttp {
       DebugWriter.info('Error : ' +
           response.statusCode.toString() +
           '  ' +
-          response.reasonPhrase);
+          response.reasonPhrase!);
       // If the server did not return a 200 OK response,
       // then throw an exception.
       //throw HttpException('Error : '+response.statusCode.toString()+'  '+response.reasonPhrase);
@@ -1692,8 +1051,8 @@ class TradingHttp {
     }
   }
 
-  Future<RegisterReply> changePin(String username, String pinOld, String pinNew,
-      String platform, String version) async {
+  Future<RegisterReply> changePin(String? username, String? pinOld,
+      String? pinNew, String? platform, String? version) async {
     //POST: http://investrend-prod.teltics.in:8888/registerpin
     /*
     {
@@ -1727,7 +1086,7 @@ class TradingHttp {
     //
     // final response = await http.post(Uri.https(_tradingBaseUrl, 'changepin'), headers: {"Content-Type": "application/json"}, body: body);
 
-    String auth = 'Bearer ' + token.access_token;
+    String auth = 'Bearer ' + token!.access_token!;
     var headers = {"Content-Type": "application/json", 'Authorization': auth};
 
     Map data = {
@@ -1760,7 +1119,7 @@ class TradingHttp {
       DebugWriter.info('Error : ' +
           response.statusCode.toString() +
           '  ' +
-          response.reasonPhrase);
+          response.reasonPhrase!);
       // If the server did not return a 200 OK response,
       // then throw an exception.
       //throw HttpException('Error : '+response.statusCode.toString()+'  '+response.reasonPhrase);
@@ -1770,11 +1129,11 @@ class TradingHttp {
     }
   }
 
-  Future<RegisterReply> changePassword(String username, String passwordOld,
-      String passwordNew, String platform, String version) async {
+  Future<RegisterReply> changePassword(String? username, String? passwordOld,
+      String? passwordNew, String? platform, String? version) async {
     //POST: http://investrend-prod.teltics.in:8888/registerpin
 
-    String auth = 'Bearer ' + token.access_token;
+    String? auth = 'Bearer ' + token!.access_token!;
     var headers = {"Content-Type": "application/json", 'Authorization': auth};
 
     Map data = {
@@ -1807,7 +1166,7 @@ class TradingHttp {
       DebugWriter.info('Error : ' +
           response.statusCode.toString() +
           '  ' +
-          response.reasonPhrase);
+          response.reasonPhrase!);
       // If the server did not return a 200 OK response,
       // then throw an exception.
       //throw HttpException('Error : '+response.statusCode.toString()+'  '+response.reasonPhrase);
@@ -1818,7 +1177,7 @@ class TradingHttp {
   }
 
   Future<User> login(
-      String email, String password, String platform, String version) async {
+      String email, String password, String? platform, String? version) async {
     //POST: 192.168.110.213:8888/login
     // Map data;
     // if(username.contains("@")){
@@ -1882,10 +1241,10 @@ class TradingHttp {
 
       User user = User.fromJson(jsonDecode(response.body));
 
-      String AccessToken = user.token.access_token;
-      String RefreshToken = user.token.refresh_token;
-      token.update(AccessToken, RefreshToken);
-      token.save();
+      String? AccessToken = user.token?.access_token;
+      String? RefreshToken = user.token?.refresh_token;
+      token?.update(AccessToken, RefreshToken);
+      token?.save();
       return user;
     } else {
       // If the server did not return a 200 OK response,
@@ -1898,12 +1257,12 @@ class TradingHttp {
     // }
   }
 
-  Future<User> refresh(String platform, String version,
-      {String refresh_token /*, String device=''*/}) async {
+  Future<User> refresh(String? platform, String? version,
+      {String? refresh_token /*, String device=''*/}) async {
     //POST: 192.168.110.213:8888/refresh
 
     if (StringUtils.isEmtpy(refresh_token)) {
-      refresh_token = token.refresh_token;
+      refresh_token = token?.refresh_token;
     }
     Map data = {
       "refresh_token": refresh_token,
@@ -1928,10 +1287,10 @@ class TradingHttp {
       DebugWriter.info('refresh --> ' + response.body);
 
       User user = User.fromJson(jsonDecode(response.body));
-      String AccessToken = user.token.access_token;
-      String RefreshToken = user.token.refresh_token;
-      token.update(AccessToken, RefreshToken);
-      token.save();
+      String? AccessToken = user.token?.access_token;
+      String? RefreshToken = user.token?.refresh_token;
+      token?.update(AccessToken, RefreshToken);
+      token?.save();
       return user;
     } else {
       // If the server did not return a 200 OK response,
@@ -1944,9 +1303,9 @@ class TradingHttp {
     }
   }
 
-  Future<String> updateBiography(
-      String biography, String platform, String version) async {
-    String auth = 'Bearer ' + token.access_token;
+  Future<String?>? updateBiography(
+      String? biography, String? platform, String? version) async {
+    String? auth = 'Bearer ' + token!.access_token!;
     var headers = {"Content-Type": "application/json", 'Authorization': auth};
 
     Map data = {"bio": biography, "platform": platform, "version": version};
@@ -1970,8 +1329,8 @@ class TradingHttp {
       "username": "richy"
       */
       var parsedJson = jsonDecode(response.body);
-      String message = '';
-      String username = '';
+      String? message = '';
+      String? username = '';
       if (parsedJson != null) {
         message = StringUtils.noNullString(parsedJson['message']);
         username = StringUtils.noNullString(parsedJson['username']);
@@ -1985,8 +1344,8 @@ class TradingHttp {
     }
   }
 
-  Future<String> logout(String platform, String version) async {
-    String auth = 'Bearer ' + token.access_token;
+  Future<String?> logout(String? platform, String? version) async {
+    String? auth = 'Bearer ' + token!.access_token!;
     var headers = {"Content-Type": "application/json", 'Authorization': auth};
 
     Map data = {"platform": platform, "version": version};
@@ -2007,7 +1366,7 @@ class TradingHttp {
       // If the server did return a 200 OK response,
       // then parse the JSON.
       //listWorldIndices.clear();
-      Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      Map<String, dynamic>? parsedJson = jsonDecode(response.body);
       if (parsedJson != null) {
         return StringUtils.noNullString(parsedJson['message']);
       }
@@ -2022,8 +1381,9 @@ class TradingHttp {
     }
   }
 
-  Future<String> loginPin(String pin, String platform, String version) async {
-    String auth = 'Bearer ' + token.access_token;
+  Future<String?> loginPin(
+      String pin, String? platform, String? version) async {
+    String? auth = 'Bearer ' + token!.access_token!;
     var headers = {"Content-Type": "application/json", 'Authorization': auth};
 
     Map data = {"pin": pin, "platform": platform, "version": version};
@@ -2044,7 +1404,7 @@ class TradingHttp {
       // If the server did return a 200 OK response,
       // then parse the JSON.
       //listWorldIndices.clear();
-      Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      Map<String, dynamic>? parsedJson = jsonDecode(response.body);
       if (parsedJson != null) {
         return StringUtils.noNullString(parsedJson['message']);
       }
@@ -2060,7 +1420,7 @@ class TradingHttp {
   }
 
   Future<Profile> getProfile(/*String platform, String version*/) async {
-    String auth = 'Bearer ' + token.access_token;
+    String? auth = 'Bearer ' + token!.access_token!;
     var headers = {"Content-Type": "application/json", 'Authorization': auth};
 
     // Map data = { "platform": platform, "version": version};
@@ -2114,9 +1474,9 @@ class TradingHttp {
     }
   }
 
-  Future<String> checkInvitation(
-      String code, String platform, String version) async {
-    String auth = 'Bearer ' + token.access_token;
+  Future<String?> checkInvitation(
+      String? code, String? platform, String? version) async {
+    String? auth = 'Bearer ' + token!.access_token!;
     var headers = {"Content-Type": "application/json", 'Authorization': auth};
 
     var parameters = {'code': code, 'platform': platform, 'version': version};
@@ -2149,7 +1509,7 @@ class TradingHttp {
       }
       */
       final parsedJson = jsonDecode(response.body);
-      String message = StringUtils.noNullString(parsedJson['message']);
+      String? message = StringUtils.noNullString(parsedJson['message']);
 
       return message;
     } else {
@@ -2161,8 +1521,8 @@ class TradingHttp {
   }
 
   Future<BankRDN> getBankRDN(
-      String account, String platform, String version) async {
-    String auth = 'Bearer ' + token.access_token;
+      String? account, String? platform, String? version) async {
+    String? auth = 'Bearer ' + token!.access_token!;
     var headers = {"Content-Type": "application/json", 'Authorization': auth};
 
     Map data = {"acct": account, "platform": platform, "version": version};
@@ -2204,9 +1564,9 @@ class TradingHttp {
       String bankname,
       String date,
       String message,
-      String platform,
-      String version) async {
-    String auth = 'Bearer ' + token.access_token;
+      String? platform,
+      String? version) async {
+    String? auth = 'Bearer ' + token!.access_token!;
     var headers = {"Content-Type": "application/json", 'Authorization': auth};
 
     Map data = {
@@ -2239,7 +1599,7 @@ class TradingHttp {
       // If the server did return a 200 OK response,
       // then parse the JSON.
       String message = '';
-      Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      Map<String, dynamic>? parsedJson = jsonDecode(response.body);
       if (parsedJson != null) {
         message = parsedJson['message'];
       }
@@ -2253,8 +1613,8 @@ class TradingHttp {
   }
 
   Future<BankAccount> getBankAcccount(
-      String account, String platform, String version) async {
-    String auth = 'Bearer ' + token.access_token;
+      String? account, String? platform, String? version) async {
+    String? auth = 'Bearer ' + token!.access_token!;
     var headers = {"Content-Type": "application/json", 'Authorization': auth};
 
     Map data = {"acct": account, "platform": platform, "version": version};
@@ -2284,18 +1644,18 @@ class TradingHttp {
   }
 
   Future<OrderReply> orderNew(
-      String reffID,
-      String broker,
-      String account,
-      String user,
-      String buySell,
-      String stock,
-      String board,
-      String prices,
-      String qtys,
-      String platform,
-      String version,
-      {int type = 0,
+      String? reffID,
+      String? broker,
+      String? account,
+      String? user,
+      String? buySell,
+      String? stock,
+      String? board,
+      String? prices,
+      String? qtys,
+      String? platform,
+      String? version,
+      {int? type = 0,
       int counter = 1}) async {
     //192.168.110.213:8888/ordernew
     /*
@@ -2323,7 +1683,7 @@ class TradingHttp {
     "price":100,"qty":10,"type":0,"counter":1,"platform":"mobile"}
 
     */
-    String auth = 'Bearer ' + token.access_token;
+    String? auth = 'Bearer ' + token!.access_token!;
     var headers = {"Content-Type": "application/json", 'Authorization': auth};
 
     Map data = {
@@ -2374,14 +1734,14 @@ class TradingHttp {
 
   Future<OrderReply> amend(
       String reffID,
-      String broker,
-      String account,
-      String user,
-      String orderid,
-      int price,
-      int qty,
-      String platform,
-      String version) async {
+      String? broker,
+      String? account,
+      String? user,
+      String? orderid,
+      int? price,
+      int? qty,
+      String? platform,
+      String? version) async {
     //192.168.110.213:8888/orderamend
     /*
     {
@@ -2395,7 +1755,7 @@ class TradingHttp {
     "qty": "25"
     }
     */
-    String auth = 'Bearer ' + token.access_token;
+    String? auth = 'Bearer ' + token!.access_token!;
     var headers = {"Content-Type": "application/json", 'Authorization': auth};
 
     Map data = {
@@ -2438,8 +1798,8 @@ class TradingHttp {
     }
   }
 
-  Future<String> withdraw(String reffID, String broker, String account,
-      String user, String orderid, String platform, String version) async {
+  Future<String> withdraw(String? reffID, String? broker, String? account,
+      String? user, String? orderid, String? platform, String? version) async {
     //192.168.110.213:8888/orderwithdraw
     /*
     {
@@ -2451,7 +1811,7 @@ class TradingHttp {
     "orderid": "B9"
     }
     */
-    String auth = 'Bearer ' + token.access_token;
+    String? auth = 'Bearer ' + token!.access_token!;
     var headers = {"Content-Type": "application/json", 'Authorization': auth};
 
     Map data = {
@@ -2489,9 +1849,9 @@ class TradingHttp {
     }
   }
 
-  Future<StockPosition> stock_position(String broker, String account,
-      String user, String platform, String version,
-      {String stock = ''}) async {
+  Future<StockPosition> stock_position(String? broker, String? account,
+      String? user, String? platform, String? version,
+      {String? stock = ''}) async {
     //192.168.110.213:8888/stockposition
     /*
     {
@@ -2503,7 +1863,7 @@ class TradingHttp {
     "orderid": "B9"
     }
     */
-    String auth = 'Bearer ' + token.access_token;
+    String? auth = 'Bearer ' + token!.access_token!;
     var headers = {"Content-Type": "application/json", 'Authorization': auth};
 
     Map data = {
@@ -2531,7 +1891,7 @@ class TradingHttp {
       StockPosition stockPosition =
           StockPosition.fromJson(jsonDecode(response.body));
       DebugWriter.info('stock_position parsed : ' +
-          stockPosition.accountcode +
+          stockPosition.accountcode! +
           '  stockList.size : ' +
           stockPosition.stockListSize().toString());
       return stockPosition;
@@ -2545,8 +1905,8 @@ class TradingHttp {
     }
   }
 
-  Future<CashPosition> cashPosition(String broker, String account, String user,
-      String platform, String version) async {
+  Future<CashPosition> cashPosition(String? broker, String? account,
+      String? user, String? platform, String? version) async {
     //192.168.110.213:8888/cashposition
     /*
     {
@@ -2558,7 +1918,7 @@ class TradingHttp {
     "orderid": "B9"
     }
     */
-    String auth = 'Bearer ' + token.access_token;
+    String? auth = 'Bearer ' + token!.access_token!;
     var headers = {"Content-Type": "application/json", 'Authorization': auth};
 
     Map data = {
@@ -2595,13 +1955,13 @@ class TradingHttp {
     }
   }
 
-  Future<List<OrderStatus>> orderStatus(String broker, String account,
-      String user, String platform, String version,
+  Future<List<OrderStatus>> orderStatus(String? broker, String? account,
+      String? user, String? platform, String? version,
       {String orderid = '',
       bool historical = false,
       String historicalFilterTransaction = '',
       String historicalFilterPeriod = '',
-      String stock = ''}) async {
+      String? stock = ''}) async {
     //192.168.110.213:8888/cashposition
     /*
     {
@@ -2613,7 +1973,7 @@ class TradingHttp {
     "orderid": "B9"
     }
     */
-    String auth = 'Bearer ' + token.access_token;
+    String? auth = 'Bearer ' + token!.access_token!;
     var headers = {"Content-Type": "application/json", 'Authorization': auth};
 
     Map data = {
@@ -2674,11 +2034,11 @@ class TradingHttp {
   }
 
   Future<List<StockHist>> list_stock_hist(
-    String broker,
-    String account,
-    String user,
-    String platform,
-    String version,
+    String? broker,
+    String? account,
+    String? user,
+    String? platform,
+    String? version,
   ) async {
     //192.168.110.213:8888/cashposition
     /*
@@ -2690,7 +2050,7 @@ class TradingHttp {
     "stock": "TAPG"
     }
     */
-    String auth = 'Bearer ' + token.access_token;
+    String? auth = 'Bearer ' + token!.access_token!;
     var headers = {"Content-Type": "application/json", 'Authorization': auth};
 
     Map data = {
@@ -2726,8 +2086,8 @@ class TradingHttp {
     }
   }
 
-  Future<ReportStockHistData> report_stock_hist(String broker, String account,
-      String user, String stock, String platform, String version,
+  Future<ReportStockHistData> report_stock_hist(String? broker, String? account,
+      String? user, String? stock, String? platform, String? version,
       {String bs = '', String from = '', String to = ''}) async {
     //192.168.110.213:8888/cashposition
     /*
@@ -2739,7 +2099,7 @@ class TradingHttp {
     "stock": "TAPG"
     }
     */
-    String auth = 'Bearer ' + token.access_token;
+    String? auth = 'Bearer ' + token!.access_token!;
     var headers = {"Content-Type": "application/json", 'Authorization': auth};
 
     Map data = {
@@ -2791,12 +2151,12 @@ class TradingHttp {
   }
 
   Future<ReportStockHistData> report_stock_today(
-    String broker,
-    String account,
-    String user,
-    String stock,
-    String platform,
-    String version,
+    String? broker,
+    String? account,
+    String? user,
+    String? stock,
+    String? platform,
+    String? version,
   ) async {
     //192.168.110.213:8888/cashposition
     /*
@@ -2808,7 +2168,7 @@ class TradingHttp {
     "stock": "TAPG"
     }
     */
-    String auth = 'Bearer ' + token.access_token;
+    String? auth = 'Bearer ' + token!.access_token!;
     var headers = {"Content-Type": "application/json", 'Authorization': auth};
 
     Map data = {
@@ -2856,8 +2216,8 @@ class TradingHttp {
     }
   }
 
-  Future<GroupedData> riwayatRDN(String broker, String account, String user,
-      String platform, String version) async {
+  Future<GroupedData> riwayatRDN(String? broker, String? account, String? user,
+      String? platform, String? version) async {
     //https://dev.buanacapital.com:8888/reportrdn
     /*
     {
@@ -2876,7 +2236,7 @@ class TradingHttp {
     }
 
     */
-    String auth = 'Bearer ' + token.access_token;
+    String? auth = 'Bearer ' + token!.access_token!;
     var headers = {"Content-Type": "application/json", 'Authorization': auth};
 
     Map data = {
@@ -2908,11 +2268,11 @@ class TradingHttp {
       final parsed = jsonDecode(response.body).cast<Map<String, dynamic>>();
       //result.datas = parsed.map<Mutasi>((json) => Mutasi.fromJson(json)).toList();
 
-      List<Mutasi> list =
+      List<Mutasi>? list =
           parsed.map<Mutasi>((json) => Mutasi.fromJson(json)).toList();
       int count = list != null ? list.length : 0;
       for (int i = 0; i < count; i++) {
-        Mutasi mutasi = list.elementAt(i);
+        Mutasi? mutasi = list?.elementAt(i);
         if (mutasi != null) {
           groupedData.addData(mutasi.monthYear, mutasi);
         }
@@ -2927,8 +2287,8 @@ class TradingHttp {
     }
   }
 
-  Future<RealizedStockData> realizedStock(String broker, String account,
-      String user, String range, String platform, String version) async {
+  Future<RealizedStockData> realizedStock(String? broker, String? account,
+      String? user, String? range, String? platform, String? version) async {
     //https://dev.buanacapital.com:8888/reportgainloss
     /*
     {
@@ -2947,7 +2307,7 @@ class TradingHttp {
     }
 
     */
-    String auth = 'Bearer ' + token.access_token;
+    String? auth = 'Bearer ' + token!.access_token!;
     var headers = {"Content-Type": "application/json", 'Authorization': auth};
 
     Map data = {
@@ -2980,8 +2340,8 @@ class TradingHttp {
         result.totalGL = Utils.safeDouble(parsed['totalGL']);
         var listRows = parsed['rows'] as List;
         DebugWriter.info(listRows.runtimeType); //returns List<dynamic>
-        List<RealizedStock> rowDatas =
-            listRows?.map((i) => RealizedStock.fromJson(i)).toList();
+        List<RealizedStock>? rowDatas =
+            listRows.map((i) => RealizedStock.fromJson(i)).toList();
         result.datas = rowDatas;
       }
       //final parsed = jsonDecode(response.body).cast<Map<String, dynamic>>();
@@ -2995,8 +2355,8 @@ class TradingHttp {
     }
   }
 
-  Future<PortfolioSummaryData> portfolioSummary(String broker, String account,
-      String user, String platform, String version) async {
+  Future<PortfolioSummaryData> portfolioSummary(String? broker, String? account,
+      String? user, String? platform, String? version) async {
     //https://dev.buanacapital.com:8888/reportsummary
     /*
     {
@@ -3034,7 +2394,7 @@ class TradingHttp {
 
 
     */
-    String auth = 'Bearer ' + token.access_token;
+    String? auth = 'Bearer ' + token!.access_token!;
     var headers = {"Content-Type": "application/json", 'Authorization': auth};
 
     Map data = {
@@ -3073,8 +2433,14 @@ class TradingHttp {
     }
   }
 
-  Future<List<OpenOrder>> openOrder(String broker, String account, String user,
-      String stock, String buySell, String platform, String version) async {
+  Future<List<OpenOrder>> openOrder(
+      String? broker,
+      String? account,
+      String? user,
+      String? stock,
+      String? buySell,
+      String? platform,
+      String? version) async {
     //192.168.110.213:8888/cashposition
     /*
     {
@@ -3086,7 +2452,7 @@ class TradingHttp {
     "orderid": "B9"
     }
     */
-    String auth = 'Bearer ' + token.access_token;
+    String? auth = 'Bearer ' + token!.access_token!;
     var headers = {"Content-Type": "application/json", 'Authorization': auth};
 
     Map data = {
@@ -3155,10 +2521,10 @@ class TradingHttp {
   Future<List<TradeStatusSummary>> tradeStatusSummary(
       String broker,
       String account,
-      String user,
+      String? user,
       String orderid,
-      String platform,
-      String version) async {
+      String? platform,
+      String? version) async {
     //192.168.110.213:8888/cashposition
     /*
     {
@@ -3169,7 +2535,7 @@ class TradingHttp {
     "period": "sum"
     }
     */
-    String auth = 'Bearer ' + token.access_token;
+    String? auth = 'Bearer ' + token!.access_token!;
     var headers = {"Content-Type": "application/json", 'Authorization': auth};
 
     Map data = {
@@ -3225,7 +2591,7 @@ class TradingHttp {
     "orderid": "B9"
     }
     */
-    String auth = 'Bearer ' + token.access_token;
+    String? auth = 'Bearer ' + token!.access_token!;
     var headers = {"Content-Type": "application/json", 'Authorization': auth};
 
     Map data = {
@@ -3267,11 +2633,11 @@ class TradingHttp {
   }
 
   Future<List<AccountStockPosition>> accountStockPosition(
-      String broker,
-      List<String> listAccounts,
-      String user,
-      String platform,
-      String version) async {
+      String? broker,
+      List<String>? listAccounts,
+      String? user,
+      String? platform,
+      String? version) async {
     //192.168.110.213:8888/cashposition
     /*
     {
@@ -3283,10 +2649,10 @@ class TradingHttp {
     "orderid": "B9"
     }
     */
-    String auth = 'Bearer ' + token.access_token;
+    String? auth = 'Bearer ' + token!.access_token!;
     var headers = {"Content-Type": "application/json", 'Authorization': auth};
 
-    String accounts = listAccounts.join('|');
+    String? accounts = listAccounts?.join('|');
     Map data = {
       "broker": broker,
       "acct": accounts,
@@ -3332,7 +2698,8 @@ class TradingHttp {
 
 class HttpIII {
   bool isLoaded = false;
-  ServerAddress serverAddress = ServerAddress('', '', '', 0, '', '', 0);
+  ServerAddress serverAddress =
+      ServerAddress('', null, null, '', '', 0, '', '', 0);
   HttpIII() {
     serverAddress.load().then((value) {
       this.isLoaded = true;
@@ -3351,7 +2718,7 @@ class HttpIII {
 
   String get baseUrlLocalhost => serverAddress.urlPortRequester();
 
-  Future<ChartOhlcvData> fetchChartOhlcv(String code, bool isIndex,
+  Future<ChartOhlcvData> fetchChartOhlcv(String? code, bool isIndex,
       {String from = '', String to = ''}) async {
     String type;
 
@@ -3388,17 +2755,17 @@ class HttpIII {
       //listWorldIndices.clear();
       DebugWriter.info('fetchChartOhlcv --> ' + response.body);
 
-      ChartOhlcvData data = ChartOhlcvData();
+      ChartOhlcvData? data = ChartOhlcvData();
       data.setRequestType(code, from, to);
-      Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      Map<String, dynamic>? parsedJson = jsonDecode(response.body);
       if (parsedJson != null) {
-        String message = parsedJson['message'];
-        var datas = parsedJson['datas'] as List;
+        // String message = parsedJson['message'];
+        List<dynamic>? datas = parsedJson['datas'] as List?;
         if (datas != null) {
           datas.forEach((parsedJson) {
             Ohlcv ohlcv = Ohlcv.fromJson(parsedJson);
             DebugWriter.info(ohlcv.toString());
-            if (ohlcv.close > 0) {
+            if (ohlcv.close! > 0) {
               data.addOhlcv(ohlcv);
             }
           });
@@ -3427,11 +2794,11 @@ class HttpIII {
       //throw HttpException('Error : '+response.statusCode.toString()+'  '+response.reasonPhrase);
       //throw Exception('Error : ' + response.statusCode.toString() + '  ' + response.reasonPhrase);
       throw Exception('Error : ' +
-          response.statusCode.toString() /*+ '  ' + response.reasonPhrase */);
+          response.statusCode.toString() /*+ '  ' + response.reasonPhrase! */);
     }
   }
 
-  Future<ChartLineData> fetchChartLine(String code, bool isIndex,
+  Future<ChartLineData> fetchChartLine(String? code, bool isIndex,
       {String from = '', String to = ''}) async {
     String type;
 
@@ -3470,15 +2837,15 @@ class HttpIII {
 
       ChartLineData data = ChartLineData();
       data.setRequestType(code, from, to);
-      Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      Map<String, dynamic>? parsedJson = jsonDecode(response.body);
       if (parsedJson != null) {
-        String message = parsedJson['message'];
-        var datas = parsedJson['datas'] as List;
+        String? message = parsedJson['message'];
+        List<dynamic>? datas = parsedJson['datas'] as List?;
         if (datas != null) {
           datas.forEach((parsedJson) {
             Line line = Line.fromJson(parsedJson);
             DebugWriter.info(line.toString());
-            if (line.close > 0) {
+            if (line.close! > 0) {
               data.addOhlcv(line);
             }
           });
@@ -3507,7 +2874,7 @@ class HttpIII {
       //throw HttpException('Error : '+response.statusCode.toString()+'  '+response.reasonPhrase);
       //throw Exception('Error : ' + response.statusCode.toString() + '  ' + response.reasonPhrase);
       throw Exception('Error : ' +
-          response.statusCode.toString() /*+ '  ' + response.reasonPhrase */);
+          response.statusCode.toString() /*+ '  ' + response.reasonPhrase! */);
     }
   }
 
@@ -3523,10 +2890,10 @@ class HttpIII {
       List<HomeWorldIndices> list =
           List<HomeWorldIndices>.empty(growable: true);
 
-      Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      Map<String, dynamic>? parsedJson = jsonDecode(response.body);
       if (parsedJson != null) {
         String message = parsedJson['message'];
-        var datas = parsedJson['datas'] as List;
+        var datas = parsedJson['datas'] as List?;
         if (datas != null) {
           datas.forEach((parsedJson) {
             list.add(HomeWorldIndices.fromJson(parsedJson));
@@ -3551,7 +2918,7 @@ class HttpIII {
       //throw HttpException('Error : '+response.statusCode.toString()+'  '+response.reasonPhrase);
       //throw Exception('Error : ' + response.statusCode.toString() + '  ' + response.reasonPhrase);
       throw Exception('Error : ' +
-          response.statusCode.toString() /*+ '  ' + response.reasonPhrase */);
+          response.statusCode.toString() /*+ '  ' + response.reasonPhrase! */);
     }
   }
 
@@ -3567,10 +2934,10 @@ class HttpIII {
 
       List<StockThemes> list = List<StockThemes>.empty(growable: true);
 
-      Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      Map<String, dynamic>? parsedJson = jsonDecode(response.body);
       if (parsedJson != null) {
-        String message = parsedJson['message'];
-        var datas = parsedJson['datas'] as List;
+        Null message = parsedJson['message'];
+        var datas = parsedJson['datas'] as List?;
         if (datas != null) {
           datas.forEach((parsedJson) {
             list.add(StockThemes.fromJson(parsedJson));
@@ -3596,7 +2963,7 @@ class HttpIII {
       //throw HttpException('Error : '+response.statusCode.toString()+'  '+response.reasonPhrase);
       //throw Exception('Error : ' + response.statusCode.toString() + '  ' + response.reasonPhrase);
       throw Exception('Error : ' +
-          response.statusCode.toString() /*+ '  ' + response.reasonPhrase */);
+          response.statusCode.toString() /*+ '  ' + response.reasonPhrase! */);
     }
   }
 
@@ -3614,14 +2981,14 @@ class HttpIII {
 
       HomeData homeData = HomeData();
 
-      Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      Map<String, dynamic>? parsedJson = jsonDecode(response.body);
       if (parsedJson != null) {
-        String message = parsedJson['message'];
-        var datas = parsedJson['datas'] as List;
+        Null message = parsedJson['message'];
+        var datas = parsedJson['datas'] as List?;
         if (datas != null) {
           datas.forEach((parsedJson) {
-            String group = StringUtils.noNullString(parsedJson['group']);
-            String code = StringUtils.noNullString(parsedJson['code']);
+            String? group = StringUtils.noNullString(parsedJson['group']);
+            String? code = StringUtils.noNullString(parsedJson['code']);
             double price = Utils.safeDouble(parsedJson['price']);
             double change = Utils.safeDouble(parsedJson['change']);
             double percentChange =
@@ -3683,7 +3050,7 @@ class HttpIII {
       //throw HttpException('Error : '+response.statusCode.toString()+'  '+response.reasonPhrase);
       //throw Exception('Error : ' + response.statusCode.toString() + '  ' + response.reasonPhrase);
       throw Exception('Error : ' +
-          response.statusCode.toString() /*+ '  ' + response.reasonPhrase */);
+          response.statusCode.toString() /*+ '  ' + response.reasonPhrase! */);
     }
   }
 
@@ -3701,15 +3068,15 @@ class HttpIII {
 
       GroupedData groupedData = GroupedData();
 
-      Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      Map<String, dynamic>? parsedJson = jsonDecode(response.body);
       if (parsedJson != null) {
-        String message = parsedJson['message'];
-        var datas = parsedJson['datas'] as List;
+        Null message = parsedJson['message'];
+        var datas = parsedJson['datas'] as List?;
         if (datas != null) {
           datas.forEach((parsedJson) {
-            String group = StringUtils.noNullString(parsedJson['group']);
-            String code = StringUtils.noNullString(parsedJson['code']);
-            String name = StringUtils.noNullString(parsedJson['name']);
+            String? group = StringUtils.noNullString(parsedJson['group']);
+            String? code = StringUtils.noNullString(parsedJson['code']);
+            String? name = StringUtils.noNullString(parsedJson['name']);
             double open = Utils.safeDouble(parsedJson['open']);
             double hi = Utils.safeDouble(parsedJson['hi']);
             double low = Utils.safeDouble(parsedJson['low']);
@@ -3717,10 +3084,10 @@ class HttpIII {
             double change = Utils.safeDouble(parsedJson['change']);
             double percentChange =
                 Utils.safeDouble(parsedJson['percentChange']);
-            String date = StringUtils.noNullString(parsedJson['date']);
-            String time = StringUtils.noNullString(parsedJson['time']);
-            String timezone = StringUtils.noNullString(parsedJson['timezone']);
-            String updatedAt =
+            String? date = StringUtils.noNullString(parsedJson['date']);
+            String? time = StringUtils.noNullString(parsedJson['time']);
+            String? timezone = StringUtils.noNullString(parsedJson['timezone']);
+            String? updatedAt =
                 StringUtils.noNullString(parsedJson['updated_at']);
 
             GeneralDetailPrice global = GeneralDetailPrice(
@@ -3806,15 +3173,15 @@ class HttpIII {
 
       GroupedData groupedData = GroupedData();
 
-      Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      Map<String, dynamic>? parsedJson = jsonDecode(response.body);
       if (parsedJson != null) {
-        String message = parsedJson['message'];
-        var datas = parsedJson['datas'] as List;
+        Null message = parsedJson['message'];
+        var datas = parsedJson['datas'] as List?;
         if (datas != null) {
           datas.forEach((parsedJson) {
-            String group = StringUtils.noNullString(parsedJson['group']);
-            String code = StringUtils.noNullString(parsedJson['code']);
-            String name = StringUtils.noNullString(parsedJson['name']);
+            String? group = StringUtils.noNullString(parsedJson['group']);
+            String? code = StringUtils.noNullString(parsedJson['code']);
+            String? name = StringUtils.noNullString(parsedJson['name']);
             double open = Utils.safeDouble(parsedJson['open']);
             double hi = Utils.safeDouble(parsedJson['hi']);
             double low = Utils.safeDouble(parsedJson['low']);
@@ -3822,10 +3189,10 @@ class HttpIII {
             double change = Utils.safeDouble(parsedJson['change']);
             double percentChange =
                 Utils.safeDouble(parsedJson['percentChange']);
-            String date = StringUtils.noNullString(parsedJson['date']);
-            String time = StringUtils.noNullString(parsedJson['time']);
-            String timezone = StringUtils.noNullString(parsedJson['timezone']);
-            String updatedAt =
+            String? date = StringUtils.noNullString(parsedJson['date']);
+            String? time = StringUtils.noNullString(parsedJson['time']);
+            String? timezone = StringUtils.noNullString(parsedJson['timezone']);
+            String? updatedAt =
                 StringUtils.noNullString(parsedJson['updated_at']);
 
             GeneralDetailPrice global = GeneralDetailPrice(
@@ -3842,7 +3209,7 @@ class HttpIII {
                 time,
                 timezone,
                 updatedAt);
-            DebugWriter.info(global?.toString());
+            DebugWriter.info(global.toString());
             groupedData.addData(group, global);
           });
         }
@@ -3890,8 +3257,8 @@ class HttpIII {
       // then throw an exception.
       //throw HttpException('Error : '+response.statusCode.toString()+'  '+response.reasonPhrase);
       //throw Exception('Error : ' + response.statusCode.toString() + '  ' + response.reasonPhrase);
-      throw Exception('Error : ' +
-          response.statusCode.toString() /*+ '  ' + response.reasonPhrase */);
+      throw Exception('Errorw  : ' +
+          response.statusCode.toString() /*+ '  ' + response.reasonPhrase! */);
     }
   }
 
@@ -3917,18 +3284,18 @@ class HttpIII {
 
       DebugWriter.info('checkVersion -> ' + response.body);
 
-      Version version;
-      Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      Version? version;
+      Map<String, dynamic>? parsedJson = jsonDecode(response.body);
       if (parsedJson != null) {
         version = Version.fromJson(parsedJson);
       }
 
-      return version;
+      return version!;
     } else {
       // If the server did not return a 200 OK response,
       // then throw an exception.
       throw Exception('Error : ' +
-          response.statusCode.toString() /*+ '  ' + response.reasonPhrase */);
+          response.statusCode.toString() /*+ '  ' + response.reasonPhrase! */);
     }
   }
 
@@ -3947,19 +3314,19 @@ class HttpIII {
 
       Map<String, FundamentalCache> maps = Map();
 
-      Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      Map<String, dynamic>? parsedJson = jsonDecode(response.body);
       if (parsedJson != null) {
-        String message = parsedJson['message'];
-        var datas = parsedJson['datas'] as List;
+        Null message = parsedJson['message'];
+        var datas = parsedJson['datas'] as List?;
         if (datas != null) {
           datas.forEach((parsedJson) {
-            FundamentalCache cache = FundamentalCache.fromJson(parsedJson);
+            FundamentalCache? cache = FundamentalCache.fromJson(parsedJson);
 
-            DebugWriter.info(cache?.toString());
+            DebugWriter.info(cache.toString());
             if (cache != null) {
               //list.add(cache);
               maps.update(
-                cache.code,
+                cache.code!,
                 (existingValue) => cache,
                 ifAbsent: () => cache,
               );
@@ -3972,7 +3339,7 @@ class HttpIII {
       // If the server did not return a 200 OK response,
       // then throw an exception.
       throw Exception('Error : ' +
-          response.statusCode.toString() /*+ '  ' + response.reasonPhrase */);
+          response.statusCode.toString() /*+ '  ' + response.reasonPhrase! */);
     }
   }
 
@@ -3991,16 +3358,16 @@ class HttpIII {
 
       List<CorporateActionEvent> list = List.empty(growable: true);
 
-      Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      Map<String, dynamic>? parsedJson = jsonDecode(response.body);
       if (parsedJson != null) {
-        String message = parsedJson['message'];
-        var datas = parsedJson['datas'] as List;
+        Null message = parsedJson['message'];
+        var datas = parsedJson['datas'] as List?;
         if (datas != null) {
           datas.forEach((parsedJson) {
-            CorporateActionEvent cache =
+            CorporateActionEvent? cache =
                 CorporateActionEvent.fromJson(parsedJson);
 
-            DebugWriter.info(cache?.toString());
+            DebugWriter.info(cache.toString());
             if (cache != null) {
               list.add(cache);
               // maps.update(
@@ -4017,7 +3384,7 @@ class HttpIII {
       // If the server did not return a 200 OK response,
       // then throw an exception.
       throw Exception('Error : ' +
-          response.statusCode.toString() /*+ '  ' + response.reasonPhrase */);
+          response.statusCode.toString() /*+ '  ' + response.reasonPhrase! */);
     }
   }
 
@@ -4035,15 +3402,15 @@ class HttpIII {
       DebugWriter.info('fetchCrypto -> ' + response.body);
 
       GroupedData groupedData = GroupedData();
-      Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      Map<String, dynamic>? parsedJson = jsonDecode(response.body);
       if (parsedJson != null) {
-        String message = parsedJson['message'];
-        var datas = parsedJson['datas'] as List;
+        Null message = parsedJson['message'];
+        var datas = parsedJson['datas'] as List?;
         if (datas != null) {
           datas.forEach((parsedJson) {
-            String group = StringUtils.noNullString(parsedJson['group']);
-            String code = StringUtils.noNullString(parsedJson['code']);
-            String name = StringUtils.noNullString(parsedJson['name']);
+            String? group = StringUtils.noNullString(parsedJson['group']);
+            String? code = StringUtils.noNullString(parsedJson['code']);
+            String? name = StringUtils.noNullString(parsedJson['name']);
             double price = Utils.safeDouble(parsedJson['price']);
             double percentChange1h =
                 Utils.safeDouble(parsedJson['percent_change_1h']);
@@ -4059,10 +3426,10 @@ class HttpIII {
                 Utils.safeDouble(parsedJson['percent_change_90d']);
             double volume_24h = Utils.safeDouble(parsedJson['volume_24h']);
             double marketCap = Utils.safeDouble(parsedJson['market_cap']);
-            String iconUrl = StringUtils.noNullString(parsedJson['icon_url']);
-            String lastUpdated =
+            String? iconUrl = StringUtils.noNullString(parsedJson['icon_url']);
+            String? lastUpdated =
                 StringUtils.noNullString(parsedJson['last_updated']);
-            String updatedAt =
+            String? updatedAt =
                 StringUtils.noNullString(parsedJson['updated_at']);
 
             CryptoPrice cp = CryptoPrice(
@@ -4081,7 +3448,7 @@ class HttpIII {
                 iconUrl,
                 lastUpdated,
                 updatedAt);
-            DebugWriter.info(cp?.toString());
+            DebugWriter.info(cp.toString());
             groupedData.addData(group, cp);
           });
         }
@@ -4138,7 +3505,7 @@ class HttpIII {
       //throw HttpException('Error : '+response.statusCode.toString()+'  '+response.reasonPhrase);
       //throw Exception('Error : ' + response.statusCode.toString() + '  ' + response.reasonPhrase);
       throw Exception('Error : ' +
-          response.statusCode.toString() /*+ '  ' + response.reasonPhrase */);
+          response.statusCode.toString() /*+ '  ' + response.reasonPhrase! */);
     }
   }
 
@@ -4164,20 +3531,20 @@ class HttpIII {
 
       //List<ContentEIPO> result = List.empty(growable: true);
       List result = List.empty(growable: true);
-      Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      Map<String, dynamic>? parsedJson = jsonDecode(response.body);
       if (parsedJson != null) {
-        String message = parsedJson['message'];
+        Null message = parsedJson['message'];
         String type = parsedJson['type'];
-        var datas = parsedJson['datas'] as List;
+        var datas = parsedJson['datas'] as List?;
         if (datas != null) {
           datas.forEach((parsedJson) {
             if (StringUtils.equalsIgnoreCase(type, "LIST")) {
               ListEIPO eipo = ListEIPO.fromJson(parsedJson);
-              DebugWriter.info(eipo?.toString());
+              DebugWriter.info(eipo.toString());
               result.add(eipo);
             } else if (StringUtils.equalsIgnoreCase(type, "CONTENT")) {
               ContentEIPO eipo = ContentEIPO.fromJson(parsedJson);
-              DebugWriter.info(eipo?.toString());
+              DebugWriter.info(eipo.toString());
               result.add(eipo);
             }
           });
@@ -4188,7 +3555,7 @@ class HttpIII {
       // If the server did not return a 200 OK response,
       // then throw an exception.
       throw Exception('Error : ' +
-          response.statusCode.toString() /*+ '  ' + response.reasonPhrase */);
+          response.statusCode.toString() /*+ '  ' + response.reasonPhrase! */);
     }
   }
 
@@ -4213,16 +3580,16 @@ class HttpIII {
 
       //List<ContentEIPO> result = List.empty(growable: true);
       List<ListEIPO> result = List.empty(growable: true);
-      Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      Map<String, dynamic>? parsedJson = jsonDecode(response.body);
       if (parsedJson != null) {
-        String message = parsedJson['message'];
+        Null message = parsedJson['message'];
         String type = parsedJson['type'];
-        var datas = parsedJson['datas'] as List;
+        var datas = parsedJson['datas'] as List?;
         if (datas != null) {
           datas.forEach((parsedJson) {
             if (StringUtils.equalsIgnoreCase(type, "LIST")) {
               ListEIPO eipo = ListEIPO.fromJson(parsedJson);
-              DebugWriter.info(eipo?.toString());
+              DebugWriter.info(eipo.toString());
               result.add(eipo);
             }
             /*else if(StringUtils.equalsIgnoreCase(type, "CONTENT")){
@@ -4239,7 +3606,7 @@ class HttpIII {
       // If the server did not return a 200 OK response,
       // then throw an exception.
       throw Exception('Error : ' +
-          response.statusCode.toString() /*+ '  ' + response.reasonPhrase */);
+          response.statusCode.toString() /*+ '  ' + response.reasonPhrase! */);
     }
   }
 
@@ -4265,16 +3632,16 @@ class HttpIII {
 
       //List<ContentEIPO> result = List.empty(growable: true);
       List result = List.empty(growable: true);
-      Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      Map<String, dynamic>? parsedJson = jsonDecode(response.body);
       if (parsedJson != null) {
-        String message = parsedJson['message'];
+        Null message = parsedJson['message'];
         String type = parsedJson['type'];
-        var datas = parsedJson['datas'] as List;
+        var datas = parsedJson['datas'] as List?;
         if (datas != null) {
           datas.forEach((parsedJson) {
             if (StringUtils.equalsIgnoreCase(type, "CONTENT")) {
               ContentEIPO eipo = ContentEIPO.fromJson(parsedJson);
-              DebugWriter.info(eipo?.toString());
+              DebugWriter.info(eipo.toString());
               result.add(eipo);
             }
           });
@@ -4285,7 +3652,7 @@ class HttpIII {
       // If the server did not return a 200 OK response,
       // then throw an exception.
       throw Exception('Error : ' +
-          response.statusCode.toString() /*+ '  ' + response.reasonPhrase */);
+          response.statusCode.toString() /*+ '  ' + response.reasonPhrase! */);
     }
   }
 
@@ -4303,15 +3670,15 @@ class HttpIII {
 
       GroupedData groupedData = GroupedData();
 
-      Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      Map<String, dynamic>? parsedJson = jsonDecode(response.body);
       if (parsedJson != null) {
-        String message = parsedJson['message'];
-        var datas = parsedJson['datas'] as List;
+        Null message = parsedJson['message'];
+        var datas = parsedJson['datas'] as List?;
         if (datas != null) {
           datas.forEach((parsedJson) {
-            String group = StringUtils.noNullString(parsedJson['group']);
-            String code = StringUtils.noNullString(parsedJson['code']);
-            String name = StringUtils.noNullString(parsedJson['name']);
+            String? group = StringUtils.noNullString(parsedJson['group']);
+            String? code = StringUtils.noNullString(parsedJson['code']);
+            String? name = StringUtils.noNullString(parsedJson['name']);
             double open = Utils.safeDouble(parsedJson['open']);
             double hi = Utils.safeDouble(parsedJson['hi']);
             double low = Utils.safeDouble(parsedJson['low']);
@@ -4319,10 +3686,10 @@ class HttpIII {
             double change = Utils.safeDouble(parsedJson['change']);
             double percentChange =
                 Utils.safeDouble(parsedJson['percentChange']);
-            String date = StringUtils.noNullString(parsedJson['date']);
-            String time = StringUtils.noNullString(parsedJson['time']);
-            String timezone = StringUtils.noNullString(parsedJson['timezone']);
-            String updatedAt =
+            String? date = StringUtils.noNullString(parsedJson['date']);
+            String? time = StringUtils.noNullString(parsedJson['time']);
+            String? timezone = StringUtils.noNullString(parsedJson['timezone']);
+            String? updatedAt =
                 StringUtils.noNullString(parsedJson['updated_at']);
 
             GeneralDetailPrice global = GeneralDetailPrice(
@@ -4389,7 +3756,7 @@ class HttpIII {
       //throw HttpException('Error : '+response.statusCode.toString()+'  '+response.reasonPhrase);
       //throw Exception('Error : ' + response.statusCode.toString() + '  ' + response.reasonPhrase);
       throw Exception('Error : ' +
-          response.statusCode.toString() /*+ '  ' + response.reasonPhrase */);
+          response.statusCode.toString() /*+ '  ' + response.reasonPhrase! */);
     }
   }
 
@@ -4407,20 +3774,20 @@ class HttpIII {
 
       ResultTopUpBank result = ResultTopUpBank();
 
-      Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      Map<String, dynamic>? parsedJson = jsonDecode(response.body);
       if (parsedJson != null) {
-        String message = parsedJson['message'];
+        Null message = parsedJson['message'];
         result.top_up_term_en =
             StringUtils.noNullString(parsedJson['top_up_term_en']);
         result.top_up_term_id =
             StringUtils.noNullString(parsedJson['top_up_term_id']);
-        var datas = parsedJson['datas'] as List;
+        var datas = parsedJson['datas'] as List?;
         if (datas != null) {
           datas.forEach((parsedJson) {
-            TopUpBank bank = TopUpBank.fromJson(parsedJson);
+            TopUpBank? bank = TopUpBank.fromJson(parsedJson);
             if (bank != null) {
               DebugWriter.info(bank.toString());
-              result.datas.add(bank);
+              result.datas?.add(bank);
             }
           });
         }
@@ -4430,7 +3797,7 @@ class HttpIII {
       // If the server did not return a 200 OK response,
       // then throw an exception.
       throw Exception('Error : ' +
-          response.statusCode.toString() /*+ '  ' + response.reasonPhrase */);
+          response.statusCode.toString() /*+ '  ' + response.reasonPhrase! */);
     }
   }
 
@@ -4448,9 +3815,9 @@ class HttpIII {
 
       ResultFundOutTerm result = ResultFundOutTerm('', '');
 
-      Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      Map<String, dynamic>? parsedJson = jsonDecode(response.body);
       if (parsedJson != null) {
-        String message = parsedJson['message'];
+        Null message = parsedJson['message'];
         result.fund_out_term_en =
             StringUtils.noNullString(parsedJson['fund_out_term_en']);
         result.fund_out_term_id =
@@ -4461,7 +3828,7 @@ class HttpIII {
       // If the server did not return a 200 OK response,
       // then throw an exception.
       throw Exception('Error : ' +
-          response.statusCode.toString() /*+ '  ' + response.reasonPhrase */);
+          response.statusCode.toString() /*+ '  ' + response.reasonPhrase! */);
     }
   }
 
@@ -4479,15 +3846,15 @@ class HttpIII {
 
       GroupedData groupedData = GroupedData();
 
-      Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      Map<String, dynamic>? parsedJson = jsonDecode(response.body);
       if (parsedJson != null) {
-        String message = parsedJson['message'];
-        var datas = parsedJson['datas'] as List;
+        Null message = parsedJson['message'];
+        var datas = parsedJson['datas'] as List?;
         if (datas != null) {
           datas.forEach((parsedJson) {
-            String group = StringUtils.noNullString(parsedJson['group']);
-            String code = StringUtils.noNullString(parsedJson['code']);
-            String name = StringUtils.noNullString(parsedJson['name']);
+            String? group = StringUtils.noNullString(parsedJson['group']);
+            String? code = StringUtils.noNullString(parsedJson['code']);
+            String? name = StringUtils.noNullString(parsedJson['name']);
             // double open           = Utils.safeDouble(parsedJson['open']);
             // double hi             = Utils.safeDouble(parsedJson['hi']);
             // double low            = Utils.safeDouble(parsedJson['low']);
@@ -4495,10 +3862,10 @@ class HttpIII {
             double change = Utils.safeDouble(parsedJson['change']);
             double percentChange =
                 Utils.safeDouble(parsedJson['percentChange']);
-            String date = StringUtils.noNullString(parsedJson['date']);
-            String time = StringUtils.noNullString(parsedJson['time']);
-            String timezone = StringUtils.noNullString(parsedJson['timezone']);
-            String updatedAt =
+            String? date = StringUtils.noNullString(parsedJson['date']);
+            String? time = StringUtils.noNullString(parsedJson['time']);
+            String? timezone = StringUtils.noNullString(parsedJson['timezone']);
+            String? updatedAt =
                 StringUtils.noNullString(parsedJson['updated_at']);
 
             GeneralPrice global =
@@ -4567,12 +3934,12 @@ class HttpIII {
 
       Remark2Data result = Remark2Data();
 
-      Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      Map<String, dynamic>? parsedJson = jsonDecode(response.body);
       if (parsedJson != null) {
-        String message = parsedJson['message'];
+        Null message = parsedJson['message'];
         result.date = StringUtils.noNullString(parsedJson['date']);
         result.time = StringUtils.noNullString(parsedJson['time']);
-        var datas = parsedJson['datas'] as List;
+        var datas = parsedJson['datas'] as List?;
         if (datas != null) {
           datas.forEach((parsedJson) {
             Remark2Stock stockAffected = Remark2Stock.fromJson(parsedJson);
@@ -4580,7 +3947,7 @@ class HttpIII {
           });
         }
 
-        var mapping = parsedJson['mapping'] as List;
+        var mapping = parsedJson['mapping'] as List?;
         if (mapping != null) {
           mapping.forEach((parsedJson) {
             Remark2Mapping map = Remark2Mapping.fromJson(parsedJson);
@@ -4611,12 +3978,12 @@ class HttpIII {
 
       SuspendedStockData result = SuspendedStockData();
 
-      Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      Map<String, dynamic>? parsedJson = jsonDecode(response.body);
       if (parsedJson != null) {
-        String message = parsedJson['message'];
+        Null message = parsedJson['message'];
         result.date = StringUtils.noNullString(parsedJson['date']);
         result.time = StringUtils.noNullString(parsedJson['time']);
-        var datas = parsedJson['datas'] as List;
+        var datas = parsedJson['datas'] as List?;
         if (datas != null) {
           datas.forEach((parsedJson) {
             SuspendStock stockAffected = SuspendStock.fromJson(parsedJson);
@@ -4634,7 +4001,7 @@ class HttpIII {
   }
 
   Future<HelpData> fetchHelp(
-      {String md5_help_menus = '0', String md5_help_contents = '0'}) async {
+      {String? md5_help_menus = '0', String? md5_help_contents = '0'}) async {
     var parameters = {
       'md5_help_menus': md5_help_menus,
       'md5_help_contents': md5_help_contents
@@ -4654,16 +4021,16 @@ class HttpIII {
 
       HelpData result = HelpData();
 
-      Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      Map<String, dynamic>? parsedJson = jsonDecode(response.body);
       if (parsedJson != null) {
-        String message = parsedJson['message'];
+        Null message = parsedJson['message'];
         result.time = StringUtils.noNullString(parsedJson['time']);
         result.date = StringUtils.noNullString(parsedJson['date']);
         result.md5_help_menus =
             StringUtils.noNullString(parsedJson['md5_help_menus']);
         result.md5_help_contents =
             StringUtils.noNullString(parsedJson['md5_help_contents']);
-        var datas = parsedJson['datas'] as List;
+        var datas = parsedJson['datas'] as List?;
         if (datas != null) {
           datas.forEach((parsedJson) {
             HelpContent content = HelpContent.fromJson(parsedJson);
@@ -4671,7 +4038,7 @@ class HttpIII {
           });
         }
 
-        var mapping = parsedJson['menus'] as List;
+        var mapping = parsedJson['menus'] as List?;
         if (mapping != null) {
           mapping.forEach((parsedJson) {
             HelpMenu menu = HelpMenu.fromJson(parsedJson);
@@ -4688,7 +4055,7 @@ class HttpIII {
     }
   }
 
-  Future<Briefing> fetchBriefing() async {
+  Future<Briefing?> fetchBriefing() async {
     final response = await http
         .get(Uri.http(
             baseUrlLocalhost //baseUrl
@@ -4700,12 +4067,12 @@ class HttpIII {
       // then parse the JSON.
 
       DebugWriter.info('fetchBriefing : ' + response.body);
-      List<Briefing> list = List<Briefing>.empty(growable: true);
+      List<Briefing>? list = List<Briefing>.empty(growable: true);
 
-      Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      Map<String, dynamic>? parsedJson = jsonDecode(response.body);
       if (parsedJson != null) {
         String message = parsedJson['message'];
-        var datas = parsedJson['datas'] as List;
+        var datas = parsedJson['datas'] as List?;
         if (datas != null) {
           datas.forEach((parsedJson) {
             list.add(Briefing.fromJson(parsedJson));
@@ -4738,7 +4105,7 @@ class HttpIII {
     }
   }
 
-  Future<ResearchRank> fetchResearchRank(String code) async {
+  Future<ResearchRank?> fetchResearchRank(String? code) async {
     String path = 'm_research_rank.php';
     //print('path = $baseUrlLocalhost/$path');
 
@@ -4757,10 +4124,10 @@ class HttpIII {
 
       List<ResearchRank> list = List<ResearchRank>.empty(growable: true);
 
-      Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      Map<String, dynamic>? parsedJson = jsonDecode(response.body);
       if (parsedJson != null) {
-        String message = parsedJson['message'];
-        var datas = parsedJson['datas'] as List;
+        Null message = parsedJson['message'];
+        var datas = parsedJson['datas'] as List?;
         if (datas != null) {
           datas.forEach((parsedJson) {
             list.add(ResearchRank.fromJson(parsedJson));
@@ -4795,7 +4162,7 @@ class HttpIII {
     }
   }
 
-  Future<DataCompanyProfile> fetchCompanyProfile(String code) async {
+  Future<DataCompanyProfile> fetchCompanyProfile(String? code) async {
     String path = 'm_company_profile.php';
     //print('path = $baseUrlLocalhost/$path');
 
@@ -4815,9 +4182,9 @@ class HttpIII {
       DataCompanyProfile result = DataCompanyProfile.createBasic();
       //List<ResearchRank> list = List<ResearchRank>.empty(growable: true);
 
-      Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      Map<String, dynamic>? parsedJson = jsonDecode(response.body);
       if (parsedJson != null) {
-        String message = parsedJson['message'];
+        Null message = parsedJson['message'];
         result.code = parsedJson['code'];
         var datas = parsedJson['datas'];
         if (datas != null) {
@@ -4840,9 +4207,9 @@ class HttpIII {
           DebugWriter.info('dataShareholders contents');
           contents.forEach((content) {
             DebugWriter.info('dataShareholders contents A');
-            DynamicContent dc = DynamicContent.fromJson(content);
+            DynamicContent? dc = DynamicContent.fromJson(content);
             if (dc != null) {
-              result.contentList.add(dc);
+              result.contentList?.add(dc);
             }
             DebugWriter.info('dataShareholders contents B');
           });
@@ -4885,7 +4252,7 @@ class HttpIII {
     }
   }
 
-  Future fetchFinancialChart(String code, String type, String showAs) async {
+  Future fetchFinancialChart(String? code, String type, String showAs) async {
     String path = 'm_financial_chart.php';
     //print('path = $baseUrlLocalhost/$path');
 
@@ -4907,13 +4274,13 @@ class HttpIII {
 
       //List<ResearchRank> list = List<ResearchRank>.empty(growable: true);
       var result;
-      Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      Map<String, dynamic>? parsedJson = jsonDecode(response.body);
       if (parsedJson != null) {
-        String message = parsedJson['message'];
-        String code = StringUtils.noNullString(parsedJson['code']);
-        String type = StringUtils.noNullString(parsedJson['type']);
-        String showAs = StringUtils.noNullString(parsedJson['show_as']);
-        //var datas = parsedJson['datas'] as List;
+        Null message = parsedJson['message'];
+        String? code = StringUtils.noNullString(parsedJson['code']);
+        String? type = StringUtils.noNullString(parsedJson['type']);
+        String? showAs = StringUtils.noNullString(parsedJson['show_as']);
+        //var datas = parsedJson['datas'] as List?;
         var datas = parsedJson['datas'];
         if (datas != null) {
           if (StringUtils.equalsIgnoreCase(type, 'INCOME_STATEMENT')) {
@@ -4945,7 +4312,7 @@ class HttpIII {
   }
 
   Future<CorporateActionData> fetchCorporateAction(
-      String code, String type) async {
+      String? code, String type) async {
     String path = 'm_corporate_action.php';
     //print('path = $baseUrlLocalhost/$path');
 
@@ -4966,41 +4333,41 @@ class HttpIII {
       CorporateActionData result = CorporateActionData();
       //List list = List<ResearchRank>.empty(growable: true);
       //var result;
-      Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      Map<String, dynamic>? parsedJson = jsonDecode(response.body);
       if (parsedJson != null) {
-        String message = parsedJson['message'];
+        Null message = parsedJson['message'];
         result.code = StringUtils.noNullString(parsedJson['code']);
         result.type = StringUtils.noNullString(parsedJson['type']);
 
-        var datas = parsedJson['datas'] as List;
+        var datas = parsedJson['datas'] as List?;
         if (datas != null) {
           datas.forEach((element) {
             if (StringUtils.equalsIgnoreCase(type, 'DIVIDEND')) {
-              Dividend dividend = Dividend.fromJson(element);
+              Dividend? dividend = Dividend.fromJson(element);
               if (dividend != null) {
                 result.addData(dividend);
                 DebugWriter.info('added ' + dividend.toString());
               }
             } else if (StringUtils.equalsIgnoreCase(type, 'RIGHT_ISSUE')) {
-              RightIssue rightIssue = RightIssue.fromJson(element);
+              RightIssue? rightIssue = RightIssue.fromJson(element);
               if (rightIssue != null) {
                 result.addData(rightIssue);
                 DebugWriter.info('added ' + rightIssue.toString());
               }
             } else if (StringUtils.equalsIgnoreCase(type, 'RUPS')) {
-              RUPS rups = RUPS.fromJson(element);
+              RUPS? rups = RUPS.fromJson(element);
               if (rups != null) {
                 result.addData(rups);
                 DebugWriter.info('added ' + rups.toString());
               }
             } else if (StringUtils.equalsIgnoreCase(type, 'STOCK_SPLIT')) {
-              StockSplit stockSplit = StockSplit.fromJson(element);
+              StockSplit? stockSplit = StockSplit.fromJson(element);
               if (stockSplit != null) {
                 result.addData(stockSplit);
                 DebugWriter.info('added ' + stockSplit.toString());
               }
             } else if (StringUtils.equalsIgnoreCase(type, 'WARRANT')) {
-              Warrant warrant = Warrant.fromJson(element);
+              Warrant? warrant = Warrant.fromJson(element);
               if (warrant != null) {
                 result.addData(warrant);
                 DebugWriter.info('added ' + warrant.toString());
@@ -5025,7 +4392,7 @@ class HttpIII {
   }
 
   Future<ResultKeyStatistic> fetchKeyStatistic(
-      String code, String lastprice) async {
+      String? code, String lastprice) async {
     String path = 'm_key_statistic.php';
     //print('path = $baseUrlLocalhost/$path');
 
@@ -5046,9 +4413,9 @@ class HttpIII {
       //List<ResearchRank> list = List<ResearchRank>.empty(growable: true);
       ResultKeyStatistic result = ResultKeyStatistic();
 
-      Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      Map<String, dynamic>? parsedJson = jsonDecode(response.body);
       if (parsedJson != null) {
-        String message = parsedJson['message'];
+        Null message = parsedJson['message'];
         result.code = parsedJson['code'];
         var datas = parsedJson['datas'];
         if (datas != null) {
@@ -5060,7 +4427,7 @@ class HttpIII {
           var dataProfitability = datas['dataProfitability'];
           var dataLiquidity = datas['dataLiquidity'];
 
-          EarningPerShareData earningPerShare =
+          EarningPerShareData? earningPerShare =
               EarningPerShareData.fromJson(earningPerShareData);
           if (earningPerShare != null) {
             result.earningPerShare = earningPerShare;
@@ -5182,7 +4549,7 @@ class HttpIII {
           */
         }
         /*
-        var datas = parsedJson['datas'] as List;
+        var datas = parsedJson['datas'] as List?;
         if(datas != null){
           datas.forEach((parsedJson) {
             list.add(ResearchRank.fromJson(parsedJson));
@@ -5201,7 +4568,7 @@ class HttpIII {
     }
   }
 
-  Future<ForeignDomestic> fetchCompositeFD(String board) async {
+  Future<ForeignDomestic?> fetchCompositeFD(String board) async {
     String path = 'r_composite_fd.php';
     //print('path = $baseUrlLocalhost/$path');
 
@@ -5218,13 +4585,13 @@ class HttpIII {
       // then parse the JSON.
       DebugWriter.info('fetchCompositeFD : ' + response.body);
 
-      List<ForeignDomestic> list = List<ForeignDomestic>.empty(growable: true);
+      List<ForeignDomestic>? list = List<ForeignDomestic>.empty(growable: true);
 
-      Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      Map<String, dynamic>? parsedJson = jsonDecode(response.body);
       if (parsedJson != null) {
-        String message = StringUtils.noNullString(parsedJson['message']);
-        String board = StringUtils.noNullString(parsedJson['board']);
-        var datas = parsedJson['datas'] as List;
+        String? message = StringUtils.noNullString(parsedJson['message']);
+        String? board = StringUtils.noNullString(parsedJson['board']);
+        var datas = parsedJson['datas'] as List?;
         if (datas != null) {
           datas.forEach((parsedJson) {
             list.add(ForeignDomestic.fromJson(parsedJson, 'COMPOSITE', board));
@@ -5243,8 +4610,8 @@ class HttpIII {
     }
   }
 
-  Future<ForeignDomestic> fetchCompositeFDHistorical(
-      String board, String from, String to) async {
+  Future<ForeignDomestic?> fetchCompositeFDHistorical(
+      String board, String? from, String? to) async {
     String path = 'm_composite_fd_historical.php';
     //print('path = $baseUrlLocalhost/$path');
 
@@ -5265,14 +4632,14 @@ class HttpIII {
 
       List<ForeignDomestic> list = List<ForeignDomestic>.empty(growable: true);
 
-      Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      Map<String, dynamic>? parsedJson = jsonDecode(response.body);
       if (parsedJson != null) {
-        String message = StringUtils.noNullString(parsedJson['message']);
+        String? message = StringUtils.noNullString(parsedJson['message']);
         //String board = StringUtils.noNullString(parsedJson['board']);
 
-        String board = '';
-        String from = '';
-        String to = '';
+        String? board = '';
+        String? from = '';
+        String? to = '';
 
         var parameters = parsedJson['parameters'];
         if (parameters != null && parameters is Map) {
@@ -5281,7 +4648,7 @@ class HttpIII {
           to = StringUtils.noNullString(parameters['to']);
         }
 
-        var datas = parsedJson['datas'] as List;
+        var datas = parsedJson['datas'] as List?;
         if (datas != null) {
           datas.forEach((parsedJson) {
             list.add(ForeignDomestic.fromJson(parsedJson, 'COMPOSITE', board));
@@ -5300,8 +4667,8 @@ class HttpIII {
     }
   }
 
-  Future<ForeignDomestic> fetchStockFDHistorical(
-      String code, String board, String from, String to) async {
+  Future<ForeignDomestic?> fetchStockFDHistorical(
+      String? code, String board, String? from, String? to) async {
     String path = 'm_stock_fd_historical.php';
     //print('path = $baseUrlLocalhost/$path');
 
@@ -5323,16 +4690,16 @@ class HttpIII {
 
       List<ForeignDomestic> list = List<ForeignDomestic>.empty(growable: true);
 
-      Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      Map<String, dynamic>? parsedJson = jsonDecode(response.body);
       if (parsedJson != null) {
-        String message = StringUtils.noNullString(parsedJson['message']);
+        String? message = StringUtils.noNullString(parsedJson['message']);
         //String board = StringUtils.noNullString(parsedJson['board']);
         //String code = StringUtils.noNullString(parsedJson['code']);
 
-        String board = '';
-        String code = '';
-        String from = '';
-        String to = '';
+        String? board = '';
+        String? code = '';
+        String? from = '';
+        String? to = '';
 
         var parameters = parsedJson['parameters'];
         if (parameters != null && parameters is Map) {
@@ -5342,7 +4709,7 @@ class HttpIII {
           to = StringUtils.noNullString(parameters['to']);
         }
 
-        var datas = parsedJson['datas'] as List;
+        var datas = parsedJson['datas'] as List?;
         if (datas != null) {
           datas.forEach((parsedJson) {
             list.add(ForeignDomestic.fromJson(parsedJson, code, board));
@@ -5361,7 +4728,7 @@ class HttpIII {
     }
   }
 
-  Future<ForeignDomestic> fetchStockFD(String code, String board) async {
+  Future<ForeignDomestic?> fetchStockFD(String? code, String board) async {
     String path = 'r_stock_fd.php';
     //print('path = $baseUrlLocalhost/$path');
 
@@ -5381,12 +4748,12 @@ class HttpIII {
 
       List<ForeignDomestic> list = List<ForeignDomestic>.empty(growable: true);
 
-      Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      Map<String, dynamic>? parsedJson = jsonDecode(response.body);
       if (parsedJson != null) {
-        String message = StringUtils.noNullString(parsedJson['message']);
-        String board = StringUtils.noNullString(parsedJson['board']);
-        String code = StringUtils.noNullString(parsedJson['code']);
-        var datas = parsedJson['datas'] as List;
+        String? message = StringUtils.noNullString(parsedJson['message']);
+        String? board = StringUtils.noNullString(parsedJson['board']);
+        String? code = StringUtils.noNullString(parsedJson['code']);
+        var datas = parsedJson['datas'] as List?;
         if (datas != null) {
           datas.forEach((parsedJson) {
             list.add(ForeignDomestic.fromJson(parsedJson, code, board));
@@ -5405,7 +4772,7 @@ class HttpIII {
     }
   }
 
-  Future<TradeBook> fetchTradeBook(String code, String board) async {
+  Future<TradeBook?> fetchTradeBook(String code, String board) async {
     var parameters = {
       'code': code,
       'board': board,
@@ -5417,10 +4784,10 @@ class HttpIII {
       // then parse the JSON.
       List<TradeBook> list = List<TradeBook>.empty(growable: true);
 
-      Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      Map<String, dynamic>? parsedJson = jsonDecode(response.body);
       if (parsedJson != null) {
-        String message = parsedJson['message'];
-        var datas = parsedJson['datas'] as List;
+        Null message = parsedJson['message'];
+        var datas = parsedJson['datas'] as List?;
         if (datas != null) {
           datas.forEach((parsedJson) {
             list.add(TradeBook.fromJson(parsedJson));
@@ -5453,7 +4820,7 @@ class HttpIII {
     }
   }
 
-  Future<OrderBook> fetchOrderBook(String code, String board) async {
+  Future<OrderBook?> fetchOrderBook(String code, String board) async {
     var parameters = {
       'code': code,
       'board': board,
@@ -5465,10 +4832,10 @@ class HttpIII {
       // then parse the JSON.
       List<OrderBook> list = List<OrderBook>.empty(growable: true);
 
-      Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      Map<String, dynamic>? parsedJson = jsonDecode(response.body);
       if (parsedJson != null) {
-        String message = parsedJson['message'];
-        var datas = parsedJson['datas'] as List;
+        Null message = parsedJson['message'];
+        var datas = parsedJson['datas'] as List?;
         if (datas != null) {
           datas.forEach((parsedJson) {
             list.add(OrderBook.fromJson(parsedJson));
@@ -5502,14 +4869,14 @@ class HttpIII {
     }
   }
 
-  Future<List<IndexSummary>> fetchIndices(List<String> codes) async {
+  Future<List<IndexSummary>> fetchIndices(List<String?>? codes) async {
     //String path = 'r_indices.php?code='+codes.join("_");
     String path = 'r_indices.php';
     //print('path = $baseUrlLocalhost/$path');
     //Map map = Map();
     //map['code'] = codes.join('_');
     var parameters = {
-      'code': codes.join('_'),
+      'code': codes?.join('_'),
       //'param2': 'two',
     };
     DebugWriter.info(parameters);
@@ -5521,10 +4888,10 @@ class HttpIII {
       // then parse the JSON.
       List<IndexSummary> list = List<IndexSummary>.empty(growable: true);
 
-      Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      Map<String, dynamic>? parsedJson = jsonDecode(response.body);
       if (parsedJson != null) {
-        String message = parsedJson['message'];
-        var datas = parsedJson['datas'] as List;
+        Null message = parsedJson['message'];
+        var datas = parsedJson['datas'] as List?;
         if (datas != null) {
           datas.forEach((parsedJson) {
             list.add(IndexSummary.fromJson(parsedJson));
@@ -5555,7 +4922,7 @@ class HttpIII {
     }
   }
 
-  Future<StockSummary> fetchStockSummary(String code, String board) async {
+  Future<StockSummary?> fetchStockSummary(String? code, String board) async {
     String path = 'r_summary.php';
     //print('path = $baseUrlLocalhost/$path');
 
@@ -5571,16 +4938,16 @@ class HttpIII {
       // then parse the JSON.
       List<StockSummary> list = List<StockSummary>.empty(growable: true);
 
-      Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      Map<String, dynamic>? parsedJson = jsonDecode(response.body);
       if (parsedJson != null) {
-        String message = parsedJson['message'];
-        var datas = parsedJson['datas'] as List;
+        Null message = parsedJson['message'];
+        List<dynamic>? datas = parsedJson['datas'] as List?;
         if (datas != null) {
           datas.forEach((parsedJson) {
-            StockSummary stockSummary = StockSummary.fromJson(parsedJson);
-            DebugWriter.info(stockSummary?.toString());
+            StockSummary? stockSummary = StockSummary.fromJson(parsedJson);
+            DebugWriter.info(stockSummary.toString());
             if (stockSummary != null &&
-                StringUtils.isContains(code, stockSummary.code) &&
+                StringUtils.isContains(code, stockSummary.code)! &&
                 StringUtils.equalsIgnoreCase(board, stockSummary.board)) {
               list.add(stockSummary);
             }
@@ -5614,7 +4981,7 @@ class HttpIII {
   }
 
   Future<List<StockSummary>> fetchStockSummaryMultiple(
-      String code, String board) async {
+      String? code, String? board) async {
     String path = 'r_summary.php';
     //print('path = $baseUrlLocalhost/$path');
 
@@ -5631,19 +4998,19 @@ class HttpIII {
       // then parse the JSON.
       List<StockSummary> list = List<StockSummary>.empty(growable: true);
 
-      Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      Map<String, dynamic>? parsedJson = jsonDecode(response.body);
       if (parsedJson != null) {
-        String message = parsedJson['message'];
-        var datas = parsedJson['datas'] as List;
+        Null message = parsedJson['message'];
+        var datas = parsedJson['datas'] as List?;
         if (datas != null) {
           datas.forEach((parsedJson) {
-            StockSummary stockSummary = StockSummary.fromJson(parsedJson);
-            DebugWriter.info(stockSummary?.toString());
+            StockSummary? stockSummary = StockSummary.fromJson(parsedJson);
+            DebugWriter.info(stockSummary.toString());
             if (stockSummary != null &&
                 StringUtils.isContains(
                     code,
                     stockSummary
-                        .code) /*&& StringUtils.equalsIgnoreCase(board, stockSummary.board) */) {
+                        .code)! /*&& StringUtils.equalsIgnoreCase(board, stockSummary.board) */) {
               list.add(stockSummary);
             }
           });
@@ -5696,18 +5063,18 @@ class HttpIII {
       // then parse the JSON.
       //List<TopStock> list = List<TopStock>.empty(growable: true);
       ResultTopStock result = ResultTopStock();
-      Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      Map<String, dynamic>? parsedJson = jsonDecode(response.body);
       if (parsedJson != null) {
-        String message = parsedJson['message'];
+        Null message = parsedJson['message'];
         result.range = 'INTRADAY';
         result.type = parsedJson['type'];
-        var datas = parsedJson['datas'] as List;
+        var datas = parsedJson['datas'] as List?;
         if (datas != null) {
           datas.forEach((parsedJson) {
-            TopStock top = TopStock.fromJson(parsedJson);
-            DebugWriter.info(top?.toString());
+            TopStock? top = TopStock.fromJson(parsedJson);
+            DebugWriter.info(top.toString());
             if (top != null) {
-              result.datas.add(top);
+              result.datas?.add(top);
             }
           });
         }
@@ -5722,7 +5089,7 @@ class HttpIII {
   }
 
   Future<OrderQueueData> fetchOrderQueue(
-      String code, String board, int price, String type) async {
+      String? code, String? board, int? price, String? type) async {
     String path = 'r_queue.php';
     //print('path = $baseUrlLocalhost/$path');
 
@@ -5745,7 +5112,7 @@ class HttpIII {
       // then parse the JSON.
       //List<TopStock> list = List<TopStock>.empty(growable: true);
       OrderQueueData result = OrderQueueData();
-      Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      Map<String, dynamic>? parsedJson = jsonDecode(response.body);
       if (parsedJson != null) {
         result.message = StringUtils.noNullString(parsedJson['message']);
         result.datas_count = Utils.safeInt(parsedJson['datas_count']);
@@ -5765,13 +5132,13 @@ class HttpIII {
               Utils.safeInt(additionalData['total_remaining_volume']);
         }
 
-        var datas = parsedJson['datas'] as List;
+        var datas = parsedJson['datas'] as List?;
         if (datas != null) {
           datas.forEach((parsedJson) {
-            OrderQueue queue = OrderQueue.fromJson(parsedJson);
-            DebugWriter.info(queue?.toString());
+            OrderQueue? queue = OrderQueue.fromJson(parsedJson);
+            DebugWriter.info(queue.toString());
             if (queue != null) {
-              result.datas.add(queue);
+              result.datas?.add(queue);
             }
           });
         }
@@ -5806,18 +5173,18 @@ class HttpIII {
       // then parse the JSON.
       //List<TopStock> list = List<TopStock>.empty(growable: true);
       ResultTopStock result = ResultTopStock();
-      Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      Map<String, dynamic>? parsedJson = jsonDecode(response.body);
       if (parsedJson != null) {
-        String message = parsedJson['message'];
+        Null message = parsedJson['message'];
         result.range = parsedJson['range'];
         result.type = parsedJson['type'];
-        var datas = parsedJson['datas'] as List;
+        var datas = parsedJson['datas'] as List?;
         if (datas != null) {
           datas.forEach((parsedJson) {
-            TopStock top = TopStock.fromJson(parsedJson);
+            TopStock? top = TopStock.fromJson(parsedJson);
             DebugWriter.info(top?.toString());
             if (top != null) {
-              result.datas.add(top);
+              result.datas?.add(top);
             }
           });
         }
@@ -5831,8 +5198,12 @@ class HttpIII {
     }
   }
 
-  Future<String> registerDevice(String username, String deviceId,
-      String devicePlatform, String fcmToken, String applicationVersion) async {
+  Future<String> registerDevice(
+      String? username,
+      String? deviceId,
+      String? devicePlatform,
+      String? fcmToken,
+      String? applicationVersion) async {
     String path = 'n_device_registration.php';
     //print('path = $baseUrlLocalhost/$path');
     //username=AAA&device_id=1234&device_platform=Web&fcm_token=abctoken&application_version=0.01
@@ -5852,7 +5223,7 @@ class HttpIII {
       // then parse the JSON.
       //List<TopStock> list = List<TopStock>.empty(growable: true);
 
-      Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      Map<String, dynamic>? parsedJson = jsonDecode(response.body);
       String message = '';
       if (parsedJson != null) {
         message = parsedJson['message'];
@@ -5870,7 +5241,7 @@ class HttpIII {
 
   Future<ResultInbox> fetchInbox(
       String username,
-      String
+      String?
           dateStart /*, String device_id, String device_platform, String application_version*/) async {
     String path = 'n_inbox.php';
     //print('path = $baseUrlLocalhost/$path');
@@ -5920,7 +5291,7 @@ class HttpIII {
       }
       */
       ResultInbox result = ResultInbox();
-      Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      Map<String, dynamic>? parsedJson = jsonDecode(response.body);
 
       if (parsedJson != null) {
         result.message = StringUtils.noNullString(parsedJson['message']);
@@ -5929,20 +5300,20 @@ class HttpIII {
         result.date_next = StringUtils.noNullString(parsedJson['date_next']);
         result.more_data = Utils.safeBool(parsedJson['more_data']);
         DebugWriter.info('fetchInbox message : ' +
-            result.message +
+            result.message! +
             '  username : ' +
-            result.username +
+            result.username! +
             '  more_data : ' +
             result.more_data.toString());
 
-        var datas = parsedJson['datas'] as List;
+        var datas = parsedJson['datas'] as List?;
         if (datas != null) {
           datas.forEach((parsedJson) {
-            InboxMessage top =
+            InboxMessage? top =
                 InboxMessage.fromJson(parsedJson, result.username);
-            DebugWriter.info(top?.toString());
+            DebugWriter.info(top.toString());
             if (top != null) {
-              result.datas.add(top);
+              result.datas?.add(top);
             }
           });
         }
@@ -5957,8 +5328,8 @@ class HttpIII {
     }
   }
 
-  Future<String> reportNotification(
-      String notifType, String notifId, String deviceId,
+  Future<String?> reportNotification(
+      String? notifType, String? notifId, String? deviceId,
       {String action = ''}) async {
     String path = 'n_report_notification.php';
     //print('path = $baseUrlLocalhost/$path');
@@ -5991,18 +5362,18 @@ class HttpIII {
         "datas_count": 3
       }
       */
-      String result = '';
-      Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      String? result = '';
+      Map<String, dynamic>? parsedJson = jsonDecode(response.body);
 
       if (parsedJson != null) {
-        String message = StringUtils.noNullString(parsedJson['message']);
-        String actionPerformed =
+        String? message = StringUtils.noNullString(parsedJson['message']);
+        String? actionPerformed =
             StringUtils.noNullString(parsedJson['action_performed']);
         result = actionPerformed;
         DebugWriter.info('reportNotification action_performed : ' +
-            actionPerformed +
+            actionPerformed! +
             '  message : ' +
-            message);
+            message!);
       }
 
       return result;
@@ -6014,7 +5385,7 @@ class HttpIII {
     }
   }
 
-  Future<PerformanceData> fetchPerformance(String type, String code) async {
+  Future<PerformanceData> fetchPerformance(String type, String? code) async {
     String path = 'm_performance.php';
     //print('path = $baseUrlLocalhost/$path');
 
@@ -6033,19 +5404,19 @@ class HttpIII {
 
       PerformanceData result = PerformanceData();
 
-      Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      Map<String, dynamic>? parsedJson = jsonDecode(response.body);
       if (parsedJson != null) {
-        String message = parsedJson['message'];
+        Null message = parsedJson['message'];
         String type = parsedJson['type'];
         String code = parsedJson['code'];
         result.code = code;
         result.type = type;
 
-        var datas = parsedJson['datas'] as List;
+        var datas = parsedJson['datas'] as List?;
         if (datas != null) {
           datas.forEach((parsedJson) {
-            Performance performance = Performance.fromJson(parsedJson);
-            DebugWriter.info(performance?.toString());
+            Performance? performance = Performance.fromJson(parsedJson);
+            DebugWriter.info(performance.toString());
             if (performance != null) {
               result.addPerformance(performance);
             }
@@ -6062,8 +5433,8 @@ class HttpIII {
     }
   }
 
-  Future<StockTopBrokerData> fetchStockTopBroker(
-      String code, String board, String from, String to) async {
+  Future<StockTopBrokerData?> fetchStockTopBroker(
+      String? code, String board, String? from, String? to) async {
     String path = 'm_stock_top_broker.php';
     DebugWriter.info('path = $baseUrlLocalhost/$path');
 
@@ -6084,7 +5455,7 @@ class HttpIII {
 
       StockTopBrokerData result = StockTopBrokerData();
 
-      Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      Map<String, dynamic>? parsedJson = jsonDecode(response.body);
       if (parsedJson != null) {
         String message = parsedJson['message'];
         result.last_date = StringUtils.noNullString(parsedJson['last_date']);
@@ -6098,46 +5469,46 @@ class HttpIII {
         }
         var datas = parsedJson['datas'];
         if (datas != null) {
-          var buyer = datas['Buyer'] as List;
-          var seller = datas['Seller'] as List;
-          var netBuyer = datas['NetBuyer'] as List;
-          var netSeller = datas['NetSeller'] as List;
+          var buyer = datas['Buyer'] as List?;
+          var seller = datas['Seller'] as List?;
+          var netBuyer = datas['NetBuyer'] as List?;
+          var netSeller = datas['NetSeller'] as List?;
 
           if (buyer != null) {
             buyer.forEach((parsedJson) {
-              BrokerNetBuySell b = BrokerNetBuySell.fromJson(parsedJson);
+              BrokerNetBuySell? b = BrokerNetBuySell.fromJson(parsedJson);
               DebugWriter.info(b?.toString());
               if (b != null) {
-                result.topBuyer.add(b);
+                result.topBuyer?.add(b);
               }
             });
           }
 
           if (seller != null) {
             seller.forEach((parsedJson) {
-              BrokerNetBuySell b = BrokerNetBuySell.fromJson(parsedJson);
+              BrokerNetBuySell? b = BrokerNetBuySell.fromJson(parsedJson);
               DebugWriter.info(b?.toString());
               if (b != null) {
-                result.topSeller.add(b);
+                result.topSeller?.add(b);
               }
             });
           }
 
           if (netBuyer != null) {
             netBuyer.forEach((parsedJson) {
-              BrokerNetBuySell b = BrokerNetBuySell.fromJson(parsedJson);
+              BrokerNetBuySell? b = BrokerNetBuySell.fromJson(parsedJson);
               DebugWriter.info(b?.toString());
               if (b != null) {
-                result.topNetBuyer.add(b);
+                result.topNetBuyer?.add(b);
               }
             });
           }
           if (netSeller != null) {
             netSeller.forEach((parsedJson) {
-              BrokerNetBuySell b = BrokerNetBuySell.fromJson(parsedJson);
+              BrokerNetBuySell? b = BrokerNetBuySell.fromJson(parsedJson);
               DebugWriter.info(b?.toString());
               if (b != null) {
-                result.topNetSeller.add(b);
+                result.topNetSeller?.add(b);
               }
             });
           }
@@ -6151,10 +5522,16 @@ class HttpIII {
             response.statusCode.toString() /*+ '  ' + response.reasonPhrase */);
       }
     }
+    return null;
   }
 
-  Future<NetBuySellSummaryData> fetchStockTopBrokerSummary(String code,
-      String board, String from, String to, String type, String dataBy) async {
+  Future<NetBuySellSummaryData?> fetchStockTopBrokerSummary(
+      String code,
+      String board,
+      String? from,
+      String? to,
+      String type,
+      String dataBy) async {
     String path = 'm_stock_top_broker_summary.php';
     DebugWriter.info('path = $baseUrlLocalhost/$path');
 
@@ -6178,7 +5555,7 @@ class HttpIII {
 
       NetBuySellSummaryData result = NetBuySellSummaryData();
 
-      Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      Map<String, dynamic>? parsedJson = jsonDecode(response.body);
       if (parsedJson != null) {
         result.message = parsedJson['message'];
         result.last_date = StringUtils.noNullString(parsedJson['last_date']);
@@ -6194,8 +5571,8 @@ class HttpIII {
         }
         var datas = parsedJson['datas'];
         if (datas != null) {
-          var buyer = datas['Buyer'] as List;
-          var seller = datas['Seller'] as List;
+          var buyer = datas['Buyer'] as List?;
+          var seller = datas['Seller'] as List?;
           var total = datas['Total'];
           if (total != null && total is Map) {
             result.BValue = Utils.safeInt(total['BValue']);
@@ -6212,20 +5589,20 @@ class HttpIII {
 
           if (buyer != null) {
             buyer.forEach((parsedJson) {
-              NetBuySellSummary b = NetBuySellSummary.fromJson(parsedJson);
-              DebugWriter.info(b?.toString());
+              NetBuySellSummary? b = NetBuySellSummary.fromJson(parsedJson);
+              DebugWriter.info(b.toString());
               if (b != null) {
-                result.topBuyer.add(b);
+                result.topBuyer?.add(b);
               }
             });
           }
 
           if (seller != null) {
             seller.forEach((parsedJson) {
-              NetBuySellSummary b = NetBuySellSummary.fromJson(parsedJson);
-              DebugWriter.info(b?.toString());
+              NetBuySellSummary? b = NetBuySellSummary.fromJson(parsedJson);
+              DebugWriter.info(b.toString());
               if (b != null) {
-                result.topSeller.add(b);
+                result.topSeller?.add(b);
               }
             });
           }
@@ -6239,6 +5616,7 @@ class HttpIII {
             response.statusCode.toString() /*+ '  ' + response.reasonPhrase */);
       }
     }
+    return null;
   }
 
   Future<Map> fetchStockBrokerIndex(
@@ -6257,9 +5635,9 @@ class HttpIII {
       // then parse the JSON.
 
       // DebugWriter.info(response.body);
-      final document = XmlDocument.parse(response.body);
+      final XmlDocument? document = XmlDocument.parse(response.body);
 
-      MD5StockBrokerIndex md5;
+      MD5StockBrokerIndex? md5;
       List<Broker> listBroker = List<Broker>.empty(growable: true);
       List<Stock> listStock = List<Stock>.empty(growable: true);
       List<Index> listIndex = List<Index>.empty(growable: true);
@@ -6275,7 +5653,7 @@ class HttpIII {
         DebugWriter.info('document.children.length = ' +
             document.children.length.toString());
         DebugWriter.info('document.firstChild.document.children.length = ' +
-            document.firstChild.document.children.length.toString());
+            document.firstChild!.document!.children.length.toString());
 
         // final brokers = document.findAllElements('BROKER');
         // brokers.map((node) => {
@@ -6304,10 +5682,12 @@ class HttpIII {
             }
             }
          */
-        final md5s = document.findAllElements('MD5');
-        final stocks = document.findAllElements('STOCK_SHORT');
-        final brokers = document.findAllElements('BROKER');
-        final indexs = document.findAllElements('INDEX');
+        final Iterable<XmlElement>? md5s = document.findAllElements('MD5');
+        final Iterable<XmlElement>? stocks =
+            document.findAllElements('STOCK_SHORT');
+        final Iterable<XmlElement>? brokers =
+            document.findAllElements('BROKER');
+        final Iterable<XmlElement>? indexs = document.findAllElements('INDEX');
 
         if (md5s == null) {
           DebugWriter.info('md5s NULL');
@@ -6318,7 +5698,7 @@ class HttpIII {
           DebugWriter.info(
               'md5s ada md5s.name : ' + md5s.first.name.toString());
 
-          final allMd5s = md5s.first.findElements('a');
+          final Iterable<XmlElement>? allMd5s = md5s.first.findElements('a');
           if (allMd5s == null) {
             DebugWriter.info('allMd5s NULL');
           } else if (allMd5s.isEmpty) {
@@ -6329,13 +5709,13 @@ class HttpIII {
               // DebugWriter.info(element.getAttribute('code'));
               md5 = MD5StockBrokerIndex.fromXml(element);
               //print(md5.toString());
-              if (md5 != null && md5.isValid()) {
+              if (md5 != null && md5!.isValid()) {
                 stockChanged =
-                    !StringUtils.equalsIgnoreCase(md5.md5stock, md5stock);
+                    !StringUtils.equalsIgnoreCase(md5?.md5stock, md5stock);
                 brokerChanged =
-                    !StringUtils.equalsIgnoreCase(md5.md5broker, md5broker);
+                    !StringUtils.equalsIgnoreCase(md5?.md5broker, md5broker);
                 indexChanged =
-                    !StringUtils.equalsIgnoreCase(md5.md5index, md5index);
+                    !StringUtils.equalsIgnoreCase(md5?.md5index, md5index);
               }
             });
           }
@@ -6350,7 +5730,8 @@ class HttpIII {
           DebugWriter.info(
               'stocks ada first.name : ' + stocks.first.name.toString());
 
-          final allStocks = stocks.first.findElements('a');
+          final Iterable<XmlElement>? allStocks =
+              stocks.first.findElements('a');
           if (allStocks == null) {
             DebugWriter.info('allStocks NULL');
           } else if (allStocks.isEmpty) {
@@ -6375,7 +5756,8 @@ class HttpIII {
           DebugWriter.info(
               'brokers ada first.name : ' + brokers.first.name.toString());
 
-          final allBrokers = brokers.first.findElements('a');
+          final Iterable<XmlElement>? allBrokers =
+              brokers.first.findElements('a');
           if (allBrokers == null) {
             DebugWriter.info('allBrokers NULL');
           } else if (allBrokers.isEmpty) {
@@ -6401,7 +5783,8 @@ class HttpIII {
           DebugWriter.info(
               'indexs ada first.name : ' + indexs.first.name.toString());
 
-          final allIndexs = indexs.first.findElements('a');
+          final Iterable<XmlElement>? allIndexs =
+              indexs.first.findElements('a');
           if (allIndexs == null) {
             DebugWriter.info('allIndexs NULL');
           } else if (allIndexs.isEmpty) {
@@ -6530,8 +5913,8 @@ class HttpIII {
     }
   }
 
-  Future<Map> fetchMarketData(String md5broker, String md5stock,
-      String md5index, String md5sector) async {
+  Future<Map> fetchMarketData(String? md5broker, String? md5stock,
+      String? md5index, String? md5sector) async {
     var parameters = {
       'md5broker': md5broker,
       'md5stock': md5stock,
@@ -6547,7 +5930,7 @@ class HttpIII {
 
       DebugWriter.info('marketData --> ' + response.body);
 
-      MD5StockBrokerIndex md5;
+      MD5StockBrokerIndex? md5;
       List<Broker> listBroker = List<Broker>.empty(growable: true);
       List<Stock> listStock = List<Stock>.empty(growable: true);
       List<Index> listIndex = List<Index>.empty(growable: true);
@@ -6559,10 +5942,10 @@ class HttpIII {
 
       var maps = new Map();
 
-      Map<String, dynamic> parsedJson = jsonDecode(response.body);
+      Map<String, dynamic>? parsedJson = jsonDecode(response.body);
       if (parsedJson != null) {
-        String message = parsedJson['message'];
-        var datas = parsedJson['datas'];
+        // String? message = parsedJson['message'];
+        dynamic datas = parsedJson['datas'];
         if (datas != null) {
           /*
           "md5": {
@@ -6593,7 +5976,7 @@ class HttpIII {
                 !StringUtils.equalsIgnoreCase(md5.md5sector, md5sector);
           }
 
-          var broker = datas['broker'] as List;
+          var broker = datas['broker'] as List?;
           if (broker != null) {
             broker.forEach((element) {
               Broker broker = Broker.fromJson(element);
@@ -6602,15 +5985,15 @@ class HttpIII {
             });
           }
 
-          var stock = datas['stock'] as List;
+          var stock = datas['stock'] as List?;
           if (stock != null) {
             stock.forEach((element) {
-              Stock stock = Stock.fromJson(element);
+              Stock? stock = Stock.fromJson(element);
               DebugWriter.info(stock.toString());
               listStock.add(stock);
             });
           }
-          var index = datas['index'] as List;
+          var index = datas['index'] as List?;
           if (index != null) {
             index.forEach((element) {
               Index index = Index.fromJson(element);
@@ -6619,7 +6002,7 @@ class HttpIII {
             });
           }
 
-          var sector = datas['sector'] as List;
+          var sector = datas['sector'] as List?;
           if (sector != null) {
             sector.forEach((element) {
               Sector sector = Sector.fromJson(element);
@@ -6835,7 +6218,7 @@ class HttpIII {
       // then parse the JSON.
       //listWorldIndices.clear();
       DebugWriter.info(response.body);
-      final document = XmlDocument.parse(response.body);
+      final XmlDocument? document = XmlDocument.parse(response.body);
 
       /*
     <item>
@@ -6872,7 +6255,7 @@ class HttpIII {
     }
   }
 
-  static Future<List<HomeNews>> fetchNewsPasarDana(String code,
+  static Future<List<HomeNews>>? fetchNewsPasarDana(String? code,
       {int lenght = 20}) async {
     //https://pasardana.id/rss?full=full&tag=AALI;BBCA&length=20
 
@@ -6892,7 +6275,7 @@ class HttpIII {
       // If the server did return a 200 OK response,
       // then parse the JSON.
       DebugWriter.info(response.body);
-      final document = XmlDocument.parse(response.body);
+      final XmlDocument? document = XmlDocument.parse(response.body);
 
       /*
     <item>
@@ -6939,55 +6322,6 @@ class HttpIII {
     }
   }
 
-  /*
-  static Future<List<HomeWorldIndices>> fetchWorldIndices() async {
-    final response = await http.get(Uri.http('domain.com', 'm_world_indices.php'));
-
-    if (response.statusCode == 200) {
-      // If the server did return a 200 OK response,
-      // then parse the JSON.
-      //listWorldIndices.clear();
-      DebugWriter.info(response.body);
-      final document = XmlDocument.parse(response.body);
-
-      // List<HomeWorldIndices> list = List<HomeWorldIndices>.empty(growable: true);
-      // if(document != null){
-      //   document.findAllElements('a').forEach((element) {
-      //     list.add(HomeWorldIndices.fromXml(element));
-      //   });
-      // }
-      // return list;
-
-      return document.findAllElements('a')
-          .map((element) => new HomeWorldIndices.fromXml(element)).toList();
-
-      /*
-      return spacecrafts
-          .map((spacecraft) => new Spacecraft.fromJson(spacecraft))
-          .toList();
-      //document.findElements(name)
-
-      final x = document.findAllElements('a');
-      x.forEach((element) {
-        DebugWriter.info('code : '+element.getAttribute('code'));
-        HomeWorldIndices data = HomeWorldIndices(element.getAttribute('last'), element.getAttribute('code'), double.parse(element.getAttribute('change')), double.parse(element.getAttribute('percentChange')));
-        listWorldIndices.add(data);
-      });
-
-      setState(() {
-
-      });
-
-       */
-      //return Album.fromJson(jsonDecode(response.body));
-      return null;
-    } else {
-      // If the server did not return a 200 OK response,
-      // then throw an exception.
-      throw Exception('Failed to load World Indices');
-    }
-  }
-*/
   // @override
   // bool updateShouldNotify(covariant InheritedWidget oldWidget) {
   //   return true;

@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_null_comparison, non_constant_identifier_names
+
 import 'dart:async';
 
 import 'package:Investrend/component/button_order.dart';
@@ -41,6 +43,7 @@ extension StockInformationStateExtension on StockInformationStatus {
         return '';
     }
   }
+
   Color get colorBackground {
     switch (this) {
       case StockInformationStatus.SpecialNotation:
@@ -53,6 +56,7 @@ extension StockInformationStateExtension on StockInformationStatus {
         return Colors.transparent;
     }
   }
+
   Color get colorBorder {
     switch (this) {
       case StockInformationStatus.SpecialNotation:
@@ -65,7 +69,8 @@ extension StockInformationStateExtension on StockInformationStatus {
         return Colors.transparent;
     }
   }
-  bool get strip{
+
+  bool get strip {
     switch (this) {
       case StockInformationStatus.SpecialNotation:
         return false;
@@ -95,8 +100,8 @@ extension NotifierStateExtension on NotifierState {
     }
   }
 
-  Widget getNoWidget({VoidCallback onRetry}) {
-    Widget noWidget;
+  Widget? getNoWidget({VoidCallback? onRetry}) {
+    Widget? noWidget;
     if (this.notFinished()) {
       if (this.isError()) {
         noWidget = TextButtonRetry(
@@ -133,31 +138,26 @@ extension NotifierStateExtension on NotifierState {
 }
 
 class PrimaryStockChangeNotifier extends ChangeNotifier {
-  Stock stock = Stock('', '');
+  Stock? stock = Stock('', '');
 
   bool isValid() {
-    return stock != null && stock.isValid();
+    return stock != null && stock!.isValid();
   }
 
   bool invalid() {
     return !isValid();
   }
 
-  void setStock(Stock newValue) {
-    bool changedCode = stock.copyValueFrom(newValue);
-    if (changedCode) {
+  void setStock(Stock? newValue) {
+    bool? changedCode = stock?.copyValueFrom(newValue);
+    if (changedCode!) {
       notifyListeners();
     }
   }
-// @override
-// void addListener(listener) {
-//   // TODO: implement addListener
-//   super.addListener(listener);
-// }
-
 }
 
-final primaryStockChangeNotifier = ChangeNotifierProvider<PrimaryStockChangeNotifier>((ref) {
+final primaryStockChangeNotifier =
+    ChangeNotifierProvider<PrimaryStockChangeNotifier>((ref) {
   return PrimaryStockChangeNotifier();
 });
 
@@ -170,7 +170,8 @@ class StockDetailRefreshNotifier extends ChangeNotifier {
   }
 }
 
-final stockDetailRefreshChangeNotifier = ChangeNotifierProvider<StockDetailRefreshNotifier>((ref) {
+final stockDetailRefreshChangeNotifier =
+    ChangeNotifierProvider<StockDetailRefreshNotifier>((ref) {
   return StockDetailRefreshNotifier();
 });
 
@@ -221,7 +222,8 @@ class StockDetailScreenVisibilityChangeNotifier extends ChangeNotifier {
   }
 }
 
-final stockDetailScreenVisibilityChangeNotifier = ChangeNotifierProvider<StockDetailScreenVisibilityChangeNotifier>((ref) {
+final stockDetailScreenVisibilityChangeNotifier =
+    ChangeNotifierProvider<StockDetailScreenVisibilityChangeNotifier>((ref) {
   return StockDetailScreenVisibilityChangeNotifier();
 });
 
@@ -255,7 +257,8 @@ class TransactionFilterIntradayChangeNotifier extends ChangeNotifier {
   }
 }
 
-final transactionIntradayFilterChangeNotifier = ChangeNotifierProvider<TransactionFilterIntradayChangeNotifier>((ref) {
+final transactionIntradayFilterChangeNotifier =
+    ChangeNotifierProvider<TransactionFilterIntradayChangeNotifier>((ref) {
   return TransactionFilterIntradayChangeNotifier();
 });
 
@@ -280,7 +283,8 @@ class TransactionFilterHistoricalChangeNotifier extends ChangeNotifier {
   }
 }
 
-final transactionHistoricalFilterChangeNotifier = ChangeNotifierProvider<TransactionFilterHistoricalChangeNotifier>((ref) {
+final transactionHistoricalFilterChangeNotifier =
+    ChangeNotifierProvider<TransactionFilterHistoricalChangeNotifier>((ref) {
   return TransactionFilterHistoricalChangeNotifier();
 });
 
@@ -299,7 +303,8 @@ class AvatarChangeNotifier extends ChangeNotifier {
   }
 }
 
-final avatarChangeNotifier = ChangeNotifierProvider<AvatarChangeNotifier>((ref) {
+final avatarChangeNotifier =
+    ChangeNotifierProvider<AvatarChangeNotifier>((ref) {
   return AvatarChangeNotifier();
 });
 final marketChangeNotifier = ChangeNotifierProvider<IndexChangeNotifier>((ref) {
@@ -313,13 +318,16 @@ final mainTabNotifier = ChangeNotifierProvider<IndexChangeNotifier>((ref) {
 final themeModeNotifier = ChangeNotifierProvider<IndexChangeNotifier>((ref) {
   return IndexChangeNotifier();
 });
+
 enum ActiveActionType { DoUpdate, ScrollUp, Unknown }
 
-final sosmedActiveActionNotifier = ChangeNotifierProvider<IndexChangeNotifier>((ref) {
+final sosmedActiveActionNotifier =
+    ChangeNotifierProvider<IndexChangeNotifier>((ref) {
   return IndexChangeNotifier();
 });
 
-final streamerStatusNotifier = ChangeNotifierProvider<IndexChangeNotifier>((ref) {
+final streamerStatusNotifier =
+    ChangeNotifierProvider<IndexChangeNotifier>((ref) {
   return IndexChangeNotifier();
 });
 
@@ -332,27 +340,32 @@ class AccountChangeNotifier extends ChangeNotifier {
   }
 }
 
-final accountChangeNotifier = ChangeNotifierProvider<AccountChangeNotifier>((ref) {
+final accountChangeNotifier =
+    ChangeNotifierProvider<AccountChangeNotifier>((ref) {
   return AccountChangeNotifier();
 });
 
 class IndexSummaryChangeNotifier extends ChangeNotifier {
-  Index index = Index('', '', '', '', '', false, false);
-  IndexSummary summary = IndexSummary('');
+  Index? index = Index('', '', '', '', '', false, false);
+  IndexSummary? summary = IndexSummary('');
 
   bool isValid() {
-    return index != null && index.isValid() && summary != null && summary.isValid();
+    return index != null &&
+        index!.isValid() &&
+        summary != null &&
+        summary!.isValid();
   }
 
   bool invalid() {
     return !isValid();
   }
 
-  void setStock(Index newValue) {
-    if (newValue == null || !StringUtils.equalsIgnoreCase(newValue.code, index.code)) {
-      this.summary.copyValueFrom(null);
+  void setStock(Index? newValue) {
+    if (newValue == null ||
+        !StringUtils.equalsIgnoreCase(newValue.code, index?.code)) {
+      this.summary?.copyValueFrom(IndexSummary(null));
     }
-    index.copyValueFrom(newValue);
+    index?.copyValueFrom(newValue!);
     notifyListeners();
   }
 
@@ -360,54 +373,59 @@ class IndexSummaryChangeNotifier extends ChangeNotifier {
     // if (this.value == null) {
     //   this.value = newValue;
     // } else {
-    this.summary.copyValueFrom(newValue);
+    this.summary?.copyValueFrom(newValue);
     notifyListeners();
     // }
   }
 }
 
-final indexSummaryChangeNotifier = ChangeNotifierProvider<IndexSummaryChangeNotifier>((ref) {
+final indexSummaryChangeNotifier =
+    ChangeNotifierProvider<IndexSummaryChangeNotifier>((ref) {
   return IndexSummaryChangeNotifier();
 });
 
 class StockSummaryChangeNotifier extends ChangeNotifier {
-  Stock stock = Stock('', '');
-  StockSummary summary = StockSummary('', '');
+  Stock? stock = Stock('', '');
+  StockSummary? summary = StockSummary('', '');
 
   bool isValid() {
-    return stock != null && stock.isValid() && summary != null && summary.isValid();
+    return stock != null &&
+        stock!.isValid() &&
+        summary != null &&
+        summary!.isValid();
   }
 
   bool invalid() {
     return !isValid();
   }
 
-  void setStock(Stock newValue) {
-    if (newValue == null || !StringUtils.equalsIgnoreCase(newValue.code, stock.code)) {
-      this.summary.copyValueFrom(null);
+  void setStock(Stock? newValue) {
+    if (newValue == null ||
+        !StringUtils.equalsIgnoreCase(newValue.code, stock?.code)) {
+      this.summary?.copyValueFrom(StockSummary(null, null));
     }
     if (newValue != null) {
-      this.summary.code = newValue.code;
-      this.summary.board = newValue.defaultBoard;
+      this.summary?.code = newValue.code;
+      this.summary?.board = newValue.defaultBoard;
     }
-    stock.copyValueFrom(newValue);
+    stock?.copyValueFrom(newValue!);
     notifyListeners();
   }
 
-  void setData(StockSummary newValue,{bool check = false}) {
+  void setData(StockSummary? newValue, {bool check = false}) {
     // if (this.value == null) {
     //   this.value = newValue;
     // } else {
 
-    if(check){ // check untuk sama tidak nya dengan yg active sekarang
-      if(newValue != null
-          && StringUtils.equalsIgnoreCase(this.summary.code, newValue.code)
-          && StringUtils.equalsIgnoreCase(this.summary.board, newValue.board)
-      ){
-        this.summary.copyValueFrom(newValue);
+    if (check) {
+      // check untuk sama tidak nya dengan yg active sekarang
+      if (newValue != null &&
+          StringUtils.equalsIgnoreCase(this.summary?.code, newValue.code) &&
+          StringUtils.equalsIgnoreCase(this.summary?.board, newValue.board)) {
+        this.summary?.copyValueFrom(newValue);
       }
-    }else{
-      this.summary.copyValueFrom(newValue);
+    } else {
+      this.summary?.copyValueFrom(newValue!);
     }
     // ASLI 2022-06-08
     //this.summary.copyValueFrom(newValue);
@@ -416,7 +434,8 @@ class StockSummaryChangeNotifier extends ChangeNotifier {
   }
 }
 
-final stockSummaryChangeNotifier = ChangeNotifierProvider<StockSummaryChangeNotifier>((ref) {
+final stockSummaryChangeNotifier =
+    ChangeNotifierProvider<StockSummaryChangeNotifier>((ref) {
   return StockSummaryChangeNotifier();
 });
 
@@ -424,7 +443,7 @@ class BaseChangeNotifier extends ChangeNotifier {
   NotifierState currentState = NotifierState.Loading;
   String currentMessage = '';
 
-  void setState(NotifierState newState, {String message}) {
+  void setState(NotifierState newState, {String? message}) {
     this.currentState = newState;
     if (message != null) {
       this.currentMessage = message;
@@ -444,34 +463,38 @@ class BaseChangeNotifier extends ChangeNotifier {
     setState(NotifierState.Finished, message: '');
   }
 
-  void setError({String message}) {
+  void setError({String? message}) {
     setState(NotifierState.Error, message: message);
   }
 }
 
 class OrderBookChangeNotifier extends BaseChangeNotifier {
-  Stock stock = new Stock('', '');
-  OrderBook orderbook = OrderBook.createBasic();
+  Stock? stock = new Stock('', '');
+  OrderBook? orderbook = OrderBook.createBasic();
 
   bool isValid() {
-    return stock != null && stock.isValid() && orderbook != null && orderbook.isValid();
+    return stock != null &&
+        stock!.isValid() &&
+        orderbook != null &&
+        orderbook!.isValid();
   }
 
   bool invalid() {
     return !isValid();
   }
 
-  void setStock(Stock newValue) {
-    if (newValue == null || !StringUtils.equalsIgnoreCase(newValue.code, stock.code)) {
-      this.orderbook.copyValueFrom(null);
+  void setStock(Stock? newValue) {
+    if (newValue == null ||
+        !StringUtils.equalsIgnoreCase(newValue.code, stock?.code)) {
+      this.orderbook?.copyValueFrom(null);
     }
 
     if (newValue != null) {
-      this.orderbook.code = newValue.code;
-      this.orderbook.board = newValue.defaultBoard;
+      this.orderbook?.code = newValue.code;
+      this.orderbook?.board = newValue.defaultBoard;
     }
 
-    stock.copyValueFrom(newValue);
+    stock?.copyValueFrom(newValue);
     notifyListeners();
   }
 
@@ -479,22 +502,26 @@ class OrderBookChangeNotifier extends BaseChangeNotifier {
     // if (this.value == null) {
     //   this.value = newValue;
     // } else {
-    this.orderbook.copyValueFrom(newValue);
+    this.orderbook?.copyValueFrom(newValue);
     notifyListeners();
     // }
   }
 }
 
-final orderBookChangeNotifier = ChangeNotifierProvider<OrderBookChangeNotifier>((ref) {
+final orderBookChangeNotifier =
+    ChangeNotifierProvider<OrderBookChangeNotifier>((ref) {
   return OrderBookChangeNotifier();
 });
 
 class TradeBookChangeNotifier extends ChangeNotifier {
-  Stock stock = Stock('', '');
-  TradeBook tradebook = TradeBook.createBasic();
+  Stock? stock = Stock('', '');
+  TradeBook? tradebook = TradeBook.createBasic();
 
   bool isValid() {
-    return stock != null && stock.isValid() && tradebook != null && tradebook.isValid();
+    return stock != null &&
+        stock!.isValid() &&
+        tradebook != null &&
+        tradebook!.isValid();
   }
 
   bool invalid() {
@@ -502,18 +529,19 @@ class TradeBookChangeNotifier extends ChangeNotifier {
   }
 
   bool isLoaded() {
-    return (tradebook != null ? tradebook.loaded : false);
+    return (tradebook != null ? tradebook!.loaded : false)!;
   }
 
-  void setStock(Stock newValue) {
-    if (newValue == null || !StringUtils.equalsIgnoreCase(newValue.code, stock.code)) {
-      this.tradebook.copyValueFrom(null);
+  void setStock(Stock? newValue) {
+    if (newValue == null ||
+        !StringUtils.equalsIgnoreCase(newValue.code, stock?.code)) {
+      this.tradebook!.copyValueFrom(TradeBook(null, null));
     }
     if (newValue != null) {
-      this.tradebook.code = newValue.code;
-      this.tradebook.board = newValue.defaultBoard;
+      this.tradebook!.code = newValue.code;
+      this.tradebook!.board = newValue.defaultBoard;
     }
-    stock.copyValueFrom(newValue);
+    stock?.copyValueFrom(newValue);
     notifyListeners();
   }
 
@@ -521,13 +549,14 @@ class TradeBookChangeNotifier extends ChangeNotifier {
     // if (this.value == null) {
     //   this.value = newValue;
     // } else {
-    this.tradebook.copyValueFrom(newValue);
+    this.tradebook!.copyValueFrom(newValue);
     notifyListeners();
     // }
   }
 }
 
-final tradeBookChangeNotifier = ChangeNotifierProvider<TradeBookChangeNotifier>((ref) {
+final tradeBookChangeNotifier =
+    ChangeNotifierProvider<TradeBookChangeNotifier>((ref) {
   return TradeBookChangeNotifier();
 });
 
@@ -537,53 +566,52 @@ class ClearOrderChangeNotifier extends ChangeNotifier {
   }
 }
 
-final clearOrderChangeNotifier = ChangeNotifierProvider<ClearOrderChangeNotifier>((ref) {
+final clearOrderChangeNotifier =
+    ChangeNotifierProvider<ClearOrderChangeNotifier>((ref) {
   return ClearOrderChangeNotifier();
 });
+
 class StatusRefreshNotifier extends ChangeNotifier {
   String time = '';
-  String refresh_type     = '';
-  String account_code     = '';
-  String parent_order_id  = '';
-  String child_order_id   = '';
-  String trade_no         = '';
-  void setData(
-    String time,
-    String refreshType,
-    String accountCode,
-    String parentOrderId,
-    String childOrderId,
-    String tradeNo
-
-      ){
+  String refresh_type = '';
+  String account_code = '';
+  String parent_order_id = '';
+  String child_order_id = '';
+  String trade_no = '';
+  void setData(String time, String refreshType, String accountCode,
+      String parentOrderId, String childOrderId, String tradeNo) {
     this.time = time;
-    this.refresh_type     = refreshType;
-    this.account_code     = accountCode;
-    this.parent_order_id  = parentOrderId;
-    this.child_order_id   = childOrderId;
-    this.trade_no         = tradeNo;
+    this.refresh_type = refreshType;
+    this.account_code = accountCode;
+    this.parent_order_id = parentOrderId;
+    this.child_order_id = childOrderId;
+    this.trade_no = tradeNo;
     notifyListeners();
   }
 }
-final statusRefreshNotifier = ChangeNotifierProvider<StatusRefreshNotifier>((ref) {
+
+final statusRefreshNotifier =
+    ChangeNotifierProvider<StatusRefreshNotifier>((ref) {
   return StatusRefreshNotifier();
 });
+
 class BuySellChangeNotifier extends ChangeNotifier {
   Buy buyData = Buy();
   Sell sellData = Sell();
 
-  BuySell getData(OrderType type) {
+  BuySell getData(OrderType? type) {
     //if(type == buyData.orderType){
-    if (type.isBuyOrAmendBuy()) {
+    if (type!.isBuyOrAmendBuy()) {
       return buyData;
       //}else if(type == sellData.orderType){
     } else if (type.isSellOrAmendSell()) {
       return sellData;
     }
+    return BuySell(null);
   }
 
-  void setData(BuySell buySell) {
-    if (buySell.orderType.isBuyOrAmendBuy()) {
+  void setData(BuySell? buySell) {
+    if (buySell!.orderType!.isBuyOrAmendBuy()) {
       buyData.copyFrom(buySell);
     } else {
       sellData.copyFrom(buySell);
@@ -610,11 +638,13 @@ class BuySellChangeNotifier extends ChangeNotifier {
   }
 }
 
-final buySellChangeNotifier = ChangeNotifierProvider<BuySellChangeNotifier>((ref) {
+final buySellChangeNotifier =
+    ChangeNotifierProvider<BuySellChangeNotifier>((ref) {
   return BuySellChangeNotifier();
 });
 
-final amendChangeNotifier = ChangeNotifierProvider<BuySellChangeNotifier>((ref) {
+final amendChangeNotifier =
+    ChangeNotifierProvider<BuySellChangeNotifier>((ref) {
   return BuySellChangeNotifier();
 });
 
@@ -653,16 +683,16 @@ class OrderDataChangeNotifier extends ChangeNotifier {
   }
 
   void update(
-      {String accountType,
-      String accountName,
-      String stock_code,
-      String stock_name,
-      OrderType orderType,
-      int price,
-      int lot,
-      int value,
-      int tradingLimitUsage,
-      bool fastMode}) {
+      {String? accountType,
+      String? accountName,
+      String? stock_code,
+      String? stock_name,
+      OrderType? orderType,
+      int? price,
+      int? lot,
+      int? value,
+      int? tradingLimitUsage,
+      bool? fastMode}) {
     if (accountType != null) {
       this.accountType = accountType;
     }
@@ -696,7 +726,8 @@ class OrderDataChangeNotifier extends ChangeNotifier {
   }
 }
 
-final orderDataChangeNotifier = ChangeNotifierProvider<OrderDataChangeNotifier>((ref) {
+final orderDataChangeNotifier =
+    ChangeNotifierProvider<OrderDataChangeNotifier>((ref) {
   return OrderDataChangeNotifier();
 });
 
@@ -711,49 +742,51 @@ final managerEventNotifier = ChangeNotifierProvider<ManagerDatafeed>((ref) {
 
 class Subscription {
   final bool psubscribe;
-  final String channel;
-  final ListStringCallback listener;
-  final Function validator;
+  final String? channel;
+  final ListStringCallback? listener;
+  final Function? validator;
   final bool receiveUnknownMessage;
-  Subscription(this.channel, this.listener, this.validator, {this.receiveUnknownMessage = true, this.psubscribe = false});
+  Subscription(this.channel, this.listener, this.validator,
+      {this.receiveUnknownMessage = true, this.psubscribe = false});
 
-  String asCommand() {
+  String? asCommand() {
     return '';
   }
-  bool matchPattern(String key){
+
+  bool matchPattern(String key) {
     return false;
   }
 }
 
 class PsubscribeAndHGET extends Subscription {
-  final String key;
-  final String field;
+  final String? key;
+  final String? field;
 
   String asCommand() {
     return 'HGET $key $field';
   }
 
-  bool matchPattern(String channel){
-    List<String> patterns = key.split('*');
+  bool matchPattern(String channel) {
+    List<String>? patterns = key?.split('*');
     Utils.printList(patterns, caller: 'matchPattern $key : $channel');
-    int count = patterns == null ? 0 : patterns.length;
+    int? count = patterns == null ? 0 : patterns.length;
     List<bool> result = List.empty(growable: true);
-    if(patterns != null && patterns.isNotEmpty){
-      for (int i = 0; i<count; i++){
-        if(i == 0){
+    if (patterns != null && patterns.isNotEmpty) {
+      for (int i = 0; i < count; i++) {
+        if (i == 0) {
           String pattern = patterns.first;
-          bool ok =  channel.startsWith(pattern);
+          bool ok = channel.startsWith(pattern);
           result.add(ok);
-        }else{
+        } else {
           String pattern = patterns.elementAt(i);
-          bool ok =  channel.contains(pattern);
+          bool ok = channel.contains(pattern);
           result.add(ok);
         }
       }
       int countResult = result == null ? 0 : result.length;
       bool ok = true;
-      for (int i = 0; i<countResult; i++){
-        if(!result.elementAt(i)){
+      for (int i = 0; i < countResult; i++) {
+        if (!result.elementAt(i)) {
           ok = false;
           break;
         }
@@ -762,10 +795,14 @@ class PsubscribeAndHGET extends Subscription {
     }
     return false;
   }
-  PsubscribeAndHGET(String channel, this.key, this.field, {ListStringCallback listener, Function validator,bool receiveUnknownMessage=true})
-      : super(channel, listener, validator, receiveUnknownMessage: receiveUnknownMessage, psubscribe: true);
-}
 
+  PsubscribeAndHGET(String channel, this.key, this.field,
+      {ListStringCallback? listener,
+      Function? validator,
+      bool receiveUnknownMessage = true})
+      : super(channel, listener, validator,
+            receiveUnknownMessage: receiveUnknownMessage, psubscribe: true);
+}
 
 class SubscribeAndHGET extends Subscription {
   final String key;
@@ -775,8 +812,12 @@ class SubscribeAndHGET extends Subscription {
     return 'HGET $key $field';
   }
 
-  SubscribeAndHGET(String channel, this.key, this.field, {ListStringCallback listener, Function validator,bool receiveUnknownMessage=true})
-      : super(channel, listener, validator, receiveUnknownMessage: receiveUnknownMessage);
+  SubscribeAndHGET(String channel, this.key, this.field,
+      {ListStringCallback? listener,
+      Function? validator,
+      bool receiveUnknownMessage = true})
+      : super(channel, listener, validator,
+            receiveUnknownMessage: receiveUnknownMessage);
 }
 
 class SubscribeAndGET extends Subscription {
@@ -789,8 +830,8 @@ class SubscribeAndGET extends Subscription {
   SubscribeAndGET(
     String channel,
     this.key, {
-    ListStringCallback listener,
-    Function validator,
+    ListStringCallback? listener,
+    Function? validator,
   }) : super(channel, listener, validator);
 }
 
@@ -806,7 +847,6 @@ enum DatafeedType {
 
   // no channel
   CompositeForeignDomestic,
-
 }
 
 extension DatafeedTypeExtension on DatafeedType {
@@ -881,6 +921,7 @@ extension DatafeedTypeExtension on DatafeedType {
     */
   }
 }
+
 // //final String TYPE_SUMMARY 				  = 'Q'; // 'SUMMARY';
 // final String TYPE_SUMMARY_LIST 			= 'W'; // 'SUMMARY_LIST';
 // final String TYPE_SUMMARY_SHORT			= 'E'; // 'SUMMARY_SHORT';
@@ -917,6 +958,7 @@ enum RedisSubscriptionType {
   Psubscribe,
   Punsubscribe,
 }
+
 extension RedisSubscriptionTypeExtension on RedisSubscriptionType {
   String get commandType {
     switch (this) {
@@ -933,23 +975,26 @@ extension RedisSubscriptionTypeExtension on RedisSubscriptionType {
     }
   }
 }
+
 class WrapperSubscription {
-  Subscription subscription;
+  Subscription? subscription;
   // bool subscribe = false;
   // bool psubscribe = false;
   RedisSubscriptionType type;
   String caller = '';
 
-  WrapperSubscription(this.subscription, this.type, {/*this.subscribe = false, this.psubscribe = false,*/ this.caller = ''});
+  WrapperSubscription(this.subscription, this.type,
+      {/*this.subscribe = false, this.psubscribe = false,*/ this.caller = ''});
 }
 
-class ManagerDatafeed extends ChangeNotifier implements RedisConnectionListener, RedisStreamerReceiver {
+class ManagerDatafeed extends ChangeNotifier
+    implements RedisConnectionListener, RedisStreamerReceiver {
   //bool _maintainConnection = false;
-  RedisStreamerConnector redisConnector;
+  RedisStreamerConnector? redisConnector;
 
   Color statusColor = Colors.white;
 
-  Timer timer;
+  Timer? timer;
 
   bool isInitialized() {
     return redisConnector != null;
@@ -959,17 +1004,17 @@ class ManagerDatafeed extends ChangeNotifier implements RedisConnectionListener,
   List<String> _psubscribeValid = List.empty(growable: true);
 
   List<WrapperSubscription> _queue = List.empty(growable: true);
-  Map<String, List<Subscription>> subscriptions = Map();
+  Map<String?, List<Subscription?>>? subscriptions = Map();
 
   //Map<String, StringIndex> gets = Map();
 
   void _sendGetSubcribe(RedisConnector connector) async {
-    String gets;
-    String subs;
+    String? gets = '';
+    String? subs = '';
 
-
-    subscriptions.forEach((key, value) {
-      DebugWriter.info('_sendGetSubcribe Key = $key : listeners = ' + value.length.toString());
+    subscriptions?.forEach((key, value) {
+      DebugWriter.info('_sendGetSubcribe Key = $key : listeners = ' +
+          value.length.toString());
 
       if (value.length > 0) {
         /*
@@ -981,33 +1026,32 @@ class ManagerDatafeed extends ChangeNotifier implements RedisConnectionListener,
           subs += '\r\nSUBSCRIBE $key';
         }
         */
-        bool psubscribe = value.first is PsubscribeAndHGET;
+        bool? psubscribe = value.first is PsubscribeAndHGET;
         if (StringUtils.isEmtpy(gets)) {
-          gets = value.first.asCommand();
+          gets = value.first?.asCommand()!;
           //subs = 'SUBSCRIBE $key';
 
-          if(psubscribe){
+          if (psubscribe) {
             subs = 'PSUBSCRIBE $key';
-          }else{
+          } else {
             subs = 'SUBSCRIBE $key';
           }
           //unsubs = 'UNSUBSCRIBE $key';
         } else {
-          gets += '\r\n' + value.first.asCommand();
+          gets = gets! + '\r\n' + value.first!.asCommand()!;
+          // gets += '\r\n' + value.first!.asCommand()!;
           //subs += '\r\nSUBSCRIBE $key';
 
-          if(psubscribe){
-            subs += '\r\nPSUBSCRIBE $key';
-          }else{
-            subs += '\r\nSUBSCRIBE $key';
+          if (psubscribe) {
+            subs = subs! + '\r\nPSUBSCRIBE $key';
+            // subs += '\r\nPSUBSCRIBE $key';
+          } else {
+            subs = subs! + '\r\nSUBSCRIBE $key';
+            // subs += '\r\nSUBSCRIBE $key';
           }
           //unsubs += '\r\nUNSUBSCRIBE $key';
         }
-
       }
-
-
-
     });
     if (!StringUtils.isEmtpy(gets)) {
       String getsSubs = '$gets\r\n$subs';
@@ -1015,11 +1059,13 @@ class ManagerDatafeed extends ChangeNotifier implements RedisConnectionListener,
     }
   }
 
-  void _resendGetSubcribe(RedisConnector connector, {String skipUnsubscribeChannel}) async {
-    String gets;
-    String subs;
-    String unsubs;
-    Utils.printList(_subscribeValid, caller: '_resendGetSubcribe._subscribeValid');
+  void _resendGetSubcribe(RedisConnector? connector,
+      {String? skipUnsubscribeChannel}) async {
+    String gets = '';
+    String subs = '';
+    String unsubs = '';
+    Utils.printList(_subscribeValid,
+        caller: '_resendGetSubcribe._subscribeValid');
     _subscribeValid.forEach((channel) {
       if (StringUtils.isEmtpy(unsubs)) {
         unsubs = 'UNSUBSCRIBE $channel';
@@ -1028,7 +1074,8 @@ class ManagerDatafeed extends ChangeNotifier implements RedisConnectionListener,
       }
     });
 
-    Utils.printList(_psubscribeValid, caller: '_resendGetSubcribe._psubscribeValid');
+    Utils.printList(_psubscribeValid,
+        caller: '_resendGetSubcribe._psubscribeValid');
     _psubscribeValid.forEach((channel) {
       if (StringUtils.isEmtpy(unsubs)) {
         unsubs = 'PUNSUBSCRIBE $channel';
@@ -1037,36 +1084,33 @@ class ManagerDatafeed extends ChangeNotifier implements RedisConnectionListener,
       }
     });
 
-    subscriptions.forEach((key, value) {
-      DebugWriter.info('_resendGetSubcribe Key = $key : listeners = ' + value.length.toString());
+    subscriptions?.forEach((key, value) {
+      DebugWriter.info('_resendGetSubcribe Key = $key : listeners = ' +
+          value.length.toString());
 
       if (value.length > 0) {
-
         bool psubscribe = value.first is PsubscribeAndHGET;
         if (StringUtils.isEmtpy(gets)) {
-          gets = value.first.asCommand();
+          gets = value.first!.asCommand()!;
           //subs = 'SUBSCRIBE $key';
 
-          if(psubscribe){
+          if (psubscribe) {
             subs = 'PSUBSCRIBE $key';
-          }else{
+          } else {
             subs = 'SUBSCRIBE $key';
           }
           //unsubs = 'UNSUBSCRIBE $key';
         } else {
-          gets += '\r\n' + value.first.asCommand();
+          gets += '\r\n' + value.first!.asCommand()!;
           //subs += '\r\nSUBSCRIBE $key';
 
-          if(psubscribe){
+          if (psubscribe) {
             subs += '\r\nPSUBSCRIBE $key';
-          }else{
+          } else {
             subs += '\r\nSUBSCRIBE $key';
           }
           //unsubs += '\r\nUNSUBSCRIBE $key';
         }
-
-
-
 
         /*
         if(StringUtils.isEmtpy(unsubs)) {
@@ -1084,7 +1128,6 @@ class ManagerDatafeed extends ChangeNotifier implements RedisConnectionListener,
           }
         }
          */
-
       }
     });
     if (!StringUtils.isEmtpy(gets)) {
@@ -1094,79 +1137,88 @@ class ManagerDatafeed extends ChangeNotifier implements RedisConnectionListener,
       DebugWriter.info('unsubs : $unsubs');
       DebugWriter.info('gets : $gets');
       DebugWriter.info('subs : $subs');
-      if(!StringUtils.isEmtpy(unsubs)){
-        connector.writeToServer(unsubs);
+      if (!StringUtils.isEmtpy(unsubs)) {
+        connector?.writeToServer(unsubs);
       }
-      connector.writeToServer(gets);
-      connector.writeToServer(subs);
+      connector?.writeToServer(gets);
+      connector?.writeToServer(subs);
     }
   }
 
-  void subscribe(Subscription subscription, String caller) {
+  void subscribe(Subscription? subscription, String caller) {
     //_queue.add(WrapperSubscription(subscription, true, caller: caller));
     //_queue.add(WrapperSubscription(subscription, subscribe: true, caller: caller));
-    _queue.add(WrapperSubscription(subscription, RedisSubscriptionType.Subscribe, caller: caller));
+    _queue.add(WrapperSubscription(
+        subscription, RedisSubscriptionType.Subscribe,
+        caller: caller));
   }
 
   void psubscribe(Subscription subscription, String caller) {
     //_queue.add(WrapperSubscription(subscription, true, caller: caller));
-    _queue.add(WrapperSubscription(subscription, RedisSubscriptionType.Psubscribe, caller: caller));
+    _queue.add(WrapperSubscription(
+        subscription, RedisSubscriptionType.Psubscribe,
+        caller: caller));
   }
 
-
-  void _subscribe(Subscription subscription) {
+  void _subscribe(Subscription? subscription) {
     bool added = false;
-    if (subscriptions.containsKey(subscription.channel)) {
-      added = subscriptions[subscription.channel].length == 0;
-      subscriptions[subscription.channel].add(subscription);
+    if (subscriptions!.containsKey(subscription?.channel)) {
+      added = subscriptions?[subscription?.channel]?.length == 0;
+      subscriptions?[subscription?.channel]?.add(subscription!);
     } else {
-      List<Subscription> listeners = List.empty(growable: true);
+      List<Subscription?> listeners = List.empty(growable: true);
       listeners.add(subscription);
-      subscriptions[subscription.channel] = listeners;
+      subscriptions?[subscription?.channel] = listeners;
       added = true;
     }
 
-    if (/*added && */ redisConnector != null && redisConnector.isReady()) {
+    if (/*added && */ redisConnector != null && redisConnector!.isReady()) {
       //redisConnector.subscribe(subscription.channel);
       if (added) {
-        _resendGetSubcribe(redisConnector, skipUnsubscribeChannel: subscription.channel);
+        _resendGetSubcribe(redisConnector,
+            skipUnsubscribeChannel: subscription?.channel);
       } else {
-        _resendGetSubcribe(redisConnector);
+        _resendGetSubcribe(redisConnector!);
       }
     }
   }
 
-  void unsubscribe(Subscription subscription, String caller) {
+  void unsubscribe(Subscription? subscription, String caller) {
     //_queue.add(WrapperSubscription(subscription, false, caller: caller));
-    _queue.add(WrapperSubscription(subscription, RedisSubscriptionType.Unsubscribe, caller: caller));
+    _queue.add(WrapperSubscription(
+        subscription, RedisSubscriptionType.Unsubscribe,
+        caller: caller));
   }
+
   void punsubscribe(Subscription subscription, String caller) {
     //_queue.add(WrapperSubscription(subscription, false, caller: caller));
-    _queue.add(WrapperSubscription(subscription, RedisSubscriptionType.Punsubscribe, caller: caller));
+    _queue.add(WrapperSubscription(
+        subscription, RedisSubscriptionType.Punsubscribe,
+        caller: caller));
   }
 
-  void _unsubscribe(Subscription subscription) {
-    if (subscriptions.containsKey(subscription.channel)) {
-      subscriptions[subscription.channel].remove(subscription);
-      bool remove = subscriptions[subscription.channel].length == 0;
-      if (remove && redisConnector != null && redisConnector.isReady()) {
-        redisConnector.unsubscribe(subscription.channel);
+  void _unsubscribe(Subscription? subscription) {
+    if (subscriptions!.containsKey(subscription?.channel)) {
+      subscriptions?[subscription?.channel]?.remove(subscription);
+      bool remove = subscriptions?[subscription?.channel]?.length == 0;
+      if (remove && redisConnector != null && redisConnector!.isReady()) {
+        redisConnector?.unsubscribe(subscription?.channel);
       }
     }
   }
 
-  void _punsubscribe(Subscription subscription) {
-    if (subscriptions.containsKey(subscription.channel)) {
-      subscriptions[subscription.channel].remove(subscription);
-      bool remove = subscriptions[subscription.channel].length == 0;
-      if (remove && redisConnector != null && redisConnector.isReady()) {
-        redisConnector.punsubscribe(subscription.channel);
+  void _punsubscribe(Subscription? subscription) {
+    if (subscriptions!.containsKey(subscription?.channel)) {
+      subscriptions?[subscription?.channel]?.remove(subscription);
+      bool remove = subscriptions?[subscription?.channel]?.length == 0;
+      if (remove && redisConnector != null && redisConnector!.isReady()) {
+        redisConnector?.punsubscribe(subscription?.channel);
       }
     }
   }
 
-  void debug(String text) {
-    DebugWriter.info(DateTime.now().toString() + " $runtimeType " + text);
+  void debug(String? text) {
+    DebugWriter.info(DateTime.now().toString() + " $runtimeType " + text!);
   }
 
   bool validatorStatus(List<String> data, String channel) {
@@ -1187,7 +1239,9 @@ class ManagerDatafeed extends ChangeNotifier implements RedisConnectionListener,
 
   bool validatorCompositeFD(List<String> data, String channel) {
     //List<String> data = message.split('|');
-    if (data.length > 2 && data.first == 'III' && data.elementAt(1) == DatafeedType.CompositeForeignDomestic.type) {
+    if (data.length > 2 &&
+        data.first == 'III' &&
+        data.elementAt(1) == DatafeedType.CompositeForeignDomestic.type) {
       return true;
     }
     return false;
@@ -1201,39 +1255,30 @@ class ManagerDatafeed extends ChangeNotifier implements RedisConnectionListener,
     return false;
   }
 
-
   void initiate(
-      {String ip = '', int port = 0, String password = '', String clientUsername = 'No-One', String platform = '-', String version = '-', bool presubscribe=true, String streamer_id='StreamerConnector'}) {
-
-    if(presubscribe){
-      SubscribeAndGET subscribeStatus = SubscribeAndGET(DatafeedType.Status.key, DatafeedType.Status.key, listener: (message) {
-        //print('got : '+message.join('|'));
-        DebugWriter.info('got : ' + message.elementAt(1));
-        DebugWriter.info(message);
-      }, validator: validatorStatus);
-
-      String codeBoard = 'ASII.RG';
-      SubscribeAndHGET subscribeSummary =
-      SubscribeAndHGET(DatafeedType.Summary.key + '.' + codeBoard, DatafeedType.Summary.collection, codeBoard, listener: (message) {
-        DebugWriter.info('got : ' + message.elementAt(1));
-        DebugWriter.info(message);
-      }, validator: validatorSummary);
-
-      String indexCode = 'COMPOSITE';
-      SubscribeAndHGET subscribeComposite =
-      SubscribeAndHGET(DatafeedType.Indices.key + '.' + indexCode, DatafeedType.Indices.collection, indexCode, listener: (message) {
-        DebugWriter.info('got : ' + message.elementAt(1));
-        DebugWriter.info(message);
-      }, validator: validatorIndex);
-
-      SubscribeAndGET subscribeCompositeFD =
-      SubscribeAndGET(DatafeedType.CompositeForeignDomestic.key, DatafeedType.CompositeForeignDomestic.key, listener: (message) {
-        DebugWriter.info('got : ' + message.elementAt(1));
-        DebugWriter.info(message);
-      }, validator: validatorCompositeFD);
+      {String ip = '',
+      int port = 0,
+      String password = '',
+      String clientUsername = 'No-One',
+      String? platform = '-',
+      String? version = '-',
+      bool presubscribe = true,
+      String streamer_id = 'StreamerConnector'}) {
+    if (presubscribe) {
+      SubscribeAndGET subscribeStatus = SubscribeAndGET(
+        DatafeedType.Status.key,
+        DatafeedType.Status.key,
+        listener: (message) {
+          //print('got : '+message.join('|'));
+          DebugWriter.info('got : ' + message.elementAt(1));
+          DebugWriter.info(message);
+          return '';
+        },
+        validator: validatorStatus,
+      );
 
       subscribe(subscribeStatus, 'initiate');
-      //subscribe(subscribeSummary);
+
       //subscribe(subscribeComposite);
       //subscribe(subscribeCompositeFD);
       //
@@ -1252,10 +1297,11 @@ class ManagerDatafeed extends ChangeNotifier implements RedisConnectionListener,
       // }, validatorIndex , 'CZ', 'COMPOSITE'));
     }
 
-
-    redisConnector = new RedisStreamerConnector(ip, port, password, clientUsername, platform, version, this, streamerid: streamer_id);
+    redisConnector = new RedisStreamerConnector(
+        ip, port, password, clientUsername, platform, version, this,
+        streamerid: streamer_id);
     //redisConnector.connectRedis(connectionListener: this);
-    redisConnector.setConnectionListener(this);
+    redisConnector?.setConnectionListener(this);
   }
 
   void disconnect({String info = '' /*, bool maintainConnection*/
@@ -1264,7 +1310,7 @@ class ManagerDatafeed extends ChangeNotifier implements RedisConnectionListener,
     //   _maintainConnection = maintainConnection;
     // }
     if (redisConnector != null) {
-      redisConnector.disconnectRedis(info: info);
+      redisConnector?.disconnectRedis(info: info);
     }
   }
 
@@ -1273,7 +1319,7 @@ class ManagerDatafeed extends ChangeNotifier implements RedisConnectionListener,
     //   _maintainConnection = maintainConnection;
     // }
     if (redisConnector != null) {
-      redisConnector.connectRedis();
+      redisConnector?.connectRedis();
     }
   }
 
@@ -1284,10 +1330,11 @@ class ManagerDatafeed extends ChangeNotifier implements RedisConnectionListener,
     // if(data.length > 2 && data.first == 'III' && data.elementAt(1) == 'C'){
     //
     // }
-    subscriptions.values.forEach((list) {
+    subscriptions?.values.forEach((list) {
       list.forEach((subscription) {
-        if (subscription.validator(data, subscription.channel) && subscription.receiveUnknownMessage) {
-          subscription.listener(data);
+        if (subscription?.validator!(data, subscription.channel) &&
+            subscription!.receiveUnknownMessage) {
+          subscription.listener!(data);
         }
       });
     });
@@ -1298,19 +1345,20 @@ class ManagerDatafeed extends ChangeNotifier implements RedisConnectionListener,
     debug('onStreamerMessage $channel  : $message');
     List<String> data = message.split('|');
 
-    subscriptions[channel].forEach((subscription) {
+    subscriptions?[channel]?.forEach((subscription) {
       //if(subscription.validator(data, subscription.channel)){
-      subscription.listener(data);
+      subscription?.listener!(data);
       //}
     });
   }
+
   @override
   void onStreamerPmessage(String channel, String message) {
     debug('onStreamerPmessage $channel  : $message');
     List<String> data = message.split('|');
-    subscriptions[channel].forEach((subscription) {
+    subscriptions?[channel]?.forEach((subscription) {
       //if(subscription.validator(data, subscription.channel)){
-      subscription.listener(data);
+      subscription?.listener!(data);
       //}
     });
 
@@ -1323,9 +1371,9 @@ class ManagerDatafeed extends ChangeNotifier implements RedisConnectionListener,
     //   }
     // });
   }
+
   @override
   void onStreamerSubscribe(String channel, String message) {
-    // TODO: implement onStreamerSubscribe
     debug('onStreamerSubscribe $channel  : $message');
     if (!_subscribeValid.contains(channel)) {
       _subscribeValid.add(channel);
@@ -1334,7 +1382,6 @@ class ManagerDatafeed extends ChangeNotifier implements RedisConnectionListener,
 
   @override
   void onStreamerUnsubscribe(String channel, String message) {
-    // TODO: implement onStreamerUnsubscribe
     debug('onStreamerUnsubscribe $channel  : $message');
     if (_subscribeValid.contains(channel)) {
       _subscribeValid.remove(channel);
@@ -1345,8 +1392,8 @@ class ManagerDatafeed extends ChangeNotifier implements RedisConnectionListener,
   void onStreamerPsubscribe(String channel, String message) {
     debug('onStreamerPsubscribe $channel  : $message');
 
-    bool contains = StringUtils.contains(channel, _psubscribeValid);
-    if (!contains) {
+    bool? contains = StringUtils.contains(channel, _psubscribeValid);
+    if (!contains!) {
       _psubscribeValid.add(channel);
     }
     // if (!_psubscribeValid.contains(channel)) {
@@ -1357,8 +1404,8 @@ class ManagerDatafeed extends ChangeNotifier implements RedisConnectionListener,
   @override
   void onStreamerPunsubscribe(String channel, String message) {
     debug('onStreamerPunsubscribe $channel  : $message');
-    bool contains = StringUtils.contains(channel, _psubscribeValid);
-    if (contains) {
+    bool? contains = StringUtils.contains(channel, _psubscribeValid);
+    if (contains!) {
       _psubscribeValid.remove(channel);
     }
 
@@ -1367,11 +1414,10 @@ class ManagerDatafeed extends ChangeNotifier implements RedisConnectionListener,
     // }
   }
 
-
   @override
   void onAuthenticated(RedisConnector connector, String info, bool isReady) {
-    // TODO: implement onAuthenticated
-    debug(connector.connectorId + ' onAuthenticated : $info  isReady : $isReady');
+    debug(
+        connector.connectorId + ' onAuthenticated : $info  isReady : $isReady');
     //connector.subcribe('KC');
     statusColor = Colors.green;
 
@@ -1383,7 +1429,6 @@ class ManagerDatafeed extends ChangeNotifier implements RedisConnectionListener,
 
   @override
   void onAuthenticationFailed(RedisConnector connector, String info) {
-    // TODO: implement onAuthenticationFailed
     debug(connector.connectorId + ' onAuthenticationFailed : $info');
     statusColor = Colors.red;
     notifyListeners();
@@ -1391,7 +1436,6 @@ class ManagerDatafeed extends ChangeNotifier implements RedisConnectionListener,
 
   @override
   void onConnected(RedisConnector connector, String info, bool isReady) {
-    // TODO: implement onConnected
     debug(connector.connectorId + ' onConnected : $info  isReady : $isReady');
     statusColor = Colors.blue;
     notifyListeners();
@@ -1399,7 +1443,6 @@ class ManagerDatafeed extends ChangeNotifier implements RedisConnectionListener,
 
   @override
   void onConnecting(RedisConnector connector, String info) {
-    // TODO: implement onConnecting
     debug(connector.connectorId + ' onConnecting : $info');
     statusColor = Colors.yellowAccent;
     notifyListeners();
@@ -1407,7 +1450,6 @@ class ManagerDatafeed extends ChangeNotifier implements RedisConnectionListener,
 
   @override
   void onConnectionFailed(RedisConnector connector, String info) {
-    // TODO: implement onConnectionFailed
     debug(connector.connectorId + ' onConnectionFailed : $info');
     statusColor = Colors.redAccent;
     notifyListeners();
@@ -1415,7 +1457,6 @@ class ManagerDatafeed extends ChangeNotifier implements RedisConnectionListener,
 
   @override
   void onErrorHandler(RedisConnector connector, String info) {
-    // TODO: implement onErrorHandler
     debug(connector.connectorId + ' onErrorHandler : $info');
   }
 
@@ -1427,7 +1468,6 @@ class ManagerDatafeed extends ChangeNotifier implements RedisConnectionListener,
 
   @override
   void onReConnecting(RedisConnector connector, String info) {
-    // TODO: implement onReConnecting
     debug(connector.connectorId + ' onReConnecting : $info');
     statusColor = Colors.orangeAccent;
     stopTimer();
@@ -1437,7 +1477,7 @@ class ManagerDatafeed extends ChangeNotifier implements RedisConnectionListener,
   static const Duration durationUpdate = Duration(milliseconds: 500);
 
   void startTimer() {
-    if (timer == null || !timer.isActive) {
+    if (timer == null || !timer!.isActive) {
       timer = Timer.periodic(durationUpdate, (timer) {
         if (onProcess) {
           debug('timer _queue skip caused  onProcess : $onProcess ');
@@ -1452,42 +1492,52 @@ class ManagerDatafeed extends ChangeNotifier implements RedisConnectionListener,
 
   void _executeQueue() {
     onProcess = true;
-    bool canProcess = redisConnector != null && redisConnector.isReady() && _queue.isNotEmpty;
+    bool canProcess = redisConnector != null &&
+        redisConnector!.isReady() &&
+        _queue.isNotEmpty;
     while (canProcess) {
       debug('_queue execute _queue.length : ' + _queue.length.toString());
 
       Utils.printList(_subscribeValid, caller: '_subscribeValid');
       Utils.printList(_psubscribeValid, caller: '_psubscribeValid');
 
-      WrapperSubscription wrapper = _queue.first;
+      WrapperSubscription? wrapper = _queue.first;
       _queue.removeAt(0);
 
-      if (wrapper.type == RedisSubscriptionType.Subscribe || wrapper.type == RedisSubscriptionType.Psubscribe) {
-        debug('_queue execute caller[' + wrapper.caller + '] subscribe/psubscribe  channel : ' + wrapper.subscription.channel);
+      if (wrapper.type == RedisSubscriptionType.Subscribe ||
+          wrapper.type == RedisSubscriptionType.Psubscribe) {
+        debug('_queue execute caller[' +
+            wrapper.caller +
+            '] subscribe/psubscribe  channel : ' +
+            wrapper.subscription!.channel!);
         _subscribe(wrapper.subscription);
-      } else if(wrapper.type == RedisSubscriptionType.Unsubscribe){
-        debug('_queue execute caller[' + wrapper.caller + '] Unsubscribe  channel : ' + wrapper.subscription.channel);
+      } else if (wrapper.type == RedisSubscriptionType.Unsubscribe) {
+        debug('_queue execute caller[' +
+            wrapper.caller +
+            '] Unsubscribe  channel : ' +
+            wrapper.subscription!.channel!);
         _unsubscribe(wrapper.subscription);
-      } else if(wrapper.type == RedisSubscriptionType.Punsubscribe){
-        debug('_queue execute caller[' + wrapper.caller + '] Punsubscribe  channel : ' + wrapper.subscription.channel);
+      } else if (wrapper.type == RedisSubscriptionType.Punsubscribe) {
+        debug('_queue execute caller[' +
+            wrapper.caller +
+            '] Punsubscribe  channel : ' +
+            wrapper.subscription!.channel!);
         _punsubscribe(wrapper.subscription);
       }
-      canProcess = redisConnector != null && redisConnector.isReady() && _queue.isNotEmpty;
+      canProcess = redisConnector != null &&
+          redisConnector!.isReady() &&
+          _queue.isNotEmpty;
     }
     onProcess = false;
   }
 
   void stopTimer() {
-    if (timer == null || !timer.isActive) {
+    if (timer == null || !timer!.isActive) {
       return;
     }
-    timer.cancel();
+    timer!.cancel();
     timer = null;
   }
-
-
-
-
 }
 
 /*
@@ -1590,7 +1640,7 @@ class SubscriptionDatafeed extends ChangeNotifier{
   }
 
 
-
+ 
 
   void disconnnectRedis() async{
     print('disconnnectRedis');
@@ -1617,13 +1667,13 @@ final subscriptionDatafeedChangeNotifier = ChangeNotifierProvider<SubscriptionDa
 
 class MainMenuChangeNotifier extends ChangeNotifier {
   Tabs _mainTab = Tabs.Home;
-  int _subTabHome = 0;
-  int _subTabSearch = 0;
-  int _subTabPortfolio = 0;
-  int _subTabTransaction = 0;
-  int _subTabCommunity = 0;
+  int? _subTabHome = 0;
+  int? _subTabSearch = 0;
+  int? _subTabPortfolio = 0;
+  int? _subTabTransaction = 0;
+  int? _subTabCommunity = 0;
 
-  void setActive(Tabs mainTab, int subTab, {bool silently = false}) {
+  void setActive(Tabs mainTab, int? subTab, {bool silently = false}) {
     this._mainTab = mainTab;
     if (_mainTab == Tabs.Home) {
       this._subTabHome = subTab;
@@ -1642,15 +1692,15 @@ class MainMenuChangeNotifier extends ChangeNotifier {
 
   Tabs get mainTab => _mainTab;
 
-  int get subTabCommunity => _subTabCommunity;
+  int? get subTabCommunity => _subTabCommunity;
 
-  int get subTabTransaction => _subTabTransaction;
+  int? get subTabTransaction => _subTabTransaction;
 
-  int get subTabPortfolio => _subTabPortfolio;
+  int? get subTabPortfolio => _subTabPortfolio;
 
-  int get subTabSearch => _subTabSearch;
+  int? get subTabSearch => _subTabSearch;
 
-  int get subTabHome => _subTabHome;
+  int? get subTabHome => _subTabHome;
 
 //int get subTab => _subTab;
 
@@ -1659,30 +1709,32 @@ class MainMenuChangeNotifier extends ChangeNotifier {
 // }
 }
 
-final mainMenuChangeNotifier = ChangeNotifierProvider<MainMenuChangeNotifier>((ref) {
+final mainMenuChangeNotifier =
+    ChangeNotifierProvider<MainMenuChangeNotifier>((ref) {
   return MainMenuChangeNotifier();
 });
 
 class AccountsInfosNotifier extends ChangeNotifier {
-  List<AccountStockPosition> list = List.empty(growable: true);
+  List<AccountStockPosition>? list = List.empty(growable: true);
 
-  void updateList(List<AccountStockPosition> newList) {
+  void updateList(List<AccountStockPosition>? newList) {
     int newCount = newList != null ? newList.length : 0;
     if (newCount == 0) {
-      list.clear();
+      list?.clear();
     } else {
-      newList.forEach((newInfo) {
+      newList?.forEach((newInfo) {
         _addOrUpdate(newInfo);
       });
     }
     notifyListeners();
   }
 
-  AccountStockPosition getInfo(String accountcode) {
-    AccountStockPosition found;
-    for (int i = 0; i < list.length; i++) {
-      AccountStockPosition existing = list.elementAt(i);
-      if (existing != null && StringUtils.equalsIgnoreCase(accountcode, existing.accountcode)) {
+  AccountStockPosition? getInfo(String? accountcode) {
+    AccountStockPosition? found;
+    for (int i = 0; i < list!.length; i++) {
+      AccountStockPosition? existing = list?.elementAt(i);
+      if (existing != null &&
+          StringUtils.equalsIgnoreCase(accountcode, existing.accountcode)) {
         found = existing;
         break;
       }
@@ -1690,21 +1742,23 @@ class AccountsInfosNotifier extends ChangeNotifier {
     return found;
   }
 
-  void _addOrUpdate(AccountStockPosition info) {
+  void _addOrUpdate(AccountStockPosition? info) {
     if (info == null) {
       return;
     }
     bool exist = false;
-    for (int i = 0; i < list.length; i++) {
-      AccountStockPosition existing = list.elementAt(i);
-      if (existing != null && StringUtils.equalsIgnoreCase(info.accountcode, existing.accountcode)) {
+    for (int i = 0; i < list!.length; i++) {
+      AccountStockPosition? existing = list?.elementAt(i);
+      if (existing != null &&
+          StringUtils.equalsIgnoreCase(
+              info.accountcode, existing.accountcode)) {
         exist = true;
         existing.copyValueFrom(info);
         break;
       }
     }
     if (!exist) {
-      list.add(info);
+      list?.add(info);
     }
   }
 
@@ -1713,7 +1767,8 @@ class AccountsInfosNotifier extends ChangeNotifier {
   }
 }
 
-final accountsInfosNotifier = ChangeNotifierProvider<AccountsInfosNotifier>((ref) {
+final accountsInfosNotifier =
+    ChangeNotifierProvider<AccountsInfosNotifier>((ref) {
   return AccountsInfosNotifier();
 });
 
@@ -1746,25 +1801,32 @@ class AppPropertiesNotifier extends ChangeNotifier {
     }
   }
 
-  Timer timer;
+  Timer? timer;
   static const Duration durationCheck = Duration(seconds: 10);
 
   void startTimer() {
-    if (timer == null || !timer.isActive) {
+    if (timer == null || !timer!.isActive) {
       timer = Timer.periodic(durationCheck, (timer) {
-        print('Timer.PIN ' + timer.tick.toString() + '  _needPinTrading : $_needPinTrading');
+        print('Timer.PIN ' +
+            timer.tick.toString() +
+            '  _needPinTrading : $_needPinTrading');
         if (!_needPinTrading) {
-          int pinTimeoutIndex = properties.getInt(ROUTE_SETTINGS, PROP_SELECTED_PIN_TIMEOUT, TradingTimeoutDuration.FifteenMinutes.index);
-          TradingTimeoutDuration timeoutDuration = TradingTimeoutDuration.values.elementAt(pinTimeoutIndex);
+          int pinTimeoutIndex = properties.getInt(
+              ROUTE_SETTINGS,
+              PROP_SELECTED_PIN_TIMEOUT,
+              TradingTimeoutDuration.FifteenMinutes.index);
+          TradingTimeoutDuration timeoutDuration =
+              TradingTimeoutDuration.values.elementAt(pinTimeoutIndex);
 
           DateTime now = DateTime.now();
 
           int gapMinutes = now.difference(_last_activity).inMinutes;
           int gapSeconds = now.difference(_last_activity).inSeconds;
-          print('PIN Timeout check gapMinutes : $gapMinutes  gapSeconds : $gapSeconds   now : ' +
-              now.toString() +
-              '  _last_activity : ' +
-              _last_activity.toString());
+          print(
+              'PIN Timeout check gapMinutes : $gapMinutes  gapSeconds : $gapSeconds   now : ' +
+                  now.toString() +
+                  '  _last_activity : ' +
+                  _last_activity.toString());
           if (gapMinutes >= timeoutDuration.inMinutes) {
             print('PIN Timeout at : ' + now.toString());
             setNeedPinTrading(true);
@@ -1781,10 +1843,10 @@ class AppPropertiesNotifier extends ChangeNotifier {
   }
 
   void stopTimer() {
-    if (timer == null || !timer.isActive) {
+    if (timer == null || !timer!.isActive) {
       return;
     }
-    timer.cancel();
+    timer?.cancel();
     timer = null;
   }
 }
@@ -1797,7 +1859,7 @@ class ChangeNotifierBase extends ChangeNotifier {
   NotifierState currentState = NotifierState.Loading;
   String currentMessage = '';
 
-  void setState(NotifierState newState, {String message}) {
+  void setState(NotifierState newState, {String? message}) {
     this.currentState = newState;
     if (message != null) {
       this.currentMessage = message;
@@ -1817,26 +1879,26 @@ class ChangeNotifierBase extends ChangeNotifier {
     setState(NotifierState.Finished, message: '');
   }
 
-  void setError({String message}) {
+  void setError({String? message}) {
     setState(NotifierState.Error, message: message);
   }
 }
 
 class EIPONotifier extends ChangeNotifierBase {
-  List<ListEIPO> list = List.empty(growable: true);
+  List<ListEIPO>? list = List.empty(growable: true);
 
-  int count() {
-    return list != null ? list.length : 0;
+  int? count() {
+    return list != null ? list?.length : 0;
   }
 
-  void setValue(List<ListEIPO> newList) {
-    list.clear();
+  void setValue(List<ListEIPO>? newList) {
+    list?.clear();
     int newCount = newList != null ? newList.length : 0;
     if (newCount == 0) {
       setNoData();
     } else {
-      newList.forEach((newInfo) {
-        list.add(newInfo);
+      newList?.forEach((newInfo) {
+        list?.add(newInfo);
       });
       setFinished();
     }
@@ -1857,7 +1919,7 @@ final helpNotifier = ChangeNotifierProvider<HelpNotifier>((ref) {
 });
 
 class HelpNotifier extends ChangeNotifier {
-  HelpData data = HelpData();
+  HelpData? data = HelpData();
 
   // HelpNotifier(){
   //   data = HelpData();
@@ -1865,18 +1927,18 @@ class HelpNotifier extends ChangeNotifier {
   // }
 
   void setData(HelpData newValue) {
-    this.data.copyValueFrom(newValue, dontClearExistingIfNull: true);
+    this.data?.copyValueFrom(newValue, dontClearExistingIfNull: true);
     notifyListeners();
-    this.data.save();
+    this.data?.save();
   }
 
-  List<HelpContent> getContent(HelpMenu menu) {
-    List<HelpContent> contents = List.empty(growable: true);
+  List<HelpContent>? getContent(HelpMenu? menu) {
+    List<HelpContent>? contents = List.empty(growable: true);
     if (menu == null) {
       print('HelpNotifier getContent for menu (NULL)');
       return contents;
     }
-    for (var content in this.data.contents) {
+    for (HelpContent? content in this.data!.contents!) {
       if (content != null) {
         if (StringUtils.equalsIgnoreCase(menu.id, content.id_menu)) {
           contents.add(content);
@@ -1890,7 +1952,7 @@ class HelpNotifier extends ChangeNotifier {
 class CorporateActionEventNotifier extends ChangeNotifier {
   List<CorporateActionEvent> list = List.empty(growable: true);
 
-  void setData(List<CorporateActionEvent> newValue) {
+  void setData(List<CorporateActionEvent>? newValue) {
     this.list.clear();
     if (newValue != null) {
       this.list.addAll(newValue);
@@ -1898,9 +1960,9 @@ class CorporateActionEventNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<CorporateActionEvent> getEvent(String code) {
+  List<CorporateActionEvent>? getEvent(String? code) {
     List<CorporateActionEvent> result = List.empty(growable: true);
-    list.forEach((ca) {
+    list.forEach((CorporateActionEvent? ca) {
       if (ca != null && StringUtils.equalsIgnoreCase(ca.code, code)) {
         result.add(ca);
       }
@@ -1909,14 +1971,15 @@ class CorporateActionEventNotifier extends ChangeNotifier {
   }
 }
 
-final corporateActionEventNotifier = ChangeNotifierProvider<CorporateActionEventNotifier>((ref) {
+final corporateActionEventNotifier =
+    ChangeNotifierProvider<CorporateActionEventNotifier>((ref) {
   return CorporateActionEventNotifier();
 });
 
 class FundamentalCacheNotifier extends ChangeNotifier {
   Map<String, FundamentalCache> maps = Map();
 
-  void setData(Map<String, FundamentalCache> newValue) {
+  void setData(Map<String, FundamentalCache>? newValue) {
     this.maps.clear();
     if (newValue != null) {
       this.maps.addAll(newValue);
@@ -1924,7 +1987,7 @@ class FundamentalCacheNotifier extends ChangeNotifier {
     notifyListeners();
   }
 
-  FundamentalCache getCache(String code) {
+  FundamentalCache? getCache(String? code) {
     if (maps.containsKey(code)) {
       return maps[code];
     }
@@ -1932,7 +1995,8 @@ class FundamentalCacheNotifier extends ChangeNotifier {
   }
 }
 
-final fundamentalCacheNotifier = ChangeNotifierProvider<FundamentalCacheNotifier>((ref) {
+final fundamentalCacheNotifier =
+    ChangeNotifierProvider<FundamentalCacheNotifier>((ref) {
   return FundamentalCacheNotifier();
 });
 
@@ -1940,7 +2004,8 @@ final remark2Notifier = ChangeNotifierProvider<Remark2ChangeNotifier>((ref) {
   return Remark2ChangeNotifier();
 });
 
-final suspendedStockNotifier = ChangeNotifierProvider<SuspendedStockChangeNotifier>((ref) {
+final suspendedStockNotifier =
+    ChangeNotifierProvider<SuspendedStockChangeNotifier>((ref) {
   return SuspendedStockChangeNotifier();
 });
 
@@ -1950,25 +2015,26 @@ class SuspendedStockChangeNotifier extends ChangeNotifier {
     this.data.copyValueFrom(newValue, dontClearExistingIfNull: true);
     notifyListeners();
   }
-  SuspendStock getSuspended(String code, String board) {
-    SuspendStock result;
-    String key = code+'_'+board;
-    if (data.affected.containsKey(key)) {
-      result = data.affected[key];
+
+  SuspendStock? getSuspended(String? code, String? board) {
+    SuspendStock? result;
+    String key = code! + '_' + board!;
+    if (data.affected!.containsKey(key)) {
+      result = data.affected?[key];
     }
     return result;
   }
 }
+
 class Remark2ChangeNotifier extends ChangeNotifier {
   Remark2Data data = Remark2Data();
 
-  StockInformationStatus getSpecialNotationStatus(String code) {
-    StockInformationStatus status;
-    if (data.affected.containsKey(code)) {
-      Remark2Stock s = data.affected[code];
+  StockInformationStatus? getSpecialNotationStatus(String? code) {
+    StockInformationStatus? status;
+    if (data.affected!.containsKey(code)) {
+      Remark2Stock? s = data.affected?[code];
       if (s != null) {
-
-        List<String> keysSpecialNotation = [
+        List<String?> keysSpecialNotation = [
           s.key_19,
           s.key_20,
           s.key_21,
@@ -1979,16 +2045,16 @@ class Remark2ChangeNotifier extends ChangeNotifier {
           s.key_26,
           s.key_27,
           s.key_28,
-          s.key_29
+          s.key_29,
         ];
 
-        for(int i = 0 ; i < keysSpecialNotation.length; i++){
-          Remark2Mapping m = data.mapping[keysSpecialNotation[i]];
+        for (int i = 0; i < keysSpecialNotation.length; i++) {
+          Remark2Mapping? m = data.mapping?[keysSpecialNotation[i]];
           if (m != null) {
             status = StockInformationStatus.SpecialNotation;
           }
         }
-        Remark2Mapping m_30 = data.mapping[s.key_30]; // under watch list
+        Remark2Mapping? m_30 = data.mapping?[s.key_30]; // under watch list
         if (m_30 != null) {
           status = StockInformationStatus.UnderWatchlist;
         }
@@ -1997,13 +2063,12 @@ class Remark2ChangeNotifier extends ChangeNotifier {
     return status;
   }
 
-  String getSpecialNotationCodes(String code) {
+  String getSpecialNotationCodes(String? code) {
     String textCodes = '';
-    if (data.affected.containsKey(code)) {
-      Remark2Stock s = data.affected[code];
+    if (data.affected!.containsKey(code)) {
+      Remark2Stock? s = data.affected?[code];
       if (s != null) {
-
-        List<String> keysSpecialNotation = [
+        List<String?> keysSpecialNotation = [
           s.key_19,
           s.key_20,
           s.key_21,
@@ -2014,44 +2079,43 @@ class Remark2ChangeNotifier extends ChangeNotifier {
           s.key_26,
           s.key_27,
           s.key_28,
-          s.key_29
+          s.key_29,
         ];
 
-        Remark2Mapping m_30 = data.mapping[s.key_30]; // under watch list
+        Remark2Mapping? m_30 = data.mapping?[s.key_30]; // under watch list
         if (m_30 != null) {
-          textCodes += m_30.code;
+          textCodes += m_30.code!;
         }
 
-        for(int i = 0 ; i < keysSpecialNotation.length; i++){
-          Remark2Mapping m = data.mapping[keysSpecialNotation[i]];
+        for (int i = 0; i < keysSpecialNotation.length; i++) {
+          Remark2Mapping? m = data.mapping?[keysSpecialNotation[i]];
           if (m != null) {
-            textCodes += m.code;
+            // textCodes += m.code!;
           }
         }
-
       }
     }
     return textCodes;
   }
 
-  List<Remark2Mapping> getSpecialNotation(String code) {
+  List<Remark2Mapping>? getSpecialNotation(String? code) {
     List<Remark2Mapping> notation = List.empty(growable: true);
-    if (data.affected.containsKey(code)) {
-      Remark2Stock s = data.affected[code];
+    if (data.affected!.containsKey(code)) {
+      Remark2Stock? s = data.affected?[code];
       if (s != null) {
-        Remark2Mapping m_19 = data.mapping[s.key_19];
-        Remark2Mapping m_20 = data.mapping[s.key_20];
-        Remark2Mapping m_21 = data.mapping[s.key_21];
-        Remark2Mapping m_22 = data.mapping[s.key_22];
-        Remark2Mapping m_23 = data.mapping[s.key_23];
-        Remark2Mapping m_24 = data.mapping[s.key_24];
-        Remark2Mapping m_25 = data.mapping[s.key_25];
-        Remark2Mapping m_26 = data.mapping[s.key_26];
-        Remark2Mapping m_27 = data.mapping[s.key_27];
+        Remark2Mapping? m_19 = data.mapping?[s.key_19];
+        Remark2Mapping? m_20 = data.mapping?[s.key_20];
+        Remark2Mapping? m_21 = data.mapping?[s.key_21];
+        Remark2Mapping? m_22 = data.mapping?[s.key_22];
+        Remark2Mapping? m_23 = data.mapping?[s.key_23];
+        Remark2Mapping? m_24 = data.mapping?[s.key_24];
+        Remark2Mapping? m_25 = data.mapping?[s.key_25];
+        Remark2Mapping? m_26 = data.mapping?[s.key_26];
+        Remark2Mapping? m_27 = data.mapping?[s.key_27];
 
-        Remark2Mapping m_28 = data.mapping[s.key_28];
-        Remark2Mapping m_29 = data.mapping[s.key_29];
-        Remark2Mapping m_30 = data.mapping[s.key_30];
+        Remark2Mapping? m_28 = data.mapping?[s.key_28];
+        Remark2Mapping? m_29 = data.mapping?[s.key_29];
+        Remark2Mapping? m_30 = data.mapping?[s.key_30];
 
         // under watch list paling pertama
         if (m_30 != null) {
@@ -2100,82 +2164,80 @@ class Remark2ChangeNotifier extends ChangeNotifier {
         if (m_29 != null) {
           notation.add(m_29);
         }
-
-
       }
     }
     return notation;
   }
 
-  String getSpecialNotationText(String code) {
+  String? getSpecialNotationText(String code) {
     List<String> notation = List.empty(growable: true);
-    if (data.affected.containsKey(code)) {
-      Remark2Stock s = data.affected[code];
+    if (data.affected!.containsKey(code)) {
+      Remark2Stock? s = data.affected?[code];
       if (s != null) {
-        Remark2Mapping m_19 = data.mapping[s.key_19];
-        Remark2Mapping m_20 = data.mapping[s.key_20];
-        Remark2Mapping m_21 = data.mapping[s.key_21];
-        Remark2Mapping m_22 = data.mapping[s.key_22];
-        Remark2Mapping m_23 = data.mapping[s.key_23];
-        Remark2Mapping m_24 = data.mapping[s.key_24];
-        Remark2Mapping m_25 = data.mapping[s.key_25];
-        Remark2Mapping m_26 = data.mapping[s.key_26];
-        Remark2Mapping m_27 = data.mapping[s.key_27];
+        Remark2Mapping? m_19 = data.mapping?[s.key_19];
+        Remark2Mapping? m_20 = data.mapping?[s.key_20];
+        Remark2Mapping? m_21 = data.mapping?[s.key_21];
+        Remark2Mapping? m_22 = data.mapping?[s.key_22];
+        Remark2Mapping? m_23 = data.mapping?[s.key_23];
+        Remark2Mapping? m_24 = data.mapping?[s.key_24];
+        Remark2Mapping? m_25 = data.mapping?[s.key_25];
+        Remark2Mapping? m_26 = data.mapping?[s.key_26];
+        Remark2Mapping? m_27 = data.mapping?[s.key_27];
 
-        Remark2Mapping m_28 = data.mapping[s.key_28];
-        Remark2Mapping m_29 = data.mapping[s.key_29];
-        Remark2Mapping m_30 = data.mapping[s.key_30];
+        Remark2Mapping? m_28 = data.mapping?[s.key_28];
+        Remark2Mapping? m_29 = data.mapping?[s.key_29];
+        Remark2Mapping? m_30 = data.mapping?[s.key_30];
 
         if (m_19 != null) {
-          notation.add(/*m_19.code+" : "+*/ m_19.value);
+          notation.add(/*m_19.code+" : "+*/ m_19.value!);
         }
 
         if (m_20 != null) {
-          notation.add(/*m_20.code+" : "+*/ m_20.value);
+          notation.add(/*m_20.code+" : "+*/ m_20.value!);
         }
 
         if (m_21 != null) {
-          notation.add(/*m_21.code+" : "+*/ m_21.value);
+          notation.add(/*m_21.code+" : "+*/ m_21.value!);
         }
 
         if (m_22 != null) {
-          notation.add(/*m_22.code+" : "+*/ m_22.value);
+          notation.add(/*m_22.code+" : "+*/ m_22.value!);
         }
 
         if (m_23 != null) {
-          notation.add(/*m_23.code+" : "+*/ m_23.value);
+          notation.add(/*m_23.code+" : "+*/ m_23.value!);
         }
 
         if (m_24 != null) {
-          notation.add(/*m_24.code+" : "+*/ m_24.value);
+          notation.add(/*m_24.code+" : "+*/ m_24.value!);
         }
 
         if (m_25 != null) {
-          notation.add(/*m_25.code+" : "+*/ m_25.value);
+          notation.add(/*m_25.code+" : "+*/ m_25.value!);
         }
 
         if (m_26 != null) {
-          notation.add(/*m_26.code+" : "+*/ m_26.value);
+          notation.add(/*m_26.code+" : "+*/ m_26.value!);
         }
 
         if (m_27 != null) {
-          notation.add(/*m_27.code+" : "+*/ m_27.value);
+          notation.add(/*m_27.code+" : "+*/ m_27.value!);
         }
 
         if (m_28 != null) {
-          notation.add(/*m_28.code+" : "+*/ m_28.value);
+          notation.add(/*m_28.code+" : "+*/ m_28.value!);
         }
         if (m_29 != null) {
-          notation.add(/*m_29.code+" : "+*/ m_29.value);
+          notation.add(/*m_29.code+" : "+*/ m_29.value!);
         }
         if (m_30 != null) {
-          notation.add(/*m_30.code+" : "+*/ m_30.value);
+          notation.add(/*m_30.code+" : "+*/ m_30.value!);
         }
       }
     }
-    String result;
+    String? result;
     for (int i = 0; i < notation.length; i++) {
-      if (StringUtils.isEmtpy(result)) {
+      if (StringUtils.isEmtpy(result!)) {
         result = notation.elementAt(i);
       } else {
         result = result + "\r\n" + notation.elementAt(i);
@@ -2191,18 +2253,18 @@ class Remark2ChangeNotifier extends ChangeNotifier {
 }
 
 class OpenOrderChangeNotifier extends ChangeNotifier {
-  List<OpenOrder> list = List.empty(growable: true);
+  List<OpenOrder>? list = List.empty(growable: true);
 
   void update(List<OpenOrder> _list) {
     this.list = _list;
     notifyListeners();
   }
 
-  OpenOrder get(int price) {
-    int count = list != null ? list.length : 0;
-    OpenOrder found;
-    for (int i = 0; i < count; i++) {
-      OpenOrder existing = list.elementAt(i);
+  OpenOrder? get(int price) {
+    int? count = list != null ? list?.length : 0;
+    OpenOrder? found;
+    for (int i = 0; i < count!; i++) {
+      OpenOrder? existing = list?.elementAt(i);
       if (existing != null && existing.price == price) {
         found = existing;
         break;
@@ -2212,7 +2274,8 @@ class OpenOrderChangeNotifier extends ChangeNotifier {
   }
 }
 
-final openOrderChangeNotifier = ChangeNotifierProvider<OpenOrderChangeNotifier>((ref) {
+final openOrderChangeNotifier =
+    ChangeNotifierProvider<OpenOrderChangeNotifier>((ref) {
   return OpenOrderChangeNotifier();
 });
 
@@ -2231,7 +2294,8 @@ class SellLotAvgChangeNotifier extends ChangeNotifier {
   }
 }
 
-final sellLotAvgChangeNotifier = ChangeNotifierProvider<SellLotAvgChangeNotifier>((ref) {
+final sellLotAvgChangeNotifier =
+    ChangeNotifierProvider<SellLotAvgChangeNotifier>((ref) {
   return SellLotAvgChangeNotifier();
 });
 
@@ -2248,7 +2312,8 @@ class BuyRdnBuyingPowerChangeNotifier extends ChangeNotifier {
   }
 }
 
-final buyRdnBuyingPowerChangeNotifier = ChangeNotifierProvider<BuyRdnBuyingPowerChangeNotifier>((ref) {
+final buyRdnBuyingPowerChangeNotifier =
+    ChangeNotifierProvider<BuyRdnBuyingPowerChangeNotifier>((ref) {
   return BuyRdnBuyingPowerChangeNotifier();
 });
 
@@ -2262,66 +2327,69 @@ class DataHolderChangeNotifier extends ChangeNotifier {
   // }
   bool isLogged = false;
   bool isForeground = false;
-  User user = User('', '', 0.0, 1, null, null, null, null,null,null,null,0,null,null,0);
+  User user = User('', '', 0.0, 1, null, null, null, null, null, null, null, 0,
+      null, null, 0);
 
   void mustNotifyListener() {
     notifyListeners();
   }
 }
 
-final dataHolderChangeNotifier = ChangeNotifierProvider<DataHolderChangeNotifier>((ref) {
+final dataHolderChangeNotifier =
+    ChangeNotifierProvider<DataHolderChangeNotifier>((ref) {
   return DataHolderChangeNotifier();
 });
 
 class WatchlistChangeNotifier extends ChangeNotifier {
-  List<Watchlist> _listWatchlist = List.empty(growable: true);
+  List<Watchlist>? _listWatchlist = List.empty(growable: true);
 
   void clear() {
-    _listWatchlist.clear();
+    _listWatchlist?.clear();
     notifyListeners();
   }
 
-  int count() {
-    return _listWatchlist == null ? 0 : _listWatchlist.length;
+  int? count() {
+    return _listWatchlist == null ? 0 : _listWatchlist?.length;
   }
 
-  void addWatchlist(Watchlist watchlist) {
+  void addWatchlist(Watchlist? watchlist) {
     if (watchlist != null) {
-      _listWatchlist.add(watchlist);
+      _listWatchlist?.add(watchlist);
       notifyListeners();
     }
   }
 
-  List<Watchlist> getAll() {
+  List<Watchlist>? getAll() {
     return _listWatchlist;
   }
 
-  bool isEmpty() {
-    return _listWatchlist.isEmpty;
+  bool? isEmpty() {
+    return _listWatchlist?.isEmpty;
   }
 
   void replaceWatchlist(int index, Watchlist watchlist) {
-    int count = _listWatchlist != null ? _listWatchlist.length : 0;
-    if (index < count && index >= 0) {
-      _listWatchlist.removeAt(index);
-      _listWatchlist.insert(index, watchlist);
+    int? count = _listWatchlist != null ? _listWatchlist?.length : 0;
+    if (index < count! && index >= 0) {
+      _listWatchlist?.removeAt(index);
+      _listWatchlist?.insert(index, watchlist);
     }
   }
 
-  Watchlist getWatchlist(int index) {
-    int count = _listWatchlist != null ? _listWatchlist.length : 0;
-    if (index < count && index >= 0) {
-      return _listWatchlist.elementAt(index);
+  Watchlist? getWatchlist(int index) {
+    int? count = _listWatchlist != null ? _listWatchlist?.length : 0;
+    if (index < count! && index >= 0) {
+      return _listWatchlist?.elementAt(index);
     }
     return null;
   }
 
-  Watchlist getWatchlistByName(String name) {
-    Watchlist result;
-    int count = _listWatchlist != null ? _listWatchlist.length : 0;
-    if (count > 0) {
-      for (var watchlist in _listWatchlist) {
-        if (watchlist != null && StringUtils.equalsIgnoreCase(watchlist.name, name)) {
+  Watchlist? getWatchlistByName(String? name) {
+    Watchlist? result;
+    int? count = _listWatchlist != null ? _listWatchlist?.length : 0;
+    if (count! > 0) {
+      for (Watchlist? watchlist in _listWatchlist!) {
+        if (watchlist != null &&
+            StringUtils.equalsIgnoreCase(watchlist.name, name)) {
           result = watchlist;
           break;
         }
@@ -2330,8 +2398,8 @@ class WatchlistChangeNotifier extends ChangeNotifier {
     return result;
   }
 
-  Watchlist removeWatchlist(int index) {
-    return _listWatchlist.removeAt(index);
+  Watchlist? removeWatchlist(int index) {
+    return _listWatchlist?.removeAt(index);
   }
 
   void mustNotifyListener() {
@@ -2339,7 +2407,8 @@ class WatchlistChangeNotifier extends ChangeNotifier {
   }
 }
 
-final watchlistChangeNotifier = ChangeNotifierProvider<WatchlistChangeNotifier>((ref) {
+final watchlistChangeNotifier =
+    ChangeNotifierProvider<WatchlistChangeNotifier>((ref) {
   return WatchlistChangeNotifier();
 });
 
@@ -2356,7 +2425,8 @@ class PageChangeNotifier extends ChangeNotifier {
       print('PageNotifier [onActive]--> removing history $routeName');
     }
     _list.add(routeName);
-    print('PageNotifier [onActive]--> adding $routeName  size : ' + _list.join('|'));
+    print('PageNotifier [onActive]--> adding $routeName  size : ' +
+        _list.join('|'));
     mustNotifyListener();
   }
 
@@ -2365,7 +2435,8 @@ class PageChangeNotifier extends ChangeNotifier {
       _list.remove(routeName);
       print('PageNotifier [onInactive]--> removing $routeName');
     } else {
-      print('PageNotifier [onInactive]--> not found $routeName = ' + _list.join('|'));
+      print('PageNotifier [onInactive]--> not found $routeName = ' +
+          _list.join('|'));
     }
     mustNotifyListener();
   }
@@ -2377,7 +2448,8 @@ class PageChangeNotifier extends ChangeNotifier {
     }
 
     bool isCurrentActive = StringUtils.equalsIgnoreCase(_list.last, routeName);
-    print('PageNotifier isCurrentActive $routeName -> $isCurrentActive  : ' + _list.last);
+    print('PageNotifier isCurrentActive $routeName -> $isCurrentActive  : ' +
+        _list.last);
     return isCurrentActive;
   }
 
@@ -2392,8 +2464,8 @@ final pageChangeNotifier = ChangeNotifierProvider<PageChangeNotifier>((ref) {
 });
 
 class InboxChangeNotifier extends ChangeNotifier {
-  String _date_next = '';
-  final List _listData = List.empty(growable: true);
+  String? _date_next = '';
+  final List? _listData = List.empty(growable: true);
   bool no_new_data = false;
 
   void mustNotifyListener() {
@@ -2402,12 +2474,12 @@ class InboxChangeNotifier extends ChangeNotifier {
 
   void addNotification(var data) {
     if (data != null) {
-      _listData.add(data);
+      _listData?.add(data);
       notifyListeners();
     }
   }
 
-  List datas() {
+  List? datas() {
     return _listData;
   }
 
@@ -2433,10 +2505,10 @@ class InboxChangeNotifier extends ChangeNotifier {
     mustNotifyListener();
   }
 
-  String get date_next => _date_next;
+  String? get date_next => _date_next;
 
-  int countData() {
-    return _listData != null ? _listData.length : 0;
+  int? countData() {
+    return _listData != null ? _listData?.length : 0;
   }
 
   void setResult(var result) {
@@ -2449,7 +2521,7 @@ class InboxChangeNotifier extends ChangeNotifier {
     }
 
     if (result is ResultInbox) {
-      if (result.count() > 0) {
+      if (result.count()! > 0) {
         no_new_data = false;
       } else {
         no_new_data = true;
@@ -2458,12 +2530,12 @@ class InboxChangeNotifier extends ChangeNotifier {
       bool add = !StringUtils.isEmtpy(result.date_start);
       if (add) {
         if (result.datas != null) {
-          _listData.addAll(result.datas);
+          _listData?.addAll(result.datas!);
         }
       } else {
-        _listData.clear();
+        _listData?.clear();
         if (result.datas != null) {
-          _listData.addAll(result.datas);
+          _listData?.addAll(result.datas!);
         }
       }
       _date_next = result.date_next;
@@ -2488,7 +2560,8 @@ class InboxChangeNotifier extends ChangeNotifier {
 
       notifyListeners();
     } else {
-      print('InboxChangeNotifier.setResult isResultInbox : false  not kind of class that we needed. ');
+      print(
+          'InboxChangeNotifier.setResult isResultInbox : false  not kind of class that we needed. ');
       //mustNotifyListener();
       return;
     }
@@ -2514,7 +2587,7 @@ abstract class SosmedDataChangeNotifier extends ChangeNotifier {
   bool no_new_data = false;
 
   //final List<Post> _listPost = List.empty(growable: true);
-  final List _listData = List.empty(growable: true);
+  final List? _listData = List.empty(growable: true);
 
   //final String data; // array
   //final String links; // array
@@ -2528,7 +2601,7 @@ abstract class SosmedDataChangeNotifier extends ChangeNotifier {
   // List datas(){
   //   return UnmodifiableListView(_listData);
   // }
-  List datas() {
+  List? datas() {
     return _listData;
   }
 
@@ -2538,7 +2611,7 @@ abstract class SosmedDataChangeNotifier extends ChangeNotifier {
 
   void addPost(var post) {
     if (post != null) {
-      _listData.add(post);
+      _listData?.add(post);
       notifyListeners();
     }
   }
@@ -2565,8 +2638,8 @@ abstract class SosmedDataChangeNotifier extends ChangeNotifier {
     mustNotifyListener();
   }
 
-  int countData() {
-    return _listData != null ? _listData.length : 0;
+  int? countData() {
+    return _listData != null ? _listData?.length : 0;
   }
 
   String get first_page_url => _first_page_url;
@@ -2603,7 +2676,7 @@ class SosmedFeedChangeNotifier extends SosmedDataChangeNotifier {
     }
 
     if (result is ResultPost) {
-      if (result.countPost() > 0) {
+      if (result.countPost()! > 0) {
         no_new_data = false;
       } else {
         no_new_data = true;
@@ -2611,12 +2684,12 @@ class SosmedFeedChangeNotifier extends SosmedDataChangeNotifier {
       bool add = (_current_page + 1) == result.current_page;
       if (add) {
         if (result.posts != null) {
-          _listData.addAll(result.posts);
+          _listData?.addAll(result.posts!);
         }
       } else {
-        _listData.clear();
+        _listData?.clear();
         if (result.posts != null) {
-          _listData.addAll(result.posts);
+          _listData?.addAll(result.posts!);
         }
       }
       _current_page = result.current_page;
@@ -2633,7 +2706,8 @@ class SosmedFeedChangeNotifier extends SosmedDataChangeNotifier {
 
       notifyListeners();
     } else {
-      print('SosmedFeedChangeNotifier.setResult isResultPost : false  not kind of class that we needed. ');
+      print(
+          'SosmedFeedChangeNotifier.setResult isResultPost : false  not kind of class that we needed. ');
       //mustNotifyListener();
       return;
     }
@@ -2653,7 +2727,7 @@ class SosmedCommentChangeNotifier extends SosmedDataChangeNotifier {
     }
 
     if (result is ResultComment) {
-      if (result.countComments() > 0) {
+      if (result.countComments()! > 0) {
         no_new_data = false;
       } else {
         no_new_data = true;
@@ -2661,12 +2735,12 @@ class SosmedCommentChangeNotifier extends SosmedDataChangeNotifier {
       bool add = (_current_page + 1) == result.current_page;
       if (add) {
         if (result.comments != null) {
-          _listData.addAll(result.comments);
+          _listData?.addAll(result.comments!);
         }
       } else {
-        _listData.clear();
+        _listData?.clear();
         if (result.comments != null) {
-          _listData.addAll(result.comments);
+          _listData?.addAll(result.comments!);
         }
       }
       _current_page = result.current_page;
@@ -2683,18 +2757,21 @@ class SosmedCommentChangeNotifier extends SosmedDataChangeNotifier {
 
       notifyListeners();
     } else {
-      print('SosmedCommentChangeNotifier.setResult isResultComment : false  not kind of class that we needed. ');
+      print(
+          'SosmedCommentChangeNotifier.setResult isResultComment : false  not kind of class that we needed. ');
       //mustNotifyListener();
       return;
     }
   }
 }
 
-final sosmedFeedChangeNotifier = ChangeNotifierProvider<SosmedDataChangeNotifier>((ref) {
+final sosmedFeedChangeNotifier =
+    ChangeNotifierProvider<SosmedDataChangeNotifier>((ref) {
   return SosmedFeedChangeNotifier();
 });
 
-final sosmedCommentChangeNotifier = ChangeNotifierProvider<SosmedDataChangeNotifier>((ref) {
+final sosmedCommentChangeNotifier =
+    ChangeNotifierProvider<SosmedDataChangeNotifier>((ref) {
   return SosmedCommentChangeNotifier();
 });
 

@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable, dead_code
+
 import 'package:Investrend/objects/group_style.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:Investrend/utils/ui_helper.dart';
@@ -6,19 +8,21 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 class WidgetReturns extends StatelessWidget {
-  final int todayReturnValue;
-  final double todayReturnPercentage;
+  final int? todayReturnValue;
+  final double? todayReturnPercentage;
 
-  final int totalReturnValue;
-  final double totalReturnPercentage;
+  final int? totalReturnValue;
+  final double? totalReturnPercentage;
   //final AutoSizeGroup groupValue = AutoSizeGroup();
   //final AutoSizeGroup groupLabel = AutoSizeGroup();
 
   // final FlexibleTextGroup groupValue = FlexibleTextGroup();
   // final FlexibleTextGroup groupLabel = FlexibleTextGroup();
-  GroupStyle groupStyle;
+  GroupStyle? groupStyle;
 
-  WidgetReturns(this.todayReturnValue, this.todayReturnPercentage, this.totalReturnValue, this.totalReturnPercentage, {Key key, this.groupStyle})
+  WidgetReturns(this.todayReturnValue, this.todayReturnPercentage,
+      this.totalReturnValue, this.totalReturnPercentage,
+      {Key? key, this.groupStyle})
       : super(key: key);
 
   /*
@@ -59,7 +63,9 @@ class WidgetReturns extends StatelessWidget {
   */
 
   Widget cellLabel(BuildContext context, String text, AutoSizeGroup group) {
-    TextStyle style = InvestrendTheme.of(context).support_w400_compact.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor);
+    TextStyle? style = InvestrendTheme.of(context)
+        .support_w400_compact
+        ?.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor);
     return Padding(
       padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
       child: AutoSizeText(
@@ -81,22 +87,32 @@ class WidgetReturns extends StatelessWidget {
     );
   }
 
-  Widget cellValue(BuildContext context, int value, double percentage, AutoSizeGroup group) {
-    String valueText = InvestrendTheme.formatMoney(value, prefixPlus: true, prefixRp: true);
-    String percentageText = ' (' + InvestrendTheme.formatPercentChange(percentage, sufixPercent: true) + ')';
-    TextStyle valueStyle = InvestrendTheme.of(context).regular_w600_compact.copyWith(height: null);
-    TextStyle percentageStyle = InvestrendTheme.of(context).small_w400_compact.copyWith(height: null);
+  Widget cellValue(
+      BuildContext context, int value, double percentage, AutoSizeGroup group) {
+    String valueText =
+        InvestrendTheme.formatMoney(value, prefixPlus: true, prefixRp: true);
+    String percentageText = ' (' +
+        InvestrendTheme.formatPercentChange(percentage, sufixPercent: true) +
+        ')';
+    TextStyle valueStyle = InvestrendTheme.of(context)
+        .regular_w600_compact!
+        .copyWith(height: null);
+    TextStyle? percentageStyle =
+        InvestrendTheme.of(context).small_w400_compact?.copyWith(height: null);
 
-    Color color = InvestrendTheme.priceTextColor(value);
+    Color? color = InvestrendTheme.priceTextColor(value);
     if (color != null) {
       valueStyle = valueStyle.copyWith(color: color);
-      percentageStyle = percentageStyle.copyWith(color: color);
+      percentageStyle = percentageStyle?.copyWith(color: color);
     }
 
     return Padding(
       padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
       child: AutoSizeText.rich(
-        TextSpan(text: valueText, style: valueStyle, children: [TextSpan(text: percentageText, style: percentageStyle)]),
+        TextSpan(
+            text: valueText,
+            style: valueStyle,
+            children: [TextSpan(text: percentageText, style: percentageStyle)]),
         group: group,
         maxLines: 1,
         minFontSize: 8.0,
@@ -104,7 +120,9 @@ class WidgetReturns extends StatelessWidget {
     );
   }
 
-  Widget cellValueNew(BuildContext context, String text_1, String text_2, TextStyle style_1, TextStyle style_2, {Color color}) {
+  Widget cellValueNew(BuildContext context, String text_1, String text_2,
+      TextStyle style_1, TextStyle style_2,
+      {Color? color}) {
     style_1 = style_1.copyWith(color: color);
     style_2 = style_2.copyWith(color: color);
     return Padding(
@@ -122,51 +140,70 @@ class WidgetReturns extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    double widthAvailable = MediaQuery.of(context).size.width - InvestrendTheme.cardPaddingGeneral - InvestrendTheme.cardPaddingGeneral;
-    print('WidgetReturns .widthAvailable : $widthAvailable' );
+    double widthAvailable = MediaQuery.of(context).size.width -
+        InvestrendTheme.cardPaddingGeneral -
+        InvestrendTheme.cardPaddingGeneral;
+    print('WidgetReturns .widthAvailable : $widthAvailable');
     double leftWidth = widthAvailable * 0.4;
     double rightWidth = widthAvailable - leftWidth;
 
     String returnsTodaysReturnLabel = 'returns_todays_return_label'.tr();
     String returnsTotalReturnLabel = 'returns_total_return_label'.tr();
 
-    TextStyle styleLabel = InvestrendTheme.of(context).support_w400_compact.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor);
-    styleLabel = useFontSize(context, styleLabel, leftWidth, returnsTodaysReturnLabel);
-    styleLabel = useFontSize(context, styleLabel, leftWidth, returnsTotalReturnLabel);
+    TextStyle? styleLabel = InvestrendTheme.of(context)
+        .support_w400_compact
+        ?.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor);
+    styleLabel =
+        useFontSize(context, styleLabel, leftWidth, returnsTodaysReturnLabel);
+    styleLabel =
+        useFontSize(context, styleLabel, leftWidth, returnsTotalReturnLabel);
 
-    String todayValueText = InvestrendTheme.formatMoney(todayReturnValue, prefixPlus: true, prefixRp: true);
-    String todayPercentageText = ' (' + InvestrendTheme.formatPercentChange(todayReturnPercentage, sufixPercent: true) + ')';
+    String todayValueText = InvestrendTheme.formatMoney(todayReturnValue,
+        prefixPlus: true, prefixRp: true);
+    String todayPercentageText = ' (' +
+        InvestrendTheme.formatPercentChange(todayReturnPercentage,
+            sufixPercent: true) +
+        ')';
 
-    String totalValueText = InvestrendTheme.formatMoney(totalReturnValue, prefixPlus: true, prefixRp: true);
-    String totalPercentageText = ' (' + InvestrendTheme.formatPercentChange(totalReturnPercentage, sufixPercent: true) + ')';
+    String totalValueText = InvestrendTheme.formatMoney(totalReturnValue,
+        prefixPlus: true, prefixRp: true);
+    String totalPercentageText = ' (' +
+        InvestrendTheme.formatPercentChange(totalReturnPercentage,
+            sufixPercent: true) +
+        ')';
 
-    TextStyle valueStyle = InvestrendTheme.of(context).regular_w600_compact.copyWith(height: null);
-    TextStyle percentageStyle = InvestrendTheme.of(context).small_w400_compact.copyWith(height: null);
+    TextStyle? valueStyle = InvestrendTheme.of(context)
+        .regular_w600_compact!
+        .copyWith(height: null);
+    TextStyle? percentageStyle =
+        InvestrendTheme.of(context).small_w400_compact?.copyWith(height: null);
 
-    if(groupStyle != null){
-      if(groupStyle.style_1 == null){
-        groupStyle.style_1 = valueStyle;
-      }else{
-        valueStyle = groupStyle.style_1;
+    if (groupStyle != null) {
+      if (groupStyle?.style_1 == null) {
+        groupStyle?.style_1 = valueStyle;
+      } else {
+        valueStyle = groupStyle!.style_1;
       }
-      if(groupStyle.style_2 == null){
-        groupStyle.style_2 = percentageStyle;
-      }else{
-        percentageStyle = groupStyle.style_2;
+      if (groupStyle?.style_2 == null) {
+        groupStyle?.style_2 = percentageStyle;
+      } else {
+        percentageStyle = groupStyle!.style_2;
       }
     }
 
-    List<TextStyle> styles = calculateFontSizes(context, [valueStyle, percentageStyle], rightWidth, [todayValueText, todayPercentageText]);
-    styles = calculateFontSizes(context, [valueStyle, percentageStyle], rightWidth, [totalValueText, totalPercentageText]);
-    if(groupStyle != null) {
-      groupStyle.style_1 = styles.elementAt(0);
-      groupStyle.style_2 = styles.elementAt(1);
+    List<TextStyle?>? styles = calculateFontSizes(
+        context,
+        [valueStyle, percentageStyle],
+        rightWidth,
+        [todayValueText, todayPercentageText]);
+    styles = calculateFontSizes(context, [valueStyle, percentageStyle],
+        rightWidth, [totalValueText, totalPercentageText]);
+    if (groupStyle != null) {
+      groupStyle?.style_1 = styles!.elementAt(0)!;
+      groupStyle?.style_2 = styles!.elementAt(1);
     }
-    Color colorToday = InvestrendTheme.priceTextColor(todayReturnValue);
-    Color colorTotal = InvestrendTheme.priceTextColor(totalReturnValue);
-
-
+    Color? colorToday = InvestrendTheme.priceTextColor(todayReturnValue);
+    Color? colorTotal = InvestrendTheme.priceTextColor(totalReturnValue);
 
     return Column(
       children: [
@@ -175,12 +212,15 @@ class WidgetReturns extends StatelessWidget {
             Container(
               // color: Colors.amber,
               width: leftWidth,
-              child: cellLabelNew(context, returnsTodaysReturnLabel, styleLabel),
+              child:
+                  cellLabelNew(context, returnsTodaysReturnLabel, styleLabel),
             ),
             Container(
               // color: Colors.deepPurple,
               width: rightWidth,
-              child: cellValueNew(context, todayValueText, todayPercentageText, groupStyle.style_1, groupStyle.style_2, color: colorToday),
+              child: cellValueNew(context, todayValueText, todayPercentageText,
+                  groupStyle!.style_1, groupStyle!.style_2,
+                  color: colorToday),
             ),
           ],
         ),
@@ -194,25 +234,33 @@ class WidgetReturns extends StatelessWidget {
             Container(
               // color: Colors.grey,
               width: rightWidth,
-              child: cellValueNew(context, totalValueText, totalPercentageText, groupStyle.style_1, groupStyle.style_2, color: colorTotal),
+              child: cellValueNew(context, totalValueText, totalPercentageText,
+                  groupStyle!.style_1, groupStyle!.style_2,
+                  color: colorTotal),
             ),
           ],
         ),
       ],
     );
 
-    return Table(defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+    return Table(
+        defaultVerticalAlignment: TableCellVerticalAlignment.middle,
         //border: TableBorder.all(color: Colors.black),
         columnWidths: {
           0: FractionColumnWidth(.4)
-        }, children: [
+        },
+        children: [
           TableRow(children: [
             cellLabelNew(context, returnsTodaysReturnLabel, styleLabel),
-            cellValueNew(context, todayValueText, todayPercentageText, groupStyle.style_1, groupStyle.style_2, color: colorToday),
+            cellValueNew(context, todayValueText, todayPercentageText,
+                groupStyle!.style_1, groupStyle!.style_2,
+                color: colorToday),
           ]),
           TableRow(children: [
             cellLabelNew(context, returnsTotalReturnLabel, styleLabel),
-            cellValueNew(context, totalValueText, totalPercentageText, groupStyle.style_1, groupStyle.style_2, color: colorTotal),
+            cellValueNew(context, totalValueText, totalPercentageText,
+                groupStyle!.style_1, groupStyle!.style_2,
+                color: colorTotal),
           ]),
         ]);
     /*
@@ -289,49 +337,59 @@ class WidgetReturns extends StatelessWidget {
       ]),
     ]);
     */
-
   }
 
-
-  List<TextStyle> calculateFontSizes(BuildContext context, List<TextStyle> styles, double width, List<String> texts, {int tried = 1}) {
+  List<TextStyle?>? calculateFontSizes(BuildContext context,
+      List<TextStyle?> styles, double width, List<String> texts,
+      {int tried = 1}) {
     print('WidgetReturns.calculateFontSize  try  : $tried  ');
     const double font_step = 1.5;
 
     double widthText = 0;
     for (int i = 0; i < styles.length; i++) {
-      TextStyle style = styles.elementAt(i);
+      TextStyle? style = styles.elementAt(i);
       String text = texts.elementAt(i);
-      print('WidgetReturns.calculateFontSize   style[$i] : '+style.fontSize.toString()+'  text[$i] : $text');
+      print('WidgetReturns.calculateFontSize   style[$i] : ' +
+          style!.fontSize.toString() +
+          '  text[$i] : $text');
       widthText += UIHelper.textSize(text, style).width;
     }
     bool reduceFont = widthText > width;
-    print('WidgetReturns.calculateFontSize  reduceFont  : $reduceFont  widthText[$widthText] > width[$width]  ');
+    print(
+        'WidgetReturns.calculateFontSize  reduceFont  : $reduceFont  widthText[$widthText] > width[$width]  ');
     if (reduceFont) {
       List<TextStyle> stylesNew = List.empty(growable: true);
       for (int i = 0; i < styles.length; i++) {
-        TextStyle style = styles.elementAt(i);
-        style = style.copyWith(fontSize: style.fontSize - font_step);
-        stylesNew.add(style);
+        TextStyle? style = styles.elementAt(i);
+        style = style?.copyWith(fontSize: style.fontSize! - font_step);
+        stylesNew.add(style!);
       }
 
-      return calculateFontSizes(context, stylesNew, width, texts, tried: tried++);
+      return calculateFontSizes(context, stylesNew, width, texts,
+          tried: tried++);
     } else {
       print('WidgetReturns.calculateFontSizes Final  tried : $tried');
       return styles;
     }
   }
 
-  TextStyle useFontSize(BuildContext context, TextStyle style, double width, String text, {int tried = 1}) {
-    print('WidgetReturns.useFontSize  try fontSize  : ' + style.fontSize.toString() + '  width : $width  text : $text  ');
+  TextStyle useFontSize(
+      BuildContext context, TextStyle? style, double width, String text,
+      {int tried = 1}) {
+    print('WidgetReturns.useFontSize  try fontSize  : ' +
+        style!.fontSize.toString() +
+        '  width : $width  text : $text  ');
     const double font_step = 1.5;
 
     double widthText = UIHelper.textSize(text, style).width;
     bool reduceFont = widthText > width;
     if (reduceFont) {
-      style = style.copyWith(fontSize: style.fontSize - font_step);
+      style = style.copyWith(fontSize: style.fontSize! - font_step);
       return useFontSize(context, style, width, text, tried: tried++);
     } else {
-      print('WidgetReturns.useFontSize Final fontSize  : ' + style.fontSize.toString() + '  text : $text  tried : $tried');
+      print('WidgetReturns.useFontSize Final fontSize  : ' +
+          style.fontSize!.toString() +
+          '  text : $text  tried : $tried');
       return style;
     }
   }

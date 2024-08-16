@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member, unnecessary_null_comparison, non_constant_identifier_names
+
 import 'dart:async';
 import 'dart:io' show Platform;
 import 'dart:math';
@@ -26,12 +28,12 @@ import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 class ScreenSearchWatchlist extends StatefulWidget {
-  final TabController tabController;
+  final TabController? tabController;
   final int tabIndex;
-  final ValueNotifier<bool> visibilityNotifier;
+  final ValueNotifier<bool>? visibilityNotifier;
 
   ScreenSearchWatchlist(this.tabIndex, this.tabController,
-      {Key key, this.visibilityNotifier})
+      {Key? key, this.visibilityNotifier})
       : super(key: key);
 
   @override
@@ -70,12 +72,12 @@ class _ScreenSearchWatchlistState
   final ValueNotifier<int> _watchlistNotifier = ValueNotifier<int>(0);
   final ValueNotifier<int> _sortNotifier = ValueNotifier<int>(0);
   final AutoSizeGroup groupBest = AutoSizeGroup();
-  Timer _timer;
+  Timer? _timer;
   bool canTapRow = true;
   static const Duration _durationUpdate = Duration(milliseconds: 2500);
 
-  _ScreenSearchWatchlistState(int tabIndex, TabController tabController,
-      {ValueNotifier<bool> visibilityNotifier})
+  _ScreenSearchWatchlistState(int tabIndex, TabController? tabController,
+      {ValueNotifier<bool>? visibilityNotifier})
       : super('/search_watchlist', tabIndex, tabController,
             parentTabIndex: Tabs.Search.index,
             visibilityNotifier: visibilityNotifier);
@@ -98,44 +100,44 @@ class _ScreenSearchWatchlistState
     switch (_sortNotifier.value) {
       case 0: //a_to_z
         {
-          _watchlistDataNotifier.value.datas
-              .sort((a, b) => a.code.compareTo(b.code));
+          _watchlistDataNotifier.value?.datas
+              ?.sort((a, b) => a.code!.compareTo(b.code!));
         }
         break;
       case 1: // z_to_a
         {
-          _watchlistDataNotifier.value.datas
-              .sort((a, b) => b.code.compareTo(a.code));
+          _watchlistDataNotifier.value?.datas
+              ?.sort((a, b) => b.code!.compareTo(a.code!));
         }
         break;
       case 2: // movers_highest
         {
-          _watchlistDataNotifier.value.datas
-              .sort((a, b) => b.percent.compareTo(a.percent));
+          _watchlistDataNotifier.value?.datas
+              ?.sort((a, b) => b.percent!.compareTo(a.percent!));
         }
         break;
       case 3: // movers_lowest
         {
-          _watchlistDataNotifier.value.datas
-              .sort((a, b) => a.percent.compareTo(b.percent));
+          _watchlistDataNotifier.value?.datas
+              ?.sort((a, b) => a.percent!.compareTo(b.percent!));
         }
         break;
       case 4: // price_highest
         {
-          _watchlistDataNotifier.value.datas
-              .sort((a, b) => b.price.compareTo(a.price));
+          _watchlistDataNotifier.value?.datas
+              ?.sort((a, b) => b.price!.compareTo(a.price!));
         }
         break;
       case 5: // price_lowest
         {
-          _watchlistDataNotifier.value.datas
-              .sort((a, b) => a.price.compareTo(b.price));
+          _watchlistDataNotifier.value?.datas
+              ?.sort((a, b) => a.price!.compareTo(b.price!));
         }
         break;
       case 6: // value_highest
         {
-          _watchlistDataNotifier.value.datas
-              .sort((a, b) => b.value.compareTo(a.value));
+          _watchlistDataNotifier.value?.datas
+              ?.sort((a, b) => b.value!.compareTo(a.value!));
 
           // List<WatchlistPrice> list = _watchlistDataNotifier.value.datas;
           // list.sort(( a, b) => b.value.compareTo(a.value));
@@ -144,8 +146,8 @@ class _ScreenSearchWatchlistState
         break;
       case 7: // value_lowest
         {
-          _watchlistDataNotifier.value.datas
-              .sort((a, b) => a.value.compareTo(b.value));
+          _watchlistDataNotifier.value?.datas
+              ?.sort((a, b) => a.value!.compareTo(b.value!));
 
           // List<WatchlistPrice> list = _watchlistDataNotifier.value.datas;
           // list.sort((a, b) => a.value.compareTo(b.value));
@@ -189,15 +191,16 @@ class _ScreenSearchWatchlistState
 
     onProgress = true;
 
-    Watchlist activeWatchlist = context
+    Watchlist? activeWatchlist = context
         .read(watchlistChangeNotifier)
         .getWatchlist(_watchlistNotifier.value);
-    if (activeWatchlist != null && activeWatchlist.stocks.isNotEmpty) {
+    if (activeWatchlist != null && activeWatchlist.stocks!.isNotEmpty) {
       try {
         print(routeName + ' try Summarys');
-        String codes = activeWatchlist.stocks.join('_');
+        String? codes = activeWatchlist.stocks?.join('_');
 
-        final stockSummarys = await InvestrendTheme.datafeedHttp
+        final List<StockSummary>? stockSummarys = await InvestrendTheme
+            .datafeedHttp
             .fetchStockSummaryMultiple(codes, 'RG');
         if (stockSummarys != null && stockSummarys.isNotEmpty) {
           //print(routeName + ' Future Summary DATA : ' + stockSummary.code + '  prev : ' + stockSummary.prev.toString());
@@ -254,11 +257,12 @@ class _ScreenSearchWatchlistState
             valueListenable: _watchlistNotifier,
             builder: (context, index, child) {
               String label = '';
-              if (context.read(watchlistChangeNotifier).isEmpty()) {
+              if (context.read(watchlistChangeNotifier).isEmpty()!) {
                 label = 'search_watchlist_default_label'.tr();
               } else {
-                Watchlist activeWatchlist =
-                    context.read(watchlistChangeNotifier).getWatchlist(index);
+                Watchlist? activeWatchlist = context
+                    .read(watchlistChangeNotifier)
+                    .getWatchlist(index as int);
                 if (activeWatchlist != null) {
                   label = activeWatchlist.name;
                 }
@@ -278,7 +282,7 @@ class _ScreenSearchWatchlistState
                         label,
                         style: InvestrendTheme.of(context)
                             .more_support_w400_compact
-                            .copyWith(
+                            ?.copyWith(
                                 color: InvestrendTheme.of(context)
                                     .greyDarkerTextColor),
                       ),
@@ -318,10 +322,10 @@ class _ScreenSearchWatchlistState
   }
 
   Widget buttonAddWatchlist(BuildContext context) {
-    TextStyle style = InvestrendTheme.of(context)
-        .regular_w600_compact
-        .copyWith(color: Theme.of(context).colorScheme.secondary);
-    Color colorIcon = Theme.of(context).colorScheme.secondary;
+    // TextStyle? style = InvestrendTheme.of(context)
+    //     .regular_w600_compact
+    //     ?.copyWith(color: Theme.of(context).colorScheme.secondary);
+    // Color colorIcon = Theme.of(context).colorScheme.secondary;
     return Center(
       child: TextButton(
           onPressed: () => createWatchlist(context),
@@ -330,14 +334,14 @@ class _ScreenSearchWatchlistState
   }
 
   Widget buttonAddStock(BuildContext context) {
-    TextStyle style = InvestrendTheme.of(context)
-        .regular_w600_compact
-        .copyWith(color: Theme.of(context).colorScheme.secondary);
-    Color colorIcon = Theme.of(context).colorScheme.secondary;
+    // TextStyle? style = InvestrendTheme.of(context)
+    //     .regular_w600_compact
+    //     ?.copyWith(color: Theme.of(context).colorScheme.secondary);
+    // Color colorIcon = Theme.of(context).colorScheme.secondary;
     return Center(
       child: TextButton(
           onPressed: () {
-            Watchlist activeWatchlist = context
+            Watchlist? activeWatchlist = context
                 .read(watchlistChangeNotifier)
                 .getWatchlist(_watchlistNotifier.value);
             if (activeWatchlist != null) {
@@ -357,16 +361,16 @@ class _ScreenSearchWatchlistState
 
   TextEditingController controller = TextEditingController();
 
-  Function onSlideDelete(int index) {
+  Function? onSlideDelete(int index) {
     //IntCallback onSlideDelete(int index){
     Navigator.of(context).pop();
     print('onSlideDelete');
-    Watchlist toDelete =
+    Watchlist? toDelete =
         context.read(watchlistChangeNotifier).getWatchlist(index);
     String title = 'watchlist_info_title'.tr();
 
     String content =
-        'confirmation_remove_label'.tr() + '\n\'' + toDelete.name + '\' ?';
+        'confirmation_remove_label'.tr() + '\n\'' + toDelete!.name + '\' ?';
     String actionSave = 'button_yes'.tr();
     String actionCancel = 'button_cancel'.tr();
 
@@ -458,6 +462,7 @@ class _ScreenSearchWatchlistState
               ));
     }
     */
+    return null;
   }
 
   void createWatchlist(BuildContext context) {
@@ -465,7 +470,7 @@ class _ScreenSearchWatchlistState
     print('createWatchlist');
     controller.text = '';
 
-    if (context.read(watchlistChangeNotifier).count() >=
+    if (context.read(watchlistChangeNotifier).count()! >=
         InvestrendTheme.MAX_WATCHLIST) {
       String errorFull = 'error_maximum_create_watchlist'.tr();
       errorFull = errorFull.replaceFirst(
@@ -483,7 +488,7 @@ class _ScreenSearchWatchlistState
           return;
         }
         print(controller.text);
-        Watchlist existing = context
+        Watchlist? existing = context
             .read(watchlistChangeNotifier)
             .getWatchlistByName(controller.text);
         if (existing != null) {
@@ -506,7 +511,7 @@ class _ScreenSearchWatchlistState
               showStockOnly: true, watchlistName: newWatchlist.name);
           result.then((value) {
             //showWatchlist(context);
-            int usedIndex = context.read(watchlistChangeNotifier).count() - 1;
+            int usedIndex = context.read(watchlistChangeNotifier).count()! - 1;
             //usedIndex = min(usedIndex, 0);
             _watchlistNotifier.value = usedIndex;
             // if(usedIndex == 0){
@@ -573,12 +578,12 @@ class _ScreenSearchWatchlistState
     }
   }
 
-  VoidCallback onTapCreate() {
+  VoidCallback? onTapCreate() {
     Navigator.of(context).pop();
     print('onTapCreate');
     controller.text = '';
 
-    if (context.read(watchlistChangeNotifier).count() >=
+    if (context.read(watchlistChangeNotifier).count()! >=
         InvestrendTheme.MAX_WATCHLIST) {
       String errorFull = 'error_maximum_create_watchlist'.tr();
       errorFull = errorFull.replaceFirst(
@@ -596,7 +601,7 @@ class _ScreenSearchWatchlistState
           return;
         }
         print(controller.text);
-        Watchlist existing = context
+        Watchlist? existing = context
             .read(watchlistChangeNotifier)
             .getWatchlistByName(controller.text);
         if (existing != null) {
@@ -622,7 +627,7 @@ class _ScreenSearchWatchlistState
             // loadActiveWatchlist(context);
             // showWatchlist(context);
             _watchlistNotifier.value =
-                context.read(watchlistChangeNotifier).count() - 1;
+                context.read(watchlistChangeNotifier).count()! - 1;
             onActive();
             showWatchlist(context);
           });
@@ -771,13 +776,14 @@ class _ScreenSearchWatchlistState
       }
       */
     }
+    return null;
   }
 
-  VoidCallback onSlideRename(int index) {
+  VoidCallback? onSlideRename(int index) {
     Navigator.of(context).pop();
-    Watchlist toRename =
+    Watchlist? toRename =
         context.read(watchlistChangeNotifier).getWatchlist(index);
-    print('onSlideRename [$index] : ' + toRename.name);
+    print('onSlideRename [$index] : ' + toRename!.name);
     controller.text = toRename.name;
     String title = 'rename_watchlist_title'.tr();
     String actionSave = 'button_save'.tr();
@@ -792,7 +798,7 @@ class _ScreenSearchWatchlistState
       print('onSlideRename new name: ' + controller.text);
 
       if (!StringUtils.equalsIgnoreCase(controller.text, toRename.name)) {
-        Watchlist existing = context
+        Watchlist? existing = context
             .read(watchlistChangeNotifier)
             .getWatchlistByName(controller.text);
         if (existing != null) {
@@ -939,6 +945,7 @@ class _ScreenSearchWatchlistState
               ));
     }
     */
+    return null;
   }
 
   void showWatchlist(BuildContext context) {
@@ -962,7 +969,7 @@ class _ScreenSearchWatchlistState
   }
 
   @override
-  Widget createAppBar(BuildContext context) {
+  PreferredSizeWidget? createAppBar(BuildContext context) {
     return null;
   }
 
@@ -990,14 +997,14 @@ class _ScreenSearchWatchlistState
       onRefresh: onRefresh,
       child: ValueListenableBuilder(
           valueListenable: _watchlistDataNotifier,
-          builder: (context, WatchlistPriceData data, child) {
-            bool noWatchlist = context.read(watchlistChangeNotifier).isEmpty();
+          builder: (context, WatchlistPriceData? data, child) {
+            bool? noWatchlist = context.read(watchlistChangeNotifier).isEmpty();
             //bool noStock = data == null || data.count() == 0;
             int countData = data == null ? 0 : data.count();
             bool noStock = countData == 0;
 
-            Widget buttonAdd;
-            if (noWatchlist || noStock) {
+            Widget? buttonAdd;
+            if (noWatchlist! || noStock) {
               if (noWatchlist) {
                 buttonAdd = buttonAddWatchlist(context);
               } else if (noStock) {
@@ -1019,7 +1026,7 @@ class _ScreenSearchWatchlistState
                 ],
               );
             }
-            Watchlist active = context
+            Watchlist? active = context
                 .read(watchlistChangeNotifier)
                 .getWatchlist(_watchlistNotifier.value);
             if (active != null &&
@@ -1067,9 +1074,9 @@ class _ScreenSearchWatchlistState
                           }
                         }
 
-                        GeneralPrice generalPrice =
-                            data.datas.elementAt(indexData);
-                        WatchlistPrice gp;
+                        GeneralPrice? generalPrice =
+                            data?.datas?.elementAt(indexData);
+                        WatchlistPrice? gp;
                         if (generalPrice is WatchlistPrice) {
                           gp = generalPrice;
                         }
@@ -1084,12 +1091,12 @@ class _ScreenSearchWatchlistState
                               'button_buy'.tr(),
                               InvestrendTheme.buyColor,
                               () {
-                                print('buy clicked code : ' + gp.code);
-                                Stock stock = InvestrendTheme.storedData
-                                    .findStock(gp.code);
+                                print('buy clicked code : ' + gp!.code!);
+                                Stock? stock = InvestrendTheme.storedData
+                                    ?.findStock(gp.code);
                                 if (stock == null) {
                                   print('buy clicked code : ' +
-                                      gp.code +
+                                      gp.code! +
                                       ' aborted, not find stock on StockStorer');
                                   return;
                                 }
@@ -1109,7 +1116,7 @@ class _ScreenSearchWatchlistState
                                     context, hasAccount,
                                     type: OrderType.Buy,
                                     initialPriceLot:
-                                        PriceLot(gp.price.toInt(), 0));
+                                        PriceLot(gp.price?.toInt(), 0));
                                 /*
                                   Navigator.push(context,
                                       CupertinoPageRoute(builder: (_) => ScreenTrade(OrderType.Buy), settings: RouteSettings(name: '/trade')));
@@ -1121,12 +1128,12 @@ class _ScreenSearchWatchlistState
                               'button_sell'.tr(),
                               InvestrendTheme.sellColor,
                               () {
-                                print('sell clicked code : ' + gp.code);
-                                Stock stock = InvestrendTheme.storedData
-                                    .findStock(gp.code);
+                                print('sell clicked code : ' + gp!.code!);
+                                Stock? stock = InvestrendTheme.storedData
+                                    ?.findStock(gp.code);
                                 if (stock == null) {
                                   print('sell clicked code : ' +
-                                      gp.code +
+                                      gp.code! +
                                       ' aborted, not find stock on StockStorer');
                                   return;
                                 }
@@ -1145,7 +1152,7 @@ class _ScreenSearchWatchlistState
                                     context, hasAccount,
                                     type: OrderType.Sell,
                                     initialPriceLot:
-                                        PriceLot(gp.price.toInt(), 0));
+                                        PriceLot(gp.price?.toInt(), 0));
                                 /*
                                   Navigator.push(
                                       context,
@@ -1167,23 +1174,23 @@ class _ScreenSearchWatchlistState
                               color: Colors.orange,
                               icon: Icons.delete_forever_outlined,
                               onTap: () {
-                                print('Clicked Remove on : ' + gp.code);
+                                print('Clicked Remove on : ' + gp!.code!);
                                 //InvestrendTheme.of(context).showSnackBar(context, 'Clicked Remove on : '+gp.code);
-                                Watchlist active = context
+                                Watchlist? active = context
                                     .read(watchlistChangeNotifier)
                                     .getWatchlist(_watchlistNotifier.value);
-                                bool removed = active.removeStock(gp.code);
-                                if (removed) {
+                                bool? removed = active?.removeStock(gp.code);
+                                if (removed!) {
                                   Watchlist.save(context
                                           .read(watchlistChangeNotifier)
                                           .getAll())
                                       .then((value) {
                                     InvestrendTheme.of(context).showSnackBar(
                                         context,
-                                        gp.code +
+                                        gp!.code! +
                                             'search_watchlist_removed_from_label'
                                                 .tr() +
-                                            active.name);
+                                            active!.name);
                                     int existing = _watchlistNotifier.value;
                                     _watchlistNotifier.value = existing + 1;
                                     _watchlistNotifier.value = existing;
@@ -1200,16 +1207,16 @@ class _ScreenSearchWatchlistState
                             firstRow: (indexData == 0),
                             onTap: () {
                               print('clicked code : ' +
-                                  gp.code +
+                                  gp!.code! +
                                   '  canTapRow : $canTapRow');
                               if (canTapRow) {
                                 canTapRow = false;
 
-                                Stock stock = InvestrendTheme.storedData
-                                    .findStock(gp.code);
+                                Stock? stock = InvestrendTheme.storedData
+                                    ?.findStock(gp.code);
                                 if (stock == null) {
                                   print('clicked code : ' +
-                                      gp.code +
+                                      gp.code! +
                                       ' aborted, not find stock on StockStorer');
                                   canTapRow = true;
                                   return;
@@ -1229,12 +1236,12 @@ class _ScreenSearchWatchlistState
                                 InvestrendTheme.cardPaddingGeneral,
                             onPressedButtonCorporateAction: () =>
                                 onPressedButtonCorporateAction(
-                                    context, gp.corporateAction),
+                                    context, gp?.corporateAction),
                             //onPressedButtonSpecialNotation: ()=> onPressedButtonSpecialNotation(context, gp.notation),
                             onPressedButtonSpecialNotation: () =>
                                 onPressedButtonImportantInformation(
-                                    context, gp.notation, gp.suspendStock),
-                            stockInformationStatus: gp.status,
+                                    context, gp?.notation, gp?.suspendStock),
+                            stockInformationStatus: gp?.status,
                             widthRight: _watchlistDataNotifier.widthRight,
                           ),
                           /*
@@ -1280,7 +1287,7 @@ class _ScreenSearchWatchlistState
   }
 
   void onPressedButtonImportantInformation(BuildContext context,
-      List<Remark2Mapping> notation, SuspendStock suspendStock) {
+      List<Remark2Mapping>? notation, SuspendStock? suspendStock) {
     int count = notation == null ? 0 : notation.length;
     if (count == 0 && suspendStock == null) {
       print(routeName +
@@ -1296,20 +1303,20 @@ class _ScreenSearchWatchlistState
 
       DateFormat dateFormatter = DateFormat('EEEE, dd/MM/yyyy', 'id');
       DateFormat dateParser = DateFormat('yyyy-MM-dd');
-      DateTime dateTime = dateParser.parseUtc(suspendStock.date);
+      DateTime dateTime = dateParser.parseUtc(suspendStock.date!);
       print('dateTime : ' + dateTime.toString());
       //print('indexSummary.date : '+data.date+' '+data.time);
       String formatedDate = dateFormatter.format(dateTime);
       //String formatedTime = timeFormatter.format(dateTime);
       //infoSuspend = infoSuspend.replaceAll('#BOARD#', suspendStock.board);
       infoSuspend = infoSuspend.replaceAll('#DATE#', formatedDate);
-      infoSuspend = infoSuspend.replaceAll('#TIME#', suspendStock.time);
+      infoSuspend = infoSuspend.replaceAll('#TIME#', suspendStock.time!);
       //displayTime = infoTime;
       height += 25.0;
       childs.add(Padding(
         padding: const EdgeInsets.only(bottom: 5.0),
         child: Text(
-          'Suspended ' + suspendStock.board,
+          'Suspended ' + suspendStock.board!,
           style: InvestrendTheme.of(context).small_w600,
         ),
       ));
@@ -1367,14 +1374,14 @@ class _ScreenSearchWatchlistState
       }
        */
 
-      Remark2Mapping remark2 = notation.elementAt(i);
+      Remark2Mapping? remark2 = notation?.elementAt(i);
       if (remark2 != null) {
         if (remark2.isSurveilance()) {
           height += 35.0;
           childs.add(Padding(
             padding: const EdgeInsets.only(bottom: 15.0),
             child: Text(
-              remark2.code + ' : ' + remark2.value,
+              remark2.code! + ' : ' + remark2.value!,
               style: InvestrendTheme.of(context).small_w600,
             ),
           ));
@@ -1403,7 +1410,7 @@ class _ScreenSearchWatchlistState
                       style: InvestrendTheme.of(context).small_w600,
                     ),
                     TextSpan(
-                      text: ' : ' + remark2.value,
+                      text: ' : ' + remark2.value!,
                       style: InvestrendTheme.of(context).small_w400,
                     )
                   ]),
@@ -1442,12 +1449,12 @@ class _ScreenSearchWatchlistState
   }
   */
   void onPressedButtonCorporateAction(
-      BuildContext context, List<CorporateActionEvent> corporateAction) {
+      BuildContext context, List<CorporateActionEvent>? corporateAction) {
     print('onPressedButtonCorporateAction : ' + corporateAction.toString());
 
     List<Widget> childs = List.empty(growable: true);
     if (corporateAction != null && corporateAction.isNotEmpty) {
-      corporateAction.forEach((ca) {
+      corporateAction.forEach((CorporateActionEvent? ca) {
         if (ca != null) {
           childs.add(Padding(
             padding: const EdgeInsets.only(bottom: 20),
@@ -1651,22 +1658,22 @@ class _ScreenSearchWatchlistState
 
   bool loadActiveWatchlist(BuildContext context) {
     bool loaded = false;
-    Watchlist active = context
+    Watchlist? active = context
         .read(watchlistChangeNotifier)
         .getWatchlist(_watchlistNotifier.value);
     if (active != null) {
       //GeneralPriceData dataWatchlist = GeneralPriceData();
       WatchlistPriceData dataWatchlist = WatchlistPriceData();
-      active.stocks.forEach((code) {
-        Stock stock = InvestrendTheme.storedData.findStock(code);
+      active.stocks?.forEach((code) {
+        Stock? stock = InvestrendTheme.storedData?.findStock(code);
         if (stock != null) {
           //dataWatchlist.datas.add(GeneralPrice(stock.code, 0.0, 0.0, 0.0, name: stock.name));
-          dataWatchlist.datas.add(
+          dataWatchlist.datas?.add(
               WatchlistPrice(stock.code, 0.0, 0.0, 0.0, stock.name, value: 0));
         } else {
           //dataWatchlist.datas.add(GeneralPrice(code, 0.0, 0.0, 0.0, name: '-'));
           dataWatchlist.datas
-              .add(WatchlistPrice(code, 0.0, 0.0, 0.0, '-', value: 0));
+              ?.add(WatchlistPrice(code, 0.0, 0.0, 0.0, '-', value: 0));
         }
       });
 
@@ -1737,8 +1744,8 @@ class _ScreenSearchWatchlistState
           .getInt(routeName, PROP_SELECTED_SORT, 0);
 
       // #2 use properties
-      int countWatchlist = context.read(watchlistChangeNotifier).count();
-      _watchlistNotifier.value = min(selectedWatchlist, countWatchlist - 1);
+      int? countWatchlist = context.read(watchlistChangeNotifier).count();
+      _watchlistNotifier.value = min(selectedWatchlist, countWatchlist! - 1);
       _sortNotifier.value = min(selectedSort, _sort_by_option.length - 1);
 
       // #3 check properties if changed, then save again
@@ -1782,9 +1789,9 @@ class _ScreenSearchWatchlistState
 
   void _startTimer() {
     print(routeName + '._startTimer');
-    if (_timer == null || !_timer.isActive) {
+    if (_timer == null || !_timer!.isActive) {
       _timer = Timer.periodic(_durationUpdate, (timer) {
-        print('_timer.tick : ' + _timer.tick.toString());
+        print('_timer.tick : ' + _timer!.tick.toString());
         if (active) {
           if (onProgress) {
             print(routeName +
@@ -1799,8 +1806,8 @@ class _ScreenSearchWatchlistState
 
   void _stopTimer() {
     print(routeName + '._stopTimer');
-    if (_timer != null && _timer.isActive) {
-      _timer.cancel();
+    if (_timer != null && _timer!.isActive) {
+      _timer?.cancel();
       _timer = null;
     }
   }

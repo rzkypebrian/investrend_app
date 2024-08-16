@@ -9,39 +9,39 @@ class InputComponent {
     hintText = "",
     bool obscureText = false,
     String fontsFamily = "",
-    Color fontColor, // = SavedDataUtil.data.colors.inputTextColor,
-    double fontSize, //= System.data.fontUtil.m,
+    Color? fontColor, // = SavedDataUtil.data.colors.inputTextColor,
+    double? fontSize, //= System.data.fontUtil.m,
     TextInputType keyboardType = TextInputType.text,
     Color hintColor = Colors.grey,
-    Widget suffixIcon,
-    Widget prefixIcon,
-    InputComponentTextEditingController controller,
+    Widget? suffixIcon,
+    Widget? prefixIcon,
+    InputComponentTextEditingController? controller,
     StateInput stateInput = StateInput.Enable,
-    ValueChanged<String> onChanged,
-    ValueChanged<String> onSubmited,
+    required ValueChanged<String> onChanged,
+    required ValueChanged<String> onSubmited,
     bool numberOnly = false,
     Color inputBorderError = Colors.redAccent,
     Color borderInputGray = Colors.grey,
     double borderWidth = 2,
     bool autoFocus = false,
-    VoidCallback onTap,
-    FocusNode focusnode,
-    VoidCallback onEditingComplete,
+    VoidCallback? onTap,
+    FocusNode? focusnode,
+    VoidCallback? onEditingComplete,
     TextInputAction textInputAction = TextInputAction.done,
     TextAlign textAlign = TextAlign.left,
     bool readOnly = false,
-    int maxLines,
-    Color backgroundColor,
-    List<TextInputFormatter> formatter,
-    EdgeInsetsGeometry contentPadding,
-    String masking,
+    int? maxLines,
+    Color? backgroundColor,
+    List<TextInputFormatter>? formatter,
+    EdgeInsetsGeometry? contentPadding,
+    String? masking,
     bool expands = false,
-    TextAlignVertical textAlignVertical,
+    TextAlignVertical? textAlignVertical,
     // StringBuilder<String> masking,
   }) {
     fontSize = fontSize ?? 14;
-    controller.stateInput = (stateInput);
-    controller.inputType = keyboardType;
+    controller?.stateInput = (stateInput);
+    controller?.inputType = keyboardType;
     return Stack(
       children: <Widget>[
         TextField(
@@ -83,7 +83,7 @@ class InputComponent {
               contentPadding: contentPadding,
               border: new OutlineInputBorder(
                 borderSide: new BorderSide(
-                    color: controller.stateInput == StateInput.Error
+                    color: controller?.stateInput == StateInput.Error
                         ? inputBorderError
                         : borderInputGray,
                     width: borderWidth),
@@ -106,10 +106,11 @@ class InputComponent {
               ),
               enabledBorder: new OutlineInputBorder(
                 borderSide: new BorderSide(
-                    color: controller.stateInput == StateInput.Error
-                        ? inputBorderError
-                        : borderInputGray,
-                    width: borderWidth),
+                  color: controller?.stateInput == StateInput.Error
+                      ? inputBorderError
+                      : borderInputGray,
+                  width: borderWidth,
+                ),
                 borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(position == InputPosition.Bottom ||
                             position == InputPosition.Center
@@ -129,7 +130,7 @@ class InputComponent {
               ),
               focusedBorder: new OutlineInputBorder(
                 borderSide: new BorderSide(
-                    color: controller.stateInput == StateInput.Error
+                    color: controller?.stateInput == StateInput.Error
                         ? inputBorderError
                         : borderInputGray,
                     width: borderWidth),
@@ -164,13 +165,13 @@ class InputComponent {
   static Container dropDownWithCorner<T>({
     double corner = 5,
     double padding = 10,
-    Object value,
-    List<DropdownMenuItem<T>> items,
-    ValueChanged<T> onChangeds,
-    String hint = "hint",
+    Object? value,
+    List<DropdownMenuItem<T>>? items,
+    ValueChanged<T?>? onChangeds,
+    String? hint = "hint",
     Color borderColor = Colors.black38,
-    Color backgroundColor,
-    Widget icons,
+    Color? backgroundColor,
+    Widget? icons,
   }) {
     return Container(
       padding: EdgeInsets.only(left: 10, right: icons == null ? 10 : 0),
@@ -180,7 +181,7 @@ class InputComponent {
           border: new Border.all(color: borderColor)),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<T>(
-          value: value,
+          value: value as T,
           items: items,
           onChanged: onChangeds,
           isExpanded: true,
@@ -192,44 +193,44 @@ class InputComponent {
   }
 
   static Container inputTextWithUnderLine({
-    TextEditingController controller,
+    TextEditingController? controller,
     TextAlign textAlign = TextAlign.left,
     double height = 30,
-    double width,
+    double? width,
     String hintText = "",
-    Color hintTextColor,
+    Color? hintTextColor,
     Color textColor = Colors.black,
-    TextStyle hintTextStyle,
-    TextStyle textStyle,
-    IconData suffix,
-    Widget suffixWidget,
-    VoidCallback onSuffixIconTap,
-    Color suffixIconColor,
+    TextStyle? hintTextStyle,
+    TextStyle? textStyle,
+    IconData? suffix,
+    Widget? suffixWidget,
+    VoidCallback? onSuffixIconTap,
+    Color? suffixIconColor,
     Color underLineColor = Colors.black,
-    Color enableUnderLineColor,
-    Color focusedUnderLineColor,
-    Color disableUnderlineColor,
+    Color? enableUnderLineColor,
+    Color? focusedUnderLineColor,
+    Color? disableUnderlineColor,
     bool obscureText = false,
-    Widget leadingWidget,
-    IconData leadingIcon,
-    VoidCallback onTapLeadingIcon,
-    Color leadingIconColor,
-    IconData trailingIcon,
-    VoidCallback onTapTrailingIcon,
-    Color trailingIconColor,
+    Widget? leadingWidget,
+    IconData? leadingIcon,
+    VoidCallback? onTapLeadingIcon,
+    Color? leadingIconColor,
+    IconData? trailingIcon,
+    VoidCallback? onTapTrailingIcon,
+    Color? trailingIconColor,
     bool readOnly = false,
-    ValueChanged<String> onChange,
-    EdgeInsets contentPadding,
-    FocusNode focusNode,
+    ValueChanged<String>? onChange,
+    EdgeInsets? contentPadding,
+    FocusNode? focusNode,
     TextInputAction textInputAction = TextInputAction.done,
     TextInputType keyboardType = TextInputType.text,
-    ValueChanged<String> onSubmited,
+    ValueChanged<String>? onSubmited,
     bool showCursor = true,
   }) {
     return Container(
       width: double.infinity,
       height: (height * 1.2).toDouble(),
-      color: width ?? Colors.transparent,
+      color: Colors.transparent,
       child: Padding(
         padding: const EdgeInsets.only(top: 8),
         child: Row(
@@ -407,8 +408,8 @@ class StateInputMessage {
   Color dangerColor;
   Color warningColor;
   Color infoColor;
-  StateInputMessageStatus status;
-  String message;
+  StateInputMessageStatus? status;
+  String? message;
 
   StateInputMessage({
     this.dangerColor = Colors.red,
@@ -434,16 +435,12 @@ class StateInputMessage {
     switch (status) {
       case StateInputMessageStatus.Danger:
         return dangerColor;
-        break;
       case StateInputMessageStatus.Warning:
         return warningColor;
-        break;
       case StateInputMessageStatus.Info:
         return infoColor;
-        break;
       default:
         return infoColor;
-        break;
     }
   }
 }
@@ -452,46 +449,45 @@ AlignmentGeometry convertAlignment(TextAlign textAlign) {
   switch (textAlign) {
     case TextAlign.left:
       return Alignment.topLeft;
-      break;
+
     case TextAlign.right:
       return Alignment.topRight;
-      break;
+
     case TextAlign.start:
       return Alignment.centerLeft;
-      break;
+
     case TextAlign.end:
       return Alignment.centerRight;
-      break;
+
     case TextAlign.center:
       return Alignment.center;
-      break;
+
     case TextAlign.justify:
       return Alignment.topLeft;
-      break;
+
     default:
       return Alignment.topLeft;
-      break;
   }
 }
 
 class InputComponentTextEditingController extends TextEditingController {
-  InputComponentTextEditingController({String content, this.useCustomeText})
+  InputComponentTextEditingController({String? content, this.useCustomeText})
       : super(text: content) {
     this._content = content;
   }
-  String _content;
+  late String? _content;
   // String masking = "###,###.###";
   TextInputType inputType = TextInputType.text;
-  bool useCustomeText;
+  bool? useCustomeText;
   StateInput stateInput = StateInput.Enable;
   StateInputMessage stateInputMessage = new StateInputMessage();
   bool obscureText = false;
 
-  set content(String value) {
+  set content(String? value) {
     this.content = this._content;
   }
 
-  bool customeText() {
+  bool? customeText() {
     if (this.useCustomeText == null) {
       if (this.inputType == TextInputType.number) {
         return true;
@@ -503,8 +499,8 @@ class InputComponentTextEditingController extends TextEditingController {
     }
   }
 
-  get content {
-    if (customeText()) {
+  String get content {
+    if (customeText()!) {
       final intRegex = RegExp(r'(\d)', multiLine: true);
 
       return intRegex
@@ -518,7 +514,7 @@ class InputComponentTextEditingController extends TextEditingController {
   }
 
   int get contentAsInt {
-    if (customeText()) {
+    if (customeText()!) {
       final intRegex = RegExp(r'(\d)', multiLine: true);
 
       try {
@@ -567,9 +563,9 @@ class InputComponentTextEditingController extends TextEditingController {
   set text(String newText) {
     String _updateText = updateText(newText);
     value = value.copyWith(
-      text: customeText() ? _updateText : newText,
+      text: customeText()! ? _updateText : newText,
       selection: TextSelection.collapsed(
-          offset: customeText() ? _updateText.length : -1),
+          offset: customeText()! ? _updateText.length : -1),
       composing: TextRange.empty,
     );
   }
@@ -585,12 +581,12 @@ class InputComponentTextEditingController extends TextEditingController {
   // }
 
   String updateText(String newText) {
-    if (customeText()) {
-      final _intRegex = RegExp(r'(\d)', multiLine: true);
+    if (customeText()!) {
+      final RegExp? _intRegex = RegExp(r'(\d)', multiLine: true);
 
       // //get int only to content if in digit only
-      String _int = _intRegex
-          .allMatches(newText.toString())
+      String? _int = _intRegex
+          ?.allMatches(newText.toString())
           .map((m) => m.group(0))
           .toList()
           .join('');
@@ -623,13 +619,13 @@ class UsNumberTextInputFormatter extends TextInputFormatter {
     if (newTextLength >= usedSubstringIndex)
       newText.write(newValue.text.substring(usedSubstringIndex));
 
-    final intRegex = RegExp(r'(\d)', multiLine: true);
+    final RegExp? intRegex = RegExp(r'(\d)', multiLine: true);
     // final doubleRegex = RegExp(r'\s+(\d+\.\d+)\s+', multiLine: true);
     // final timeRegex = RegExp(r'\s+(\d{1,2}:\d{2})\s+', multiLine: true);
 
-    String _int = // newText.toString();
+    String? _int = // newText.toString();
         intRegex
-            .allMatches(newText.toString())
+            ?.allMatches(newText.toString())
             .map((m) => m.group(0))
             .toList()
             .join('');

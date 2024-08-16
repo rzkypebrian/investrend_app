@@ -4,28 +4,31 @@ import '../RedisProtocol.dart';
 import '../RedisReceiver.dart';
 import 'RedisResult.dart';
 
-abstract class RedisQuery implements RedisProtocol{
+abstract class RedisQuery implements RedisProtocol {
   String get parameter;
   //String get packet => parameter+"\r\n";
   //bool get isReplied;
-  RedisReceiver listener;
-  RedisResult result;
+  RedisReceiver? listener;
+  RedisResult? result;
   //RedisResult get reply => result;
 }
+
 class Auth extends RedisQuery {
   String password = "";
-  String code     = "";
-  String device   = "";
-  String version  = "";
-  String _param  = "";
-  Auth(this.password, this.code, this.device, this.version, RedisReceiver listener)
-  {
+  String code = "";
+  String device = "";
+  String version = "";
+  String _param = "";
+  Auth(this.password, this.code, this.device, this.version,
+      RedisReceiver listener) {
     super.listener = listener;
     super.result = new AuthResult(this);
-    if(StringUtils.isEmtpy(code) || StringUtils.isEmtpy(device) || StringUtils.isEmtpy(version)){
-      _param  = "AUTH $password";
-    }else{
-      _param  = "AUTH $password $code $device $version";
+    if (StringUtils.isEmtpy(code) ||
+        StringUtils.isEmtpy(device) ||
+        StringUtils.isEmtpy(version)) {
+      _param = "AUTH $password";
+    } else {
+      _param = "AUTH $password $code $device $version";
     }
   }
   //String get parameter => "AUTH $password $code $device $version";
@@ -33,8 +36,7 @@ class Auth extends RedisQuery {
 }
 
 class Ping extends RedisQuery {
-
-  Ping(RedisReceiver listener){
+  Ping(RedisReceiver listener) {
     super.listener = listener;
     super.result = new PingResult(this);
   }
@@ -44,46 +46,40 @@ class Ping extends RedisQuery {
 
 class Subscribe extends RedisQuery {
   String key = "";
-  Subscribe(this.key , RedisReceiver listener)
-  {
+  Subscribe(this.key, RedisReceiver listener) {
     super.listener = listener;
     super.result = new SubscribeResult(this);
   }
   String get parameter => "SUBSCRIBE $key";
 }
+
 class Unsubscribe extends RedisQuery {
   String key = "";
-  Unsubscribe(this.key , RedisReceiver listener)
-  {
+  Unsubscribe(this.key, RedisReceiver listener) {
     super.listener = listener;
   }
   String get parameter => "UNSUBSCRIBE $key";
 }
+
 class Get extends RedisQuery {
   String key = "";
-  Get(this.key , RedisReceiver listener)
-  {
+  Get(this.key, RedisReceiver listener) {
     super.listener = listener;
   }
   String get parameter => "GET $key";
 }
 
-
 class MGet extends RedisQuery {
-  List<String> keys = new List<String>();
-  MGet(this.keys , RedisReceiver listener)
-  {
+  List<String> keys = <String>[];
+  MGet(this.keys, RedisReceiver listener) {
     super.listener = listener;
   }
-  String get parameter => "MGET "+keys.join(" ");
+  String get parameter => "MGET " + keys.join(" ");
 }
-
-
 
 class HGetAll extends RedisQuery {
   String key = "";
-  HGetAll(this.key , RedisReceiver listener)
-  {
+  HGetAll(this.key, RedisReceiver listener) {
     super.listener = listener;
   }
   String get parameter => "HGETALL $key";
@@ -91,11 +87,9 @@ class HGetAll extends RedisQuery {
 
 class HMGet extends RedisQuery {
   String key = "";
-  List<String> fields = new List<String>();
-  HMGet(this.key , this.fields, RedisReceiver listener)
-  {
+  List<String> fields = <String>[];
+  HMGet(this.key, this.fields, RedisReceiver listener) {
     super.listener = listener;
   }
-  String get parameter => "HMGET $key "+fields.join(" ");
-
+  String get parameter => "HMGET $key " + fields.join(" ");
 }

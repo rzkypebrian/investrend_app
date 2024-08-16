@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable, unnecessary_null_comparison, non_constant_identifier_names
+
 import 'dart:math';
 
 import 'package:Investrend/component/bottom_sheet/bottom_sheet_transaction_filter.dart';
@@ -17,10 +19,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:xml/xml.dart';
 
 class SectorObject {
-  String code;
+  String? code;
   int member_count;
   String icon;
-  double percentChange;
+  double? percentChange;
 
   SectorObject(this.code, this.member_count, this.icon, this.percentChange);
 
@@ -40,7 +42,7 @@ class SectorObject {
     }
   }
 
-  String getAlias(BuildContext context) {
+  String? getAlias(BuildContext context) {
     if (StringUtils.equalsIgnoreCase(code, 'IDXENERGY')) {
       return 'Energy';
     } else if (StringUtils.equalsIgnoreCase(code, 'IDXBASIC')) {
@@ -169,8 +171,8 @@ class OrderData {
 }
 */
 class PriceLot {
-  int _price;
-  int _lot;
+  int? _price;
+  int? _lot;
 
   PriceLot(this._price, this._lot);
 
@@ -179,9 +181,9 @@ class PriceLot {
     _lot = lot;
   }
 
-  int get price => _price;
+  int get price => _price!;
 
-  int get lot => _lot;
+  int get lot => _lot!;
 
   void clear() {
     _price = 0;
@@ -234,22 +236,22 @@ class RegisterReply {
 }
 
 class User {
-  String username;
-  String realname;
-  List<Account> accounts;
-  Token token;
-  double feepct;
-  int lotsize;
-  String message;
-  String email;
+  String? username;
+  String? realname;
+  List<Account>? accounts;
+  Token? token;
+  double? feepct;
+  int? lotsize;
+  String? message;
+  String? email;
 
-  String b_ip;
-  String b_multi;
-  String b_pass;
-  int b_port;
-  String r_ip;
-  String r_multi;
-  int r_port;
+  String? b_ip;
+  String? b_multi;
+  String? b_pass;
+  int? b_port;
+  String? r_ip;
+  String? r_multi;
+  int? r_port;
 
   //User(this.username, this.realname, this.accounts, this.token, this.feepct, this.lotsize, this.message, this.email;
 
@@ -282,33 +284,33 @@ class User {
       this.r_port);
 
   int accountSize() {
-    return accounts == null ? 0 : accounts.length;
+    return accounts == null ? 0 : accounts!.length;
   }
 
-  Account getAccount(int index) {
-    if (accounts != null && accounts.length > index) {
-      return accounts.elementAt(index);
+  Account? getAccount(int? index) {
+    if (accounts != null && accounts!.length > index!) {
+      return accounts!.elementAt(index);
     }
     return null;
   }
 
-  Account getAccountByCode(String brokerCode, String accountCode) {
-    Account found;
+  Account? getAccountByCode(String? brokerCode, String? accountCode) {
+    Account? found;
     for (int i = 0; i < accountSize(); i++) {
-      Account account = accounts.elementAt(i);
+      Account account = accounts!.elementAt(i);
       if (StringUtils.equalsIgnoreCase(brokerCode, account.brokercode) &&
           StringUtils.equalsIgnoreCase(accountCode, account.accountcode)) {
         found = account;
         break;
       }
     }
-    return found;
+    return found!;
   }
 
-  int getIndexAccountByCode(String brokerCode, String accountCode) {
+  int getIndexAccountByCode(String? brokerCode, String? accountCode) {
     int found = -1;
     for (int i = 0; i < accountSize(); i++) {
-      Account account = accounts.elementAt(i);
+      Account account = accounts!.elementAt(i);
       if (StringUtils.equalsIgnoreCase(brokerCode, account.brokercode) &&
           StringUtils.equalsIgnoreCase(accountCode, account.accountcode)) {
         found = i;
@@ -323,7 +325,7 @@ class User {
       String realname,
       double feepct,
       int lotsize,
-      List<Account> accounts,
+      List<Account>? accounts,
       Token token,
       String message,
       String email,
@@ -342,10 +344,10 @@ class User {
     if (this.accounts == null) {
       this.accounts = List.empty(growable: true);
     } else {
-      this.accounts.clear();
+      this.accounts!.clear();
     }
     if (accounts != null) {
-      this.accounts.addAll(accounts);
+      this.accounts!.addAll(accounts);
     }
 
     this.token = token;
@@ -376,13 +378,13 @@ class User {
 
   bool needRegisterPin() {
     //"message": "pin-empty",
-    return StringUtils.equalsIgnoreCase(message, 'pin-empty');
+    return StringUtils.equalsIgnoreCase(message!, 'pin-empty');
   }
 
   bool isValid() {
-    return !StringUtils.isEmtpy(username) &&
+    return !StringUtils.isEmtpy(username!) &&
         accounts != null &&
-        accounts.length > 0;
+        accounts!.length > 0;
   }
 
   factory User.fromJson(Map<String, dynamic> parsedJson) {
@@ -544,7 +546,6 @@ class LoginConfig {
 
   @override
   String toString() {
-    // TODO: implement toString
     return 'LoginConfig  rememberMe : $rememberMe  username : $username  email : $email';
   }
 }
@@ -797,15 +798,15 @@ class AppProperties {
 }
 
 class ServerAddress {
-  String b_ip;
-  List<int> b_multi;
-  String b_multi_text;
-  String b_pass;
-  int b_port;
-  String r_ip;
-  List<int> r_multi;
-  String r_multi_text;
-  int r_port;
+  String? b_ip;
+  List<int>? b_multi;
+  String? b_multi_text;
+  String? b_pass;
+  int? b_port;
+  String? r_ip;
+  List<int>? r_multi;
+  String? r_multi_text;
+  int? r_port;
 
   String urlPortRequester() {
     return '$r_ip:$r_port';
@@ -813,6 +814,8 @@ class ServerAddress {
 
   ServerAddress(
       this.b_ip,
+      this.b_multi,
+      this.r_multi,
       this.b_multi_text,
       this.b_pass,
       this.b_port,
@@ -839,12 +842,12 @@ class ServerAddress {
     String updated = pref.getString('server_updated') ?? '-';
     this.b_ip = pref.getString('b_ip') ?? '';
     this.b_multi_text = pref.getString('b_multi_text') ?? '';
-    this.b_multi = Utils.parseMultiPort(b_multi_text);
+    this.b_multi = Utils.parseMultiPort(b_multi_text!);
     this.b_pass = pref.getString('b_pass') ?? '';
     this.b_port = pref.getInt('b_port') ?? 0;
     this.r_ip = pref.getString('r_ip') ?? '';
     this.r_multi_text = pref.getString('r_multi_text') ?? '';
-    this.r_multi = Utils.parseMultiPort(r_multi_text);
+    this.r_multi = Utils.parseMultiPort(r_multi_text!);
     this.r_port = pref.getInt('r_port') ?? 0;
 
     print(
@@ -857,14 +860,14 @@ class ServerAddress {
     String updated = DateTime.now().toString();
     bool savedUpdated = await prefs.setString('server_updated', updated);
 
-    bool savedBIp = await prefs.setString('b_ip', b_ip);
-    bool savedBMultiText = await prefs.setString('b_multi_text', b_multi_text);
-    bool savedBPass = await prefs.setString('b_pass', b_pass);
-    bool savedBPort = await prefs.setInt('b_port', b_port);
+    bool savedBIp = await prefs.setString('b_ip', b_ip!);
+    bool savedBMultiText = await prefs.setString('b_multi_text', b_multi_text!);
+    bool savedBPass = await prefs.setString('b_pass', b_pass!);
+    bool savedBPort = await prefs.setInt('b_port', b_port!);
 
-    bool savedRIp = await prefs.setString('r_ip', r_ip);
-    bool savedRMultiText = await prefs.setString('r_multi_text', r_multi_text);
-    bool savedRPort = await prefs.setInt('r_port', r_port);
+    bool savedRIp = await prefs.setString('r_ip', r_ip!);
+    bool savedRMultiText = await prefs.setString('r_multi_text', r_multi_text!);
+    bool savedRPort = await prefs.setInt('r_port', r_port!);
 
     bool saved = savedUpdated &&
         savedBIp &&
@@ -889,17 +892,15 @@ class ServerAddress {
 // factory ServerAddress.fromJson(Map<String, dynamic> parsedJson) {
   //   return ServerAddress(parsedJson['access_token'], parsedJson['refresh_token']);
   // }
-
 }
 
-//TODO : access token dan refresh token
 class Token {
-  String access_token;
-  String refresh_token;
+  String? access_token;
+  String? refresh_token;
 
   Token(this.access_token, this.refresh_token);
 
-  void update(String AccessToken, String RefreshToken) {
+  void update(String? AccessToken, String? RefreshToken) {
     this.access_token = AccessToken;
     this.refresh_token = RefreshToken;
   }
@@ -920,9 +921,10 @@ class Token {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String updated = DateTime.now().toString();
     bool savedUpdated = await prefs.setString('token_updated', updated);
-    bool savedAccessToken = await prefs.setString('access_token', access_token);
+    bool savedAccessToken =
+        await prefs.setString('access_token', access_token!);
     bool savedRefreshToken =
-        await prefs.setString('refresh_token', refresh_token);
+        await prefs.setString('refresh_token', refresh_token!);
 
     bool saved = savedUpdated && savedAccessToken && savedRefreshToken;
     DebugWriter.info(
@@ -936,7 +938,6 @@ class Token {
 
   @override
   String toString() {
-    // TODO: implement toString
     return 'Token  access_token : $access_token  refresh_token : $refresh_token';
   }
 }
@@ -989,8 +990,8 @@ abstract class BaseMessage extends Serializeable {
 }
 
 class InboxMessage extends BaseMessage {
-  String ib_id = '';
-  String username = '';
+  String? ib_id = '';
+  String? username = '';
 
   @override
   String toString() {
@@ -1001,33 +1002,33 @@ class InboxMessage extends BaseMessage {
   InboxMessage(
       this.ib_id,
       this.username,
-      String createdAt,
-      String sentAt,
-      String fcmTitle,
-      String fcmBody,
-      String fcmImageUrl,
-      String fcmAndroidColor,
-      String fcmAndroidChannelId,
-      String fcmDataKeys,
-      String fcmDataValues,
-      String fcmMessageId,
-      int readCount)
+      String? createdAt,
+      String? sentAt,
+      String? fcmTitle,
+      String? fcmBody,
+      String? fcmImageUrl,
+      String? fcmAndroidColor,
+      String? fcmAndroidChannelId,
+      String? fcmDataKeys,
+      String? fcmDataValues,
+      String? fcmMessageId,
+      int? readCount)
       : super(
-            createdAt,
-            sentAt,
-            fcmTitle,
-            fcmBody,
-            fcmImageUrl,
-            fcmAndroidColor,
-            fcmAndroidChannelId,
-            fcmDataKeys,
-            fcmDataValues,
-            fcmMessageId,
-            readCount);
+            createdAt!,
+            sentAt!,
+            fcmTitle!,
+            fcmBody!,
+            fcmImageUrl!,
+            fcmAndroidColor!,
+            fcmAndroidChannelId!,
+            fcmDataKeys!,
+            fcmDataValues!,
+            fcmMessageId!,
+            readCount!);
 
   @override
   String id() {
-    return ib_id;
+    return ib_id!;
   }
 
   @override
@@ -1037,11 +1038,11 @@ class InboxMessage extends BaseMessage {
 
   @override
   String recipient() {
-    return username;
+    return username!;
   }
 
-  factory InboxMessage.fromJson(
-      Map<String, dynamic> parsedJson, String username) {
+  static InboxMessage? fromJson(
+      Map<String, dynamic> parsedJson, String? username) {
     /*
     "#": 1,
     "ib_id": "21",
@@ -1057,20 +1058,20 @@ class InboxMessage extends BaseMessage {
     "fcm_message_id": "fcm_message_id",
     "read_count": "0"
     */
-    String ibId = StringUtils.noNullString(parsedJson['ib_id']);
-    String createdAt = StringUtils.noNullString(parsedJson['created_at']);
-    String sentAt = StringUtils.noNullString(parsedJson['sent_at']);
-    String fcmTitle = StringUtils.noNullString(parsedJson['fcm_title']);
-    String fcmBody = StringUtils.noNullString(parsedJson['fcm_body']);
-    String fcmImageUrl = StringUtils.noNullString(parsedJson['fcm_image_url']);
-    String fcmAndroidColor =
+    String? ibId = StringUtils.noNullString(parsedJson['ib_id']);
+    String? createdAt = StringUtils.noNullString(parsedJson['created_at']);
+    String? sentAt = StringUtils.noNullString(parsedJson['sent_at']);
+    String? fcmTitle = StringUtils.noNullString(parsedJson['fcm_title']);
+    String? fcmBody = StringUtils.noNullString(parsedJson['fcm_body']);
+    String? fcmImageUrl = StringUtils.noNullString(parsedJson['fcm_image_url']);
+    String? fcmAndroidColor =
         StringUtils.noNullString(parsedJson['fcm_android_color']);
-    String fcmAndroidChannelId =
+    String? fcmAndroidChannelId =
         StringUtils.noNullString(parsedJson['fcm_android_channel_id']);
-    String fcmDataKeys = StringUtils.noNullString(parsedJson['fcm_data_keys']);
-    String fcmDataValues =
+    String? fcmDataKeys = StringUtils.noNullString(parsedJson['fcm_data_keys']);
+    String? fcmDataValues =
         StringUtils.noNullString(parsedJson['fcm_data_values']);
-    String fcmMessageId =
+    String? fcmMessageId =
         StringUtils.noNullString(parsedJson['fcm_message_id']);
     int readCount = Utils.safeInt(parsedJson['read_count']);
     return InboxMessage(
@@ -1092,7 +1093,7 @@ class InboxMessage extends BaseMessage {
   @override
   String asPlain() {
     String plain = Serializeable.safePlain(id());
-    plain += '|' + Serializeable.safePlain(username);
+    plain += '|' + Serializeable.safePlain(username!);
     plain += '|' + Serializeable.safePlain(created_at);
     plain += '|' + Serializeable.safePlain(sent_at);
     plain += '|' + Serializeable.safePlain(fcm_title);
@@ -1107,8 +1108,8 @@ class InboxMessage extends BaseMessage {
     return plain;
   }
 
-  factory InboxMessage.fromPlain(String data) {
-    List<String> datas = data.split('|');
+  factory InboxMessage.fromPlain(String? data) {
+    List<String>? datas = data?.split('|');
     if (datas != null && datas.isNotEmpty && datas.length >= 13) {
       String ibId = Serializeable.unsafePlain(
           StringUtils.noNullString(datas.elementAt(0)));
@@ -1152,7 +1153,8 @@ class InboxMessage extends BaseMessage {
           fcmMessageId,
           readCount);
     }
-    return null;
+    return InboxMessage(null, null, null, null, null, null, null, null, null,
+        null, null, null, null);
   }
 
   @override
@@ -1162,39 +1164,39 @@ class InboxMessage extends BaseMessage {
 }
 
 class BroadcastMessage extends BaseMessage {
-  String bc_id = '';
-  String topic = '';
+  String? bc_id = '';
+  String? topic = '';
 
   BroadcastMessage(
       this.bc_id,
       this.topic,
-      String createdAt,
-      String sentAt,
-      String fcmTitle,
-      String fcmBody,
-      String fcmImageUrl,
-      String fcmAndroidColor,
-      String fcmAndroidChannelId,
-      String fcmDataKeys,
-      String fcmDataValues,
-      String fcmMessageId,
-      int readCount)
+      String? createdAt,
+      String? sentAt,
+      String? fcmTitle,
+      String? fcmBody,
+      String? fcmImageUrl,
+      String? fcmAndroidColor,
+      String? fcmAndroidChannelId,
+      String? fcmDataKeys,
+      String? fcmDataValues,
+      String? fcmMessageId,
+      int? readCount)
       : super(
-            createdAt,
-            sentAt,
-            fcmTitle,
-            fcmBody,
-            fcmImageUrl,
-            fcmAndroidColor,
-            fcmAndroidChannelId,
-            fcmDataKeys,
-            fcmDataValues,
-            fcmMessageId,
-            readCount);
+            createdAt!,
+            sentAt!,
+            fcmTitle!,
+            fcmBody!,
+            fcmImageUrl!,
+            fcmAndroidColor!,
+            fcmAndroidChannelId!,
+            fcmDataKeys!,
+            fcmDataValues!,
+            fcmMessageId!,
+            readCount!);
 
   @override
   String id() {
-    return bc_id;
+    return bc_id!;
   }
 
   @override
@@ -1210,25 +1212,25 @@ class BroadcastMessage extends BaseMessage {
 
   @override
   String recipient() {
-    return topic;
+    return topic!;
   }
 
   factory BroadcastMessage.fromJson(
       Map<String, dynamic> parsedJson, String topic) {
-    String bcId = StringUtils.noNullString(parsedJson['bc_id']);
-    String createdAt = StringUtils.noNullString(parsedJson['created_at']);
-    String sentAt = StringUtils.noNullString(parsedJson['sent_at']);
-    String fcmTitle = StringUtils.noNullString(parsedJson['fcm_title']);
-    String fcmBody = StringUtils.noNullString(parsedJson['fcm_body']);
-    String fcmImageUrl = StringUtils.noNullString(parsedJson['fcm_image_url']);
-    String fcmAndroidColor =
+    String? bcId = StringUtils.noNullString(parsedJson['bc_id']);
+    String? createdAt = StringUtils.noNullString(parsedJson['created_at']);
+    String? sentAt = StringUtils.noNullString(parsedJson['sent_at']);
+    String? fcmTitle = StringUtils.noNullString(parsedJson['fcm_title']);
+    String? fcmBody = StringUtils.noNullString(parsedJson['fcm_body']);
+    String? fcmImageUrl = StringUtils.noNullString(parsedJson['fcm_image_url']);
+    String? fcmAndroidColor =
         StringUtils.noNullString(parsedJson['fcm_android_color']);
-    String fcmAndroidChannelId =
+    String? fcmAndroidChannelId =
         StringUtils.noNullString(parsedJson['fcm_android_channel_id']);
-    String fcmDataKeys = StringUtils.noNullString(parsedJson['fcm_data_keys']);
-    String fcmDataValues =
+    String? fcmDataKeys = StringUtils.noNullString(parsedJson['fcm_data_keys']);
+    String? fcmDataValues =
         StringUtils.noNullString(parsedJson['fcm_data_values']);
-    String fcmMessageId =
+    String? fcmMessageId =
         StringUtils.noNullString(parsedJson['fcm_message_id']);
     int readCount = Utils.safeInt(parsedJson['read_count']);
     return BroadcastMessage(
@@ -1250,7 +1252,7 @@ class BroadcastMessage extends BaseMessage {
   @override
   String asPlain() {
     String plain = Serializeable.safePlain(id());
-    plain += '|' + Serializeable.safePlain(topic);
+    plain += '|' + Serializeable.safePlain(topic!);
     plain += '|' + Serializeable.safePlain(created_at);
     plain += '|' + Serializeable.safePlain(sent_at);
     plain += '|' + Serializeable.safePlain(fcm_title);
@@ -1265,8 +1267,8 @@ class BroadcastMessage extends BaseMessage {
     return plain;
   }
 
-  factory BroadcastMessage.fromPlain(String data) {
-    List<String> datas = data.split('|');
+  factory BroadcastMessage.fromPlain(String? data) {
+    List<String>? datas = data?.split('|');
     if (datas != null && datas.isNotEmpty && datas.length >= 13) {
       String bcId = Serializeable.unsafePlain(
           StringUtils.noNullString(datas.elementAt(0)));
@@ -1310,7 +1312,8 @@ class BroadcastMessage extends BaseMessage {
           fcmMessageId,
           readCount);
     }
-    return null;
+    return BroadcastMessage(null, null, null, null, null, null, null, null,
+        null, null, null, null, null);
   }
 
   @override
@@ -1322,7 +1325,7 @@ class BroadcastMessage extends BaseMessage {
 class MyDevice {
   String unique_id;
 
-  MyDevice();
+  MyDevice({this.unique_id = ''});
 
   final String _chars =
       'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
@@ -1389,6 +1392,8 @@ class MyDevice {
             return this.unique_id;
           });
         }
+
+        throw '';
       },
     );
   }
@@ -1410,7 +1415,7 @@ class Invitation {
 
     String updated = pref.getString('invitation_updated') ?? '-';
     this.invitation_code = pref.getString('invitation_code') ?? '';
-    this.invitation_status = pref.getBool('invitation_status') ?? '';
+    this.invitation_status = pref.getBool('invitation_status') ?? '' as bool;
     DebugWriter.info(
         'Invitation.load updated : $updated   invitation_code : $invitation_code  invitation_status : $invitation_status ');
     return true;
@@ -1431,7 +1436,6 @@ class Invitation {
 
   @override
   String toString() {
-    // TODO: implement toString
     return 'Invitation  invitation_code : $invitation_code  invitation_status : $invitation_status';
   }
 }
@@ -1509,7 +1513,7 @@ class CashPosition {
         '[outstandingLimit=$outstandingLimit]  [overLimit=$overLimit]  [rdnBalance=$rdnBalance]  [availableCash=$availableCash]';
   }
 
-  void copyValueFrom(CashPosition newValue) {
+  void copyValueFrom(CashPosition? newValue) {
     if (newValue != null) {
       this.accountcode = newValue.accountcode;
       this.accountName = newValue.accountName;
@@ -1557,7 +1561,7 @@ class CashPosition {
 }
 
 class StockPositionDetail {
-  String stockCode;
+  String? stockCode;
   double beginBalance;
   double balance;
   double netBalance;
@@ -1614,7 +1618,7 @@ class StockPositionDetail {
         0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
   }
 
-  void copyValueFrom(StockPositionDetail newValue) {
+  void copyValueFrom(StockPositionDetail? newValue) {
     if (newValue != null) {
       this.loaded = true;
 
@@ -1658,15 +1662,15 @@ class StockPositionDetail {
 }
 
 class StockPosition {
-  String accountcode;
-  double totalCost;
-  double totalMarket;
-  double totalGL;
-  double totalGLPct;
-  double totalTodayGL;
-  double totalTodayGLPct;
+  String? accountcode;
+  double? totalCost;
+  double? totalMarket;
+  double? totalGL;
+  double? totalGLPct;
+  double? totalTodayGL;
+  double? totalTodayGLPct;
 
-  List<StockPositionDetail> stocksList;
+  List<StockPositionDetail>? stocksList;
   bool loaded = false;
 
   StockPosition(
@@ -1687,34 +1691,34 @@ class StockPosition {
   }
 
   int stockListSize() {
-    return stocksList == null ? 0 : stocksList.length;
+    return stocksList == null ? 0 : stocksList!.length;
   }
 
-  StockPositionDetail getStockPositionDetail(int index) {
-    if (stocksList != null && stocksList.length > index) {
-      return stocksList.elementAt(index);
+  StockPositionDetail? getStockPositionDetail(int index) {
+    if (stocksList != null && stocksList!.length > index) {
+      return stocksList!.elementAt(index);
     }
     return null;
   }
 
   int count() {
-    return stocksList == null ? 0 : stocksList.length;
+    return stocksList == null ? 0 : stocksList!.length;
   }
 
   bool isEmpty() {
     return count() == 0;
   }
 
-  String joinCode(String delimiter) {
-    String joined = '';
+  String? joinCode(String delimiter) {
+    String? joined = '';
     if (count() > 0) {
       for (int i = 0; i < count(); i++) {
-        StockPositionDetail spd = stocksList.elementAt(i);
+        StockPositionDetail? spd = stocksList?.elementAt(i);
         if (spd != null) {
           if (StringUtils.isEmtpy(joined)) {
             joined = spd.stockCode;
           } else {
-            joined = joined + delimiter + spd.stockCode;
+            joined = joined! + delimiter + spd.stockCode!;
           }
         }
       }
@@ -1722,7 +1726,7 @@ class StockPosition {
     return joined;
   }
 
-  void copyValueFrom(StockPosition newValue) {
+  void copyValueFrom(StockPosition? newValue) {
     if (newValue != null) {
       this.loaded = true;
       this.accountcode = newValue.accountcode;
@@ -1733,9 +1737,9 @@ class StockPosition {
       this.totalTodayGL = newValue.totalTodayGL;
       this.totalTodayGLPct = newValue.totalTodayGLPct;
 
-      this.stocksList.clear();
+      this.stocksList!.clear();
       if (newValue.stocksList != null) {
-        this.stocksList.addAll(newValue.stocksList);
+        this.stocksList!.addAll(newValue.stocksList!);
       }
     } else {
       this.accountcode = '';
@@ -1745,21 +1749,21 @@ class StockPosition {
       this.totalGLPct = 0;
       this.totalTodayGL = 0;
       this.totalTodayGLPct = 0;
-      this.stocksList.clear();
+      this.stocksList!.clear();
     }
   }
 
-  StockPositionDetail getStockPositionDetailByCode(String code) {
-    int count = stocksList != null ? stocksList.length : 0;
-    StockPositionDetail found;
+  StockPositionDetail? getStockPositionDetailByCode(String? code) {
+    int count = stocksList != null ? stocksList!.length : 0;
+    StockPositionDetail? found;
     for (int i = 0; i < count; i++) {
-      StockPositionDetail existing = stocksList.elementAt(i);
+      StockPositionDetail? existing = stocksList?.elementAt(i);
       if (existing != null &&
           StringUtils.equalsIgnoreCase(existing.stockCode, code)) {
         found = existing;
       }
     }
-    return found;
+    return found!;
   }
 
   // void update(String username, String realname, List<Account> accounts, Token token) {
@@ -1772,12 +1776,12 @@ class StockPosition {
   bool isValid() {
     return !StringUtils.isEmtpy(accountcode) &&
         stocksList != null &&
-        stocksList.length > 0;
+        stocksList!.length > 0;
   }
 
   factory StockPosition.fromJson(Map<String, dynamic> parsedJson) {
-    var list = parsedJson['StockPositionDetail'] as List;
-    List<StockPositionDetail> stocksList;
+    var list = parsedJson['StockPositionDetail'] as List?;
+    List<StockPositionDetail>? stocksList;
     if (list != null) {
       print(list.runtimeType); //returns List<dynamic>
       stocksList = list.map((i) => StockPositionDetail.fromJson(i)).toList();
@@ -1798,7 +1802,7 @@ class StockPosition {
 }
 
 class YourPosition {
-  String code = '';
+  String? code = '';
   double jumlahLot = 0;
   double averagePrice = 0.0;
   double marketValue = 0;
@@ -1808,7 +1812,7 @@ class YourPosition {
   double todayReturnPercentage = 0.0;
   double totalReturnValue = 0;
   double totalReturnPercentage = 0.0;
-  bool loaded;
+  bool? loaded;
 
   YourPosition(
       {this.code = '',
@@ -1821,7 +1825,7 @@ class YourPosition {
       this.totalReturnValue = 0,
       this.totalReturnPercentage = 0.0});
 
-  void copyValueFrom(YourPosition newValue) {
+  void copyValueFrom(YourPosition? newValue) {
     if (newValue != null) {
       loaded = true;
       this.code = newValue.code;
@@ -2025,7 +2029,7 @@ class OrderStatus {
             message, '-'); // || !StringUtils.isEmtpy(actionDesc);
   }
 
-  String getMessage() {
+  String? getMessage() {
     if (!StringUtils.isEmtpy(message)) {
       return message;
     }
@@ -2033,6 +2037,7 @@ class OrderStatus {
     // if(!StringUtils.isEmtpy(actionDesc)){
     //   return actionDesc;
     // }
+    return '';
   }
 
   bool canAmend() {
@@ -2075,10 +2080,10 @@ class OrderStatus {
     } else if (StringUtils.equalsIgnoreCase(this.orderStatus, 'Open')) {
       return colorOpen;
     }
-    return InvestrendTheme.of(context).tileBackground;
+    return InvestrendTheme.of(context).tileBackground!;
   }
 
-  void copyValueFrom(OrderStatus newValue) {
+  void copyValueFrom(OrderStatus? newValue) {
     if (newValue != null) {
       this.orderDate = newValue.orderDate;
       this.requestTime = newValue.requestTime;
@@ -2230,11 +2235,11 @@ class TradeStatusSummary {
 
   final int tradePrice;
   final int matchQty;
-  final String idxTradeNumber;
+  final String? idxTradeNumber;
 
   TradeStatusSummary(this.tradePrice, this.matchQty, this.idxTradeNumber);
 
-  factory TradeStatusSummary.fromJson(Map<String, dynamic> parsedJson) {
+  static TradeStatusSummary? fromJson(Map<String, dynamic> parsedJson) {
     if (parsedJson == null) {
       return null;
     }
@@ -2335,7 +2340,7 @@ class AccountStockPosition {
         Utils.safeDouble(parsedJson['creditLimit']));
   }
 
-  void copyValueFrom(AccountStockPosition newValue) {
+  void copyValueFrom(AccountStockPosition? newValue) {
     if (newValue != null) {
       this.accountcode = newValue.accountcode;
       this.totalCost = newValue.totalCost;
@@ -2391,7 +2396,6 @@ class OrderReply {
 
   @override
   String toString() {
-    // TODO: implement toString
     return 'OrderReply  [brokercode : $brokercode]  [result : $result]  [command : $command]  [accountcode : $accountcode]  [orderid : $orderid]  [message : $message]  [orderdate : $orderdate]';
   }
 }
@@ -2409,7 +2413,7 @@ class LocalForeignData {
   String time = '';
   bool loaded = false;
 
-  void copyValueFrom(LocalForeignData newValue) {
+  void copyValueFrom(LocalForeignData? newValue) {
     if (newValue != null) {
       this.loaded = true;
       this.domesticBuy = newValue.domesticBuy;
@@ -2465,14 +2469,14 @@ class PortfolioSummary {
 }
 
 class RealizedStock {
-  String accountcode = '';
-  String stockCode = '';
+  String? accountcode = '';
+  String? stockCode = '';
   double gl = 0.0;
   int lot = 0;
   double avgBuy = 0.0;
   double avgSell = 0.0;
   double yield = 0.0;
-  String date = '';
+  String? date = '';
   int valueSell = 0;
 
   RealizedStock(this.accountcode, this.stockCode, this.gl, this.lot,
@@ -2537,7 +2541,7 @@ class PortfolioSummaryData {
   */
 
   bool loaded = false;
-  String accountcode; //": "C35",
+  String? accountcode; //": "C35",
   double totalasset; //": 1602642788.47,
   double portfoliovalue; //": 1574121500,
   double cashvalue; //": 28521288.47,
@@ -2547,19 +2551,19 @@ class PortfolioSummaryData {
   double totalprofit; //": 414576661.18,
   double realizedprofit; //": 482680153.18,
   double unrealizedprofit; //": -68103492,
-  String topgain1stock; //": "BOLA",
+  String? topgain1stock; //": "BOLA",
   double topgain1value; //": 523400000,
-  String topgain2stock; //": "FREN",
+  String? topgain2stock; //": "FREN",
   double topgain2value; //": 273000000,
-  String topgain3stock; //": "BINA",
+  String? topgain3stock; //": "BINA",
   double topgain3value; //": 81937000,
-  String toploss1stock; //": "BRMS",
+  String? toploss1stock; //": "BRMS",
   double toploss1value; //": -230000000,
-  String toploss2stock; //": "ANTM",
+  String? toploss2stock; //": "ANTM",
   double toploss2value; //": -128000000,
-  String toploss3stock; //": "BBYB",
+  String? toploss3stock; //": "BBYB",
   double toploss3value;
-  String begindate;
+  String? begindate;
 
   PortfolioSummaryData(
       this.accountcode,
@@ -2587,11 +2591,11 @@ class PortfolioSummaryData {
       this.begindate);
 
   factory PortfolioSummaryData.fromJson(Map<String, dynamic> parsedJson) {
-    if (parsedJson == null) {
-      return null;
-    }
+    // if (parsedJson == null) {
+    //   return null;
+    // }
     print('PortfolioSummaryData.fromJson 0');
-    String accountcode = StringUtils.noNullString(parsedJson['accountcode']);
+    String? accountcode = StringUtils.noNullString(parsedJson['accountcode']);
     print('PortfolioSummaryData.fromJson 1');
     double totalasset = Utils.safeDouble(parsedJson['totalasset']);
     print('PortfolioSummaryData.fromJson 2');
@@ -2611,37 +2615,37 @@ class PortfolioSummaryData {
     print('PortfolioSummaryData.fromJson 9');
     double unrealizedprofit = Utils.safeDouble(parsedJson['unrealizedprofit']);
     print('PortfolioSummaryData.fromJson 10');
-    String topgain1stock =
+    String? topgain1stock =
         StringUtils.noNullString(parsedJson['topgain1stock']);
     print('PortfolioSummaryData.fromJson 11');
     double topgain1value = Utils.safeDouble(parsedJson['topgain1value']);
     print('PortfolioSummaryData.fromJson 12');
-    String topgain2stock =
+    String? topgain2stock =
         StringUtils.noNullString(parsedJson['topgain2stock']);
     print('PortfolioSummaryData.fromJson 13');
     double topgain2value = Utils.safeDouble(parsedJson['topgain2value']);
     print('PortfolioSummaryData.fromJson 14');
-    String topgain3stock =
+    String? topgain3stock =
         StringUtils.noNullString(parsedJson['topgain3stock']);
     print('PortfolioSummaryData.fromJson 15');
     double topgain3value = Utils.safeDouble(parsedJson['topgain3value']);
     print('PortfolioSummaryData.fromJson 16');
-    String toploss1stock =
+    String? toploss1stock =
         StringUtils.noNullString(parsedJson['toploss1stock']);
     print('PortfolioSummaryData.fromJson 17');
     double toploss1value = Utils.safeDouble(parsedJson['toploss1value']);
     print('PortfolioSummaryData.fromJson 18');
-    String toploss2stock =
+    String? toploss2stock =
         StringUtils.noNullString(parsedJson['toploss2stock']);
     print('PortfolioSummaryData.fromJson 19');
     double toploss2value = Utils.safeDouble(parsedJson['toploss2value']);
     print('PortfolioSummaryData.fromJson 20');
-    String toploss3stock =
+    String? toploss3stock =
         StringUtils.noNullString(parsedJson['toploss3stock']);
     print('PortfolioSummaryData.fromJson 21');
     double toploss3value = Utils.safeDouble(parsedJson['toploss3value']);
     print('PortfolioSummaryData.fromJson 22');
-    String begindate = StringUtils.noNullString(parsedJson['begindate']);
+    String? begindate = StringUtils.noNullString(parsedJson['begindate']);
     print('PortfolioSummaryData.fromJson 23');
 
     return PortfolioSummaryData(
@@ -2674,7 +2678,7 @@ class PortfolioSummaryData {
     return StringUtils.isEmtpy(this.accountcode);
   }
 
-  void copyValueFrom(PortfolioSummaryData newValue) {
+  void copyValueFrom(PortfolioSummaryData? newValue) {
     if (newValue != null) {
       this.loaded = true;
       this.accountcode = newValue.accountcode;
@@ -2736,27 +2740,27 @@ class PortfolioSummaryData {
 class RealizedStockData {
   bool loaded = false;
   double totalGL = 0.0;
-  List<RealizedStock> datas = List.empty(growable: true);
+  List<RealizedStock>? datas = List?.empty(growable: true);
 
-  int count() {
-    return datas != null ? datas.length : 0;
+  int? count() {
+    return datas != null ? datas?.length : 0;
   }
 
   bool isEmpty() {
     return count() == 0;
   }
 
-  void copyValueFrom(RealizedStockData newValue) {
+  void copyValueFrom(RealizedStockData? newValue) {
     if (newValue != null) {
       this.loaded = true;
       this.totalGL = newValue.totalGL;
-      this.datas.clear();
+      this.datas?.clear();
       if (newValue.datas != null) {
-        this.datas.addAll(newValue.datas);
+        this.datas?.addAll(newValue.datas!);
       }
     } else {
       this.totalGL = 0.0;
-      this.datas.clear();
+      this.datas?.clear();
     }
   }
 }
@@ -2771,21 +2775,21 @@ class Return {
 
 class ReturnData {
   bool loaded = false;
-  List<Return> datas = List.empty(growable: true);
+  List<Return>? datas = List.empty(growable: true);
 
-  int count() {
-    return datas != null ? datas.length : 0;
+  int? count() {
+    return datas != null ? datas?.length : 0;
   }
 
-  void copyValueFrom(ReturnData newValue) {
+  void copyValueFrom(ReturnData? newValue) {
     if (newValue != null) {
       this.loaded = true;
-      this.datas.clear();
+      this.datas?.clear();
       if (newValue.datas != null) {
-        this.datas.addAll(newValue.datas);
+        this.datas?.addAll(newValue.datas!);
       }
     } else {
-      this.datas.clear();
+      this.datas?.clear();
     }
   }
 }
@@ -2806,16 +2810,16 @@ class Briefing {
   action=""/>
  */
   int id = 0;
-  String type = '';
-  String display_title_id = '';
-  String display_title_en = '';
-  String display_greet_id = '';
-  String display_greet_en = '';
-  String display_body_id = '';
-  String display_body_en = '';
-  String valid_from = '';
-  String valid_to = '';
-  String action = '';
+  String? type = '';
+  String? display_title_id = '';
+  String? display_title_en = '';
+  String? display_greet_id = '';
+  String? display_greet_en = '';
+  String? display_body_id = '';
+  String? display_body_en = '';
+  String? valid_from = '';
+  String? valid_to = '';
+  String? action = '';
 
   bool loaded = false;
 
@@ -2824,7 +2828,7 @@ class Briefing {
         StringUtils.isEmtpy(display_body_en);
   }
 
-  String getTitle({String language = 'id'}) {
+  String? getTitle({String language = 'id'}) {
     if (StringUtils.equalsIgnoreCase(language, 'id')) {
       return display_title_id;
     } else {
@@ -2832,7 +2836,7 @@ class Briefing {
     }
   }
 
-  String getGreeting({String language = 'id'}) {
+  String? getGreeting({String language = 'id'}) {
     if (StringUtils.equalsIgnoreCase(language, 'id')) {
       return display_greet_id;
     } else {
@@ -2840,7 +2844,7 @@ class Briefing {
     }
   }
 
-  String getDescription({String language = 'id'}) {
+  String? getDescription({String language = 'id'}) {
     if (StringUtils.equalsIgnoreCase(language, 'id')) {
       return display_body_id;
     } else {
@@ -2867,22 +2871,22 @@ class Briefing {
 
   factory Briefing.fromJson(Map<String, dynamic> parsedJson) {
     int id = Utils.safeInt(parsedJson['id']);
-    String type = StringUtils.noNullString(parsedJson['type']);
-    String displayTitleId =
+    String? type = StringUtils.noNullString(parsedJson['type']);
+    String? displayTitleId =
         StringUtils.noNullString(parsedJson['display_title_id']);
-    String displayTitleEn =
+    String? displayTitleEn =
         StringUtils.noNullString(parsedJson['display_title_en']);
-    String displayGreetId =
+    String? displayGreetId =
         StringUtils.noNullString(parsedJson['display_greet_id']);
-    String displayGreetEn =
+    String? displayGreetEn =
         StringUtils.noNullString(parsedJson['display_greet_en']);
-    String displayBodyId =
+    String? displayBodyId =
         StringUtils.noNullString(parsedJson['display_body_id']);
-    String displayBodyEn =
+    String? displayBodyEn =
         StringUtils.noNullString(parsedJson['display_body_en']);
-    String validFrom = StringUtils.noNullString(parsedJson['valid_from']);
-    String validTo = StringUtils.noNullString(parsedJson['valid_to']);
-    String action = StringUtils.noNullString(parsedJson['action']);
+    String? validFrom = StringUtils.noNullString(parsedJson['valid_from']);
+    String? validTo = StringUtils.noNullString(parsedJson['valid_to']);
+    String? action = StringUtils.noNullString(parsedJson['action']);
 
     return Briefing(
         id,
@@ -2900,23 +2904,24 @@ class Briefing {
 
   factory Briefing.fromXml(XmlElement element) {
     int id = Utils.safeInt(element.getAttribute('id'));
-    String type = StringUtils.noNullString(element.getAttribute('type'));
-    String displayTitleId =
-        StringUtils.noNullString(element.getAttribute('display_title_id'));
-    String displayTitleEn =
-        StringUtils.noNullString(element.getAttribute('display_title_en'));
-    String displayGreetId =
-        StringUtils.noNullString(element.getAttribute('display_greet_id'));
-    String displayGreetEn =
-        StringUtils.noNullString(element.getAttribute('display_greet_en'));
-    String displayBodyId =
-        StringUtils.noNullString(element.getAttribute('display_body_id'));
-    String displayBodyEn =
-        StringUtils.noNullString(element.getAttribute('display_body_en'));
-    String validFrom =
-        StringUtils.noNullString(element.getAttribute('valid_from'));
-    String validTo = StringUtils.noNullString(element.getAttribute('valid_to'));
-    String action = StringUtils.noNullString(element.getAttribute('action'));
+    String? type = StringUtils.noNullString(element.getAttribute('type')!);
+    String? displayTitleId =
+        StringUtils.noNullString(element.getAttribute('display_title_id')!);
+    String? displayTitleEn =
+        StringUtils.noNullString(element.getAttribute('display_title_en')!);
+    String? displayGreetId =
+        StringUtils.noNullString(element.getAttribute('display_greet_id')!);
+    String? displayGreetEn =
+        StringUtils.noNullString(element.getAttribute('display_greet_en')!);
+    String? displayBodyId =
+        StringUtils.noNullString(element.getAttribute('display_body_id')!);
+    String? displayBodyEn =
+        StringUtils.noNullString(element.getAttribute('display_body_en')!);
+    String? validFrom =
+        StringUtils.noNullString(element.getAttribute('valid_from')!);
+    String? validTo =
+        StringUtils.noNullString(element.getAttribute('valid_to')!);
+    String? action = StringUtils.noNullString(element.getAttribute('action')!);
 
     return Briefing(
         id,
@@ -2932,7 +2937,7 @@ class Briefing {
         action);
   }
 
-  void copyValueFrom(Briefing newValue) {
+  void copyValueFrom(Briefing? newValue) {
     if (newValue != null) {
       this.loaded = true;
       this.id = newValue.id;
@@ -2965,21 +2970,21 @@ class Briefing {
 class ResultTopStock {
   String type = '';
   String range = '';
-  List<TopStock> datas = List.empty(growable: true);
+  List<TopStock>? datas = List.empty(growable: true);
 
-  bool isEmpty() {
-    return datas != null ? datas.isEmpty : true;
+  bool? isEmpty() {
+    return datas != null ? datas?.isEmpty : true;
   }
 }
 
 class OrderQueueData {
-  String message = '';
+  String? message = '';
 
   // parameters
-  String code = '';
-  String board = '';
+  String? code = '';
+  String? board = '';
   int price = 0;
-  String type = '';
+  String? type = '';
   int datas_count = 0;
 
   /*
@@ -2990,7 +2995,7 @@ class OrderQueueData {
     "type": "BID"
   },
   */
-  String translateType() {
+  String? translateType() {
     return StringUtils.equalsIgnoreCase(type, 'Offer') ? 'ASK' : type;
   }
 
@@ -3005,7 +3010,7 @@ class OrderQueueData {
   },
   */
   bool loaded = false;
-  List<OrderQueue> datas = List.empty(growable: true);
+  List<OrderQueue>? datas = List.empty(growable: true);
 
   int total_lot() {
     if (total_volume > 0) {
@@ -3023,12 +3028,12 @@ class OrderQueueData {
     }
   }
 
-  void copyValueFrom(OrderQueueData newValue) {
+  void copyValueFrom(OrderQueueData? newValue) {
     if (newValue != null) {
       this.loaded = true;
-      this.datas.clear();
+      this.datas?.clear();
       if (newValue.datas != null) {
-        this.datas.addAll(newValue.datas);
+        this.datas?.addAll(newValue.datas!);
       }
       this.message = newValue.message;
       this.code = newValue.code;
@@ -3039,7 +3044,7 @@ class OrderQueueData {
       this.total_remaining_volume = newValue.total_remaining_volume;
       this.datas_count = newValue.datas_count;
     } else {
-      this.datas.clear();
+      this.datas?.clear();
       this.message = '';
       this.code = '';
       this.board = '';
@@ -3051,12 +3056,12 @@ class OrderQueueData {
     }
   }
 
-  bool isEmpty() {
-    return datas != null ? datas.isEmpty : true;
+  bool? isEmpty() {
+    return datas != null ? datas?.isEmpty : true;
   }
 
-  int count() {
-    return isEmpty() ? 0 : datas.length;
+  int? count() {
+    return isEmpty()! ? 0 : datas?.length;
   }
 
   bool hasMessage() {
@@ -3065,11 +3070,11 @@ class OrderQueueData {
 }
 
 class ResultInbox {
-  String username = '';
+  String? username = '';
   bool more_data = false;
-  String date_next = '';
-  String date_start = '';
-  String message = '';
+  String? date_next = '';
+  String? date_start = '';
+  String? message = '';
 
   /*
   "tag": "INBOX",
@@ -3082,19 +3087,19 @@ class ResultInbox {
   "datas_count": 1,
   */
 
-  List<InboxMessage> datas = List.empty(growable: true);
+  List<InboxMessage>? datas = List.empty(growable: true);
 
-  int count() {
-    return datas != null ? datas.length : 0;
+  int? count() {
+    return datas != null ? datas?.length : 0;
   }
 
-  bool isEmpty() {
-    return datas != null ? datas.isEmpty : true;
+  bool? isEmpty() {
+    return datas != null ? datas?.isEmpty : true;
   }
 }
 
 class ResultKeyStatistic {
-  String code = '';
+  String? code = '';
   bool show_earningPerShare = false;
   bool show_dataPerformanceYTD = false;
   bool show_dataBalanceSheet = false;
@@ -3104,7 +3109,7 @@ class ResultKeyStatistic {
   bool show_dataLiquidity = false;
 
   bool isEmpty() {
-    return code == null || code.length <= 0;
+    return code == null || code!.length <= 0;
   }
 
   EarningPerShareData earningPerShare = EarningPerShareData.createBasic();
@@ -3153,12 +3158,12 @@ class ResultKeyStatistic {
 class Dividend extends CorporateAction {
   // String code = '';
   // String year = '';
-  String totalValue = '';
-  String price = '';
-  String cumDate = '';
-  String exDate = '';
-  String recordingDate = '';
-  String paymentDate = '';
+  String? totalValue = '';
+  String? price = '';
+  String? cumDate = '';
+  String? exDate = '';
+  String? recordingDate = '';
+  String? paymentDate = '';
 
   @override
   String caType() {
@@ -3170,20 +3175,20 @@ class Dividend extends CorporateAction {
     return '[Dividend  code : $code  year : $year  totalValue : $totalValue  price : $price  cumDate : $cumDate  exDate : $exDate  recordingDate : $recordingDate  paymentDate : $paymentDate]';
   }
 
-  Dividend(String code, String year, this.totalValue, this.price, this.cumDate,
-      this.exDate, this.recordingDate, this.paymentDate)
+  Dividend(String? code, String? year, this.totalValue, this.price,
+      this.cumDate, this.exDate, this.recordingDate, this.paymentDate)
       : super(code, year);
 
-  factory Dividend.fromJson(Map<String, dynamic> parsedJson) {
-    String code = StringUtils.noNullString(parsedJson['code']);
-    String year = StringUtils.noNullString(parsedJson['year']);
-    String totalValue = StringUtils.noNullString(parsedJson['totalValue']);
-    String price = StringUtils.noNullString(parsedJson['price']);
-    String cumDate = StringUtils.noNullString(parsedJson['cumDate']);
-    String exDate = StringUtils.noNullString(parsedJson['exDate']);
-    String recordingDate =
+  static Dividend? fromJson(Map<String, dynamic> parsedJson) {
+    String? code = StringUtils.noNullString(parsedJson['code']);
+    String? year = StringUtils.noNullString(parsedJson['year']);
+    String? totalValue = StringUtils.noNullString(parsedJson['totalValue']);
+    String? price = StringUtils.noNullString(parsedJson['price']);
+    String? cumDate = StringUtils.noNullString(parsedJson['cumDate']);
+    String? exDate = StringUtils.noNullString(parsedJson['exDate']);
+    String? recordingDate =
         StringUtils.noNullString(parsedJson['recordingDate']);
-    String paymentDate = StringUtils.noNullString(parsedJson['paymentDate']);
+    String? paymentDate = StringUtils.noNullString(parsedJson['paymentDate']);
 
     return Dividend(code, year, totalValue, price, cumDate, exDate,
         recordingDate, paymentDate);
@@ -3193,10 +3198,10 @@ class Dividend extends CorporateAction {
 class RUPS extends CorporateAction {
   // String code = '';
   // String year = '';
-  String type = '';
-  String dateTime = '';
-  String address = '';
-  String city = '';
+  String? type = '';
+  String? dateTime = '';
+  String? address = '';
+  String? city = '';
 
   @override
   String caType() {
@@ -3208,7 +3213,7 @@ class RUPS extends CorporateAction {
     return '[RUPS  code : $code  year : $year  type : $type  dateTime : $dateTime  address : $address  city : $city]';
   }
 
-  RUPS(String code, String year, this.type, this.dateTime, this.address,
+  RUPS(String? code, String? year, this.type, this.dateTime, this.address,
       this.city)
       : super(code, year);
 
@@ -3220,13 +3225,13 @@ class RUPS extends CorporateAction {
   "city": "data_city"
   */
 
-  factory RUPS.fromJson(Map<String, dynamic> parsedJson) {
-    String code = StringUtils.noNullString(parsedJson['code']);
-    String year = StringUtils.noNullString(parsedJson['year']);
-    String type = StringUtils.noNullString(parsedJson['type']);
-    String dateTime = StringUtils.noNullString(parsedJson['dateTime']);
-    String address = StringUtils.noNullString(parsedJson['address']);
-    String city = StringUtils.noNullString(parsedJson['city']);
+  static RUPS? fromJson(Map<String, dynamic> parsedJson) {
+    String? code = StringUtils.noNullString(parsedJson['code']);
+    String? year = StringUtils.noNullString(parsedJson['year']);
+    String? type = StringUtils.noNullString(parsedJson['type']);
+    String? dateTime = StringUtils.noNullString(parsedJson['dateTime']);
+    String? address = StringUtils.noNullString(parsedJson['address']);
+    String? city = StringUtils.noNullString(parsedJson['city']);
     return RUPS(code, year, type, dateTime, address, city);
   }
 }
@@ -3234,16 +3239,16 @@ class RUPS extends CorporateAction {
 class RightIssue extends CorporateAction {
   // String code = '';
   // String year = '';
-  String ratio1 = '';
-  String ratio2 = '';
-  String ratioPercentage = '';
-  String price = '';
-  String cumDate = '';
-  String exDate = '';
-  String recordingDate = '';
-  String tradingStart = '';
-  String tradingEnd = '';
-  String subscriptionDate = '';
+  String? ratio1 = '';
+  String? ratio2 = '';
+  String? ratioPercentage = '';
+  String? price = '';
+  String? cumDate = '';
+  String? exDate = '';
+  String? recordingDate = '';
+  String? tradingStart = '';
+  String? tradingEnd = '';
+  String? subscriptionDate = '';
 
   @override
   String toString() {
@@ -3257,8 +3262,8 @@ class RightIssue extends CorporateAction {
   }
 
   RightIssue(
-      String code,
-      String year,
+      String? code,
+      String? year,
       this.ratio1,
       this.ratio2,
       this.ratioPercentage,
@@ -3287,21 +3292,21 @@ class RightIssue extends CorporateAction {
     }
   */
 
-  factory RightIssue.fromJson(Map<String, dynamic> parsedJson) {
-    String code = StringUtils.noNullString(parsedJson['code']);
-    String year = StringUtils.noNullString(parsedJson['year']);
-    String ratio1 = StringUtils.noNullString(parsedJson['ratio1']);
-    String ratio2 = StringUtils.noNullString(parsedJson['ratio2']);
-    String ratioPercentage =
+  static RightIssue? fromJson(Map<String, dynamic> parsedJson) {
+    String? code = StringUtils.noNullString(parsedJson['code']);
+    String? year = StringUtils.noNullString(parsedJson['year']);
+    String? ratio1 = StringUtils.noNullString(parsedJson['ratio1']);
+    String? ratio2 = StringUtils.noNullString(parsedJson['ratio2']);
+    String? ratioPercentage =
         StringUtils.noNullString(parsedJson['ratioPercentage']);
-    String price = StringUtils.noNullString(parsedJson['price']);
-    String cumDate = StringUtils.noNullString(parsedJson['cumDate']);
-    String exDate = StringUtils.noNullString(parsedJson['exDate']);
-    String recordingDate =
+    String? price = StringUtils.noNullString(parsedJson['price']);
+    String? cumDate = StringUtils.noNullString(parsedJson['cumDate']);
+    String? exDate = StringUtils.noNullString(parsedJson['exDate']);
+    String? recordingDate =
         StringUtils.noNullString(parsedJson['recordingDate']);
-    String tradingStart = StringUtils.noNullString(parsedJson['tradingStart']);
-    String tradingEnd = StringUtils.noNullString(parsedJson['tradingEnd']);
-    String subscriptionDate =
+    String? tradingStart = StringUtils.noNullString(parsedJson['tradingStart']);
+    String? tradingEnd = StringUtils.noNullString(parsedJson['tradingEnd']);
+    String? subscriptionDate =
         StringUtils.noNullString(parsedJson['subscriptionDate']);
     return RightIssue(
         code,
@@ -3322,13 +3327,13 @@ class RightIssue extends CorporateAction {
 class StockSplit extends CorporateAction {
   // String code = '';
   // String year = '';
-  String ratio1 = '';
-  String ratio2 = '';
-  String ratioPercentage = '';
-  String cumDate = '';
-  String exDate = '';
-  String recordingDate = '';
-  String tradingDate = '';
+  String? ratio1 = '';
+  String? ratio2 = '';
+  String? ratioPercentage = '';
+  String? cumDate = '';
+  String? exDate = '';
+  String? recordingDate = '';
+  String? tradingDate = '';
 
   @override
   String caType() {
@@ -3342,8 +3347,8 @@ class StockSplit extends CorporateAction {
   }
 
   StockSplit(
-      String code,
-      String year,
+      String? code,
+      String? year,
       this.ratio1,
       this.ratio2,
       this.ratioPercentage,
@@ -3366,18 +3371,18 @@ class StockSplit extends CorporateAction {
     },
   */
 
-  factory StockSplit.fromJson(Map<String, dynamic> parsedJson) {
-    String code = StringUtils.noNullString(parsedJson['code']);
-    String year = StringUtils.noNullString(parsedJson['year']);
-    String ratio1 = StringUtils.noNullString(parsedJson['ratio1']);
-    String ratio2 = StringUtils.noNullString(parsedJson['ratio2']);
-    String ratioPercentage =
+  static StockSplit? fromJson(Map<String, dynamic> parsedJson) {
+    String? code = StringUtils.noNullString(parsedJson['code']);
+    String? year = StringUtils.noNullString(parsedJson['year']);
+    String? ratio1 = StringUtils.noNullString(parsedJson['ratio1']);
+    String? ratio2 = StringUtils.noNullString(parsedJson['ratio2']);
+    String? ratioPercentage =
         StringUtils.noNullString(parsedJson['ratioPercentage']);
-    String cumDate = StringUtils.noNullString(parsedJson['cumDate']);
-    String exDate = StringUtils.noNullString(parsedJson['exDate']);
-    String recordingDate =
+    String? cumDate = StringUtils.noNullString(parsedJson['cumDate']);
+    String? exDate = StringUtils.noNullString(parsedJson['exDate']);
+    String? recordingDate =
         StringUtils.noNullString(parsedJson['recordingDate']);
-    String tradingDate = StringUtils.noNullString(parsedJson['tradingDate']);
+    String? tradingDate = StringUtils.noNullString(parsedJson['tradingDate']);
 
     return StockSplit(code, year, ratio1, ratio2, ratioPercentage, cumDate,
         exDate, recordingDate, tradingDate);
@@ -3385,17 +3390,17 @@ class StockSplit extends CorporateAction {
 }
 
 class Warrant extends CorporateAction {
-  String ratio1 = '';
-  String ratio2 = '';
-  String price = '';
-  String tradingStart = '';
-  String tradingEnd = '';
-  String maturityDate = '';
-  String exDate = '';
-  String cumDate = '';
-  String recordingDate = '';
-  String subscriptionDate = '';
-  String description = '';
+  String? ratio1 = '';
+  String? ratio2 = '';
+  String? price = '';
+  String? tradingStart = '';
+  String? tradingEnd = '';
+  String? maturityDate = '';
+  String? exDate = '';
+  String? cumDate = '';
+  String? recordingDate = '';
+  String? subscriptionDate = '';
+  String? description = '';
 
   bool isEmptyOrMinus(String text) {
     return StringUtils.isEmtpy(text) ||
@@ -3412,8 +3417,8 @@ class Warrant extends CorporateAction {
   }
 
   Warrant(
-      String code,
-      String year,
+      String? code,
+      String? year,
       this.ratio1,
       this.ratio2,
       this.price,
@@ -3443,25 +3448,25 @@ class Warrant extends CorporateAction {
     },
   */
 
-  factory Warrant.fromJson(Map<String, dynamic> parsedJson) {
-    String code = StringUtils.noNullString(parsedJson['code']);
-    String year = StringUtils.noNullString(parsedJson['year']);
-    String ratio1 = StringUtils.noNullString(parsedJson['ratio1']);
-    String ratio2 = StringUtils.noNullString(parsedJson['ratio2']);
-    String price = StringUtils.noNullString(parsedJson['price']);
+  static Warrant? fromJson(Map<String, dynamic> parsedJson) {
+    String? code = StringUtils.noNullString(parsedJson['code']);
+    String? year = StringUtils.noNullString(parsedJson['year']);
+    String? ratio1 = StringUtils.noNullString(parsedJson['ratio1']);
+    String? ratio2 = StringUtils.noNullString(parsedJson['ratio2']);
+    String? price = StringUtils.noNullString(parsedJson['price']);
 
-    String tradingStart = StringUtils.noNullString(parsedJson['tradingStart']);
-    String tradingEnd = StringUtils.noNullString(parsedJson['tradingEnd']);
+    String? tradingStart = StringUtils.noNullString(parsedJson['tradingStart']);
+    String? tradingEnd = StringUtils.noNullString(parsedJson['tradingEnd']);
 
-    String maturityDate = StringUtils.noNullString(parsedJson['maturityDate']);
+    String? maturityDate = StringUtils.noNullString(parsedJson['maturityDate']);
 
-    String exDate = StringUtils.noNullString(parsedJson['exDate']);
-    String cumDate = StringUtils.noNullString(parsedJson['cumDate']);
-    String recordingDate =
+    String? exDate = StringUtils.noNullString(parsedJson['exDate']);
+    String? cumDate = StringUtils.noNullString(parsedJson['cumDate']);
+    String? recordingDate =
         StringUtils.noNullString(parsedJson['recordingDate']);
-    String subscriptionDate =
+    String? subscriptionDate =
         StringUtils.noNullString(parsedJson['recordingDate']);
-    String description = StringUtils.noNullString(parsedJson['recordingDate']);
+    String? description = StringUtils.noNullString(parsedJson['recordingDate']);
 
     return Warrant(
         code,
@@ -3494,14 +3499,14 @@ class ResearchRank {
   valid_from="2021-08-17 22:03:40" valid_to="2021-09-17 22:03:40"/>
  */
 
-  String code = '';
+  String? code = '';
   double value = 0.0;
-  String subtitle_id = '';
-  String subtitle_en = '';
-  String description_id = '';
-  String description_en = '';
-  String valid_from = '';
-  String valid_to = '';
+  String? subtitle_id = '';
+  String? subtitle_en = '';
+  String? description_id = '';
+  String? description_en = '';
+  String? valid_from = '';
+  String? valid_to = '';
 
   bool loaded = false;
 
@@ -3509,7 +3514,7 @@ class ResearchRank {
     return StringUtils.isEmtpy(code) || value < 1.0;
   }
 
-  String getSubtitle({String language = 'id'}) {
+  String? getSubtitle({String language = 'id'}) {
     if (StringUtils.equalsIgnoreCase(language, 'id')) {
       return subtitle_id;
     } else {
@@ -3517,7 +3522,7 @@ class ResearchRank {
     }
   }
 
-  String getDescription({String language = 'id'}) {
+  String? getDescription({String language = 'id'}) {
     if (StringUtils.equalsIgnoreCase(language, 'id')) {
       return description_id;
     } else {
@@ -3533,41 +3538,42 @@ class ResearchRank {
   }
 
   factory ResearchRank.fromJson(Map<String, dynamic> parsedJson) {
-    String code = StringUtils.noNullString(parsedJson['code']);
+    String? code = StringUtils.noNullString(parsedJson['code']);
     double value = Utils.safeDouble(parsedJson['value']);
-    String subtitleId = StringUtils.noNullString(parsedJson['subtitle_id']);
-    String subtitleEn = StringUtils.noNullString(parsedJson['subtitle_en']);
-    String descriptionId =
+    String? subtitleId = StringUtils.noNullString(parsedJson['subtitle_id']);
+    String? subtitleEn = StringUtils.noNullString(parsedJson['subtitle_en']);
+    String? descriptionId =
         StringUtils.noNullString(parsedJson['description_id']);
-    String descriptionEn =
+    String? descriptionEn =
         StringUtils.noNullString(parsedJson['description_en']);
-    String validFrom = StringUtils.noNullString(parsedJson['valid_from']);
-    String validTo = StringUtils.noNullString(parsedJson['valid_to']);
+    String? validFrom = StringUtils.noNullString(parsedJson['valid_from']);
+    String? validTo = StringUtils.noNullString(parsedJson['valid_to']);
 
     return ResearchRank(code, value, subtitleId, subtitleEn, descriptionId,
         descriptionEn, validFrom, validTo);
   }
 
   factory ResearchRank.fromXml(XmlElement element) {
-    String code = StringUtils.noNullString(element.getAttribute('code'));
+    String? code = StringUtils.noNullString(element.getAttribute('code')!);
     double value = Utils.safeDouble(element.getAttribute('value'));
-    String subtitleId =
-        StringUtils.noNullString(element.getAttribute('subtitle_id'));
-    String subtitleEn =
-        StringUtils.noNullString(element.getAttribute('subtitle_en'));
-    String descriptionId =
-        StringUtils.noNullString(element.getAttribute('description_id'));
-    String descriptionEn =
-        StringUtils.noNullString(element.getAttribute('description_en'));
-    String validFrom =
-        StringUtils.noNullString(element.getAttribute('valid_from'));
-    String validTo = StringUtils.noNullString(element.getAttribute('valid_to'));
+    String? subtitleId =
+        StringUtils.noNullString(element.getAttribute('subtitle_id')!);
+    String? subtitleEn =
+        StringUtils.noNullString(element.getAttribute('subtitle_en')!);
+    String? descriptionId =
+        StringUtils.noNullString(element.getAttribute('description_id')!);
+    String? descriptionEn =
+        StringUtils.noNullString(element.getAttribute('description_en')!);
+    String? validFrom =
+        StringUtils.noNullString(element.getAttribute('valid_from')!);
+    String? validTo =
+        StringUtils.noNullString(element.getAttribute('valid_to')!);
 
     return ResearchRank(code, value, subtitleId, subtitleEn, descriptionId,
         descriptionEn, validFrom, validTo);
   }
 
-  void copyValueFrom(ResearchRank newValue) {
+  void copyValueFrom(ResearchRank? newValue) {
     if (newValue != null) {
       this.loaded = true;
       this.code = newValue.code;
@@ -3598,9 +3604,9 @@ class ResearchRank {
 }
 
 class Range {
-  int index = 0;
-  String from = 'from_label'.tr();
-  String to = 'to_label'.tr();
+  int? index = 0;
+  String? from = 'from_label'.tr();
+  String? to = 'to_label'.tr();
 
   Range(this.index, this.from, this.to);
 
@@ -3615,10 +3621,10 @@ class Range {
 }
 
 class ForeignDomestic {
-  String code = '';
-  String board = '';
-  String date = '';
-  String time = '';
+  String? code = '';
+  String? board = '';
+  String? date = '';
+  String? time = '';
   int domesticBuyerValue = 0;
   int domesticSellerValue = 0;
   int domesticNetValue = 0;
@@ -3644,12 +3650,12 @@ class ForeignDomestic {
       this.foreignTotalValueRatio);
 
   factory ForeignDomestic.fromJson(
-      Map<String, dynamic> parsedJson, String code, String board) {
-    if (parsedJson == null) {
-      return null;
-    }
-    String date = StringUtils.noNullString(parsedJson['date']);
-    String time = StringUtils.noNullString(parsedJson['time']);
+      Map<String, dynamic> parsedJson, String? code, String? board) {
+    // if (parsedJson == null) {
+    //   return null;
+    // }
+    String? date = StringUtils.noNullString(parsedJson['date']);
+    String? time = StringUtils.noNullString(parsedJson['time']);
     int domesticBuyerValue = Utils.safeInt(parsedJson['domesticBuyerValue']);
     int domesticSellerValue = Utils.safeInt(parsedJson['domesticSellerValue']);
     int domesticNetValue = Utils.safeInt(parsedJson['domesticNetValue']);
@@ -3679,7 +3685,7 @@ class ForeignDomestic {
     return StringUtils.isEmtpy(board) || StringUtils.isEmtpy(date);
   }
 
-  void copyValueFrom(ForeignDomestic newValue) {
+  void copyValueFrom(ForeignDomestic? newValue) {
     if (newValue != null) {
       this.code = newValue.code;
       this.board = newValue.board;
@@ -3712,13 +3718,13 @@ class ForeignDomestic {
 
 class SuspendedStockData {
   bool loaded = false;
-  String date = "";
-  String time = "";
-  Map<String, SuspendStock> affected = Map<String, SuspendStock>();
-  void putStockAffected(SuspendStock suspendStock) {
+  String? date = "";
+  String? time = "";
+  Map<String, SuspendStock>? affected = Map<String, SuspendStock>();
+  void putStockAffected(SuspendStock? suspendStock) {
     if (suspendStock != null) {
-      affected.update(
-        suspendStock.code + '_' + suspendStock.board,
+      affected?.update(
+        suspendStock.code! + '_' + suspendStock.board!,
         // You can ignore the incoming parameter if you want to always update the value even if it is already in the map
         (existingValue) => suspendStock,
         ifAbsent: () => suspendStock,
@@ -3730,28 +3736,28 @@ class SuspendedStockData {
   }
 
   bool isEmpty() {
-    if (affected == null || affected.isEmpty) {
+    if (affected == null || affected!.isEmpty) {
       return true;
     }
     return false;
   }
 
-  void copyValueFrom(SuspendedStockData newValue,
+  void copyValueFrom(SuspendedStockData? newValue,
       {bool dontClearExistingIfNull = false}) {
     if (newValue != null) {
       this.loaded = true;
       this.date = newValue.date;
       this.time = newValue.time;
 
-      this.affected.clear();
+      this.affected?.clear();
       if (newValue.affected != null) {
-        this.affected.addAll(newValue.affected);
+        this.affected?.addAll(newValue.affected!);
       }
     } else {
       if (!dontClearExistingIfNull) {
         this.date = "";
         this.time = "";
-        this.affected.clear();
+        this.affected?.clear();
       }
     }
   }
@@ -3760,23 +3766,23 @@ class SuspendedStockData {
 class Remark2Data {
   bool loaded = false;
 
-  String date = "";
-  String time = "";
-  Map<String, Remark2Mapping> mapping = Map<String, Remark2Mapping>();
-  Map<String, Remark2Stock> affected = Map<String, Remark2Stock>();
+  String? date = "";
+  String? time = "";
+  Map<String, Remark2Mapping>? mapping = Map<String, Remark2Mapping>();
+  Map<String, Remark2Stock>? affected = Map<String, Remark2Stock>();
 
   int countAffected() {
-    return affected != null ? affected.length : 0;
+    return affected != null ? affected!.length : 0;
   }
 
   int countMapping() {
-    return mapping != null ? mapping.length : 0;
+    return mapping != null ? mapping!.length : 0;
   }
 
-  void putMapping(Remark2Mapping remark2mapping) {
+  void putMapping(Remark2Mapping? remark2mapping) {
     if (remark2mapping != null) {
-      mapping.update(
-        remark2mapping.key,
+      mapping!.update(
+        remark2mapping.key!,
         // You can ignore the incoming parameter if you want to always update the value even if it is already in the map
         (existingValue) => remark2mapping,
         ifAbsent: () => remark2mapping,
@@ -3793,10 +3799,10 @@ class Remark2Data {
         countAffected().toString();
   }
 
-  void putStockAffected(Remark2Stock remark2stock) {
+  void putStockAffected(Remark2Stock? remark2stock) {
     if (remark2stock != null) {
-      affected.update(
-        remark2stock.code,
+      affected?.update(
+        remark2stock.code!,
         // You can ignore the incoming parameter if you want to always update the value even if it is already in the map
         (existingValue) => remark2stock,
         ifAbsent: () => remark2stock,
@@ -3808,63 +3814,63 @@ class Remark2Data {
   }
 
   bool isEmpty() {
-    if (mapping == null || mapping.isEmpty) {
+    if (mapping == null || mapping!.isEmpty) {
       return true;
     }
-    if (affected == null || affected.isEmpty) {
+    if (affected == null || affected!.isEmpty) {
       return true;
     }
     return false;
   }
 
-  void copyValueFrom(Remark2Data newValue,
+  void copyValueFrom(Remark2Data? newValue,
       {bool dontClearExistingIfNull = false}) {
     if (newValue != null) {
       this.loaded = true;
       this.date = newValue.date;
       this.time = newValue.time;
-      this.mapping.clear();
-      this.affected.clear();
+      this.mapping?.clear();
+      this.affected?.clear();
       if (newValue.mapping != null) {
-        this.mapping.addAll(newValue.mapping);
+        this.mapping!.addAll(newValue.mapping!);
       }
       if (newValue.affected != null) {
-        this.affected.addAll(newValue.affected);
+        this.affected?.addAll(newValue.affected!);
       }
     } else {
       if (!dontClearExistingIfNull) {
         this.date = "";
         this.time = "";
-        this.mapping.clear();
-        this.affected.clear();
+        this.mapping?.clear();
+        this.affected?.clear();
       }
     }
   }
 }
 
 class SuspendStock {
-  String code = '';
-  String board = '';
-  String status = '';
-  String info = '';
-  String date = '';
-  String time = '';
+  String? code = '';
+  String? board = '';
+  String? status = '';
+  String? info = '';
+  String? date = '';
+  String? time = '';
 
   SuspendStock(
       this.code, this.board, this.status, this.info, this.date, this.time);
 
   factory SuspendStock.fromJson(Map<String, dynamic> parsedJson) {
-    if (parsedJson == null) {
-      return null;
-    }
+    // if (parsedJson == null) {
+    //   return null;
+    // }
 
     ///int id = Utils.safeInt(parsedJson['id']);
-    String code = StringUtils.noNullString(parsedJson['code']);
-    String board = StringUtils.noNullString(parsedJson['board']);
-    String status = StringUtils.noNullString(parsedJson['status']);
-    String info = StringUtils.noNullString(parsedJson['info']);
-    String date = StringUtils.noNullString(parsedJson['date']);
-    String time = StringUtils.noNullString(parsedJson['time']);
+    String? code = StringUtils.noNullString(parsedJson['code']);
+    String? board = StringUtils.noNullString(parsedJson['board']);
+    String? status = StringUtils.noNullString(parsedJson['status']);
+    String? info = StringUtils.noNullString(parsedJson['info']);
+    String? date = StringUtils.noNullString(parsedJson['date']);
+    String? time = StringUtils.noNullString(parsedJson['time']);
 
     return SuspendStock(code, board, status, info, date, time);
   }
@@ -3890,31 +3896,31 @@ class CorporateActionEvent {
   "exercise_instrument": "SIDO"
   }
   */
-  String code = '';
-  String name = '';
-  String type = '';
-  String today_date = '';
-  String cum_date = '';
-  String distribution_date = '';
+  String? code = '';
+  String? name = '';
+  String? type = '';
+  String? today_date = '';
+  String? cum_date = '';
+  String? distribution_date = '';
   double proceed_ratio = 0;
   double exercise_ratio = 0;
-  String recording_date = '';
+  String? recording_date = '';
   double amount = 0;
-  String description = '';
-  String hmetd_trx_date1 = '';
-  String hmetd_trx_date2 = '';
-  String exercise_instrument = '';
+  String? description = '';
+  String? hmetd_trx_date1 = '';
+  String? hmetd_trx_date2 = '';
+  String? exercise_instrument = '';
 
-  String pay_date = '';
-  String split_date = '';
-  String ex_date = '';
-  String maturity_date = '';
+  String? pay_date = '';
+  String? split_date = '';
+  String? ex_date = '';
+  String? maturity_date = '';
 
   Color background_color;
   int priority_color;
   bool loaded = false;
 
-  Widget _labelValue(BuildContext context, String label, String value) {
+  Widget _labelValue(BuildContext context, String label, String? value) {
     String text = label;
     if (!StringUtils.isEmtpy(text)) {
       text = text + " = ";
@@ -3934,7 +3940,8 @@ class CorporateActionEvent {
 
   Widget getInformationWidget(BuildContext context) {
     List<Widget> list = List.empty(growable: true);
-    list.add(Text(type, style: InvestrendTheme.of(context).small_w600_compact));
+    list.add(
+        Text(type!, style: InvestrendTheme.of(context).small_w600_compact));
     if (amount != 0.0) {
       list.add(_labelValue(
           context, 'Amount', InvestrendTheme.formatNewComma(amount)));
@@ -4068,13 +4075,13 @@ class CorporateActionEvent {
       this.ex_date,
       this.maturity_date);
 
-  static Color getColor(List<CorporateActionEvent> result) {
+  static Color getColor(List<CorporateActionEvent>? result) {
     //List<CorporateActionEvent> result = List.empty(growable: true);
     int priority = -1;
     Color color = Colors.black;
     int count = result != null ? result.length : 0;
     for (int i = 0; i < count; i++) {
-      CorporateActionEvent c = result.elementAt(i);
+      CorporateActionEvent c = result!.elementAt(i);
       if (c.priority_color > priority) {
         color = c.background_color;
         priority = c.priority_color;
@@ -4083,35 +4090,36 @@ class CorporateActionEvent {
     return color;
   }
 
-  factory CorporateActionEvent.fromJson(Map<String, dynamic> parsedJson) {
-    if (parsedJson == null) {
-      return null;
-    }
+  static CorporateActionEvent? fromJson(Map<String, dynamic> parsedJson) {
+    // if (parsedJson == null) {
+    //   return null;
+    // }
 
-    String code = StringUtils.noNullString(parsedJson['code']);
-    String name = StringUtils.noNullString(parsedJson['name']);
-    String type = StringUtils.noNullString(parsedJson['type']);
-    String today_date = StringUtils.noNullString(parsedJson['today_date']);
-    String cum_date = StringUtils.noNullString(parsedJson['cum_date']);
-    String distributionDate =
+    String? code = StringUtils.noNullString(parsedJson['code']);
+    String? name = StringUtils.noNullString(parsedJson['name']);
+    String? type = StringUtils.noNullString(parsedJson['type']);
+    String? today_date = StringUtils.noNullString(parsedJson['today_date']);
+    String? cum_date = StringUtils.noNullString(parsedJson['cum_date']);
+    String? distributionDate =
         StringUtils.noNullString(parsedJson['distribution_date']);
     double proceedRatio = Utils.safeDouble(parsedJson['proceed_ratio']);
     double exerciseRatio = Utils.safeDouble(parsedJson['exercise_ratio']);
-    String recordingDate =
+    String? recordingDate =
         StringUtils.noNullString(parsedJson['recording_date']);
     double amount = Utils.safeDouble(parsedJson['amount']);
-    String description = StringUtils.noNullString(parsedJson['description']);
-    String hmetdTrxDate1 =
+    String? description = StringUtils.noNullString(parsedJson['description']);
+    String? hmetdTrxDate1 =
         StringUtils.noNullString(parsedJson['hmetd_trx_date1']);
-    String hmetdTrxDate2 =
+    String? hmetdTrxDate2 =
         StringUtils.noNullString(parsedJson['hmetd_trx_date2']);
-    String exerciseInstrument =
+    String? exerciseInstrument =
         StringUtils.noNullString(parsedJson['exercise_instrument']);
 
-    String payDate = StringUtils.noNullString(parsedJson['pay_date']);
-    String splitDate = StringUtils.noNullString(parsedJson['hmetd_trx_date1']);
-    String exDate = StringUtils.noNullString(parsedJson['ex_date']);
-    String maturityDate = StringUtils.noNullString(parsedJson['maturity_date']);
+    String? payDate = StringUtils.noNullString(parsedJson['pay_date']);
+    String? splitDate = StringUtils.noNullString(parsedJson['hmetd_trx_date1']);
+    String? exDate = StringUtils.noNullString(parsedJson['ex_date']);
+    String? maturityDate =
+        StringUtils.noNullString(parsedJson['maturity_date']);
 
     Color backgroundColor = Colors.black;
     int priorityColor = 0;
@@ -4121,8 +4129,8 @@ class CorporateActionEvent {
       backgroundColor = InvestrendTheme.redText;
       priorityColor = 2;
     } else {
-      int todayDate = Utils.safeInt(today_date.replaceAll("-", ""));
-      int cumDate = Utils.safeInt(cum_date.replaceAll("-", ""));
+      int todayDate = Utils.safeInt(today_date?.replaceAll("-", ""));
+      int cumDate = Utils.safeInt(cum_date?.replaceAll("-", ""));
 
       if (todayDate < cumDate) {
         //background_color = context.getResources().getColor(R.color.Orange);
@@ -4169,7 +4177,7 @@ class CorporateActionEvent {
     return 'CorporateActionEvent {code: $code, name: $name, type: $type, today_date: $today_date, cum_date: $cum_date, distribution_date: $distribution_date, proceed_ratio: $proceed_ratio, exercise_ratio: $exercise_ratio, recording_date: $recording_date, amount: $amount, description: $description, hmetd_trx_date1: $hmetd_trx_date1, hmetd_trx_date2: $hmetd_trx_date2, exercise_instrument: $exercise_instrument, loaded: $loaded}';
   }
 
-  void copyValueFrom(CorporateActionEvent newValue) {
+  void copyValueFrom(CorporateActionEvent? newValue) {
     if (newValue != null) {
       this.loaded = true;
 
@@ -4217,11 +4225,11 @@ class CorporateActionEvent {
 }
 
 class Remark2Mapping {
-  String key = ""; // "19_B",
-  String digit = ""; // "19",
-  String code = ""; // "B",
-  String value = ""; // "Bankruptcy filing against the company",
-  String description = ""; // ""
+  String? key = ""; // "19_B",
+  String? digit = ""; // "19",
+  String? code = ""; // "B",
+  String? value = ""; // "Bankruptcy filing against the company",
+  String? description = ""; // ""
 
   bool loaded = false;
 
@@ -4247,14 +4255,14 @@ class Remark2Mapping {
   */
 
   factory Remark2Mapping.fromJson(Map<String, dynamic> parsedJson) {
-    if (parsedJson == null) {
-      return null;
-    }
-    String key = StringUtils.noNullString(parsedJson['key']);
-    String digit = StringUtils.noNullString(parsedJson['digit']);
-    String code = StringUtils.noNullString(parsedJson['code']);
-    String value = StringUtils.noNullString(parsedJson['value']);
-    String description = StringUtils.noNullString(parsedJson['description']);
+    // if (parsedJson == null) {
+    //   return null;
+    // }
+    String? key = StringUtils.noNullString(parsedJson['key']);
+    String? digit = StringUtils.noNullString(parsedJson['digit']);
+    String? code = StringUtils.noNullString(parsedJson['code']);
+    String? value = StringUtils.noNullString(parsedJson['value']);
+    String? description = StringUtils.noNullString(parsedJson['description']);
     return Remark2Mapping(key, digit, code, value, description);
   }
 
@@ -4262,7 +4270,7 @@ class Remark2Mapping {
     return StringUtils.isEmtpy(key);
   }
 
-  void copyValueFrom(Remark2Mapping newValue) {
+  void copyValueFrom(Remark2Mapping? newValue) {
     if (newValue != null) {
       this.loaded = true;
       this.key = newValue.key;
@@ -4281,21 +4289,21 @@ class Remark2Mapping {
 }
 
 class Remark2Stock {
-  String code = ''; //" "ABBA",
-  String special_notation = ''; // "-E-L-----",
-  String key_19 = ''; // "19_-",
-  String key_20 = ''; // "20_E",
-  String key_21 = ''; // "21_-",
-  String key_22 = ''; // "22_L",
-  String key_23 = ''; // "23_-",
-  String key_24 = ''; // "24_-",
-  String key_25 = ''; // "25_-",
-  String key_26 = ''; // "26_-",
-  String key_27 = ''; // "27_-"
+  String? code = ''; //" "ABBA",
+  String? special_notation = ''; // "-E-L-----",
+  String? key_19 = ''; // "19_-",
+  String? key_20 = ''; // "20_E",
+  String? key_21 = ''; // "21_-",
+  String? key_22 = ''; // "22_L",
+  String? key_23 = ''; // "23_-",
+  String? key_24 = ''; // "24_-",
+  String? key_25 = ''; // "25_-",
+  String? key_26 = ''; // "26_-",
+  String? key_27 = ''; // "27_-"
 
-  String key_28 = ''; // "28_-",
-  String key_29 = ''; // "29_-",
-  String key_30 = ''; // "30_-"
+  String? key_28 = ''; // "28_-",
+  String? key_29 = ''; // "29_-",
+  String? key_30 = ''; // "30_-"
 
   bool loaded = false;
 
@@ -4354,37 +4362,38 @@ class Remark2Stock {
     }
   */
 
-  factory Remark2Stock.fromJson(Map<String, dynamic> parsedJson) {
+  factory Remark2Stock.fromJson(Map<String, dynamic>? parsedJson) {
     if (parsedJson == null) {
-      return null;
+      return Remark2Stock(null, null, null, null, null, null, null, null, null,
+          null, null, null, null, null);
     }
 
-    String code = StringUtils.noNullString(parsedJson['code']);
-    String specialNotation =
+    String? code = StringUtils.noNullString(parsedJson['code']);
+    String? specialNotation =
         StringUtils.noNullString(parsedJson['special_notation']);
-    String key_19 = StringUtils.noNullString(parsedJson['key_19']);
-    String key_20 = StringUtils.noNullString(parsedJson['key_20']);
-    String key_21 = StringUtils.noNullString(parsedJson['key_21']);
-    String key_22 = StringUtils.noNullString(parsedJson['key_22']);
-    String key_23 = StringUtils.noNullString(parsedJson['key_23']);
-    String key_24 = StringUtils.noNullString(parsedJson['key_24']);
-    String key_25 = StringUtils.noNullString(parsedJson['key_25']);
-    String key_26 = StringUtils.noNullString(parsedJson['key_26']);
-    String key_27 = StringUtils.noNullString(parsedJson['key_27']);
+    String? key_19 = StringUtils.noNullString(parsedJson['key_19']);
+    String? key_20 = StringUtils.noNullString(parsedJson['key_20']);
+    String? key_21 = StringUtils.noNullString(parsedJson['key_21']);
+    String? key_22 = StringUtils.noNullString(parsedJson['key_22']);
+    String? key_23 = StringUtils.noNullString(parsedJson['key_23']);
+    String? key_24 = StringUtils.noNullString(parsedJson['key_24']);
+    String? key_25 = StringUtils.noNullString(parsedJson['key_25']);
+    String? key_26 = StringUtils.noNullString(parsedJson['key_26']);
+    String? key_27 = StringUtils.noNullString(parsedJson['key_27']);
 
-    String key_28 = StringUtils.noNullString(parsedJson['key_28']);
-    String key_29 = StringUtils.noNullString(parsedJson['key_29']);
-    String key_30 = StringUtils.noNullString(parsedJson['key_30']);
+    String? key_28 = StringUtils.noNullString(parsedJson['key_28']);
+    String? key_29 = StringUtils.noNullString(parsedJson['key_29']);
+    String? key_30 = StringUtils.noNullString(parsedJson['key_30']);
 
     return Remark2Stock(code, specialNotation, key_19, key_20, key_21, key_22,
         key_23, key_24, key_25, key_26, key_27, key_28, key_29, key_30);
   }
 
   bool isEmpty() {
-    return StringUtils.isEmtpy(code);
+    return StringUtils.isEmtpy(code!);
   }
 
-  void copyValueFrom(Remark2Stock newValue) {
+  void copyValueFrom(Remark2Stock? newValue) {
     if (newValue != null) {
       this.loaded = true;
       this.code = newValue.code;
@@ -4424,13 +4433,13 @@ class Remark2Stock {
 class HelpData {
   bool loaded = false;
 
-  String date = "";
-  String time = "";
-  String md5_help_contents = "";
-  String md5_help_menus = "";
+  String? date = "";
+  String? time = "";
+  String? md5_help_contents = "";
+  String? md5_help_menus = "";
 
-  List<HelpMenu> menus = List.empty(growable: true);
-  List<HelpContent> contents = List.empty(growable: true);
+  List<HelpMenu>? menus = List.empty(growable: true);
+  List<HelpContent>? contents = List.empty(growable: true);
 
   Future<bool> load() async {
     final pref = await SharedPreferences.getInstance();
@@ -4444,14 +4453,14 @@ class HelpData {
     String contentsString = pref.getString('contentsString') ?? '';
 
     print('HelpData.load menusString : $menusString');
-    this.menus.clear();
-    Serializeable.unserializeFromString(menusString, this.menus);
-    print('HelpData.load Got menus : ' + this.menus.length.toString());
+    this.menus?.clear();
+    Serializeable.unserializeFromString(menusString, this.menus!);
+    print('HelpData.load Got menus : ' + this.menus!.length.toString());
 
     print('HelpData.load contentsString : $contentsString');
-    this.contents.clear();
-    Serializeable.unserializeFromString(contentsString, this.contents);
-    print('HelpData.load Got contents : ' + this.contents.length.toString());
+    this.contents?.clear();
+    Serializeable.unserializeFromString(contentsString, this.contents!);
+    print('HelpData.load Got contents : ' + this.contents!.length.toString());
 
     print('HelpData.load updated : $updated   date : $date   time : $time'
         '  md5_help_contents : $md5_help_contents   md5_help_menus : $md5_help_menus'
@@ -4469,11 +4478,11 @@ class HelpData {
 
     bool savedUpdated = await prefs.setString('token_updated', updated);
     bool savedMD5Content =
-        await prefs.setString('md5_help_contents', md5_help_contents);
+        await prefs.setString('md5_help_contents', md5_help_contents!);
     bool savedMD5Menus =
-        await prefs.setString('md5_help_menus', md5_help_menus);
-    bool savedDate = await prefs.setString('date', date);
-    bool savedTime = await prefs.setString('time', time);
+        await prefs.setString('md5_help_menus', md5_help_menus!);
+    bool savedDate = await prefs.setString('date', date!);
+    bool savedTime = await prefs.setString('time', time!);
     bool savedMenuString = await prefs.setString('menusString', menusString);
     bool savedContentString =
         await prefs.setString('contentsString', contentsString);
@@ -4492,28 +4501,28 @@ class HelpData {
     return saved;
   }
 
-  void updateMenus(String newMd5HelpMenus, List<HelpMenu> newMenus) {
-    this.menus.clear();
-    this.menus.addAll(newMenus);
-    this.md5_help_menus = newMd5HelpMenus;
+  void updateMenus(String? newMd5HelpMenus, List<HelpMenu>? newMenus) {
+    this.menus?.clear();
+    this.menus?.addAll(newMenus!);
+    this.md5_help_menus = newMd5HelpMenus!;
   }
 
   void updateContents(
-      String newMd5HelpContents, List<HelpContent> newContents) {
-    this.contents.clear();
-    this.contents.addAll(newContents);
-    this.md5_help_contents = newMd5HelpContents;
+      String? newMd5HelpContents, List<HelpContent>? newContents) {
+    this.contents?.clear();
+    this.contents?.addAll(newContents!);
+    this.md5_help_contents = newMd5HelpContents!;
   }
 
-  int countContents() {
-    return contents != null ? contents.length : 0;
+  int? countContents() {
+    return contents != null ? contents?.length : 0;
   }
 
-  int countMenus() {
-    return menus != null ? menus.length : 0;
+  int? countMenus() {
+    return menus != null ? menus?.length : 0;
   }
 
-  void putMenu(HelpMenu menu) {
+  void putMenu(HelpMenu? menu) {
     // final existing =
     // menus.firstWhere((element) =>
     // element.id == menu.id,
@@ -4521,14 +4530,14 @@ class HelpData {
     //       return null;
     //     });
 
-    final index = menus.indexWhere((element) => element.id == menu.id);
-    if (index >= 0) {
-      menus.removeAt(index);
+    final index = menus?.indexWhere((element) => element.id == menu?.id);
+    if (index! >= 0) {
+      menus?.removeAt(index);
     }
 
     //if (!menus.contains(menu)) {
     if (menu != null) {
-      menus.add(menu);
+      menus?.add(menu);
       print("putContent added : " + menu.toString());
     }
     /*
@@ -4553,7 +4562,7 @@ class HelpData {
         countContents().toString();
   }
 
-  void putContent(HelpContent content) {
+  void putContent(HelpContent? content) {
     // final existing =
     // contents.firstWhere((element) =>
     // element.id == content.id,
@@ -4561,29 +4570,29 @@ class HelpData {
     //       return null;
     //     });
 
-    final index = contents.indexWhere((element) => element.id == content.id);
-    if (index >= 0) {
-      contents.removeAt(index);
+    final index = contents?.indexWhere((element) => element.id == content?.id);
+    if (index! >= 0) {
+      contents?.removeAt(index);
     }
 
     //if (!contents.contains(content)) {
     if (content != null) {
-      contents.add(content);
+      contents?.add(content);
       print("putContent added : " + content.toString());
     }
   }
 
-  bool isEmpty() {
-    if (menus == null || menus.isEmpty) {
+  bool? isEmpty() {
+    if (menus == null || menus!.isEmpty) {
       return true;
     }
-    if (contents == null || contents.isEmpty) {
+    if (contents == null || contents!.isEmpty) {
       return true;
     }
     return false;
   }
 
-  void copyValueFrom(HelpData newValue,
+  void copyValueFrom(HelpData? newValue,
       {bool dontClearExistingIfNull = false}) {
     if (newValue != null) {
       this.loaded = true;
@@ -4591,13 +4600,13 @@ class HelpData {
       this.time = newValue.time;
       this.md5_help_contents = newValue.md5_help_contents;
       this.md5_help_menus = newValue.md5_help_menus;
-      this.menus.clear();
-      this.contents.clear();
+      this.menus?.clear();
+      this.contents?.clear();
       if (newValue.menus != null) {
-        this.menus.addAll(newValue.menus);
+        this.menus?.addAll(newValue.menus!);
       }
       if (newValue.contents != null) {
-        this.contents.addAll(newValue.contents);
+        this.contents?.addAll(newValue.contents!);
       }
     } else {
       if (!dontClearExistingIfNull) {
@@ -4605,21 +4614,21 @@ class HelpData {
         this.time = "";
         this.md5_help_contents = "";
         this.md5_help_menus = "";
-        this.menus.clear();
-        this.contents.clear();
+        this.menus?.clear();
+        this.contents?.clear();
       }
     }
   }
 }
 
 class HelpMenu extends Serializeable {
-  String id = "";
+  String? id = "";
 
-  String menu_id = "";
+  String? menu_id = "";
 
-  String menu_en = "";
+  String? menu_en = "";
 
-  String updated_at = "";
+  String? updated_at = "";
 
   bool loaded = false;
 
@@ -4627,9 +4636,9 @@ class HelpMenu extends Serializeable {
 
   String getMenu({String language = 'id'}) {
     if (StringUtils.equalsIgnoreCase(language, 'id')) {
-      return menu_id;
+      return menu_id!;
     } else {
-      return menu_en;
+      return menu_en!;
     }
   }
 
@@ -4648,21 +4657,21 @@ class HelpMenu extends Serializeable {
   */
 
   factory HelpMenu.fromJson(Map<String, dynamic> parsedJson) {
-    if (parsedJson == null) {
-      return null;
-    }
-    String id = StringUtils.noNullString(parsedJson['id']);
-    String menuId = StringUtils.noNullString(parsedJson['menu_id']);
-    String menuEn = StringUtils.noNullString(parsedJson['menu_en']);
-    String updatedAt = StringUtils.noNullString(parsedJson['updated_at']);
+    // if (parsedJson == null) {
+    //   return null;
+    // }
+    String? id = StringUtils.noNullString(parsedJson['id']);
+    String? menuId = StringUtils.noNullString(parsedJson['menu_id']);
+    String? menuEn = StringUtils.noNullString(parsedJson['menu_en']);
+    String? updatedAt = StringUtils.noNullString(parsedJson['updated_at']);
     return HelpMenu(id, menuId, menuEn, updatedAt);
   }
 
   bool isEmpty() {
-    return StringUtils.isEmtpy(id);
+    return StringUtils.isEmtpy(id!);
   }
 
-  void copyValueFrom(HelpMenu newValue) {
+  void copyValueFrom(HelpMenu? newValue) {
     if (newValue != null) {
       this.loaded = true;
       this.id = newValue.id;
@@ -4679,15 +4688,15 @@ class HelpMenu extends Serializeable {
 
   @override
   String asPlain() {
-    String plain = Serializeable.safePlain(id);
-    plain += '|' + Serializeable.safePlain(menu_id);
-    plain += '|' + Serializeable.safePlain(menu_en);
-    plain += '|' + Serializeable.safePlain(updated_at);
+    String plain = Serializeable.safePlain(id!);
+    plain += '|' + Serializeable.safePlain(menu_id!);
+    plain += '|' + Serializeable.safePlain(menu_en!);
+    plain += '|' + Serializeable.safePlain(updated_at!);
     return plain;
   }
 
-  factory HelpMenu.fromPlain(String data) {
-    List<String> datas = data.split('|');
+  factory HelpMenu.fromPlain(String? data) {
+    List<String>? datas = data?.split('|');
     if (datas != null && datas.isNotEmpty && datas.length >= 4) {
       String id = Serializeable.unsafePlain(
           StringUtils.noNullString(datas.elementAt(0)));
@@ -4700,7 +4709,7 @@ class HelpMenu extends Serializeable {
 
       return HelpMenu(id, menuId, menuEn, updatedAt);
     }
-    return null;
+    return HelpMenu(null, null, null, null);
   }
 
   @override
@@ -4710,38 +4719,38 @@ class HelpMenu extends Serializeable {
 }
 
 class HelpContent extends Serializeable {
-  String id_menu = "";
+  String? id_menu = "";
 
-  String id = "";
+  String? id = "";
 
-  String subtile_id = "";
+  String? subtile_id = "";
 
-  String subtile_en = "";
+  String? subtile_en = "";
 
-  String content_id = "";
+  String? content_id = "";
 
-  String content_en = "";
+  String? content_en = "";
 
-  String updated_at = "";
+  String? updated_at = "";
 
-  bool loaded = false;
+  bool? loaded = false;
 
   HelpContent(this.id_menu, this.id, this.subtile_id, this.subtile_en,
       this.content_id, this.content_en, this.updated_at);
 
   String getSubtitle({String language = 'id'}) {
     if (StringUtils.equalsIgnoreCase(language, 'id')) {
-      return subtile_id;
+      return subtile_id!;
     } else {
-      return subtile_en;
+      return subtile_en!;
     }
   }
 
   String getContent({String language = 'id'}) {
     if (StringUtils.equalsIgnoreCase(language, 'id')) {
-      return content_id;
+      return content_id!;
     } else {
-      return content_en;
+      return content_en!;
     }
   }
 
@@ -4763,26 +4772,26 @@ class HelpContent extends Serializeable {
     },
   */
 
-  factory HelpContent.fromJson(Map<String, dynamic> parsedJson) {
+  factory HelpContent.fromJson(Map<String, dynamic>? parsedJson) {
     if (parsedJson == null) {
-      return null;
+      return HelpContent(null, null, null, null, null, null, null);
     }
-    String idMenu = StringUtils.noNullString(parsedJson['id_menu']);
-    String id = StringUtils.noNullString(parsedJson['id']);
-    String subtileId = StringUtils.noNullString(parsedJson['subtile_id']);
-    String subtileEn = StringUtils.noNullString(parsedJson['subtile_en']);
-    String contentId = StringUtils.noNullString(parsedJson['content_id']);
-    String contentEn = StringUtils.noNullString(parsedJson['content_en']);
-    String updatedAt = StringUtils.noNullString(parsedJson['updated_at']);
+    String? idMenu = StringUtils.noNullString(parsedJson['id_menu']);
+    String? id = StringUtils.noNullString(parsedJson['id']);
+    String? subtileId = StringUtils.noNullString(parsedJson['subtile_id']);
+    String? subtileEn = StringUtils.noNullString(parsedJson['subtile_en']);
+    String? contentId = StringUtils.noNullString(parsedJson['content_id']);
+    String? contentEn = StringUtils.noNullString(parsedJson['content_en']);
+    String? updatedAt = StringUtils.noNullString(parsedJson['updated_at']);
     return HelpContent(
         idMenu, id, subtileId, subtileEn, contentId, contentEn, updatedAt);
   }
 
   bool isEmpty() {
-    return StringUtils.isEmtpy(id);
+    return StringUtils.isEmtpy(id!);
   }
 
-  void copyValueFrom(HelpContent newValue) {
+  void copyValueFrom(HelpContent? newValue) {
     if (newValue != null) {
       this.loaded = true;
       this.id_menu = newValue.id_menu;
@@ -4805,18 +4814,18 @@ class HelpContent extends Serializeable {
 
   @override
   String asPlain() {
-    String plain = Serializeable.safePlain(id_menu);
-    plain += '|' + Serializeable.safePlain(id);
-    plain += '|' + Serializeable.safePlain(subtile_id);
-    plain += '|' + Serializeable.safePlain(subtile_en);
-    plain += '|' + Serializeable.safePlain(content_id);
-    plain += '|' + Serializeable.safePlain(content_en);
-    plain += '|' + Serializeable.safePlain(updated_at);
+    String plain = Serializeable.safePlain(id_menu!);
+    plain += '|' + Serializeable.safePlain(id!);
+    plain += '|' + Serializeable.safePlain(subtile_id!);
+    plain += '|' + Serializeable.safePlain(subtile_en!);
+    plain += '|' + Serializeable.safePlain(content_id!);
+    plain += '|' + Serializeable.safePlain(content_en!);
+    plain += '|' + Serializeable.safePlain(updated_at!);
     return plain;
   }
 
-  factory HelpContent.fromPlain(String data) {
-    List<String> datas = data.split('|');
+  factory HelpContent.fromPlain(String? data) {
+    List<String>? datas = data?.split('|');
     if (datas != null && datas.isNotEmpty && datas.length >= 4) {
       String idMenu = Serializeable.unsafePlain(
           StringUtils.noNullString(datas.elementAt(0)));
@@ -4836,7 +4845,7 @@ class HelpContent extends Serializeable {
       return HelpContent(
           idMenu, id, subtileId, subtileEn, contentId, contentEn, updatedAt);
     }
-    return null;
+    return HelpContent(null, null, null, null, null, null, null);
   }
 
   @override
@@ -4853,19 +4862,19 @@ class Mutasi {
   String name = '';
   String bank = '';
   */
-  String flag;
-  String fundtype;
-  String accountcode;
-  double amount;
-  String transferno;
-  String bank;
-  String account;
-  String date;
-  String accountname;
-  String note;
+  String? flag;
+  String? fundtype;
+  String? accountcode;
+  double? amount;
+  String? transferno;
+  String? bank;
+  String? account;
+  String? date;
+  String? accountname;
+  String? note;
 
-  String monthYear = '';
-  String dateMonth = '';
+  String? monthYear = '';
+  String? dateMonth = '';
 
   /*
   {
@@ -4882,8 +4891,8 @@ class Mutasi {
   },
   */
 
-  String info_trx() {
-    return fundtype;
+  String? info_trx() {
+    return fundtype!;
     /*
     List<String> infos = [note, fundtype, transferno, account];
     String info = '';
@@ -4927,9 +4936,10 @@ class Mutasi {
   static DateFormat _formatDisplayDateMonth = DateFormat('dd/MM');
   static DateFormat _formatDisplayMonthYear = DateFormat('MMMM yyyy');
 
-  factory Mutasi.fromJson(Map<String, dynamic> parsedJson) {
+  factory Mutasi.fromJson(Map<String, dynamic>? parsedJson) {
     if (parsedJson == null) {
-      return null;
+      return Mutasi(null, null, null, null, null, null, null, null, null, null,
+          null, null);
     }
     /*
     String date = StringUtils.noNullString(parsedJson['date']);
@@ -4938,18 +4948,18 @@ class Mutasi {
     String name = StringUtils.noNullString(parsedJson['name']);
     String bank = StringUtils.noNullString(parsedJson['bank']);
     */
-    String flag = StringUtils.noNullString(parsedJson['flag']);
-    String fundtype = StringUtils.noNullString(parsedJson['fundtype']);
-    String accountcode = StringUtils.noNullString(parsedJson['accountcode']);
+    String? flag = StringUtils.noNullString(parsedJson['flag']);
+    String? fundtype = StringUtils.noNullString(parsedJson['fundtype']);
+    String? accountcode = StringUtils.noNullString(parsedJson['accountcode']);
     double amount = Utils.safeDouble(parsedJson['amount']);
-    String transferno = StringUtils.noNullString(parsedJson['transferno']);
-    String bank = StringUtils.noNullString(parsedJson['bank']);
-    String account = StringUtils.noNullString(parsedJson['account']);
-    String date = StringUtils.noNullString(parsedJson['date']);
-    String accountname = StringUtils.noNullString(parsedJson['accountname']);
-    String note = StringUtils.noNullString(parsedJson['note']);
+    String? transferno = StringUtils.noNullString(parsedJson['transferno']);
+    String? bank = StringUtils.noNullString(parsedJson['bank']);
+    String? account = StringUtils.noNullString(parsedJson['account']);
+    String? date = StringUtils.noNullString(parsedJson['date']);
+    String? accountname = StringUtils.noNullString(parsedJson['accountname']);
+    String? note = StringUtils.noNullString(parsedJson['note']);
 
-    DateTime dataDate = _formatData.parse(date, false);
+    DateTime dataDate = _formatData.parse(date!, false);
 
     String monthYear = _formatDisplayMonthYear.format(dataDate);
     String dateMonth = _formatDisplayDateMonth.format(dataDate);
@@ -4962,68 +4972,68 @@ class Mutasi {
 }
 
 class ResultMutasi {
-  List<Mutasi> datas = List.empty(growable: true);
+  List<Mutasi>? datas = List.empty(growable: true);
   String month = '';
   bool loaded = false;
 
-  void copyValueFrom(ResultMutasi newValue) {
+  void copyValueFrom(ResultMutasi? newValue) {
     if (newValue != null) {
       this.loaded = true;
       this.month = newValue.month;
-      this.datas.clear();
+      this.datas!.clear();
       if (newValue.datas != null) {
-        this.datas.addAll(newValue.datas);
+        this.datas!.addAll(newValue.datas!);
       }
     } else {
       this.month = '';
-      this.datas.clear();
+      this.datas!.clear();
     }
   }
 
   bool isEmpty() {
-    return this.datas != null ? this.datas.isEmpty : true;
+    return this.datas != null ? this.datas!.isEmpty : true;
   }
 
   int count() {
-    return this.datas != null ? this.datas.length : 0;
+    return this.datas != null ? this.datas!.length : 0;
   }
 }
 
 class Profile {
-  String bio = '';
-  String email = '';
-  String handphone = '';
-  String picture = '';
-  String realname = '';
-  String referral = '';
-  String username = '';
-  String ranking = '';
+  String? bio = '';
+  String? email = '';
+  String? handphone = '';
+  String? picture = '';
+  String? realname = '';
+  String? referral = '';
+  String? username = '';
+  String? ranking = '';
   bool loaded = false;
 
   Profile(this.bio, this.email, this.handphone, this.picture, this.realname,
       this.referral, this.username, this.ranking);
 
-  factory Profile.fromJson(Map<String, dynamic> parsedJson) {
+  factory Profile.fromJson(Map<String, dynamic>? parsedJson) {
     if (parsedJson == null) {
-      return null;
+      return Profile(null, null, null, null, null, null, null, null);
     }
-    String bio = StringUtils.noNullString(parsedJson['bio']);
-    String email = StringUtils.noNullString(parsedJson['email']);
-    String handphone = StringUtils.noNullString(parsedJson['handphone']);
-    String picture = StringUtils.noNullString(parsedJson['picture']);
-    String realname = StringUtils.noNullString(parsedJson['realname']);
-    String referral = StringUtils.noNullString(parsedJson['referral']);
-    String username = StringUtils.noNullString(parsedJson['username']);
-    String ranking = StringUtils.noNullString(parsedJson['ranking']);
+    String? bio = StringUtils.noNullString(parsedJson['bio']);
+    String? email = StringUtils.noNullString(parsedJson['email']);
+    String? handphone = StringUtils.noNullString(parsedJson['handphone']);
+    String? picture = StringUtils.noNullString(parsedJson['picture']);
+    String? realname = StringUtils.noNullString(parsedJson['realname']);
+    String? referral = StringUtils.noNullString(parsedJson['referral']);
+    String? username = StringUtils.noNullString(parsedJson['username']);
+    String? ranking = StringUtils.noNullString(parsedJson['ranking']);
     return Profile(
         bio, email, handphone, picture, realname, referral, username, ranking);
   }
 
   bool isEmpty() {
-    return StringUtils.isEmtpy(username);
+    return StringUtils.isEmtpy(username!);
   }
 
-  void copyValueFrom(Profile newValue) {
+  void copyValueFrom(Profile? newValue) {
     if (newValue != null) {
       this.loaded = true;
       this.bio = newValue.bio;
@@ -5048,22 +5058,22 @@ class Profile {
 }
 
 class ContentEIPO {
-  String code = '';
-  String name = '';
-  String sector = '';
-  String sub_sector = '';
-  String offering_date_start = '';
-  String offering_date_end = '';
-  int offering_price = 0;
-  int offering_lot = 0;
-  double offering_lot_percentage = 0.0;
-  String book_building_date_start = '';
-  String book_building_date_end = '';
-  int book_building_price_start = 0;
-  int book_building_price_end = 0;
-  String allotment_date = '';
-  String distribution_date = '';
-  String listing_date = '';
+  String? code = '';
+  String? name = '';
+  String? sector = '';
+  String? sub_sector = '';
+  String? offering_date_start = '';
+  String? offering_date_end = '';
+  int? offering_price = 0;
+  int? offering_lot = 0;
+  double? offering_lot_percentage = 0.0;
+  String? book_building_date_start = '';
+  String? book_building_date_end = '';
+  int? book_building_price_start = 0;
+  int? book_building_price_end = 0;
+  String? allotment_date = '';
+  String? distribution_date = '';
+  String? listing_date = '';
 
   // String prospectus_file_url_1 = '';
   // String prospectus_file_url_2 = '';
@@ -5075,9 +5085,9 @@ class ContentEIPO {
   // String additional_file_url_3 = '';
   // String additional_file_url_4 = '';
   // String additional_file_url_5 = '';
-  String company_description = '';
-  String company_address = '';
-  String company_website = '';
+  String? company_description = '';
+  String? company_address = '';
+  String? company_website = '';
 
   // String participant_admin_1 = '';
   // String participant_admin_2 = '';
@@ -5089,30 +5099,30 @@ class ContentEIPO {
   // String underwriter_3 = '';
   // String underwriter_4 = '';
   // String underwriter_5 = '';
-  String action_register_eipo = '';
-  String action_enter_eipo = '';
+  String? action_register_eipo = '';
+  String? action_enter_eipo = '';
 
-  List<String> listProspectus = List.empty(growable: true);
-  List<String> listAdditional = List.empty(growable: true);
-  List<String> listParticipantAdmin = List.empty(growable: true);
-  List<String> listUnderwriter = List.empty(growable: true);
-  String company_icon = '';
-  String company_icon_large = '';
+  List<String>? listProspectus = List.empty(growable: true);
+  List<String>? listAdditional = List.empty(growable: true);
+  List<String>? listParticipantAdmin = List.empty(growable: true);
+  List<String>? listUnderwriter = List.empty(growable: true);
+  String? company_icon = '';
+  String? company_icon_large = '';
 
   int countProspectus() {
-    return listProspectus != null ? listProspectus.length : 0;
+    return listProspectus != null ? listProspectus!.length : 0;
   }
 
   int countAdditional() {
-    return listAdditional != null ? listAdditional.length : 0;
+    return listAdditional != null ? listAdditional!.length : 0;
   }
 
   int countParticipantAdmin() {
-    return listParticipantAdmin != null ? listParticipantAdmin.length : 0;
+    return listParticipantAdmin != null ? listParticipantAdmin!.length : 0;
   }
 
   int countUnderwriter() {
-    return listUnderwriter != null ? listUnderwriter.length : 0;
+    return listUnderwriter != null ? listUnderwriter!.length : 0;
   }
 
   /*
@@ -5213,37 +5223,64 @@ class ContentEIPO {
       this.company_icon,
       this.company_icon_large);
 
-  factory ContentEIPO.fromJson(Map<String, dynamic> parsedJson) {
+  factory ContentEIPO.fromJson(Map<String, dynamic>? parsedJson) {
     if (parsedJson == null) {
-      return null;
+      return ContentEIPO(
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null);
     }
-    String bio = StringUtils.noNullString(parsedJson['bio']);
+    String? bio = StringUtils.noNullString(parsedJson['bio']);
 
-    String code = StringUtils.noNullString(parsedJson['code']);
-    String name = StringUtils.noNullString(parsedJson['name']);
-    String sector = StringUtils.noNullString(parsedJson['sector']);
-    String subSector = StringUtils.noNullString(parsedJson['sub_sector']);
-    String offeringDateStart =
+    String? code = StringUtils.noNullString(parsedJson['code']);
+    String? name = StringUtils.noNullString(parsedJson['name']);
+    String? sector = StringUtils.noNullString(parsedJson['sector']);
+    String? subSector = StringUtils.noNullString(parsedJson['sub_sector']);
+    String? offeringDateStart =
         StringUtils.noNullString(parsedJson['offering_date_start']);
-    String offeringDateEnd =
+    String? offeringDateEnd =
         StringUtils.noNullString(parsedJson['offering_date_end']);
     int offeringPrice = Utils.safeInt(parsedJson['offering_price']);
     int offeringLot = Utils.safeInt(parsedJson['offering_lot']);
     double offeringLotPercentage =
         Utils.safeDouble(parsedJson['offering_lot_percentage']);
-    String bookBuildingDateStart =
+    String? bookBuildingDateStart =
         StringUtils.noNullString(parsedJson['book_building_date_start']);
-    String bookBuildingDateEnd =
+    String? bookBuildingDateEnd =
         StringUtils.noNullString(parsedJson['book_building_date_end']);
     int bookBuildingPriceStart =
         Utils.safeInt(parsedJson['book_building_price_start']);
     int bookBuildingPriceEnd =
         Utils.safeInt(parsedJson['book_building_price_end']);
-    String allotmentDate =
+    String? allotmentDate =
         StringUtils.noNullString(parsedJson['allotment_date']);
-    String distributionDate =
+    String? distributionDate =
         StringUtils.noNullString(parsedJson['distribution_date']);
-    String listingDate = StringUtils.noNullString(parsedJson['listing_date']);
+    String? listingDate = StringUtils.noNullString(parsedJson['listing_date']);
     // String prospectus_file_url_1 = StringUtils.noNullString(parsedJson['prospectus_file_url_1']);
     // String prospectus_file_url_2 = StringUtils.noNullString(parsedJson['prospectus_file_url_2']);
     // String prospectus_file_url_3 = StringUtils.noNullString(parsedJson['prospectus_file_url_3']);
@@ -5254,11 +5291,11 @@ class ContentEIPO {
     // String additional_file_url_3 = StringUtils.noNullString(parsedJson['additional_file_url_3']);
     // String additional_file_url_4 = StringUtils.noNullString(parsedJson['additional_file_url_4']);
     // String additional_file_url_5 = StringUtils.noNullString(parsedJson['additional_file_url_5']);
-    String companyDescription =
+    String? companyDescription =
         StringUtils.noNullString(parsedJson['company_description']);
-    String companyAddress =
+    String? companyAddress =
         StringUtils.noNullString(parsedJson['company_address']);
-    String companyWebsite =
+    String? companyWebsite =
         StringUtils.noNullString(parsedJson['company_website']);
     // String participant_admin_1 = StringUtils.noNullString(parsedJson['participant_admin_1']);
     // String participant_admin_2 = StringUtils.noNullString(parsedJson['participant_admin_2']);
@@ -5270,13 +5307,13 @@ class ContentEIPO {
     // String underwriter_3 = StringUtils.noNullString(parsedJson['underwriter_3']);
     // String underwriter_4 = StringUtils.noNullString(parsedJson['underwriter_4']);
     // String underwriter_5 = StringUtils.noNullString(parsedJson['underwriter_5']);
-    String actionRegisterEipo =
+    String? actionRegisterEipo =
         StringUtils.noNullString(parsedJson['action_register_eipo']);
-    String actionEnterEipo =
+    String? actionEnterEipo =
         StringUtils.noNullString(parsedJson['action_enter_eipo']);
 
-    String companyIcon = StringUtils.noNullString(parsedJson['company_icon']);
-    String companyIconLarge =
+    String? companyIcon = StringUtils.noNullString(parsedJson['company_icon']);
+    String? companyIconLarge =
         StringUtils.noNullString(parsedJson['company_icon_large']);
 
     List<String> listProspectus = List.empty(growable: true);
@@ -5285,26 +5322,26 @@ class ContentEIPO {
     List<String> listUnderwriter = List.empty(growable: true);
 
     for (int i = 1; i < 6; i++) {
-      String prospectusFileUrl =
+      String? prospectusFileUrl =
           StringUtils.noNullString(parsedJson['prospectus_file_url_$i']);
-      String additionalFileUrl =
+      String? additionalFileUrl =
           StringUtils.noNullString(parsedJson['additional_file_url_$i']);
-      String participantAdmin =
+      String? participantAdmin =
           StringUtils.noNullString(parsedJson['participant_admin_$i']);
-      String underwriter =
+      String? underwriter =
           StringUtils.noNullString(parsedJson['underwriter_$i']);
 
       if (!StringUtils.isEmtpy(prospectusFileUrl)) {
-        listProspectus.add(prospectusFileUrl);
+        listProspectus.add(prospectusFileUrl!);
       }
       if (!StringUtils.isEmtpy(additionalFileUrl)) {
-        listAdditional.add(additionalFileUrl);
+        listAdditional.add(additionalFileUrl!);
       }
       if (!StringUtils.isEmtpy(participantAdmin)) {
-        listParticipantAdmin.add(participantAdmin);
+        listParticipantAdmin.add(participantAdmin!);
       }
       if (!StringUtils.isEmtpy(underwriter)) {
-        listUnderwriter.add(underwriter);
+        listUnderwriter.add(underwriter!);
       }
     }
 
@@ -5339,10 +5376,10 @@ class ContentEIPO {
   }
 
   bool isEmpty() {
-    return StringUtils.isEmtpy(code);
+    return StringUtils.isEmtpy(code!);
   }
 
-  void copyValueFrom(ContentEIPO newValue) {
+  void copyValueFrom(ContentEIPO? newValue) {
     if (newValue != null) {
       this.loaded = true;
       this.code = newValue.code;
@@ -5387,21 +5424,21 @@ class ContentEIPO {
       this.action_register_eipo = newValue.action_register_eipo;
       this.action_enter_eipo = newValue.action_enter_eipo;
 
-      this.listProspectus.clear();
+      this.listProspectus?.clear();
       if (newValue.listProspectus != null) {
-        this.listProspectus.addAll(newValue.listProspectus);
+        this.listProspectus?.addAll(newValue.listProspectus!);
       }
-      this.listAdditional.clear();
+      this.listAdditional?.clear();
       if (newValue.listAdditional != null) {
-        this.listAdditional.addAll(newValue.listAdditional);
+        this.listAdditional?.addAll(newValue.listAdditional!);
       }
-      this.listParticipantAdmin.clear();
+      this.listParticipantAdmin?.clear();
       if (newValue.listParticipantAdmin != null) {
-        this.listParticipantAdmin.addAll(newValue.listParticipantAdmin);
+        this.listParticipantAdmin?.addAll(newValue.listParticipantAdmin!);
       }
-      this.listUnderwriter.clear();
+      this.listUnderwriter?.clear();
       if (newValue.listUnderwriter != null) {
-        this.listUnderwriter.addAll(newValue.listUnderwriter);
+        this.listUnderwriter?.addAll(newValue.listUnderwriter!);
       }
       this.company_icon = newValue.company_icon;
       this.company_icon_large = newValue.company_icon_large;
@@ -5447,10 +5484,10 @@ class ContentEIPO {
       // this.underwriter_5 = '';
       this.action_register_eipo = '';
       this.action_enter_eipo = '';
-      this.listProspectus.clear();
-      this.listAdditional.clear();
-      this.listParticipantAdmin.clear();
-      this.listUnderwriter.clear();
+      this.listProspectus?.clear();
+      this.listAdditional?.clear();
+      this.listParticipantAdmin?.clear();
+      this.listUnderwriter?.clear();
       this.company_icon = '';
       this.company_icon_large = '';
     }
@@ -5493,10 +5530,10 @@ class ContentEIPO {
 }
 
 class ListEIPO {
-  String code = '';
-  String name = '';
-  String offering_date_end = '';
-  String company_icon = '';
+  String? code = '';
+  String? name = '';
+  String? offering_date_end = '';
+  String? company_icon = '';
 
   /*
   {
@@ -5512,23 +5549,23 @@ class ListEIPO {
 
   ListEIPO(this.code, this.name, this.offering_date_end, this.company_icon);
 
-  factory ListEIPO.fromJson(Map<String, dynamic> parsedJson) {
+  factory ListEIPO.fromJson(Map<String, dynamic>? parsedJson) {
     if (parsedJson == null) {
-      return null;
+      return ListEIPO(null, null, null, null);
     }
-    String code = StringUtils.noNullString(parsedJson['code']);
-    String name = StringUtils.noNullString(parsedJson['name']);
-    String offeringDateEnd =
+    String? code = StringUtils.noNullString(parsedJson['code']);
+    String? name = StringUtils.noNullString(parsedJson['name']);
+    String? offeringDateEnd =
         StringUtils.noNullString(parsedJson['offering_date_end']);
-    String companyIcon = StringUtils.noNullString(parsedJson['company_icon']);
+    String? companyIcon = StringUtils.noNullString(parsedJson['company_icon']);
     return ListEIPO(code, name, offeringDateEnd, companyIcon);
   }
 
   bool isEmpty() {
-    return StringUtils.isEmtpy(code);
+    return StringUtils.isEmtpy(code!);
   }
 
-  void copyValueFrom(ContentEIPO newValue) {
+  void copyValueFrom(ContentEIPO? newValue) {
     if (newValue != null) {
       this.loaded = true;
       this.code = newValue.code;
@@ -5581,13 +5618,13 @@ class StockThemes {
   int id = 0;
 
   // String name = '';
-  String name_id = '';
-  String name_en = '';
+  String? name_id = '';
+  String? name_en = '';
 
   // String description = '';
-  String description_id = '';
-  String description_en = '';
-  String background_image_url = '';
+  String? description_id = '';
+  String? description_en = '';
+  String? background_image_url = '';
   Color background_color = Colors.white;
   int member_stocks_count = 0;
   List<Stock> member_stocks = List.empty(growable: true);
@@ -5595,7 +5632,7 @@ class StockThemes {
   //String background_color = '';
   //String member_stocks = '';
 
-  String getName({String language = 'id'}) {
+  String? getName({String language = 'id'}) {
     if (StringUtils.equalsIgnoreCase(language, 'id')) {
       return name_id;
     } else {
@@ -5603,7 +5640,7 @@ class StockThemes {
     }
   }
 
-  String getDescription({String language = 'id'}) {
+  String? getDescription({String language = 'id'}) {
     if (StringUtils.equalsIgnoreCase(language, 'id')) {
       return description_id;
     } else {
@@ -5638,19 +5675,19 @@ class StockThemes {
 
   factory StockThemes.fromJson(Map<String, dynamic> parsedJson) {
     int id = Utils.safeInt(parsedJson['id']);
-    String name = StringUtils.noNullString(parsedJson['name']);
-    String nameId = StringUtils.noNullString(parsedJson['name_id']);
-    String nameEn = StringUtils.noNullString(parsedJson['name_en']);
-    String description = StringUtils.noNullString(parsedJson['description']);
-    String descriptionId =
+    String? name = StringUtils.noNullString(parsedJson['name']);
+    String? nameId = StringUtils.noNullString(parsedJson['name_id']);
+    String? nameEn = StringUtils.noNullString(parsedJson['name_en']);
+    String? description = StringUtils.noNullString(parsedJson['description']);
+    String? descriptionId =
         StringUtils.noNullString(parsedJson['description_id']);
-    String descriptionEn =
+    String? descriptionEn =
         StringUtils.noNullString(parsedJson['description_en']);
-    String backgroundImageUrl =
+    String? backgroundImageUrl =
         StringUtils.noNullString(parsedJson['background_image_url']);
-    String backgroundColorString =
+    String? backgroundColorString =
         StringUtils.noNullString(parsedJson['background_color']);
-    String memberStocksString =
+    String? memberStocksString =
         StringUtils.noNullString(parsedJson['member_stocks']);
     int memberStocksCount = Utils.safeInt(parsedJson['member_stocks_count']);
 
@@ -5658,11 +5695,11 @@ class StockThemes {
 
     List<Stock> memberStocks = List.empty(growable: true);
     if (!StringUtils.isEmtpy(memberStocksString)) {
-      List<String> datas = memberStocksString.split(',');
+      List<String>? datas = memberStocksString?.split(',');
       //int count = datas != null ? datas.length : 0;
       if (datas != null) {
         datas.forEach((code) {
-          Stock s = InvestrendTheme.storedData.findStock(code);
+          Stock? s = InvestrendTheme.storedData?.findStock(code);
           if (s != null) {
             memberStocks.add(s);
           }
@@ -5687,20 +5724,20 @@ class StockThemes {
 
   factory StockThemes.fromXml(XmlElement element) {
     int id = Utils.safeInt(element.getAttribute('id'));
-    String name = StringUtils.noNullString(element.getAttribute('name'));
-    String nameId = StringUtils.noNullString(element.getAttribute('name_id'));
-    String nameEn = StringUtils.noNullString(element.getAttribute('name_en'));
-    String description =
-        StringUtils.noNullString(element.getAttribute('description'));
-    String descriptionId =
-        StringUtils.noNullString(element.getAttribute('description_id'));
-    String descriptionEn =
-        StringUtils.noNullString(element.getAttribute('description_en'));
-    String backgroundImageUrl =
-        StringUtils.noNullString(element.getAttribute('background_image_url'));
-    String backgroundColorString =
-        StringUtils.noNullString(element.getAttribute('background_color'));
-    String memberStocksString =
+    String? name = StringUtils.noNullString(element.getAttribute('name')!);
+    String? nameId = StringUtils.noNullString(element.getAttribute('name_id')!);
+    String? nameEn = StringUtils.noNullString(element.getAttribute('name_en')!);
+    String? description =
+        StringUtils.noNullString(element.getAttribute('description')!);
+    String? descriptionId =
+        StringUtils.noNullString(element.getAttribute('description_id')!);
+    String? descriptionEn =
+        StringUtils.noNullString(element.getAttribute('description_en')!);
+    String? backgroundImageUrl =
+        StringUtils.noNullString(element.getAttribute('background_image_url')!);
+    String? backgroundColorString =
+        StringUtils.noNullString(element.getAttribute('background_color')!);
+    String? memberStocksString =
         StringUtils.noNullString(element.getAttribute('member_stocks'));
     int memberStocksCount =
         Utils.safeInt(element.getAttribute('member_stocks_count'));
@@ -5709,11 +5746,11 @@ class StockThemes {
 
     List<Stock> memberStocks = List.empty(growable: true);
     if (!StringUtils.isEmtpy(memberStocksString)) {
-      List<String> datas = memberStocksString.split(',');
+      List<String>? datas = memberStocksString?.split(',');
       //int count = datas != null ? datas.length : 0;
       if (datas != null) {
         datas.forEach((code) {
-          Stock s = InvestrendTheme.storedData.findStock(code);
+          Stock? s = InvestrendTheme.storedData?.findStock(code);
           if (s != null) {
             memberStocks.add(s);
           }
@@ -5750,12 +5787,12 @@ class StockThemes {
 }
 
 class ResultTopUpBank {
-  List<TopUpBank> datas = List.empty(growable: true);
-  String top_up_term_en = '';
-  String top_up_term_id = '';
+  List<TopUpBank>? datas = List.empty(growable: true);
+  String? top_up_term_en = '';
+  String? top_up_term_id = '';
   bool loaded = false;
 
-  String getTerm({String language = 'id'}) {
+  String? getTerm({String language = 'id'}) {
     if (StringUtils.equalsIgnoreCase(language, 'id')) {
       return top_up_term_id;
     } else {
@@ -5763,39 +5800,39 @@ class ResultTopUpBank {
     }
   }
 
-  void copyValueFrom(ResultTopUpBank newValue) {
+  void copyValueFrom(ResultTopUpBank? newValue) {
     if (newValue != null) {
       this.loaded = true;
       this.top_up_term_en = newValue.top_up_term_en;
       this.top_up_term_id = newValue.top_up_term_id;
-      this.datas.clear();
+      this.datas?.clear();
       if (newValue.datas != null) {
-        this.datas.addAll(newValue.datas);
+        this.datas?.addAll(newValue.datas!);
       }
     } else {
       this.top_up_term_en = '';
       this.top_up_term_id = '';
-      this.datas.clear();
+      this.datas?.clear();
     }
   }
 
-  bool isEmpty() {
-    return this.datas != null ? this.datas.isEmpty : true;
+  bool? isEmpty() {
+    return this.datas != null ? this.datas?.isEmpty : true;
   }
 
-  int count() {
-    return this.datas != null ? this.datas.length : 0;
+  int? count() {
+    return this.datas != null ? this.datas?.length : 0;
   }
 }
 
 class ResultFundOutTerm {
-  String fund_out_term_en = '';
-  String fund_out_term_id = '';
+  String? fund_out_term_en = '';
+  String? fund_out_term_id = '';
   bool loaded = false;
 
   ResultFundOutTerm(this.fund_out_term_en, this.fund_out_term_id);
 
-  String getTerm({String language = 'id'}) {
+  String? getTerm({String language = 'id'}) {
     if (StringUtils.equalsIgnoreCase(language, 'id')) {
       return fund_out_term_id;
     } else {
@@ -5803,7 +5840,7 @@ class ResultFundOutTerm {
     }
   }
 
-  void copyValueFrom(ResultFundOutTerm newValue) {
+  void copyValueFrom(ResultFundOutTerm? newValue) {
     if (newValue != null) {
       this.loaded = true;
       this.fund_out_term_en = newValue.fund_out_term_en;
@@ -5828,18 +5865,18 @@ class StockHist {
   },
   */
 
-  String accountcode = '';
-  String stockCode = '';
+  String? accountcode = '';
+  String? stockCode = '';
 
   StockHist(this.accountcode, this.stockCode);
 
-  factory StockHist.fromJson(Map<String, dynamic> parsedJson) {
+  factory StockHist.fromJson(Map<String, dynamic>? parsedJson) {
     if (parsedJson == null) {
-      return null;
+      return StockHist(null, null);
     }
 
-    String accountcode = StringUtils.noNullString(parsedJson['accountcode']);
-    String stockCode = StringUtils.noNullString(parsedJson['stockCode']);
+    String? accountcode = StringUtils.noNullString(parsedJson['accountcode']);
+    String? stockCode = StringUtils.noNullString(parsedJson['stockCode']);
 
     return StockHist(accountcode, stockCode);
   }
@@ -5859,31 +5896,31 @@ class ReportStockHist {
   },
   */
 
-  String accountcode = '';
-  String board = '';
-  String bs = '';
-  String stockCode = '';
-  int lot = 0;
-  int price = 0;
-  int value = 0;
-  String date = '';
+  String? accountcode = '';
+  String? board = '';
+  String? bs = '';
+  String? stockCode = '';
+  int? lot = 0;
+  int? price = 0;
+  int? value = 0;
+  String? date = '';
 
   ReportStockHist(this.accountcode, this.board, this.bs, this.stockCode,
       this.lot, this.price, this.value, this.date);
 
-  factory ReportStockHist.fromJson(Map<String, dynamic> parsedJson) {
+  factory ReportStockHist.fromJson(Map<String, dynamic>? parsedJson) {
     if (parsedJson == null) {
-      return null;
+      return ReportStockHist(null, null, null, null, null, null, null, null);
     }
 
-    String accountcode = StringUtils.noNullString(parsedJson['accountcode']);
-    String board = StringUtils.noNullString(parsedJson['board']);
-    String bs = StringUtils.noNullString(parsedJson['bs']);
-    String stockCode = StringUtils.noNullString(parsedJson['stockCode']);
+    String? accountcode = StringUtils.noNullString(parsedJson['accountcode']);
+    String? board = StringUtils.noNullString(parsedJson['board']);
+    String? bs = StringUtils.noNullString(parsedJson['bs']);
+    String? stockCode = StringUtils.noNullString(parsedJson['stockCode']);
     int lot = Utils.safeInt(parsedJson['lot']);
     int price = Utils.safeInt(parsedJson['price']);
     int value = Utils.safeInt(parsedJson['value']);
-    String date = StringUtils.noNullString(parsedJson['date']);
+    String? date = StringUtils.noNullString(parsedJson['date']);
 
     return ReportStockHist(
         accountcode, board, bs, stockCode, lot, price, value, date);
@@ -5891,23 +5928,24 @@ class ReportStockHist {
 }
 
 class BankAccount {
-  String acc_name = '';
-  String acc_name2 = '';
-  String acc_no = '';
-  String acc_no2 = '';
-  String bank = '';
-  String bank2 = '';
-  String message = '';
-  bool loaded = false;
+  String? acc_name = '';
+  String? acc_name2 = '';
+  String? acc_no = '';
+  String? acc_no2 = '';
+  String? bank = '';
+  String? bank2 = '';
+  String? message = '';
+  bool? loaded = false;
 
   BankAccount(this.acc_name, this.acc_name2, this.acc_no, this.acc_no2,
       this.bank, this.bank2, this.message);
 
   bool isMultiple() {
-    return !StringUtils.isEmtpy(this.bank) && !StringUtils.isEmtpy(this.bank2);
+    return !StringUtils.isEmtpy(this.bank!) &&
+        !StringUtils.isEmtpy(this.bank2!);
   }
 
-  void copyValueFrom(BankAccount newValue) {
+  void copyValueFrom(BankAccount? newValue) {
     if (newValue != null) {
       this.loaded = true;
       this.acc_name = newValue.acc_name;
@@ -5928,43 +5966,43 @@ class BankAccount {
     }
   }
 
-  factory BankAccount.fromJson(Map<String, dynamic> parsedJson) {
+  factory BankAccount.fromJson(Map<String, dynamic>? parsedJson) {
     if (parsedJson == null) {
-      return null;
+      return BankAccount(null, null, null, null, null, null, null);
     }
 
-    String accName = StringUtils.noNullString(parsedJson['acc_name']);
-    String accNo = StringUtils.noNullString(parsedJson['acc_no']);
-    String bank = StringUtils.noNullString(parsedJson['bank']);
+    String? accName = StringUtils.noNullString(parsedJson['acc_name']);
+    String? accNo = StringUtils.noNullString(parsedJson['acc_no']);
+    String? bank = StringUtils.noNullString(parsedJson['bank']);
 
-    String accName2 = StringUtils.noNullString(parsedJson['acc_name2']);
-    String accNo2 = StringUtils.noNullString(parsedJson['acc_no2']);
-    String bank2 = StringUtils.noNullString(parsedJson['bank2']);
+    String? accName2 = StringUtils.noNullString(parsedJson['acc_name2']);
+    String? accNo2 = StringUtils.noNullString(parsedJson['acc_no2']);
+    String? bank2 = StringUtils.noNullString(parsedJson['bank2']);
 
-    String message = StringUtils.noNullString(parsedJson['message']);
+    String? message = StringUtils.noNullString(parsedJson['message']);
 
     return BankAccount(accName, accName2, accNo, accNo2, bank, bank2, message);
   }
 
   bool isEmpty() {
-    return StringUtils.isEmtpy(acc_no);
+    return StringUtils.isEmtpy(acc_no!);
   }
 }
 
 class FundamentalCache {
-  String code = '';
-  double last_eps = 0.0;
-  double last_bvp = 0.0;
-  double last_roe = 0.0;
+  String? code = '';
+  double? last_eps = 0.0;
+  double? last_bvp = 0.0;
+  double? last_roe = 0.0;
 
   FundamentalCache(this.code, this.last_eps, this.last_bvp, this.last_roe);
 
-  factory FundamentalCache.fromJson(Map<String, dynamic> parsedJson) {
+  static FundamentalCache? fromJson(Map<String, dynamic>? parsedJson) {
     if (parsedJson == null) {
-      return null;
+      return FundamentalCache(null, null, null, null);
     }
 
-    String ticker = StringUtils.noNullString(parsedJson['code']);
+    String? ticker = StringUtils.noNullString(parsedJson['code']);
     double lastEps = Utils.safeDouble(parsedJson['last_eps']);
     double lastBvp = Utils.safeDouble(parsedJson['last_bvp']);
     double lastRoe = Utils.safeDouble(parsedJson['last_roe']);
@@ -5978,20 +6016,20 @@ class FundamentalCache {
   }
 
   bool isEmpty() {
-    return StringUtils.isEmtpy(code);
+    return StringUtils.isEmtpy(code!);
   }
 }
 
 class BankRDN {
-  String acc_name = '';
-  String acc_no = '';
-  String bank = '';
-  String message = '';
-  bool loaded = false;
+  String? acc_name = '';
+  String? acc_no = '';
+  String? bank = '';
+  String? message = '';
+  bool? loaded = false;
 
   BankRDN(this.acc_name, this.acc_no, this.bank, this.message);
 
-  void copyValueFrom(BankRDN newValue) {
+  void copyValueFrom(BankRDN? newValue) {
     if (newValue != null) {
       this.loaded = true;
       this.acc_name = newValue.acc_name;
@@ -6006,30 +6044,30 @@ class BankRDN {
     }
   }
 
-  factory BankRDN.fromJson(Map<String, dynamic> parsedJson) {
+  factory BankRDN.fromJson(Map<String, dynamic>? parsedJson) {
     if (parsedJson == null) {
-      return null;
+      return BankRDN(null, null, null, null);
     }
 
-    String accName = StringUtils.noNullString(parsedJson['acc_name']);
-    String accNo = StringUtils.noNullString(parsedJson['acc_no']);
-    String bank = StringUtils.noNullString(parsedJson['bank']);
-    String message = StringUtils.noNullString(parsedJson['message']);
+    String? accName = StringUtils.noNullString(parsedJson['acc_name']);
+    String? accNo = StringUtils.noNullString(parsedJson['acc_no']);
+    String? bank = StringUtils.noNullString(parsedJson['bank']);
+    String? message = StringUtils.noNullString(parsedJson['message']);
 
     return BankRDN(accName, accNo, bank, message);
   }
 
   bool isEmpty() {
-    return StringUtils.isEmtpy(acc_no);
+    return StringUtils.isEmtpy(acc_no!);
   }
 }
 
 class TopUpBank {
-  String code = '';
-  String name = '';
-  String icon_url = '';
-  String guide_id = '';
-  String guide_en = '';
+  String? code = '';
+  String? name = '';
+  String? icon_url = '';
+  String? guide_id = '';
+  String? guide_en = '';
 
   String toString() {
     return 'TopUpBank  code : $code  name : $name  icon_url : $icon_url  guide_id : $guide_id  guide_en : $guide_en';
@@ -6037,24 +6075,24 @@ class TopUpBank {
 
   String getGuide({String language = 'id'}) {
     if (StringUtils.equalsIgnoreCase(language, 'id')) {
-      return guide_id;
+      return guide_id!;
     } else {
-      return guide_en;
+      return guide_en!;
     }
   }
 
   TopUpBank(this.code, this.name, this.icon_url, this.guide_id, this.guide_en);
 
-  factory TopUpBank.fromJson(Map<String, dynamic> parsedJson) {
+  static TopUpBank? fromJson(Map<String, dynamic>? parsedJson) {
     if (parsedJson == null) {
-      return null;
+      return TopUpBank(null, null, null, null, null);
     }
 
-    String code = StringUtils.noNullString(parsedJson['code']);
-    String name = StringUtils.noNullString(parsedJson['name']);
-    String iconUrl = StringUtils.noNullString(parsedJson['icon_url']);
-    String guideId = StringUtils.noNullString(parsedJson['guide_id']);
-    String guideEn = StringUtils.noNullString(parsedJson['guide_en']);
+    String? code = StringUtils.noNullString(parsedJson['code']);
+    String? name = StringUtils.noNullString(parsedJson['name']);
+    String? iconUrl = StringUtils.noNullString(parsedJson['icon_url']);
+    String? guideId = StringUtils.noNullString(parsedJson['guide_id']);
+    String? guideEn = StringUtils.noNullString(parsedJson['guide_en']);
 
     return TopUpBank(code, name, iconUrl, guideId, guideEn);
   }
@@ -6074,7 +6112,7 @@ class StringColorFontBool {
       this.flag = false});
   String value = '';
   Color color = Colors.white;
-  double fontSize = 10.0;
+  double? fontSize = 10.0;
   bool flag = false;
 }
 
@@ -6109,21 +6147,21 @@ class ActivityRDN {
 
 class ActivityRDNData {
   bool loaded = false;
-  List<ActivityRDN> datas = List.empty(growable: true);
+  List<ActivityRDN>? datas = List?.empty(growable: true);
 
-  int count() {
-    return datas != null ? datas.length : 0;
+  int? count() {
+    return datas != null ? datas?.length : 0;
   }
 
-  void copyValueFrom(ActivityRDNData newValue) {
+  void copyValueFrom(ActivityRDNData? newValue) {
     if (newValue != null) {
       this.loaded = true;
-      this.datas.clear();
+      this.datas?.clear();
       if (newValue.datas != null) {
-        this.datas.addAll(newValue.datas);
+        this.datas?.addAll(newValue.datas!);
       }
     } else {
-      this.datas.clear();
+      this.datas?.clear();
     }
   }
 }
@@ -6147,31 +6185,31 @@ class Portfolio {
 
 class PortfolioData {
   bool loaded = false;
-  List<Portfolio> datas = List.empty(growable: true);
+  List<Portfolio>? datas = List.empty(growable: true);
 
-  int count() {
-    return datas != null ? datas.length : 0;
+  int? count() {
+    return datas != null ? datas?.length : 0;
   }
 
-  void copyValueFrom(PortfolioData newValue) {
+  void copyValueFrom(PortfolioData? newValue) {
     if (newValue != null) {
       this.loaded = true;
-      this.datas.clear();
+      this.datas?.clear();
       if (newValue.datas != null) {
-        this.datas.addAll(newValue.datas);
+        this.datas?.addAll(newValue.datas!);
       }
     } else {
-      this.datas.clear();
+      this.datas?.clear();
     }
   }
 }
 
 class GeneralPrice {
-  String code = '';
-  String name = '';
-  double price = 0.0;
-  double change = 0.0;
-  double percent = 0.0;
+  String? code = '';
+  String? name = '';
+  double? price = 0.0;
+  double? change = 0.0;
+  double? percent = 0.0;
 
   //Color _defaultColor;
 
@@ -6182,26 +6220,26 @@ class GeneralPrice {
 }
 
 class WatchlistPrice extends GeneralPrice {
-  int prevPrice = 0;
-  int bestBidPrice = 0;
-  int bestBidVolume = 0;
-  int bestOfferPrice = 0;
-  int bestOfferVolume = 0;
-  int value = 0;
+  int? prevPrice = 0;
+  int? bestBidPrice = 0;
+  int? bestBidVolume = 0;
+  int? bestOfferPrice = 0;
+  int? bestOfferVolume = 0;
+  int? value = 0;
 
-  List<Remark2Mapping> notation = List.empty(growable: true);
-  StockInformationStatus status;
-  SuspendStock suspendStock;
-  List<CorporateActionEvent> corporateAction = List.empty(growable: true);
-  Color corporateActionColor = Colors.black;
-  String attentionCodes = '';
-  bool loaded = false;
+  List<Remark2Mapping>? notation = List.empty(growable: true);
+  StockInformationStatus? status;
+  SuspendStock? suspendStock;
+  List<CorporateActionEvent>? corporateAction = List.empty(growable: true);
+  Color? corporateActionColor = Colors.black;
+  String? attentionCodes = '';
+  bool? loaded = false;
   WatchlistPrice(
-    String code,
-    double price,
-    double change,
-    double percent,
-    String name, {
+    String? code,
+    double? price,
+    double? change,
+    double? percent,
+    String? name, {
     this.notation,
     this.corporateAction,
     this.corporateActionColor,
@@ -6214,27 +6252,27 @@ class WatchlistPrice extends GeneralPrice {
     this.prevPrice = 0,
     this.value = 0,
     this.attentionCodes,
-  }) : super(code, price, change, percent, name: name);
+  }) : super(code!, price!, change!, percent!, name: name!);
 
   int bestBidLot() {
     if (bestBidVolume == 0) {
       return 0;
     }
-    return bestBidVolume ~/ 100;
+    return bestBidVolume! ~/ 100;
   }
 
   int bestOfferLot() {
     if (bestOfferVolume == 0) {
       return 0;
     }
-    return bestOfferVolume ~/ 100;
+    return bestOfferVolume! ~/ 100;
   }
 
   bool isEmpty() {
     return StringUtils.isEmtpy(code);
   }
 
-  void copyValueFrom(WatchlistPrice newValue) {
+  void copyValueFrom(WatchlistPrice? newValue) {
     if (newValue != null) {
       this.loaded = true;
       // this.accountcode = newValue.accountcode;
@@ -6263,16 +6301,16 @@ class WatchlistPrice extends GeneralPrice {
       this.bestOfferVolume = newValue.bestOfferVolume;
       this.value = newValue.value;
 
-      this.notation.clear();
+      this.notation?.clear();
       if (newValue.notation != null) {
-        this.notation.addAll(newValue.notation);
+        this.notation?.addAll(newValue.notation!);
       }
 
       this.status = newValue.status;
       this.suspendStock = newValue.suspendStock;
-      this.corporateAction.clear();
+      this.corporateAction?.clear();
       if (newValue.corporateAction != null) {
-        this.corporateAction.addAll(newValue.corporateAction);
+        this.corporateAction?.addAll(newValue.corporateAction!);
       }
 
       this.corporateActionColor = newValue.corporateActionColor;
@@ -6300,10 +6338,10 @@ class WatchlistPrice extends GeneralPrice {
       this.bestOfferVolume = 0;
       this.value = 0;
 
-      this.notation.clear();
+      this.notation?.clear();
       this.status = null;
       this.suspendStock = null;
-      this.corporateAction.clear();
+      this.corporateAction?.clear();
       this.corporateActionColor = Colors.transparent;
       this.attentionCodes = null;
     }
@@ -6313,21 +6351,21 @@ class WatchlistPrice extends GeneralPrice {
 class GeneralPriceData {
   bool loaded = false;
 
-  List<GeneralPrice> datas = List.empty(growable: true);
+  List<GeneralPrice>? datas = List.empty(growable: true);
 
   int count() {
-    return datas != null ? datas.length : 0;
+    return datas != null ? datas!.length : 0;
   }
 
-  void copyValueFrom(GeneralPriceData newValue) {
+  void copyValueFrom(GeneralPriceData? newValue) {
     if (newValue != null) {
       this.loaded = true;
-      this.datas.clear();
+      this.datas?.clear();
       if (newValue.datas != null) {
-        this.datas.addAll(newValue.datas);
+        this.datas?.addAll(newValue.datas!);
       }
     } else {
-      this.datas.clear();
+      this.datas?.clear();
     }
   }
 
@@ -6339,21 +6377,21 @@ class GeneralPriceData {
 class WatchlistPriceData {
   bool loaded = false;
 
-  List<WatchlistPrice> datas = List.empty(growable: true);
+  List<WatchlistPrice>? datas = List.empty(growable: true);
 
   int count() {
-    return datas != null ? datas.length : 0;
+    return datas != null ? datas!.length : 0;
   }
 
-  void copyValueFrom(WatchlistPriceData newValue) {
+  void copyValueFrom(WatchlistPriceData? newValue) {
     if (newValue != null) {
       this.loaded = true;
-      this.datas.clear();
+      this.datas?.clear();
       if (newValue.datas != null) {
-        this.datas.addAll(newValue.datas);
+        this.datas?.addAll(newValue.datas!);
       }
     } else {
-      this.datas.clear();
+      this.datas?.clear();
     }
   }
 
@@ -6365,11 +6403,11 @@ class WatchlistPriceData {
 class OrderbookData {
   bool loaded = false;
   OrderBook orderbook = OrderBook.createBasic();
-  int prev = 0;
-  double averagePrice = 0;
-  int close = 0;
+  int? prev = 0;
+  double? averagePrice = 0;
+  int? close = 0;
 
-  void copyValueFrom(OrderbookData newValue) {
+  void copyValueFrom(OrderbookData? newValue) {
     if (newValue != null) {
       this.loaded = true;
       this.orderbook.copyValueFrom(newValue.orderbook);
@@ -6391,139 +6429,139 @@ class OrderbookData {
 
 class StockThemesData {
   bool loaded = false;
-  List<StockThemes> datas = List.empty(growable: true);
+  List<StockThemes>? datas = List.empty(growable: true);
 
   int count() {
-    return datas != null ? datas.length : 0;
+    return datas != null ? datas!.length : 0;
   }
 
   bool isEmpty() {
-    return datas != null ? datas.isEmpty : true;
+    return datas != null ? datas!.isEmpty : true;
   }
 
-  void copyValueFrom(StockThemesData newValue) {
+  void copyValueFrom(StockThemesData? newValue) {
     if (newValue != null) {
       this.loaded = true;
-      this.datas.clear();
+      this.datas?.clear();
       if (newValue.datas != null) {
-        this.datas.addAll(newValue.datas);
+        this.datas?.addAll(newValue.datas!);
       }
     } else {
-      this.datas.clear();
+      this.datas?.clear();
     }
   }
 }
 
 class HomeIndicesData {
   bool loaded = false;
-  List<HomeWorldIndices> datas = List.empty(growable: true);
+  List<HomeWorldIndices>? datas = List.empty(growable: true);
 
   int count() {
-    return datas != null ? datas.length : 0;
+    return datas != null ? datas!.length : 0;
   }
 
   bool isEmpty() {
-    return datas != null ? datas.isEmpty : true;
+    return datas != null ? datas!.isEmpty : true;
   }
 
-  void copyValueFrom(HomeIndicesData newValue) {
+  void copyValueFrom(HomeIndicesData? newValue) {
     if (newValue != null) {
       this.loaded = true;
-      this.datas.clear();
+      this.datas?.clear();
       if (newValue.datas != null) {
-        this.datas.addAll(newValue.datas);
+        this.datas?.addAll(newValue.datas!);
       }
     } else {
-      this.datas.clear();
+      this.datas?.clear();
     }
   }
 }
 
 class HomeCommoditiesData {
   bool loaded = false;
-  List<HomeCommodities> datas = List.empty(growable: true);
+  List<HomeCommodities>? datas = List.empty(growable: true);
 
   int count() {
-    return datas != null ? datas.length : 0;
+    return datas != null ? datas!.length : 0;
   }
 
   bool isEmpty() {
-    return datas != null ? datas.isEmpty : true;
+    return datas != null ? datas!.isEmpty : true;
   }
 
-  void copyValueFrom(HomeCommoditiesData newValue) {
+  void copyValueFrom(HomeCommoditiesData? newValue) {
     if (newValue != null) {
       this.loaded = true;
-      this.datas.clear();
+      this.datas?.clear();
       if (newValue.datas != null) {
-        this.datas.addAll(newValue.datas);
+        this.datas?.addAll(newValue.datas!);
       }
     } else {
-      this.datas.clear();
+      this.datas?.clear();
     }
   }
 }
 
 class HomeCurrenciesData {
   bool loaded = false;
-  List<HomeCurrencies> datas = List.empty(growable: true);
+  List<HomeCurrencies>? datas = List.empty(growable: true);
 
   int count() {
-    return datas != null ? datas.length : 0;
+    return datas != null ? datas!.length : 0;
   }
 
   bool isEmpty() {
-    return datas != null ? datas.isEmpty : true;
+    return datas != null ? datas!.isEmpty : true;
   }
 
-  void copyValueFrom(HomeCurrenciesData newValue) {
+  void copyValueFrom(HomeCurrenciesData? newValue) {
     if (newValue != null) {
       this.loaded = true;
-      this.datas.clear();
+      this.datas?.clear();
       if (newValue.datas != null) {
-        this.datas.addAll(newValue.datas);
+        this.datas?.addAll(newValue.datas!);
       }
     } else {
-      this.datas.clear();
+      this.datas?.clear();
     }
   }
 }
 
 class HomeCryptoData {
   bool loaded = false;
-  List<HomeCrypto> datas = List.empty(growable: true);
+  List<HomeCrypto>? datas = List.empty(growable: true);
 
   int count() {
-    return datas != null ? datas.length : 0;
+    return datas != null ? datas!.length : 0;
   }
 
   bool isEmpty() {
-    return datas != null ? datas.isEmpty : true;
+    return datas != null ? datas!.isEmpty : true;
   }
 
-  void copyValueFrom(HomeCryptoData newValue) {
+  void copyValueFrom(HomeCryptoData? newValue) {
     if (newValue != null) {
       this.loaded = true;
-      this.datas.clear();
+      this.datas?.clear();
       if (newValue.datas != null) {
-        this.datas.addAll(newValue.datas);
+        this.datas?.addAll(newValue.datas!);
       }
     } else {
-      this.datas.clear();
+      this.datas?.clear();
     }
   }
 }
 
 class Version {
-  String platform = '';
-  String version_code = '';
-  int version_number = 0;
+  String? platform = '';
+  String? version_code = '';
+  int? version_number = 0;
 
-  int minimum_version_number = 0;
-  String changes_notes = '';
-  String minimum_version_code = '';
+  int? minimum_version_number = 0;
+  String? changes_notes = '';
+  String? minimum_version_code = '';
   bool isEmpty() {
-    return StringUtils.isEmtpy(version_code);
+    return StringUtils.isEmtpy(version_code!);
   }
 
   Version(
@@ -6557,17 +6595,18 @@ class Version {
   }
   */
 
-  factory Version.fromJson(Map<String, dynamic> parsedJson) {
+  factory Version.fromJson(Map<String, dynamic>? parsedJson) {
     if (parsedJson == null) {
-      return null;
+      return Version(null, null, null, null, null, null);
     }
-    String platform = StringUtils.noNullString(parsedJson['platform']);
-    String versionCode = StringUtils.noNullString(parsedJson['version_code']);
+    String? platform = StringUtils.noNullString(parsedJson['platform']);
+    String? versionCode = StringUtils.noNullString(parsedJson['version_code']);
     int versionNumber = Utils.safeInt(parsedJson['version_number']);
     int minimumVersionNumber =
         Utils.safeInt(parsedJson['minimum_version_number']);
-    String changesNotes = StringUtils.noNullString(parsedJson['changes_notes']);
-    String minimumVersionCode =
+    String? changesNotes =
+        StringUtils.noNullString(parsedJson['changes_notes']);
+    String? minimumVersionCode =
         StringUtils.noNullString(parsedJson['minimum_version_code']);
 
     return Version(platform, versionCode, versionNumber, minimumVersionNumber,
@@ -6585,15 +6624,15 @@ class NetBuySellSummary {
   "Average": "5887.50"
   },
   */
-  int no = 0;
-  String Broker = '';
-  int Value = 0;
-  int Volume = 0;
-  double Average = 0.0;
+  int? no = 0;
+  String? Broker = '';
+  int? Value = 0;
+  int? Volume = 0;
+  double? Average = 0.0;
   //Color color;
 
   bool isEmpty() {
-    return StringUtils.isEmtpy(Broker);
+    return StringUtils.isEmtpy(Broker!);
   }
 
   NetBuySellSummary(
@@ -6604,9 +6643,9 @@ class NetBuySellSummary {
     return 'BrokerNetBuySellSummary {no: $no, Broker: $Broker, Value: $Value, Volume: $Volume, Average: $Average}';
   }
 
-  factory NetBuySellSummary.fromJson(Map<String, dynamic> parsedJson) {
+  static NetBuySellSummary? fromJson(Map<String, dynamic> parsedJson) {
     int no = parsedJson['#'];
-    String Broker = StringUtils.noNullString(parsedJson['Broker']);
+    String? Broker = StringUtils.noNullString(parsedJson['Broker']);
     //String last_date = StringUtils.noNullString(parsedJson['last_date']);
     int Value = Utils.safeInt(parsedJson['Value']);
     int Volume = Utils.safeInt(parsedJson['Volume']);
@@ -6647,10 +6686,10 @@ class BrokerNetBuySell {
     return 'BrokerNetBuySell {no: $no, BrokerCode: $BrokerCode, last_date: $last_date, BValue: $BValue, SValue: $SValue, NValue: $NValue}';
   }
 
-  factory BrokerNetBuySell.fromJson(Map<String, dynamic> parsedJson) {
+  static BrokerNetBuySell? fromJson(Map<String, dynamic> parsedJson) {
     int no = parsedJson['#'];
-    String BrokerCode = StringUtils.noNullString(parsedJson['BrokerCode']);
-    String lastDate = StringUtils.noNullString(parsedJson['last_date']);
+    String BrokerCode = StringUtils.noNullString(parsedJson['BrokerCode'])!;
+    String lastDate = StringUtils.noNullString(parsedJson['last_date'])!;
     double BValue = Utils.safeDouble(parsedJson['BValue']);
     double SValue = Utils.safeDouble(parsedJson['SValue']);
     double NValue = Utils.safeDouble(parsedJson['NValue']);
@@ -6662,49 +6701,49 @@ class BrokerNetBuySell {
 class NetBuySellSummaryData {
   String message = '';
 
-  String code = '';
-  String board = '';
-  String data_by = '';
-  String type = '';
-  String from = '';
-  String to = '';
-  bool loaded = false;
-  String last_date = '';
-  List<NetBuySellSummary> topBuyer = List.empty(growable: true);
-  List<NetBuySellSummary> topSeller = List.empty(growable: true);
+  String? code = '';
+  String? board = '';
+  String? data_by = '';
+  String? type = '';
+  String? from = '';
+  String? to = '';
+  bool? loaded = false;
+  String? last_date = '';
+  List<NetBuySellSummary>? topBuyer = List.empty(growable: true);
+  List<NetBuySellSummary>? topSeller = List.empty(growable: true);
 
-  int BValue = 0;
-  int BVolume = 0;
-  double BAverage = 0.0;
-  int SValue = 0;
-  int SVolume = 0;
-  double SAverage = 0.0;
-  int BValueDomestic = 0;
-  int BValueForeign = 0;
-  int SValueDomestic = 0;
-  int SValueForeign = 0;
+  int? BValue = 0;
+  int? BVolume = 0;
+  double? BAverage = 0.0;
+  int? SValue = 0;
+  int? SVolume = 0;
+  double? SAverage = 0.0;
+  int? BValueDomestic = 0;
+  int? BValueForeign = 0;
+  int? SValueDomestic = 0;
+  int? SValueForeign = 0;
 
   bool isEmpty() {
-    return topBuyer != null ? topBuyer.isEmpty : true;
+    return topBuyer != null ? topBuyer!.isEmpty : true;
   }
 
   NetBuySellSummary getBuyer(int index) {
-    int buyerCount = topBuyer == null ? 0 : topBuyer.length;
+    int buyerCount = topBuyer == null ? 0 : topBuyer!.length;
     if (index >= 0 && index < buyerCount) {
-      return topBuyer.elementAt(index);
+      return topBuyer!.elementAt(index);
     }
-    return null;
+    return NetBuySellSummary(null, null, null, null, null);
   }
 
   NetBuySellSummary getSeller(int index) {
-    int count = topSeller == null ? 0 : topSeller.length;
+    int count = topSeller == null ? 0 : topSeller!.length;
     if (index >= 0 && index < count) {
-      return topSeller.elementAt(index);
+      return topSeller!.elementAt(index);
     }
-    return null;
+    return NetBuySellSummary(null, null, null, null, null);
   }
 
-  void copyValueFrom(NetBuySellSummaryData newValue) {
+  void copyValueFrom(NetBuySellSummaryData? newValue) {
     if (newValue != null) {
       this.loaded = true;
       this.message = newValue.message;
@@ -6728,13 +6767,13 @@ class NetBuySellSummaryData {
       this.SValueDomestic = newValue.SValueDomestic;
       this.SValueForeign = newValue.SValueForeign;
 
-      this.topBuyer.clear();
-      this.topSeller.clear();
+      this.topBuyer?.clear();
+      this.topSeller?.clear();
       if (newValue.topBuyer != null) {
-        this.topBuyer.addAll(newValue.topBuyer);
+        this.topBuyer?.addAll(newValue.topBuyer!);
       }
       if (newValue.topSeller != null) {
-        this.topSeller.addAll(newValue.topSeller);
+        this.topSeller?.addAll(newValue.topSeller!);
       }
     } else {
       this.message = '';
@@ -6757,8 +6796,8 @@ class NetBuySellSummaryData {
       this.SValueDomestic = 0;
       this.SValueForeign = 0;
 
-      this.topBuyer.clear();
-      this.topSeller.clear();
+      this.topBuyer?.clear();
+      this.topSeller?.clear();
     }
   }
 
@@ -6767,77 +6806,77 @@ class NetBuySellSummaryData {
   }
 
   int count() {
-    return max(this.topBuyer.length, this.topSeller.length);
+    return max(this.topBuyer!.length, this.topSeller!.length);
   }
 }
 
 class ReportStockHistData {
   bool loaded = false;
-  List<ReportStockHist> datas = List.empty(growable: true);
+  List<ReportStockHist>? datas = List.empty(growable: true);
   bool isEmpty() {
-    return datas != null ? datas.isEmpty : true;
+    return datas != null ? datas!.isEmpty : true;
   }
 
-  void copyValueFrom(ReportStockHistData newValue) {
+  void copyValueFrom(ReportStockHistData? newValue) {
     if (newValue != null) {
       this.loaded = true;
-      this.datas.clear();
+      this.datas?.clear();
       if (newValue.datas != null) {
-        this.datas.addAll(newValue.datas);
+        this.datas?.addAll(newValue.datas!);
       }
     } else {
-      this.datas.clear();
+      this.datas?.clear();
     }
   }
 
   int size() {
-    return datas != null ? datas.length : 0;
+    return datas != null ? datas!.length : 0;
   }
 }
 
 class OrderStatusData {
   bool loaded = false;
-  List<OrderStatus> datas = List.empty(growable: true);
+  List<OrderStatus>? datas = List.empty(growable: true);
   bool isEmpty() {
-    return datas != null ? datas.isEmpty : true;
+    return datas != null ? datas!.isEmpty : true;
   }
 
-  void copyValueFrom(OrderStatusData newValue) {
+  void copyValueFrom(OrderStatusData? newValue) {
     if (newValue != null) {
       this.loaded = true;
-      this.datas.clear();
+      this.datas?.clear();
       if (newValue.datas != null) {
-        this.datas.addAll(newValue.datas);
+        this.datas?.addAll(newValue.datas!);
       }
     } else {
-      this.datas.clear();
+      this.datas?.clear();
     }
   }
 
   int size() {
-    return datas != null ? datas.length : 0;
+    return datas != null ? datas!.length : 0;
   }
 }
 
 class StockTopBrokerData {
-  String code = '';
-  String board = '';
-  String from = '';
-  String to = '';
+  String? code = '';
+  String? board = '';
+  String? from = '';
+  String? to = '';
   bool loaded = false;
 
-  String last_date = '';
+  String? last_date = '';
 
-  List<BrokerNetBuySell> topBuyer = List.empty(growable: true);
-  List<BrokerNetBuySell> topSeller = List.empty(growable: true);
-  List<BrokerNetBuySell> topNetBuyer = List.empty(growable: true);
-  List<BrokerNetBuySell> topNetSeller = List.empty(growable: true);
+  List<BrokerNetBuySell>? topBuyer = List.empty(growable: true);
+  List<BrokerNetBuySell>? topSeller = List.empty(growable: true);
+  List<BrokerNetBuySell>? topNetBuyer = List.empty(growable: true);
+  List<BrokerNetBuySell>? topNetSeller = List.empty(growable: true);
 
   bool isEmpty() {
-    return topBuyer != null ? topBuyer.isEmpty : true;
+    return topBuyer != null ? topBuyer!.isEmpty : true;
   }
 
-  void copyValueFrom(StockTopBrokerData newValue) {
+  void copyValueFrom(StockTopBrokerData? newValue) {
     if (newValue != null) {
       this.loaded = true;
       this.code = newValue.code;
@@ -6845,21 +6884,21 @@ class StockTopBrokerData {
       this.from = newValue.from;
       this.to = newValue.to;
       this.last_date = newValue.last_date;
-      this.topBuyer.clear();
-      this.topSeller.clear();
-      this.topNetBuyer.clear();
-      this.topNetSeller.clear();
+      this.topBuyer?.clear();
+      this.topSeller?.clear();
+      this.topNetBuyer?.clear();
+      this.topNetSeller?.clear();
       if (newValue.topBuyer != null) {
-        this.topBuyer.addAll(newValue.topBuyer);
+        this.topBuyer?.addAll(newValue.topBuyer!);
       }
       if (newValue.topSeller != null) {
-        this.topSeller.addAll(newValue.topSeller);
+        this.topSeller?.addAll(newValue.topSeller!);
       }
       if (newValue.topNetBuyer != null) {
-        this.topNetBuyer.addAll(newValue.topNetBuyer);
+        this.topNetBuyer?.addAll(newValue.topNetBuyer!);
       }
       if (newValue.topNetSeller != null) {
-        this.topNetSeller.addAll(newValue.topNetSeller);
+        this.topNetSeller?.addAll(newValue.topNetSeller!);
       }
     } else {
       this.code = '';
@@ -6868,25 +6907,25 @@ class StockTopBrokerData {
       this.to = '';
       this.last_date = '';
 
-      this.topBuyer.clear();
-      this.topSeller.clear();
-      this.topNetBuyer.clear();
-      this.topNetSeller.clear();
+      this.topBuyer?.clear();
+      this.topSeller?.clear();
+      this.topNetBuyer?.clear();
+      this.topNetSeller?.clear();
     }
   }
 }
 
 class Performance {
-  String updated = '';
-  String range = '';
-  String code = '';
+  String? updated = '';
+  String? range = '';
+  String? code = '';
   double change = 0;
   double percentChange = 0.0;
   double close = 0;
   double open = 0;
   double prev = 0;
-  String startDate = '';
-  String endDate = '';
+  String? startDate = '';
+  String? endDate = '';
 
   String toString() {
     return 'Performance  $range  $code  change : $change  percentChange : $percentChange  close : $close  open : $open  prev : $prev  startDate : $startDate  endDate : $endDate';
@@ -6924,46 +6963,46 @@ class Performance {
   "calculateByCloseToday": "false"
   }
   */
-  factory Performance.fromJson(Map<String, dynamic> parsedJson) {
-    int start = parsedJson['start'];
-    String updated = StringUtils.noNullString(parsedJson['updated']);
-    String range = StringUtils.noNullString(parsedJson['range']);
-    String code = StringUtils.noNullString(parsedJson['code']);
+  static Performance? fromJson(Map<String, dynamic> parsedJson) {
+    Null start = parsedJson['start'];
+    String? updated = StringUtils.noNullString(parsedJson['updated']);
+    String? range = StringUtils.noNullString(parsedJson['range']);
+    String? code = StringUtils.noNullString(parsedJson['code']);
     double change = Utils.safeDouble(parsedJson['change']);
     double percentChange = Utils.safeDouble(parsedJson['percentChange']);
     double close = Utils.safeDouble(parsedJson['close']);
     double open = Utils.safeDouble(parsedJson['open']);
     double prev = Utils.safeDouble(parsedJson['prev']);
-    String startDate = StringUtils.noNullString(parsedJson['startDate']);
-    String endDate = StringUtils.noNullString(parsedJson['endDate']);
+    String? startDate = StringUtils.noNullString(parsedJson['startDate']);
+    String? endDate = StringUtils.noNullString(parsedJson['endDate']);
     return Performance(updated, range, code, change, percentChange, close, open,
         prev, startDate, endDate);
   }
 }
 
 class PerformanceData {
-  String code = '';
-  String type = '';
-  bool loaded = false;
-  Map<String, Performance> _map = Map();
+  String? code = '';
+  String? type = '';
+  bool? loaded = false;
+  Map<String, Performance>? _map = Map();
 
-  Map<String, Performance> get map => _map;
+  Map<String, Performance>? get map => _map!;
 
   bool isEmpty() {
-    return _map != null ? _map.isEmpty : true;
+    return _map != null ? _map!.isEmpty : true;
   }
 
   Performance _emptyPerformance =
       Performance('', '', '', 0, 0, 0, 0, 0, '', '');
 
-  void addPerformance(Performance performance) {
+  void addPerformance(Performance? performance) {
     if (performance != null) {
       //_datas.add(performance);
       // if(_map.containsKey(performance.range)){
       //   _map.update(key, (value) => null);
       // }
-      _map.update(
-        performance.range,
+      _map?.update(
+        performance.range!,
         // You can ignore the incoming parameter if you want to always update the value even if it is already in the map
         (existingValue) => performance,
         ifAbsent: () => performance,
@@ -6971,36 +7010,36 @@ class PerformanceData {
     }
   }
 
-  Performance getPerformance(String range) {
-    if (range != null && _map.containsKey(range)) {
-      return _map[range];
+  Performance getPerformance(String? range) {
+    if (range != null && _map!.containsKey(range)) {
+      return _map![range]!;
     }
     return _emptyPerformance;
   }
 
-  void copyValueFrom(PerformanceData newValue) {
+  void copyValueFrom(PerformanceData? newValue) {
     if (newValue != null) {
       this.loaded = true;
       this.code = newValue.code;
       this.type = newValue.type;
-      this._map.clear();
+      this._map?.clear();
       if (newValue.map != null) {
-        this._map.addAll(newValue.map);
+        this._map?.addAll(newValue.map!);
       }
     } else {
       this.code = '';
       this.type = '';
-      this._map.clear();
+      this._map?.clear();
     }
   }
 }
 
 class Line {
-  double close = 0;
+  double? close = 0;
 
   //double prev = 0;
-  DateTime date;
-  DateTime time;
+  DateTime? date;
+  DateTime? time;
   static DateFormat dateFormat = new DateFormat('yyyy-MM-dd');
 
   Line(this.close, this.date, this.time);
@@ -7008,8 +7047,8 @@ class Line {
   factory Line.fromJson(Map<String, dynamic> parsedJson) {
     int start = parsedJson['start'];
     DateTime time;
-    String close = StringUtils.noNullString(parsedJson['close']);
-    String vol = StringUtils.noNullString(parsedJson['vol']);
+    String? close = StringUtils.noNullString(parsedJson['close']);
+    String? vol = StringUtils.noNullString(parsedJson['vol']);
 
     try {
       time = dateFormat.parse(parsedJson['time']);
@@ -7027,9 +7066,9 @@ class Line {
     double close = Utils.safeDouble(element.getAttribute('close'));
     DateTime time;
     try {
-      time = dateFormat.parse(element.getAttribute('time'));
+      time = dateFormat.parse(element.getAttribute('time')!);
     } catch (e) {
-      String _timeData = element.getAttribute('time');
+      String _timeData = element.getAttribute('time')!;
       List<int> _time =
           _timeData.split(':').toList().map((e) => int.parse(e)).toList();
       time = DateTime(DateTime.now().year, DateTime.now().month,
@@ -7048,15 +7087,15 @@ class Line {
 }
 
 class Ohlcv {
-  double open = 0;
-  double hi = 0;
-  double low = 0;
-  double close = 0;
-  int vol = 0;
+  double? open = 0;
+  double? hi = 0;
+  double? low = 0;
+  double? close = 0;
+  int? vol = 0;
 
   //double prev = 0;
-  DateTime date;
-  DateTime time;
+  DateTime? date;
+  DateTime? time;
   static DateFormat dateFormat = new DateFormat('yyyy-MM-dd');
 
   Ohlcv(
@@ -7096,32 +7135,32 @@ class Ohlcv {
 }
 
 class ChartOhlcvData {
-  Ohlcv ohlcvData;
-  String code = '';
-  String from = '';
-  String to = '';
-  double maxValue = 0;
-  double minValue = 0;
-  double prevValue = 0;
+  Ohlcv? ohlcvData;
+  String? code = '';
+  String? from = '';
+  String? to = '';
+  double? maxValue = 0;
+  double? minValue = 0;
+  double? prevValue = 0;
 
-  void setRequestType(String _code, String _from, String _to) {
+  void setRequestType(String? _code, String _from, String _to) {
     this.code = _code;
     this.from = _from;
     this.to = _to;
   }
 
-  bool isValidResponse(String _code, String _from, String _to) {
-    bool codeValid = StringUtils.equalsIgnoreCase(_code, this.code);
+  bool isValidResponse(String? _code, String _from, String _to) {
+    bool codeValid = StringUtils.equalsIgnoreCase(_code, this.code!);
     if (!codeValid) {
       return false;
     }
-    bool fromValid = /*(_from == null && this.from == null) ||*/ StringUtils
-        .equalsIgnoreCase(_from, this.from);
+    bool fromValid = /*(_from == null && this.from == null) ||*/
+        StringUtils.equalsIgnoreCase(_from, this.from!);
     if (!fromValid) {
       return false;
     }
-    bool toValid = /* (_to == null && this.to == null) || */ StringUtils
-        .equalsIgnoreCase(_to, this.to);
+    bool toValid = /* (_to == null && this.to == null) || */
+        StringUtils.equalsIgnoreCase(_to, this.to!);
     if (!toValid) {
       return false;
     }
@@ -7131,33 +7170,33 @@ class ChartOhlcvData {
   bool loaded = false;
 
   //data nya disini dari ohlcv
-  List<Ohlcv> datas = List.empty(growable: true);
+  List<Ohlcv>? datas = List.empty(growable: true);
 
   int count() {
-    return datas != null ? datas.length : 0;
+    return datas != null ? datas!.length : 0;
   }
 
   Ohlcv elemetAt(int index) {
     if (index < count()) {
-      return datas.elementAt(index);
+      return datas!.elementAt(index);
     }
-    return null;
+    return Ohlcv(null, null, null, null, null, null, null);
   }
 
   Ohlcv last() {
     if (count() > 0) {
-      return datas.last;
+      return datas!.last;
     }
-    return null;
+    return Ohlcv(null, null, null, null, null, null, null);
   }
 
-  void addOhlcv(Ohlcv o) {
+  void addOhlcv(Ohlcv? o) {
     if (o != null) {
-      maxValue = max(o.open, maxValue);
-      maxValue = max(o.hi, maxValue);
-      maxValue = max(o.low, maxValue);
+      maxValue = max(o.open!, maxValue!);
+      maxValue = max(o.hi!, maxValue!);
+      maxValue = max(o.low!, maxValue!);
 
-      maxValue = max(o.close, maxValue);
+      maxValue = max(o.close!, maxValue!);
       //maxValue = max(o.prev, maxValue);
 
       if (minValue == 0) {
@@ -7165,37 +7204,36 @@ class ChartOhlcvData {
       } else {
         //minValue = o.open > 0 ? min(o.open, minValue) : minValue;
         //minValue = o.hi > 0 ? min(o.hi, minValue) : minValue;
-        minValue = o.low > 0 ? min(o.low, minValue) : minValue;
+        minValue = o.low! > 0 ? min(o.low!, minValue!) : minValue;
 
         //minValue = o.close > 0 ? min(o.close, minValue) : minValue;
-
       }
-      datas.add(o);
+      datas!.add(o);
     }
   }
 
   void normalize({bool middlePrev = false}) {
-    if (middlePrev && prevValue > 0) {
-      double gapUpper = maxValue - prevValue;
-      double gapLower = prevValue - minValue;
+    if (middlePrev && prevValue! > 0) {
+      double gapUpper = maxValue! - prevValue!;
+      double gapLower = prevValue! - minValue!;
       double gap = max(gapUpper.abs(), gapLower.abs());
       if (gap == 0) {
-        gap = prevValue * 0.5;
+        gap = prevValue! * 0.5;
       }
       if (gapUpper <= 0 || gapUpper < gap) {
-        maxValue = prevValue + gap;
+        maxValue = prevValue! + gap;
       }
 
       if (gapLower <= 0 || gapLower < gap) {
-        minValue = prevValue - gap;
+        minValue = prevValue! - gap;
       }
 
-      maxValue = prevValue + gap;
-      minValue = prevValue - gap;
+      maxValue = prevValue! + gap;
+      minValue = prevValue! - gap;
     } else {
       if (maxValue == minValue) {
-        maxValue = maxValue * 1.5;
-        minValue = minValue * 0.5;
+        maxValue = maxValue! * 1.5;
+        minValue = minValue! * 0.5;
       }
     }
 
@@ -7204,30 +7242,30 @@ class ChartOhlcvData {
   }
 
   void setPrev(
-    double _prev,
+    double? _prev,
     /*{bool middlePrev = false} */
   ) {
     this.prevValue = _prev;
-    minValue = this.prevValue > 0 ? min(this.prevValue, minValue) : minValue;
-    maxValue = max(this.prevValue, maxValue);
+    minValue = this.prevValue! > 0 ? min(this.prevValue!, minValue!) : minValue;
+    maxValue = max(this.prevValue!, maxValue!);
 
-    if ((maxValue - maxValue) <= 2) {
-      maxValue++;
+    if ((maxValue! - maxValue!) <= 2) {
+      maxValue = maxValue! + 1;
     }
   }
 
-  void copyValueFrom(ChartOhlcvData newValue) {
+  void copyValueFrom(ChartOhlcvData? newValue) {
     if (newValue != null) {
       this.loaded = true;
       this.maxValue = newValue.maxValue;
       this.minValue = newValue.minValue;
       this.prevValue = newValue.prevValue;
-      this.datas.clear();
+      this.datas?.clear();
       if (newValue.datas != null) {
-        this.datas.addAll(newValue.datas);
+        this.datas?.addAll(newValue.datas!);
       }
     } else {
-      this.datas.clear();
+      this.datas?.clear();
       this.maxValue = 0;
       this.minValue = 0;
       this.prevValue = 0;
@@ -7247,31 +7285,31 @@ class ChartOhlcvData {
 }
 
 class ChartLineData {
-  String code = '';
+  String? code = '';
   String from = '';
   String to = '';
   double maxValue = 0;
   double minValue = 0;
-  double prevValue = 0;
+  double? prevValue = 0;
 
-  void setRequestType(String _code, String _from, String _to) {
+  void setRequestType(String? _code, String _from, String _to) {
     this.code = _code;
     this.from = _from;
     this.to = _to;
   }
 
-  bool isValidResponse(String _code, String _from, String _to) {
+  bool isValidResponse(String? _code, String _from, String _to) {
     bool codeValid = StringUtils.equalsIgnoreCase(_code, this.code);
     if (!codeValid) {
       return false;
     }
-    bool fromValid = /*(_from == null && this.from == null) ||*/ StringUtils
-        .equalsIgnoreCase(_from, this.from);
+    bool fromValid = /*(_from == null && this.from == null) ||*/
+        StringUtils.equalsIgnoreCase(_from, this.from);
     if (!fromValid) {
       return false;
     }
-    bool toValid = /* (_to == null && this.to == null) || */ StringUtils
-        .equalsIgnoreCase(_to, this.to);
+    bool toValid = /* (_to == null && this.to == null) || */
+        StringUtils.equalsIgnoreCase(_to, this.to);
     if (!toValid) {
       return false;
     }
@@ -7279,60 +7317,60 @@ class ChartLineData {
   }
 
   bool loaded = false;
-  List<Line> datas = List.empty(growable: true);
+  List<Line>? datas = List.empty(growable: true);
 
-  int count() {
-    return datas != null ? datas.length : 0;
+  int? count() {
+    return datas != null ? datas?.length : 0;
   }
 
-  Line elemetAt(int index) {
-    if (index < count()) {
-      return datas.elementAt(index);
+  Line? elemetAt(int index) {
+    if (index < count()!) {
+      return datas?.elementAt(index);
     }
-    return null;
+    return Line(null, null, null);
   }
 
-  Line last() {
-    if (count() > 0) {
-      return datas.last;
+  Line? last() {
+    if (count()! > 0) {
+      return datas?.last;
     }
-    return null;
+    return Line(null, null, null);
   }
 
-  void addOhlcv(Line o) {
+  void addOhlcv(Line? o) {
     if (o != null) {
-      maxValue = max(o.close, maxValue);
+      maxValue = max(o.close!, maxValue);
       //maxValue = max(o.prev, maxValue);
 
       if (minValue == 0) {
-        minValue = o.close;
+        minValue = o.close!;
         //minValue = o.prev > 0 ? min(o.prev, minValue) : minValue;
       } else {
-        minValue = o.close > 0 ? min(o.close, minValue) : minValue;
+        minValue = o.close! > 0 ? min(o.close!, minValue) : minValue;
         //minValue = o.prev > 0 ? min(o.prev, minValue) : minValue;
       }
-      datas.add(o);
+      datas?.add(o);
     }
   }
 
   void normalize({bool middlePrev = false}) {
-    if (middlePrev && prevValue > 0) {
-      double gapUpper = maxValue - prevValue;
-      double gapLower = prevValue - minValue;
+    if (middlePrev && prevValue! > 0) {
+      double gapUpper = maxValue - prevValue!;
+      double gapLower = prevValue! - minValue;
       double gap = max(gapUpper.abs(), gapLower.abs());
       if (gap == 0) {
-        gap = prevValue * 0.5;
+        gap = prevValue! * 0.5;
       }
       if (gapUpper <= 0 || gapUpper < gap) {
-        maxValue = prevValue + gap;
+        maxValue = prevValue! + gap;
       }
 
       if (gapLower <= 0 || gapLower < gap) {
-        minValue = prevValue - gap;
+        minValue = prevValue! - gap;
       }
 
-      maxValue = prevValue + gap;
-      minValue = prevValue - gap;
+      maxValue = prevValue! + gap;
+      minValue = prevValue! - gap;
 
       /*
 
@@ -7370,12 +7408,12 @@ class ChartLineData {
   }
 
   void setPrev(
-    double _prev,
+    double? _prev,
     /*{bool middlePrev = false} */
   ) {
     this.prevValue = _prev;
-    minValue = this.prevValue > 0 ? min(this.prevValue, minValue) : minValue;
-    maxValue = max(this.prevValue, maxValue);
+    minValue = this.prevValue! > 0 ? min(this.prevValue!, minValue) : minValue;
+    maxValue = max(this.prevValue!, maxValue);
 
     //normalize(middlePrev: middlePrev);
 
@@ -7409,18 +7447,18 @@ class ChartLineData {
     */
   }
 
-  void copyValueFrom(ChartLineData newValue) {
+  void copyValueFrom(ChartLineData? newValue) {
     if (newValue != null) {
       this.loaded = true;
       this.maxValue = newValue.maxValue;
       this.minValue = newValue.minValue;
       this.prevValue = newValue.prevValue;
-      this.datas.clear();
+      this.datas?.clear();
       if (newValue.datas != null) {
-        this.datas.addAll(newValue.datas);
+        this.datas?.addAll(newValue.datas!);
       }
     } else {
-      this.datas.clear();
+      this.datas?.clear();
       this.maxValue = 0;
       this.minValue = 0;
       this.prevValue = 0;
@@ -7448,17 +7486,17 @@ class LabelValueDivider {
 }
 
 class LabelValue extends LabelValueDivider {
-  String _label;
-  String _value;
-  Color valueColor;
+  String? _label;
+  String? _value;
+  Color? valueColor;
 
   LabelValue(this._label, this._value, {this.valueColor});
 
   //Color get valueColor => _valueColor;
 
-  String get value => _value;
+  String? get value => _value;
 
-  String get label => _label;
+  String? get label => _label;
 
   bool isDivider() {
     return false;
@@ -7499,24 +7537,24 @@ class LabelValueSubtitle extends LabelValueDivider {
 }
 
 class DynamicContent {
-  String text_1 = '';
-  String text_2 = '';
-  String text_3 = '';
-  Color color;
+  String? text_1 = '';
+  String? text_2 = '';
+  String? text_3 = '';
+  Color? color;
 
   DynamicContent(this.text_1, this.text_2, this.text_3, {this.color});
 
   bool isDivider() {
-    return StringUtils.equalsIgnoreCase(text_1, '-');
+    return StringUtils.equalsIgnoreCase(text_1!, '-');
   }
 
   bool isSubtitle() {
-    return !StringUtils.equalsIgnoreCase(text_1, '-') &&
-        StringUtils.equalsIgnoreCase(text_2, '-') &&
-        StringUtils.equalsIgnoreCase(text_3, '-');
+    return !StringUtils.equalsIgnoreCase(text_1!, '-') &&
+        StringUtils.equalsIgnoreCase(text_2!, '-') &&
+        StringUtils.equalsIgnoreCase(text_3!, '-');
   }
 
-  factory DynamicContent.fromJson(List<dynamic> data) {
+  static DynamicContent? fromJson(List<dynamic>? data) {
     // if(data == null){
     //   return null;
     // }
@@ -7524,13 +7562,13 @@ class DynamicContent {
     // //List data = parsedJson as List;
     print('DynamicContent.fromJson 00');
     if (data == null || data.length < 4) {
-      return null;
+      return DynamicContent(null, null, null);
     }
     print('DynamicContent.fromJson AA');
-    String text_1 = StringUtils.noNullString(data.elementAt(0));
-    String text_2 = StringUtils.noNullString(data.elementAt(1));
-    String text_3 = StringUtils.noNullString(data.elementAt(2));
-    String colorText = StringUtils.noNullString(data.elementAt(3));
+    String? text_1 = StringUtils.noNullString(data.elementAt(0));
+    String? text_2 = StringUtils.noNullString(data.elementAt(1));
+    String? text_3 = StringUtils.noNullString(data.elementAt(2));
+    String? colorText = StringUtils.noNullString(data.elementAt(3));
     print('DynamicContent.fromJson BB');
     if (StringUtils.equalsIgnoreCase(colorText, 'GREEN')) {
       return DynamicContent(text_1, text_2, text_3,
@@ -7547,7 +7585,7 @@ class DynamicContent {
 }
 
 class DataCompanyProfile {
-  String code = '';
+  String? code = '';
 
   //dataHistory
   String listing_date = '';
@@ -7556,63 +7594,66 @@ class DataCompanyProfile {
   String ipo_price = '';
   String ipo_shares = '';
   String ipo_amount = '';
-  List<String> underwriter_list = List.empty(growable: true);
-  List<String> share_registrar_list = List.empty(growable: true);
+  List<String>? underwriter_list = List.empty(growable: true);
+  List<String>? share_registrar_list = List.empty(growable: true);
 
   //dataShareholders
   String additionalInfo = '';
-  List<DynamicContent> contentList = List<DynamicContent>.empty(growable: true);
+  List<DynamicContent>? contentList =
+      List<DynamicContent>.empty(growable: true);
 
   //dataCommisioners
-  List<String> president_commissioner_list = List.empty(growable: true);
-  List<String> vice_president_commissioner_list = List.empty(growable: true);
-  List<String> commissioner_list = List.empty(growable: true);
-  List<String> president_director_list = List.empty(growable: true);
-  List<String> vice_president_director_list = List.empty(growable: true);
-  List<String> director_list = List.empty(growable: true);
+  List<String>? president_commissioner_list = List.empty(growable: true);
+  List<String>? vice_president_commissioner_list = List.empty(growable: true);
+  List<String>? commissioner_list = List.empty(growable: true);
+  List<String>? president_director_list = List.empty(growable: true);
+  List<String>? vice_president_director_list = List.empty(growable: true);
+  List<String>? director_list = List.empty(growable: true);
 
   bool loaded = false;
 
-  int countUnderwriter() {
-    return underwriter_list != null ? underwriter_list.length : 0;
+  int? countUnderwriter() {
+    return underwriter_list != null ? underwriter_list?.length : 0;
   }
 
-  int countShareRegistrar() {
-    return share_registrar_list != null ? share_registrar_list.length : 0;
+  int? countShareRegistrar() {
+    return share_registrar_list != null ? share_registrar_list?.length : 0;
   }
 
-  int countContentList() {
-    return contentList != null ? contentList.length : 0;
+  int? countContentList() {
+    return contentList != null ? contentList?.length : 0;
   }
 
-  int countPresidentCommissioner() {
+  int? countPresidentCommissioner() {
     return president_commissioner_list != null
-        ? president_commissioner_list.length
+        ? president_commissioner_list?.length
         : 0;
   }
 
-  int countVicePresidentCommissioner() {
+  int? countVicePresidentCommissioner() {
     return vice_president_commissioner_list != null
-        ? vice_president_commissioner_list.length
+        ? vice_president_commissioner_list?.length
         : 0;
   }
 
-  int countCommissioner() {
-    return commissioner_list != null ? commissioner_list.length : 0;
+  int? countCommissioner() {
+    return commissioner_list != null ? commissioner_list?.length : 0;
   }
 
-  int countPresidentDirector() {
-    return president_director_list != null ? president_director_list.length : 0;
+  int? countPresidentDirector() {
+    return president_director_list != null
+        ? president_director_list?.length
+        : 0;
   }
 
-  int countVicePresidentDirector() {
+  int? countVicePresidentDirector() {
     return vice_president_director_list != null
-        ? vice_president_director_list.length
+        ? vice_president_director_list?.length
         : 0;
   }
 
-  int countDirectorList() {
-    return director_list != null ? director_list.length : 0;
+  int? countDirectorList() {
+    return director_list != null ? director_list?.length : 0;
   }
 
   DataCompanyProfile(
@@ -7634,11 +7675,11 @@ class DataCompanyProfile {
       this.vice_president_director_list,
       this.director_list);
 
-  bool isEmpty() {
-    return code != null ? code.isEmpty : false;
+  bool? isEmpty() {
+    return code != null ? code?.isEmpty : false;
   }
 
-  void copyValueFrom(DataCompanyProfile newValue) {
+  void copyValueFrom(DataCompanyProfile? newValue) {
     if (newValue != null) {
       this.loaded = true;
 
@@ -7651,52 +7692,52 @@ class DataCompanyProfile {
       this.ipo_price = newValue.ipo_price;
       this.ipo_shares = newValue.ipo_shares;
       this.ipo_amount = newValue.ipo_amount;
-      this.underwriter_list.clear();
+      this.underwriter_list?.clear();
       if (newValue.underwriter_list != null) {
-        this.underwriter_list.addAll(newValue.underwriter_list);
+        this.underwriter_list?.addAll(newValue.underwriter_list!);
       }
-      this.share_registrar_list.clear();
+      this.share_registrar_list?.clear();
       if (newValue.share_registrar_list != null) {
-        this.share_registrar_list.addAll(newValue.share_registrar_list);
+        this.share_registrar_list?.addAll(newValue.share_registrar_list!);
       }
 
       //dataShareholders
       this.additionalInfo = newValue.additionalInfo;
-      this.contentList.clear();
+      this.contentList?.clear();
       if (newValue.contentList != null) {
-        this.contentList.addAll(newValue.contentList);
+        this.contentList?.addAll(newValue.contentList!);
       }
 
       //dataCommisioners
-      this.president_commissioner_list.clear();
+      this.president_commissioner_list?.clear();
       if (newValue.president_commissioner_list != null) {
         this
             .president_commissioner_list
-            .addAll(newValue.president_commissioner_list);
+            ?.addAll(newValue.president_commissioner_list!);
       }
-      this.vice_president_commissioner_list.clear();
+      this.vice_president_commissioner_list?.clear();
       if (newValue.vice_president_commissioner_list != null) {
         this
             .vice_president_commissioner_list
-            .addAll(newValue.vice_president_commissioner_list);
+            ?.addAll(newValue.vice_president_commissioner_list!);
       }
-      this.commissioner_list.clear();
+      this.commissioner_list?.clear();
       if (newValue.commissioner_list != null) {
-        this.commissioner_list.addAll(newValue.commissioner_list);
+        this.commissioner_list?.addAll(newValue.commissioner_list!);
       }
-      this.president_director_list.clear();
+      this.president_director_list?.clear();
       if (newValue.president_director_list != null) {
-        this.president_director_list.addAll(newValue.president_director_list);
+        this.president_director_list?.addAll(newValue.president_director_list!);
       }
-      this.vice_president_director_list.clear();
+      this.vice_president_director_list?.clear();
       if (newValue.vice_president_director_list != null) {
         this
             .vice_president_director_list
-            .addAll(newValue.vice_president_director_list);
+            ?.addAll(newValue.vice_president_director_list!);
       }
-      this.director_list.clear();
+      this.director_list?.clear();
       if (newValue.director_list != null) {
-        this.director_list.addAll(newValue.director_list);
+        this.director_list?.addAll(newValue.director_list!);
       }
     } else {
       this.code = '';
@@ -7708,20 +7749,20 @@ class DataCompanyProfile {
       this.ipo_price = '';
       this.ipo_shares = '';
       this.ipo_amount = '';
-      this.underwriter_list.clear();
-      this.share_registrar_list.clear();
+      this.underwriter_list?.clear();
+      this.share_registrar_list?.clear();
 
       //dataShareholders
       this.additionalInfo = '';
-      this.contentList.clear();
+      this.contentList?.clear();
 
       //dataCommisioners
-      this.president_commissioner_list.clear();
-      this.vice_president_commissioner_list.clear();
-      this.commissioner_list.clear();
-      this.president_director_list.clear();
-      this.vice_president_director_list.clear();
-      this.director_list.clear();
+      this.president_commissioner_list?.clear();
+      this.vice_president_commissioner_list?.clear();
+      this.commissioner_list?.clear();
+      this.president_director_list?.clear();
+      this.vice_president_director_list?.clear();
+      this.director_list?.clear();
     }
   }
 
@@ -7772,54 +7813,54 @@ class DataCompanyProfile {
 }
 
 class LabelValuePercent extends LabelValue {
-  String _valuePercent;
-  Color valuePercentColor;
+  String? _valuePercent;
+  Color? valuePercentColor;
 
   LabelValuePercent(
-    String label,
-    String value,
+    String? label,
+    String? value,
     this._valuePercent, {
-    Color valueColor,
+    Color? valueColor,
     this.valuePercentColor,
   }) : super(label, value, valueColor: valueColor);
 
-  String get valuePercent => _valuePercent;
+  String? get valuePercent => _valuePercent;
 }
 
 class LabelValueData {
   bool loaded = false;
-  List<LabelValueDivider> datas = List.empty(growable: true);
+  List<LabelValueDivider>? datas = List.empty(growable: true);
   String additionalInfo = '';
 
   int count() {
-    return datas != null ? datas.length : 0;
+    return datas != null ? datas!.length : 0;
   }
 
   bool isEmpty() {
     return count() <= 0;
   }
 
-  void copyValueFrom(LabelValueData newValue) {
+  void copyValueFrom(LabelValueData? newValue) {
     if (newValue != null) {
       this.loaded = true;
-      this.datas.clear();
+      this.datas?.clear();
       // newValue.datas.forEach((element) {
       //   this.datas.add(element);
       // });
       if (newValue.datas != null) {
-        this.datas.addAll(newValue.datas);
+        this.datas?.addAll(newValue.datas!);
       }
       this.additionalInfo = newValue.additionalInfo;
     } else {
-      this.datas.clear();
+      this.datas?.clear();
       this.additionalInfo = '';
     }
   }
 }
 
 abstract class CorporateAction {
-  String code = '';
-  String year = '';
+  String? code = '';
+  String? year = '';
 
   CorporateAction(this.code, this.year);
 
@@ -7901,16 +7942,16 @@ class CAStockSplit extends CorporateAction {
 */
 class CorporateActionData {
   bool loaded = false;
-  String code = '';
-  String type = '';
-  List<CorporateAction> datas = List.empty(growable: true);
+  String? code = '';
+  String? type = '';
+  List<CorporateAction>? datas = List.empty(growable: true);
 
   int count() {
-    return datas != null ? datas.length : 0;
+    return datas != null ? datas!.length : 0;
   }
 
   void addData(CorporateAction ca) {
-    datas.add(ca);
+    datas?.add(ca);
   }
 
   @override
@@ -7920,21 +7961,21 @@ class CorporateActionData {
         ']';
   }
 
-  void copyValueFrom(CorporateActionData newValue) {
+  void copyValueFrom(CorporateActionData? newValue) {
     if (newValue != null) {
       this.loaded = true;
 
       this.code = newValue.code;
       this.type = newValue.type;
 
-      this.datas.clear();
+      this.datas?.clear();
       if (newValue.datas != null) {
-        this.datas.addAll(newValue.datas);
+        this.datas?.addAll(newValue.datas!);
       }
     } else {
       this.code = '';
       this.type = '';
-      this.datas.clear();
+      this.datas?.clear();
     }
   }
 
@@ -7945,37 +7986,37 @@ class CorporateActionData {
 
 class NewsData {
   bool loaded = false;
-  List<News> datas = List.empty(growable: true);
+  List<News>? datas = List.empty(growable: true);
 
-  int count() {
-    return datas != null ? datas.length : 0;
+  int? count() {
+    return datas != null ? datas?.length : 0;
   }
 
-  bool isEmpty() {
-    return datas != null ? datas.isEmpty : true;
+  bool? isEmpty() {
+    return datas != null ? datas?.isEmpty : true;
   }
 
-  void copyValueFrom(NewsData newValue) {
+  void copyValueFrom(NewsData? newValue) {
     if (newValue != null) {
       this.loaded = true;
-      this.datas.clear();
+      this.datas?.clear();
       if (newValue.datas != null) {
-        this.datas.addAll(newValue.datas);
+        this.datas?.addAll(newValue.datas!);
       }
     } else {
-      this.datas.clear();
+      this.datas?.clear();
     }
   }
 }
 
 class DataChartTopBrokerNet {
-  List<YearValue> netData = List.empty(growable: true);
+  List<YearValue>? netData = List.empty(growable: true);
   bool loaded = false;
 
   DataChartTopBrokerNet(this.netData);
 
-  bool isEmpty() {
-    return netData != null ? netData.isEmpty : false;
+  bool? isEmpty() {
+    return netData != null ? netData?.isEmpty : false;
   }
 
   static DataChartTopBrokerNet createBasic() {
@@ -7983,15 +8024,15 @@ class DataChartTopBrokerNet {
     return DataChartTopBrokerNet(netData);
   }
 
-  void copyValueFrom(DataChartTopBrokerNet newValue) {
+  void copyValueFrom(DataChartTopBrokerNet? newValue) {
     if (newValue != null) {
       this.loaded = true;
-      this.netData.clear();
+      this.netData?.clear();
       if (newValue.netData != null) {
-        this.netData.addAll(newValue.netData);
+        this.netData?.addAll(newValue.netData!);
       }
     } else {
-      this.netData.clear();
+      this.netData?.clear();
     }
   }
 }
@@ -8002,8 +8043,8 @@ class DataChartTopBroker {
   // String type = ''; // Buyer Seller
   // String from = '';
   // String to = '';
-  List<YearValue> buyData = List.empty(growable: true);
-  List<YearValue> sellData = List.empty(growable: true);
+  List<YearValue>? buyData = List.empty(growable: true);
+  List<YearValue>? sellData = List.empty(growable: true);
 
   //List<YearValue> netData = List.empty(growable: true);
   bool loaded = false;
@@ -8012,8 +8053,8 @@ class DataChartTopBroker {
       /*this.code, this.board, this.type, this.from, this.to,*/ this.buyData,
       this.sellData);
 
-  bool isEmpty() {
-    return buyData != null ? buyData.isEmpty : false;
+  bool? isEmpty() {
+    return buyData != null ? buyData?.isEmpty : false;
   }
 
   static DataChartTopBroker createBasic() {
@@ -8030,7 +8071,7 @@ class DataChartTopBroker {
         /*code, board, type, from, to,*/ buyData, sellData);
   }
 
-  void copyValueFrom(DataChartTopBroker newValue) {
+  void copyValueFrom(DataChartTopBroker? newValue) {
     if (newValue != null) {
       this.loaded = true;
       // this.code = newValue.code;
@@ -8039,14 +8080,14 @@ class DataChartTopBroker {
       // this.from = newValue.from;
       // this.to = newValue.to;
 
-      this.buyData.clear();
-      this.sellData.clear();
+      this.buyData?.clear();
+      this.sellData?.clear();
       if (newValue.buyData != null) {
-        this.buyData.addAll(newValue.buyData);
+        this.buyData?.addAll(newValue.buyData!);
       }
 
       if (newValue.sellData != null) {
-        this.sellData.addAll(newValue.sellData);
+        this.sellData?.addAll(newValue.sellData!);
       }
     } else {
       // this.code = '';
@@ -8054,34 +8095,34 @@ class DataChartTopBroker {
       // this.type = '';
       // this.from = '';
       // this.to = '';
-      this.buyData.clear();
-      this.sellData.clear();
+      this.buyData?.clear();
+      this.sellData?.clear();
     }
   }
 }
 
 class DataChartIncomeStatement {
-  String code = '';
-  String type = ''; // INCOME_STATEMENT
-  String show_as = ''; // YEARLY or QUARTERLY
-  List<String> label = List.empty(growable: true);
-  List<YearValue> net_income = List.empty(growable: true);
-  List<YearValue> revenue = List.empty(growable: true);
-  List<YearValue> net_profit_margin = List.empty(growable: true);
+  String? code = '';
+  String? type = ''; // INCOME_STATEMENT
+  String? show_as = ''; // YEARLY or QUARTERLY
+  List<String>? label = List.empty(growable: true);
+  List<YearValue>? net_income = List.empty(growable: true);
+  List<YearValue>? revenue = List.empty(growable: true);
+  List<YearValue>? net_profit_margin = List.empty(growable: true);
 
-  double max_net_income = 0.0;
-  double min_net_income = 0.0;
+  double? max_net_income = 0.0;
+  double? min_net_income = 0.0;
 
-  double max_revenue = 0.0;
-  double min_revenue = 0.0;
+  double? max_revenue = 0.0;
+  double? min_revenue = 0.0;
 
-  double max_net_profit_margin = 0.0;
-  double min_net_profit_margin = 0.0;
+  double? max_net_profit_margin = 0.0;
+  double? min_net_profit_margin = 0.0;
 
-  bool loaded = false;
+  bool? loaded = false;
 
   bool isEmpty() {
-    return label != null ? label.isEmpty : false;
+    return label != null ? label!.isEmpty : false;
   }
 
   DataChartIncomeStatement(
@@ -8113,15 +8154,16 @@ class DataChartIncomeStatement {
         revenue, netProfitMargin, 0, 0, 0, 0, 0, 0);
   }
 
-  factory DataChartIncomeStatement.fromJson(Map<String, dynamic> parsedJson,
-      String code, String type, String showAs) {
+  static DataChartIncomeStatement? fromJson(Map<String, dynamic>? parsedJson,
+      String? code, String? type, String? showAs) {
     if (parsedJson == null) {
-      return null;
+      return DataChartIncomeStatement(null, null, null, null, null, null, null,
+          null, null, null, null, null, null);
     }
-    var label = parsedJson['label'] as List;
-    var netIncome = parsedJson['net_income'] as List;
-    var revenue = parsedJson['revenue'] as List;
-    var netProfitMargin = parsedJson['net_profit_margin'] as List;
+    var label = parsedJson['label'] as List?;
+    var netIncome = parsedJson['net_income'] as List?;
+    var revenue = parsedJson['revenue'] as List?;
+    var netProfitMargin = parsedJson['net_profit_margin'] as List?;
 
     List<String> labelList = List.empty(growable: true);
     List<YearValue> netIncomeList = List.empty(growable: true);
@@ -8129,16 +8171,16 @@ class DataChartIncomeStatement {
     List<YearValue> netProfitMarginList = List.empty(growable: true);
 
     double maxNetIncome = 0.0;
-    double minNetIncome;
+    double? minNetIncome;
 
     double maxRevenue = 0.0;
-    double minRevenue;
+    double? minRevenue;
 
     double maxNetProfitMargin = 0.0;
-    double minNetProfitMargin;
+    double? minNetProfitMargin;
 
     if (label != null && label.isNotEmpty) {
-      int countLabel = label != null ? label.length : 0;
+      int? countLabel = label != null ? label.length : 0;
       int countNetIncome = netIncome != null ? netIncome.length : 0;
       int countRevenue = revenue != null ? revenue.length : 0;
       int countNetProfitMargin =
@@ -8148,12 +8190,13 @@ class DataChartIncomeStatement {
         String year = label.elementAt(i).toString();
         labelList.add(year);
 
-        double valueNetIncome =
-            i < countNetIncome ? Utils.safeDouble(netIncome.elementAt(i)) : 0.0;
+        double valueNetIncome = i < countNetIncome
+            ? Utils.safeDouble(netIncome?.elementAt(i))
+            : 0.0;
         double valueRevenue =
-            i < countRevenue ? Utils.safeDouble(revenue.elementAt(i)) : 0.0;
+            i < countRevenue ? Utils.safeDouble(revenue?.elementAt(i)) : 0.0;
         double valueNetProfitMargin = i < countNetProfitMargin
-            ? Utils.safeDouble(netProfitMargin.elementAt(i))
+            ? Utils.safeDouble(netProfitMargin?.elementAt(i))
             : 0.0;
 
         maxNetIncome = max(maxNetIncome, valueNetIncome);
@@ -8209,58 +8252,58 @@ class DataChartIncomeStatement {
         minNetProfitMargin);
   }
 
-  void copyValueFrom(DataChartIncomeStatement newValue) {
+  void copyValueFrom(DataChartIncomeStatement? newValue) {
     if (newValue != null) {
       this.loaded = true;
       this.code = newValue.code;
       this.type = newValue.type;
       this.show_as = newValue.show_as;
 
-      this.label.clear();
-      this.net_income.clear();
-      this.revenue.clear();
-      this.net_profit_margin.clear();
+      this.label?.clear();
+      this.net_income?.clear();
+      this.revenue?.clear();
+      this.net_profit_margin?.clear();
 
       if (newValue.label != null) {
-        this.label.addAll(newValue.label);
+        this.label?.addAll(newValue.label!);
       }
 
       if (newValue.net_income != null) {
-        this.net_income.addAll(newValue.net_income);
+        this.net_income?.addAll(newValue.net_income!);
       }
 
       if (newValue.revenue != null) {
-        this.revenue.addAll(newValue.revenue);
+        this.revenue?.addAll(newValue.revenue!);
       }
 
       if (newValue.net_profit_margin != null) {
-        this.net_profit_margin.addAll(newValue.net_profit_margin);
+        this.net_profit_margin?.addAll(newValue.net_profit_margin!);
       }
     } else {
       this.code = '';
       this.type = ''; // INCOME_STATEMENT
       this.show_as = ''; // YEARLY or QUARTERLY
-      this.label.clear();
-      this.net_income.clear();
-      this.revenue.clear();
-      this.net_profit_margin.clear();
+      this.label?.clear();
+      this.net_income?.clear();
+      this.revenue?.clear();
+      this.net_profit_margin?.clear();
     }
   }
 }
 
 class DataChartBalanceSheet {
-  String code = '';
-  String type = ''; // BALANCE_SHEET
-  String show_as = ''; // YEARLY or QUARTERLY
-  List<String> label = List.empty(growable: true);
-  List<YearValue> equity = List.empty(growable: true);
-  List<YearValue> liabilities = List.empty(growable: true);
-  List<YearValue> assets = List.empty(growable: true);
-  List<YearValue> debt_equity_ratio = List.empty(growable: true);
-  bool loaded = false;
+  String? code = '';
+  String? type = ''; // BALANCE_SHEET
+  String? show_as = ''; // YEARLY or QUARTERLY
+  List<String>? label = List.empty(growable: true);
+  List<YearValue>? equity = List.empty(growable: true);
+  List<YearValue>? liabilities = List.empty(growable: true);
+  List<YearValue>? assets = List.empty(growable: true);
+  List<YearValue>? debt_equity_ratio = List.empty(growable: true);
+  bool? loaded = false;
 
   bool isEmpty() {
-    return label != null ? label.isEmpty : false;
+    return label != null ? label!.isEmpty : false;
   }
 
   DataChartBalanceSheet(this.code, this.type, this.show_as, this.label,
@@ -8281,10 +8324,11 @@ class DataChartBalanceSheet {
         assets, debtEquityRatio);
   }
 
-  factory DataChartBalanceSheet.fromJson(Map<String, dynamic> parsedJson,
-      String code, String type, String showAs) {
+  factory DataChartBalanceSheet.fromJson(Map<String, dynamic>? parsedJson,
+      String? code, String? type, String? showAs) {
     if (parsedJson == null) {
-      return null;
+      return DataChartBalanceSheet(
+          null, null, null, null, null, null, null, null);
     }
     var label = parsedJson['label'] as List;
     var equity = parsedJson['equity'] as List;
@@ -8347,57 +8391,57 @@ class DataChartBalanceSheet {
       this.type = newValue.type;
       this.show_as = newValue.show_as;
 
-      this.label.clear();
-      this.equity.clear();
-      this.liabilities.clear();
-      this.assets.clear();
-      this.debt_equity_ratio.clear();
+      this.label?.clear();
+      this.equity?.clear();
+      this.liabilities?.clear();
+      this.assets?.clear();
+      this.debt_equity_ratio?.clear();
 
       if (newValue.label != null) {
-        this.label.addAll(newValue.label);
+        this.label?.addAll(newValue.label!);
       }
 
       if (newValue.equity != null) {
-        this.equity.addAll(newValue.equity);
+        this.equity?.addAll(newValue.equity!);
       }
 
       if (newValue.liabilities != null) {
-        this.liabilities.addAll(newValue.liabilities);
+        this.liabilities?.addAll(newValue.liabilities!);
       }
 
       if (newValue.assets != null) {
-        this.assets.addAll(newValue.assets);
+        this.assets?.addAll(newValue.assets!);
       }
 
       if (newValue.debt_equity_ratio != null) {
-        this.debt_equity_ratio.addAll(newValue.debt_equity_ratio);
+        this.debt_equity_ratio?.addAll(newValue.debt_equity_ratio!);
       }
     } else {
       this.code = '';
       this.type = ''; // BALANCE_SHEET
       this.show_as = ''; // YEARLY or QUARTERLY
-      this.label.clear();
-      this.equity.clear();
-      this.liabilities.clear();
-      this.assets.clear();
-      this.debt_equity_ratio.clear();
+      this.label?.clear();
+      this.equity?.clear();
+      this.liabilities?.clear();
+      this.assets?.clear();
+      this.debt_equity_ratio?.clear();
     }
   }
 }
 
 class DataChartCashFlow {
-  String code = '';
-  String type = ''; // CASH_FLOW
-  String show_as = ''; // YEARLY or QUARTERLY
-  List<String> label = List.empty(growable: true);
-  List<YearValue> cash_reserve = List.empty(growable: true);
-  List<YearValue> investing = List.empty(growable: true);
-  List<YearValue> operating = List.empty(growable: true);
-  List<YearValue> financing = List.empty(growable: true);
-  bool loaded = false;
+  String? code = '';
+  String? type = ''; // CASH_FLOW
+  String? show_as = ''; // YEARLY or QUARTERLY
+  List<String>? label = List.empty(growable: true);
+  List<YearValue>? cash_reserve = List.empty(growable: true);
+  List<YearValue>? investing = List.empty(growable: true);
+  List<YearValue>? operating = List.empty(growable: true);
+  List<YearValue>? financing = List.empty(growable: true);
+  bool? loaded = false;
 
   bool isEmpty() {
-    return label != null ? label.isEmpty : false;
+    return label != null ? label!.isEmpty : false;
   }
 
   DataChartCashFlow(this.code, this.type, this.show_as, this.label,
@@ -8418,10 +8462,10 @@ class DataChartCashFlow {
         operating, financing);
   }
 
-  factory DataChartCashFlow.fromJson(Map<String, dynamic> parsedJson,
-      String code, String type, String showAs) {
+  factory DataChartCashFlow.fromJson(Map<String, dynamic>? parsedJson,
+      String? code, String? type, String? showAs) {
     if (parsedJson == null) {
-      return null;
+      return DataChartCashFlow(null, null, null, null, null, null, null, null);
     }
     var label = parsedJson['label'] as List;
     var cashReserve = parsedJson['cash_reserve'] as List;
@@ -8480,56 +8524,56 @@ class DataChartCashFlow {
       this.type = newValue.type;
       this.show_as = newValue.show_as;
 
-      this.label.clear();
-      this.cash_reserve.clear();
-      this.investing.clear();
-      this.operating.clear();
-      this.financing.clear();
+      this.label?.clear();
+      this.cash_reserve?.clear();
+      this.investing?.clear();
+      this.operating?.clear();
+      this.financing?.clear();
 
       if (newValue.label != null) {
-        this.label.addAll(newValue.label);
+        this.label?.addAll(newValue.label!);
       }
 
       if (newValue.cash_reserve != null) {
-        this.cash_reserve.addAll(newValue.cash_reserve);
+        this.cash_reserve?.addAll(newValue.cash_reserve!);
       }
 
       if (newValue.investing != null) {
-        this.investing.addAll(newValue.investing);
+        this.investing?.addAll(newValue.investing!);
       }
 
       if (newValue.operating != null) {
-        this.operating.addAll(newValue.operating);
+        this.operating?.addAll(newValue.operating!);
       }
 
       if (newValue.financing != null) {
-        this.financing.addAll(newValue.financing);
+        this.financing?.addAll(newValue.financing!);
       }
     } else {
       this.code = '';
       this.type = ''; // CASH_FLOW
       this.show_as = ''; // YEARLY or QUARTERLY
-      this.label.clear();
-      this.cash_reserve.clear();
-      this.investing.clear();
-      this.operating.clear();
-      this.financing.clear();
+      this.label?.clear();
+      this.cash_reserve?.clear();
+      this.investing?.clear();
+      this.operating?.clear();
+      this.financing?.clear();
     }
   }
 }
 
 class DataChartEarningPerShare {
-  String code = '';
-  String type = ''; // EARNING_PER_SHARE
-  String show_as = ''; // YEARLY or QUARTERLY
-  List<String> label = List.empty(growable: true);
-  List<YearValue> dividend_per_share = List.empty(growable: true);
-  List<YearValue> earning_per_share = List.empty(growable: true);
-  List<YearValue> dividend_payout_ratio = List.empty(growable: true);
-  bool loaded = false;
+  String? code = '';
+  String? type = ''; // EARNING_PER_SHARE
+  String? show_as = ''; // YEARLY or QUARTERLY
+  List<String>? label = List.empty(growable: true);
+  List<YearValue>? dividend_per_share = List.empty(growable: true);
+  List<YearValue>? earning_per_share = List.empty(growable: true);
+  List<YearValue>? dividend_payout_ratio = List.empty(growable: true);
+  bool? loaded = false;
 
   bool isEmpty() {
-    return label != null ? label.isEmpty : false;
+    return label != null ? label!.isEmpty : false;
   }
 
   DataChartEarningPerShare(
@@ -8555,10 +8599,10 @@ class DataChartEarningPerShare {
         earningPerShare, dividendPayoutRatio);
   }
 
-  factory DataChartEarningPerShare.fromJson(Map<String, dynamic> parsedJson,
-      String code, String type, String showAs) {
+  factory DataChartEarningPerShare.fromJson(Map<String, dynamic>? parsedJson,
+      String? code, String? type, String? showAs) {
     if (parsedJson == null) {
-      return null;
+      return DataChartEarningPerShare(null, null, null, null, null, null, null);
     }
     var label = parsedJson['label'] as List;
     var dividendPerShare = parsedJson['dividend_per_share'] as List;
@@ -8611,55 +8655,55 @@ class DataChartEarningPerShare {
       this.type = newValue.type;
       this.show_as = newValue.show_as;
 
-      this.label.clear();
-      this.dividend_per_share.clear();
-      this.earning_per_share.clear();
-      this.dividend_payout_ratio.clear();
+      this.label?.clear();
+      this.dividend_per_share?.clear();
+      this.earning_per_share?.clear();
+      this.dividend_payout_ratio?.clear();
 
       if (newValue.label != null) {
-        this.label.addAll(newValue.label);
+        this.label?.addAll(newValue.label!);
       }
 
       if (newValue.dividend_per_share != null) {
-        this.dividend_per_share.addAll(newValue.dividend_per_share);
+        this.dividend_per_share?.addAll(newValue.dividend_per_share!);
       }
 
       if (newValue.earning_per_share != null) {
-        this.earning_per_share.addAll(newValue.earning_per_share);
+        this.earning_per_share?.addAll(newValue.earning_per_share!);
       }
 
       if (newValue.dividend_payout_ratio != null) {
-        this.dividend_payout_ratio.addAll(newValue.dividend_payout_ratio);
+        this.dividend_payout_ratio?.addAll(newValue.dividend_payout_ratio!);
       }
     } else {
       this.code = '';
       this.type = ''; // INCOME_STATEMENT
       this.show_as = ''; // YEARLY or QUARTERLY
-      this.label.clear();
-      this.dividend_per_share.clear();
-      this.earning_per_share.clear();
-      this.dividend_payout_ratio.clear();
+      this.label?.clear();
+      this.dividend_per_share?.clear();
+      this.earning_per_share?.clear();
+      this.dividend_payout_ratio?.clear();
     }
   }
 }
 
 class EarningPerShareData {
-  List<String> years = ["", "", "", ""];
-  List<double> quarter1 = [0, 0, 0, 0];
-  List<double> quarter2 = [0, 0, 0, 0];
-  List<double> quarter3 = [0, 0, 0, 0];
-  List<double> quarter4 = [0, 0, 0, 0];
+  List<String>? years = ["", "", "", ""];
+  List<double>? quarter1 = [0, 0, 0, 0];
+  List<double>? quarter2 = [0, 0, 0, 0];
+  List<double>? quarter3 = [0, 0, 0, 0];
+  List<double>? quarter4 = [0, 0, 0, 0];
 
-  List<double> eps = [0, 0, 0, 0];
-  List<double> dps = [0.0, 0.0, 0.0, 0.0];
-  List<double> dpr = [0.0, 0.0, 0.0, 0.0];
+  List<double>? eps = [0, 0, 0, 0];
+  List<double>? dps = [0.0, 0.0, 0.0, 0.0];
+  List<double>? dpr = [0.0, 0.0, 0.0, 0.0];
 
-  String recentQuarter = '';
+  String? recentQuarter = '';
 
   bool loaded = false;
 
   bool isEmpty() {
-    return years != null ? years.isEmpty : false;
+    return years != null ? years!.isEmpty : false;
   }
 
   static EarningPerShareData createBasic() {
@@ -8679,9 +8723,10 @@ class EarningPerShareData {
   EarningPerShareData(this.years, this.quarter1, this.quarter2, this.quarter3,
       this.quarter4, this.eps, this.dps, this.dpr, this.recentQuarter);
 
-  factory EarningPerShareData.fromJson(Map<String, dynamic> parsedJson) {
+  static EarningPerShareData? fromJson(Map<String, dynamic>? parsedJson) {
     if (parsedJson == null) {
-      return null;
+      return EarningPerShareData(
+          null, null, null, null, null, null, null, null, null);
     }
     /*
     "earningPerShareData": {
@@ -8712,7 +8757,7 @@ class EarningPerShareData {
       ]
     },
     */
-    String recentQuarter =
+    String? recentQuarter =
         StringUtils.noNullString(parsedJson['recentQuarter']);
 
     var period = parsedJson['period'] as List;
@@ -8828,7 +8873,7 @@ class EarningPerShareData {
 class News {
   String title;
   String description;
-  String url_tumbnail;
+  String? url_tumbnail;
   String url_news;
   String time;
   String category;
@@ -8856,7 +8901,7 @@ class News {
   factory News.fromXml(XmlElement element) {
     String title = element.findElements('title').single.text;
     String description = element.findElements('description').single.text;
-    String urlTumbnail = StringUtils.between(description, '<img src=\"', '\"');
+    String? urlTumbnail = StringUtils.between(description, '<img src=\"', '\"');
 
     String urlNews = element.findElements('link').single.text;
     String time = element.findElements('pubDate').single.text;

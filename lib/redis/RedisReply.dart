@@ -38,26 +38,26 @@ class RedisReply implements RedisProtocol {
   bool needMoreData() {
     return !completed;
   }
-  List<BooleanString> currentReply;
 
-  bool insertReply(BooleanString data, int size){
-    if(currentReply == null){
-      currentReply = new List<BooleanString>(size);
+  List<BooleanString>? currentReply;
+
+  bool insertReply(BooleanString data, int size) {
+    if (currentReply == null) {
+      // currentReply = new List<BooleanString>(size);
+      currentReply = new List<BooleanString>.filled(size, data, growable: true);
     }
-    currentReply.add(data);
+    currentReply?.add(data);
     nextIndex++;
 
-    return nextIndex == currentReply.length;
+    return nextIndex == currentReply!.length;
   }
 
-
-
-  void processData(String msg) {
+  void processData(String? msg) {
     if (msg != null && msg.trim().length > 0) {
       if (msg.startsWith(RedisProtocol.POSITIVE) ||
           msg.startsWith(RedisProtocol.NEGATIVE)) {
         //res = new String[]{msg.charAt(0)+"",msg.substring(1,msg.length)};
-        String message = msg.substring(1,msg.length);
+        String message = msg.substring(1, msg.length);
         bool status = msg.startsWith(RedisProtocol.POSITIVE);
         insertReply(BooleanString(status, message), count);
       } else if (msg == RedisProtocol.DOLLAR_NO_DATA) {

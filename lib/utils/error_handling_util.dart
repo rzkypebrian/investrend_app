@@ -7,7 +7,7 @@ class ErrorHandlingUtil {
   static handleApiError(
     dynamic error, {
     String prefix = "",
-    String onTimeOut = "",
+    String? onTimeOut = "",
   }) {
     String _message;
     try {

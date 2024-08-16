@@ -1,7 +1,9 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'package:Investrend/component/button_rounded.dart';
-import 'package:Investrend/component/charts/chart_bar_triple_line.dart';
-import 'package:Investrend/component/charts/chart_dual_bar_line.dart';
-import 'package:Investrend/component/charts/chart_triple_bar_line.dart';
+// import 'package:Investrend/component/charts/chart_bar_triple_line.dart';
+// import 'package:Investrend/component/charts/chart_dual_bar_line.dart';
+// import 'package:Investrend/component/charts/chart_triple_bar_line.dart';
 import 'package:Investrend/component/charts/year_value.dart';
 import 'package:Investrend/component/component_creator.dart';
 import 'package:Investrend/objects/class_value_notifier.dart';
@@ -17,42 +19,52 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
 
 class ScreenStockDetailFinancials extends StatefulWidget {
-  final TabController tabController;
+  final TabController? tabController;
   final int tabIndex;
-  final ValueNotifier<bool> visibilityNotifier;
+  final ValueNotifier<bool>? visibilityNotifier;
 
-  ScreenStockDetailFinancials(this.tabIndex, this.tabController, {Key key, this.visibilityNotifier}) : super(key: key);
+  ScreenStockDetailFinancials(this.tabIndex, this.tabController,
+      {Key? key, this.visibilityNotifier})
+      : super(key: key);
 
   @override
   _ScreenStockDetailFinancialsState createState() =>
-      _ScreenStockDetailFinancialsState(tabIndex, tabController, visibilityNotifier: visibilityNotifier);
+      _ScreenStockDetailFinancialsState(tabIndex, tabController!,
+          visibilityNotifier: visibilityNotifier!);
 }
 
-class _ScreenStockDetailFinancialsState extends BaseStateNoTabsWithParentTab<ScreenStockDetailFinancials> {
-  ChartIncomeStatementNotifier _incomeStatementNotifier = ChartIncomeStatementNotifier(DataChartIncomeStatement.createBasic());
-  ChartBalanceSheetNotifier _balanceSheetNotifier = ChartBalanceSheetNotifier(DataChartBalanceSheet.createBasic());
-  ChartCashFlowNotifier _cashFlowNotifier = ChartCashFlowNotifier(DataChartCashFlow.createBasic());
-  ChartEarningPerShareNotifier _earningPerShareNotifier = ChartEarningPerShareNotifier(DataChartEarningPerShare.createBasic());
+class _ScreenStockDetailFinancialsState
+    extends BaseStateNoTabsWithParentTab<ScreenStockDetailFinancials> {
+  ChartIncomeStatementNotifier? _incomeStatementNotifier =
+      ChartIncomeStatementNotifier(DataChartIncomeStatement.createBasic());
+  ChartBalanceSheetNotifier? _balanceSheetNotifier =
+      ChartBalanceSheetNotifier(DataChartBalanceSheet.createBasic());
+  ChartCashFlowNotifier? _cashFlowNotifier =
+      ChartCashFlowNotifier(DataChartCashFlow.createBasic());
+  ChartEarningPerShareNotifier? _earningPerShareNotifier =
+      ChartEarningPerShareNotifier(DataChartEarningPerShare.createBasic());
   ValueNotifier<bool> _showEarningPerShareNotifier = ValueNotifier(true);
-  ValueNotifier _rangeNotifier = ValueNotifier<int>(0);
+  ValueNotifier<int>? _rangeNotifier = ValueNotifier<int>(0);
   List<String> _range_options = [
     'annual_label'.tr(),
     'quarterly_label'.tr(),
   ];
 
-  _ScreenStockDetailFinancialsState(int tabIndex, TabController tabController, {ValueNotifier<bool> visibilityNotifier})
-      : super('/stock_detail_financials', tabIndex, tabController, notifyStockChange: true, visibilityNotifier: visibilityNotifier);
+  _ScreenStockDetailFinancialsState(int tabIndex, TabController tabController,
+      {ValueNotifier<bool>? visibilityNotifier})
+      : super('/stock_detail_financials', tabIndex, tabController,
+            notifyStockChange: true, visibilityNotifier: visibilityNotifier);
 
   // @override
   // bool get wantKeepAlive => true;
 
   @override
-  Widget createAppBar(BuildContext context) {
+  PreferredSizeWidget? createAppBar(BuildContext context) {
     return null;
   }
 
   @override
-  void onStockChanged(Stock newStock) {
+  void onStockChanged(Stock? newStock) {
     super.onStockChanged(newStock);
     doUpdate(pullToRefresh: true);
   }
@@ -80,23 +92,26 @@ class _ScreenStockDetailFinancialsState extends BaseStateNoTabsWithParentTab<Scr
       print(routeName + '.doUpdate aborted active : $active');
       return;
     }
-    Stock stock = context.read(primaryStockChangeNotifier).stock;
+    Stock? stock = context.read(primaryStockChangeNotifier).stock;
     if (stock == null || !stock.isValid()) {
-      Stock stockDefault = InvestrendTheme.storedData.listStock.isEmpty ? null : InvestrendTheme.storedData.listStock.first;
-      context.read(primaryStockChangeNotifier).setStock(stockDefault);
+      Stock? stockDefault = InvestrendTheme.storedData!.listStock!.isEmpty
+          ? null
+          : InvestrendTheme.storedData?.listStock?.first;
+      context.read(primaryStockChangeNotifier).setStock(stockDefault!);
       stock = context.read(primaryStockChangeNotifier).stock;
     }
 
-    String showAs = _rangeNotifier.value == 0 ? 'YEARLY' : 'QUARTERLY';
-    String code = stock != null ? stock.code : "";
+    String showAs = _rangeNotifier?.value == 0 ? 'YEARLY' : 'QUARTERLY';
+    String? code = stock != null ? stock.code : "";
     if (!StringUtils.isEmtpy(code)) {
       setNotifierLoading(_incomeStatementNotifier);
       try {
-        final result = await InvestrendTheme.datafeedHttp.fetchFinancialChart(code, 'INCOME_STATEMENT', showAs);
+        final result = await InvestrendTheme.datafeedHttp
+            .fetchFinancialChart(code, 'INCOME_STATEMENT', showAs);
         if (result != null && result is DataChartIncomeStatement) {
           if (mounted) {
             print('Got INCOME_STATEMENT : ' + result.toString());
-            _incomeStatementNotifier.setValue(result);
+            _incomeStatementNotifier?.setValue(result);
           } else {
             print('ignored researchRank, mounted : $mounted');
           }
@@ -110,11 +125,12 @@ class _ScreenStockDetailFinancialsState extends BaseStateNoTabsWithParentTab<Scr
 
       setNotifierLoading(_balanceSheetNotifier);
       try {
-        final result = await InvestrendTheme.datafeedHttp.fetchFinancialChart(code, 'BALANCE_SHEET', showAs);
+        final result = await InvestrendTheme.datafeedHttp
+            .fetchFinancialChart(code, 'BALANCE_SHEET', showAs);
         if (result != null && result is DataChartBalanceSheet) {
           if (mounted) {
             print('Got BALANCE_SHEET : ' + result.toString());
-            _balanceSheetNotifier.setValue(result);
+            _balanceSheetNotifier?.setValue(result);
           } else {
             print('ignored balanceSheet, mounted : $mounted');
           }
@@ -129,11 +145,12 @@ class _ScreenStockDetailFinancialsState extends BaseStateNoTabsWithParentTab<Scr
 
     setNotifierLoading(_cashFlowNotifier);
     try {
-      final result = await InvestrendTheme.datafeedHttp.fetchFinancialChart(code, 'CASH_FLOW', showAs);
+      final result = await InvestrendTheme.datafeedHttp
+          .fetchFinancialChart(code, 'CASH_FLOW', showAs);
       if (result != null && result is DataChartCashFlow) {
         if (mounted) {
           print('Got CASH_FLOW : ' + result.toString());
-          _cashFlowNotifier.setValue(result);
+          _cashFlowNotifier?.setValue(result);
         } else {
           print('ignored cashFlow, mounted : $mounted');
         }
@@ -147,11 +164,12 @@ class _ScreenStockDetailFinancialsState extends BaseStateNoTabsWithParentTab<Scr
 
     setNotifierLoading(_earningPerShareNotifier);
     try {
-      final result = await InvestrendTheme.datafeedHttp.fetchFinancialChart(code, 'EARNING_PER_SHARE', showAs);
+      final result = await InvestrendTheme.datafeedHttp
+          .fetchFinancialChart(code, 'EARNING_PER_SHARE', showAs);
       if (result != null && result is DataChartEarningPerShare) {
         if (mounted) {
           print('Got EARNING_PER_SHARE : ' + result.toString());
-          _earningPerShareNotifier.setValue(result);
+          _earningPerShareNotifier?.setValue(result);
         } else {
           print('ignored earningPerShare, mounted : $mounted');
         }
@@ -172,7 +190,9 @@ class _ScreenStockDetailFinancialsState extends BaseStateNoTabsWithParentTab<Scr
     if (!active) {
       active = true;
       //onActive();
-      context.read(stockDetailScreenVisibilityChangeNotifier).setActive(tabIndex, true);
+      context
+          .read(stockDetailScreenVisibilityChangeNotifier)
+          .setActive(tabIndex, true);
     }
     return doUpdate(pullToRefresh: true);
     // return Future.delayed(Duration(seconds: 3));
@@ -193,7 +213,8 @@ class _ScreenStockDetailFinancialsState extends BaseStateNoTabsWithParentTab<Scr
           top: InvestrendTheme.cardPaddingVertical,
           bottom: InvestrendTheme.cardPaddingVertical,
         ),
-        child: ComponentCreator.subtitle(context, 'stock_detail_financials_income_statement_title'.tr()),
+        child: ComponentCreator.subtitle(
+            context, 'stock_detail_financials_income_statement_title'.tr()),
       ),
       /*
       Padding(
@@ -228,9 +249,10 @@ class _ScreenStockDetailFinancialsState extends BaseStateNoTabsWithParentTab<Scr
           height: 300.0,
           //child: ChartBarLine.withSampleData(),
           child: ValueListenableBuilder(
-              valueListenable: _incomeStatementNotifier,
-              builder: (context, DataChartIncomeStatement value, child) {
-                Widget noWidget = _incomeStatementNotifier.currentState.getNoWidget(onRetry: () => doUpdate(pullToRefresh: true));
+              valueListenable: _incomeStatementNotifier!,
+              builder: (context, DataChartIncomeStatement? value, child) {
+                Widget? noWidget = _incomeStatementNotifier?.currentState
+                    .getNoWidget(onRetry: () => doUpdate(pullToRefresh: true));
                 if (noWidget != null) {
                   return Center(child: noWidget);
                 }
@@ -244,20 +266,22 @@ class _ScreenStockDetailFinancialsState extends BaseStateNoTabsWithParentTab<Scr
                 // double max_net_profit_margin = value.max_net_profit_margin;
                 // double min_net_profit_margin = value.min_net_profit_margin;
 
-                return ChartDualBarLine(
-                  value.net_income,
-                  value.revenue,
-                  value.net_profit_margin,
-                  'net_income_label'.tr(),
-                  'revenue_label'.tr(),
-                  'net_profit_margin_label'.tr(),
-                  Theme.of(context).colorScheme.secondary,
-                  InvestrendTheme.redText,
-                  InvestrendTheme.greenText,
-                  animate: true,
-                  max_value: value.max_net_income,
-                  min_value: value.min_net_income,
-                );
+                //TODO: chart_dual_bar_line.dart saya comment karena charts_flutter package nya sudah deprecate
+                return Container();
+                // return ChartDualBarLine(
+                //   value.net_income,
+                //   value.revenue,
+                //   value.net_profit_margin,
+                //   'net_income_label'.tr(),
+                //   'revenue_label'.tr(),
+                //   'net_profit_margin_label'.tr(),
+                //   Theme.of(context).colorScheme.secondary,
+                //   InvestrendTheme.redText,
+                //   InvestrendTheme.greenText,
+                //   animate: true,
+                //   max_value: value.max_net_income,
+                //   min_value: value.min_net_income,
+                // );
               }),
         ),
       ),
@@ -273,7 +297,8 @@ class _ScreenStockDetailFinancialsState extends BaseStateNoTabsWithParentTab<Scr
           top: InvestrendTheme.cardPaddingVertical,
           bottom: InvestrendTheme.cardPaddingVertical,
         ),
-        child: ComponentCreator.subtitle(context, 'stock_detail_financials_balance_sheet_title'.tr()),
+        child: ComponentCreator.subtitle(
+            context, 'stock_detail_financials_balance_sheet_title'.tr()),
       ),
       /*
       Padding(
@@ -311,27 +336,30 @@ class _ScreenStockDetailFinancialsState extends BaseStateNoTabsWithParentTab<Scr
           height: 300.0,
           //child: ChartBarLine.withSampleData(),
           child: ValueListenableBuilder(
-              valueListenable: _balanceSheetNotifier,
-              builder: (context, DataChartBalanceSheet value, child) {
-                Widget noWidget = _balanceSheetNotifier.currentState.getNoWidget(onRetry: () => doUpdate(pullToRefresh: true));
+              valueListenable: _balanceSheetNotifier!,
+              builder: (context, DataChartBalanceSheet? value, child) {
+                Widget? noWidget = _balanceSheetNotifier?.currentState
+                    .getNoWidget(onRetry: () => doUpdate(pullToRefresh: true));
                 if (noWidget != null) {
                   return Center(child: noWidget);
                 }
-                return ChartTripleBarLine(
-                  value.equity,
-                  value.liabilities,
-                  value.assets,
-                  value.debt_equity_ratio,
-                  'equity_label'.tr(),
-                  'liabilities_label'.tr(),
-                  'assets_label'.tr(),
-                  'debt_equity_ratio_label'.tr(),
-                  InvestrendTheme.greenText,
-                  Colors.orange,
-                  InvestrendTheme.redText,
-                  Theme.of(context).colorScheme.secondary,
-                  animate: true,
-                );
+                //TODO: chart_triple_bar_line.dart saya comment karena charts_flutter package nya sudah deprecate
+                return Container();
+                // return ChartTripleBarLine(
+                //   value.equity,
+                //   value.liabilities,
+                //   value.assets,
+                //   value.debt_equity_ratio,
+                //   'equity_label'.tr(),
+                //   'liabilities_label'.tr(),
+                //   'assets_label'.tr(),
+                //   'debt_equity_ratio_label'.tr(),
+                //   InvestrendTheme.greenText,
+                //   Colors.orange,
+                //   InvestrendTheme.redText,
+                //   Theme.of(context).colorScheme.secondary,
+                //   animate: true,
+                // );
               }),
         ),
       ),
@@ -347,7 +375,8 @@ class _ScreenStockDetailFinancialsState extends BaseStateNoTabsWithParentTab<Scr
           top: InvestrendTheme.cardPaddingVertical,
           bottom: InvestrendTheme.cardPaddingVertical,
         ),
-        child: ComponentCreator.subtitle(context, 'stock_detail_financials_cash_flow_title'.tr()),
+        child: ComponentCreator.subtitle(
+            context, 'stock_detail_financials_cash_flow_title'.tr()),
       ),
       /*
       Padding(
@@ -386,27 +415,30 @@ class _ScreenStockDetailFinancialsState extends BaseStateNoTabsWithParentTab<Scr
           height: 300.0,
           //child: ChartBarLine.withSampleData(),
           child: ValueListenableBuilder(
-              valueListenable: _cashFlowNotifier,
-              builder: (context, DataChartCashFlow value, child) {
-                Widget noWidget = _cashFlowNotifier.currentState.getNoWidget(onRetry: () => doUpdate(pullToRefresh: true));
+              valueListenable: _cashFlowNotifier!,
+              builder: (context, DataChartCashFlow? value, child) {
+                Widget? noWidget = _cashFlowNotifier?.currentState
+                    .getNoWidget(onRetry: () => doUpdate(pullToRefresh: true));
                 if (noWidget != null) {
                   return Center(child: noWidget);
                 }
-                return ChartBarTripleLine(
-                  value.cash_reserve,
-                  value.investing,
-                  value.operating,
-                  value.financing,
-                  'cash_reserve_label'.tr(),
-                  'investing_label'.tr(),
-                  'operating_label'.tr(),
-                  'financing_label'.tr(),
-                  InvestrendTheme.redText,
-                  Colors.orange,
-                  Colors.blue,
-                  InvestrendTheme.greenText,
-                  animate: true,
-                );
+                //TODO: chart_triple_bar_line.dart saya comment karena charts_flutter package nya sudah deprecate
+                return Container();
+                // return ChartBarTripleLine(
+                //   value.cash_reserve,
+                //   value.investing,
+                //   value.operating,
+                //   value.financing,
+                //   'cash_reserve_label'.tr(),
+                //   'investing_label'.tr(),
+                //   'operating_label'.tr(),
+                //   'financing_label'.tr(),
+                //   InvestrendTheme.redText,
+                //   Colors.orange,
+                //   Colors.blue,
+                //   InvestrendTheme.greenText,
+                //   animate: true,
+                // );
               }),
         ),
       ),
@@ -416,7 +448,7 @@ class _ScreenStockDetailFinancialsState extends BaseStateNoTabsWithParentTab<Scr
       // SizedBox(height: 10.0),
       ValueListenableBuilder(
           valueListenable: _showEarningPerShareNotifier,
-          builder: (context, value, child) {
+          builder: (context, bool value, child) {
             if (!value) {
               return SizedBox(
                 height: 1.0,
@@ -429,7 +461,8 @@ class _ScreenStockDetailFinancialsState extends BaseStateNoTabsWithParentTab<Scr
                 top: InvestrendTheme.cardPaddingVertical,
                 bottom: InvestrendTheme.cardPaddingVertical,
               ),
-              child: ComponentCreator.subtitle(context, 'stock_detail_financials_earning_per_share_title'.tr()),
+              child: ComponentCreator.subtitle(context,
+                  'stock_detail_financials_earning_per_share_title'.tr()),
             );
           }),
       /*
@@ -469,7 +502,7 @@ class _ScreenStockDetailFinancialsState extends BaseStateNoTabsWithParentTab<Scr
 
       ValueListenableBuilder(
         valueListenable: _showEarningPerShareNotifier,
-        builder: (context, value, child) {
+        builder: (context, bool value, child) {
           if (!value) {
             return SizedBox(
               height: 1.0,
@@ -486,24 +519,28 @@ class _ScreenStockDetailFinancialsState extends BaseStateNoTabsWithParentTab<Scr
               height: 300.0,
               //child: ChartBarLine.withSampleData(),
               child: ValueListenableBuilder(
-                  valueListenable: _earningPerShareNotifier,
-                  builder: (context, DataChartEarningPerShare value, child) {
-                    Widget noWidget = _earningPerShareNotifier.currentState.getNoWidget(onRetry: () => doUpdate(pullToRefresh: true));
+                  valueListenable: _earningPerShareNotifier!,
+                  builder: (context, DataChartEarningPerShare? value, child) {
+                    Widget? noWidget = _earningPerShareNotifier?.currentState
+                        .getNoWidget(
+                            onRetry: () => doUpdate(pullToRefresh: true));
                     if (noWidget != null) {
                       return Center(child: noWidget);
                     }
-                    return ChartDualBarLine(
-                      value.dividend_per_share,
-                      value.earning_per_share,
-                      value.dividend_payout_ratio,
-                      'dividend_per_share_label'.tr(),
-                      'earning_per_share_label'.tr(),
-                      'dividend_payout_ratio_label'.tr(),
-                      Theme.of(context).colorScheme.secondary,
-                      InvestrendTheme.redText,
-                      InvestrendTheme.greenText,
-                      animate: true,
-                    );
+                    //TODO: chart_dual_bar_line.dart saya comment karena charts_flutter package nya sudah deprecate
+                    return Container();
+                    // return ChartDualBarLine(
+                    //   value.dividend_per_share,
+                    //   value.earning_per_share,
+                    //   value.dividend_payout_ratio,
+                    //   'dividend_per_share_label'.tr(),
+                    //   'earning_per_share_label'.tr(),
+                    //   'dividend_payout_ratio_label'.tr(),
+                    //   Theme.of(context).colorScheme.secondary,
+                    //   InvestrendTheme.redText,
+                    //   InvestrendTheme.greenText,
+                    //   animate: true,
+                    // );
                   }),
             ),
           );
@@ -545,7 +582,7 @@ class _ScreenStockDetailFinancialsState extends BaseStateNoTabsWithParentTab<Scr
       */
       SizedBox(
         height: paddingBottom + 80,
-          // height: paddingBottom,
+        // height: paddingBottom,
       ),
     ];
 
@@ -715,7 +752,9 @@ class _ScreenStockDetailFinancialsState extends BaseStateNoTabsWithParentTab<Scr
   @override
   void onActive() {
     //print(routeName+' onActive');
-    context.read(stockDetailScreenVisibilityChangeNotifier).setActive(tabIndex, true);
+    context
+        .read(stockDetailScreenVisibilityChangeNotifier)
+        .setActive(tabIndex, true);
     doUpdate();
   }
 
@@ -815,8 +854,8 @@ class _ScreenStockDetailFinancialsState extends BaseStateNoTabsWithParentTab<Scr
     //   doUpdate(pullToRefresh: true);
     // });
 
-    _rangeNotifier.addListener(() {
-      _showEarningPerShareNotifier.value = _rangeNotifier.value == 0;
+    _rangeNotifier?.addListener(() {
+      _showEarningPerShareNotifier.value = _rangeNotifier!.value == 0;
       doUpdate(pullToRefresh: true);
     });
     //news = HttpSSI.fetchNews();
@@ -884,13 +923,15 @@ class _ScreenStockDetailFinancialsState extends BaseStateNoTabsWithParentTab<Scr
   @override
   void dispose() {
     _showEarningPerShareNotifier.dispose();
-    _rangeNotifier.dispose();
-    _incomeStatementNotifier.dispose();
-    _balanceSheetNotifier.dispose();
-    _cashFlowNotifier.dispose();
-    _earningPerShareNotifier.dispose();
+    _rangeNotifier?.dispose();
+    _incomeStatementNotifier?.dispose();
+    _balanceSheetNotifier?.dispose();
+    _cashFlowNotifier?.dispose();
+    _earningPerShareNotifier?.dispose();
     final container = ProviderContainer();
-    container.read(stockDetailScreenVisibilityChangeNotifier).setActive(tabIndex, false);
+    container
+        .read(stockDetailScreenVisibilityChangeNotifier)
+        .setActive(tabIndex, false);
 
     super.dispose();
   }
@@ -898,6 +939,8 @@ class _ScreenStockDetailFinancialsState extends BaseStateNoTabsWithParentTab<Scr
   @override
   void onInactive() {
     //print(routeName+' onInactive');
-    context.read(stockDetailScreenVisibilityChangeNotifier).setActive(tabIndex, false);
+    context
+        .read(stockDetailScreenVisibilityChangeNotifier)
+        .setActive(tabIndex, false);
   }
 }

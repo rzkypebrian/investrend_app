@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
 class RoundedButton extends StatelessWidget {
-  final VoidCallback onPressed;
-  final String text;
-  final String imageAsset;
-  final Color textColor;
-  final Color borderColor;
-  final Color color;
+  final VoidCallback? onPressed;
+  final String? text;
+  final String? imageAsset;
+  final Color? textColor;
+  final Color? borderColor;
+  final Color? color;
   const RoundedButton({
-    Key key,
+    Key? key,
     this.text,
     this.textColor,
     this.color,
@@ -27,7 +27,7 @@ class RoundedButton extends StatelessWidget {
     } else {
       borderShape = new RoundedRectangleBorder(
         borderRadius: new BorderRadius.circular(30.0),
-        side: BorderSide(color: borderColor),
+        side: BorderSide(color: borderColor!),
       );
     }
 
@@ -45,8 +45,8 @@ class RoundedButton extends StatelessWidget {
               flex: 1,
             ),
             Text(
-              text,
-              style: Theme.of(context).textTheme.button.copyWith(
+              text!,
+              style: Theme.of(context).textTheme.labelLarge!.copyWith(
                     color: (textColor == null
                         ? Theme.of(context).colorScheme.secondary
                         : textColor),
@@ -71,13 +71,13 @@ class RoundedButton extends StatelessWidget {
         child: Row(
           children: [
             // SizedBox(width: 20,),
-            Image.asset(imageAsset),
+            Image.asset(imageAsset!),
             Spacer(
               flex: 1,
             ),
             Text(
-              text,
-              style: Theme.of(context).textTheme.button.copyWith(
+              text!,
+              style: Theme.of(context).textTheme.labelLarge!.copyWith(
                     color: (textColor == null
                         ? Theme.of(context).colorScheme.secondary
                         : textColor),

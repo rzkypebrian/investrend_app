@@ -275,7 +275,7 @@ class _ScreenRegisterState extends State<ScreenRegister> {
                   obscureText: value,
                   validator: (value) {
                     // cek first password
-                    String error = Utils.isPasswordCompliant(
+                    String? error = Utils.isPasswordCompliant(
                         fieldPasswordController.text, 8);
                     if (!StringUtils.isEmtpy(error)) {
                       return null; // first password error, biarin diisi dulu ampe bener :)
@@ -325,7 +325,7 @@ class _ScreenRegisterState extends State<ScreenRegister> {
   void submitRegister() {
     // Validate returns true if the form is valid, or false otherwise.
 
-    if (_formRegisterKey.currentState.validate()) {
+    if (_formRegisterKey.currentState!.validate()) {
       // If the form is valid, display a snackbar. In the real world,
       // you'd often call a server or save the information in a database.
       /*
@@ -370,7 +370,7 @@ class _ScreenRegisterState extends State<ScreenRegister> {
               InvestrendTheme.of(context).applicationPlatform,
               InvestrendTheme.of(context).applicationVersion,
               invitation: invitation.invitation_code);
-          reply.then((value) {
+          reply.then((RegisterReply? value) {
             if (value != null) {
               if (value.isSuccess()) {
                 InvestrendTheme.pushReplacement(
@@ -418,7 +418,7 @@ class _ScreenRegisterState extends State<ScreenRegister> {
             fieldReferralCodeController.text,
             InvestrendTheme.of(context).applicationPlatform,
             InvestrendTheme.of(context).applicationVersion);
-        reply.then((value) {
+        reply.then((RegisterReply? value) {
           if (value != null) {
             if (value.isSuccess()) {
               InvestrendTheme.pushReplacement(
@@ -512,7 +512,7 @@ class _ScreenRegisterState extends State<ScreenRegister> {
             ),
             TextButton(
               style: TextButton.styleFrom(
-                  primary: InvestrendTheme.of(context).hyperlink,
+                  foregroundColor: InvestrendTheme.of(context).hyperlink,
                   animationDuration: Duration(milliseconds: 500),
                   backgroundColor: Colors.transparent,
                   textStyle: InvestrendTheme.of(context).small_w500),
@@ -566,17 +566,17 @@ class _ScreenRegisterState extends State<ScreenRegister> {
                           'register_description_3'.tr() +
                           'settings_privacy_policy'.tr(), () {
                     print('tnc_content pressed');
-                    String content = 'tnc_content'.tr();
-                    String applicationName =
+                    String? content = 'tnc_content'.tr();
+                    String? applicationName =
                         InvestrendTheme.of(context).applicationName;
                     content =
-                        content.replaceAll('<APP_NAME/>', applicationName);
+                        content.replaceAll('<APP_NAME/>', applicationName!);
                     Navigator.push(
                         context,
                         CupertinoPageRoute(
                           builder: (_) => ScreenContent(
                             title: 'settings_tnc'.tr(),
-                            content: content,
+                            content: content!,
                           ),
                           settings: RouteSettings(name: '/content'),
                         ));
@@ -631,6 +631,7 @@ class _ScreenRegisterState extends State<ScreenRegister> {
       ),
     );
 
+/*
     return Padding(
       padding:
           const EdgeInsets.only(left: 8.0, right: 8.0, top: 15.0, bottom: 20.0),
@@ -653,7 +654,7 @@ class _ScreenRegisterState extends State<ScreenRegister> {
                       // and use it to show a SnackBar.
                       ScaffoldMessenger.of(context).showSnackBar(snackBar);
                     },
-                  style: InvestrendTheme.of(context).support_w400.copyWith(
+                  style: InvestrendTheme.of(context).support_w400?.copyWith(
                       color: InvestrendTheme.of(context).hyperlink,
                       decoration: TextDecoration.underline)),
               TextSpan(
@@ -670,7 +671,7 @@ class _ScreenRegisterState extends State<ScreenRegister> {
                       // and use it to show a SnackBar.
                       ScaffoldMessenger.of(context).showSnackBar(snackBar);
                     },
-                  style: InvestrendTheme.of(context).support_w400.copyWith(
+                  style: InvestrendTheme.of(context).support_w400?.copyWith(
                       color: InvestrendTheme.of(context).hyperlink,
                       decoration: TextDecoration.underline)),
               TextSpan(
@@ -681,6 +682,7 @@ class _ScreenRegisterState extends State<ScreenRegister> {
         ),
       ),
     );
+    */
   }
 
   TextSpan createButtonTextSpan(
@@ -688,7 +690,7 @@ class _ScreenRegisterState extends State<ScreenRegister> {
     return TextSpan(
       text: text,
       recognizer: new TapGestureRecognizer()..onTap = onPressed,
-      style: InvestrendTheme.of(context).support_w400.copyWith(
+      style: InvestrendTheme.of(context).support_w400?.copyWith(
           color: InvestrendTheme.of(context).hyperlink,
           decoration: TextDecoration.underline),
     );
@@ -722,14 +724,14 @@ class _ScreenRegisterState extends State<ScreenRegister> {
     String hintText,
     String helperText,
     String errorText, {
-    bool obscureText,
-    TextInputType keyboardType,
-    TextInputAction textInputAction,
-    FormFieldValidator<String> validator,
-    TextEditingController controller,
-    GestureTapCallback onTap,
-    FocusNode focusNode,
-    Widget suffixIcon,
+    bool? obscureText,
+    TextInputType? keyboardType,
+    TextInputAction? textInputAction,
+    FormFieldValidator<String>? validator,
+    TextEditingController? controller,
+    GestureTapCallback? onTap,
+    FocusNode? focusNode,
+    Widget? suffixIcon,
   }) {
     if (obscureText == null) obscureText = false;
     if (keyboardType == null) keyboardType = TextInputType.text;

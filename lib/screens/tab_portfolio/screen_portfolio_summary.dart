@@ -1,3 +1,4 @@
+// ignore_for_file: unused_local_variable, non_constant_identifier_names
 
 import 'package:Investrend/component/button_tab_switch.dart';
 import 'package:Investrend/component/component_creator.dart';
@@ -15,17 +16,21 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
 
 class ScreenPortfolioSummary extends StatefulWidget {
-  final TabController tabController;
+  final TabController? tabController;
   final int tabIndex;
 
-  ScreenPortfolioSummary(this.tabIndex, this.tabController, {Key key}) : super(key: key);
+  ScreenPortfolioSummary(this.tabIndex, this.tabController, {Key? key})
+      : super(key: key);
 
   @override
-  _ScreenPortfolioSummaryState createState() => _ScreenPortfolioSummaryState(tabIndex, tabController);
+  _ScreenPortfolioSummaryState createState() =>
+      _ScreenPortfolioSummaryState(tabIndex, tabController!);
 }
 
-class _ScreenPortfolioSummaryState extends BaseStateNoTabsWithParentTab<ScreenPortfolioSummary> {
-  PortfolioSummaryNotifier _notifier  = PortfolioSummaryNotifier(PortfolioSummaryData.createBasic());
+class _ScreenPortfolioSummaryState
+    extends BaseStateNoTabsWithParentTab<ScreenPortfolioSummary> {
+  PortfolioSummaryNotifier _notifier =
+      PortfolioSummaryNotifier(PortfolioSummaryData.createBasic());
 
   //StockPositionNotifier _stockPositionNotifier = StockPositionNotifier(new StockPosition('', 0, 0, 0, 0, 0, 0, List.empty(growable: true)));
   final ValueNotifier<int> _buttonReturnNotifier = ValueNotifier<int>(0);
@@ -37,7 +42,8 @@ class _ScreenPortfolioSummaryState extends BaseStateNoTabsWithParentTab<ScreenPo
   // LabelValueNotifier _boardOfCommisionersNotifier = LabelValueNotifier(new LabelValueData());
 
   _ScreenPortfolioSummaryState(int tabIndex, TabController tabController)
-      : super('/portfolio_summary', tabIndex, tabController, parentTabIndex: Tabs.Portfolio.index);
+      : super('/portfolio_summary', tabIndex, tabController,
+            parentTabIndex: Tabs.Portfolio.index);
 
   // @override
   // bool get wantKeepAlive => true;
@@ -48,8 +54,8 @@ class _ScreenPortfolioSummaryState extends BaseStateNoTabsWithParentTab<ScreenPo
   //   'monthly_label'.tr(),
   //   'annual_label'.tr(),
   // ];
-  List<ReturnInfo> listHighest = List.empty(growable: true);
-  List<ReturnInfo> listLowest = List.empty(growable: true);
+  List<ReturnInfo>? listHighest = List.empty(growable: true);
+  List<ReturnInfo>? listLowest = List.empty(growable: true);
 
   // List<ReturnInfo> listHighest = [
   //   ReturnInfo('ELSA', 'dalam 10 hari', 10.14, 200000000),
@@ -67,59 +73,73 @@ class _ScreenPortfolioSummaryState extends BaseStateNoTabsWithParentTab<ScreenPo
   ];
 
   @override
-  Widget createAppBar(BuildContext context) {
+  PreferredSizeWidget? createAppBar(BuildContext context) {
     return null;
   }
 
-  Future doUpdate({bool pullToRefresh=false}) async{
-    print(routeName + '.doUpdate : ' + DateTime.now().toString() + "  active : $active  pullToRefresh : $pullToRefresh");
-
+  Future doUpdate({bool pullToRefresh = false}) async {
+    print(routeName +
+        '.doUpdate : ' +
+        DateTime.now().toString() +
+        "  active : $active  pullToRefresh : $pullToRefresh");
 
     final notifier = context.read(accountChangeNotifier);
 
     User user = context.read(dataHolderChangeNotifier).user;
-    Account activeAccount = user.getAccount(notifier.index);
+    Account? activeAccount = user.getAccount(notifier.index);
     if (activeAccount == null) {
       print(routeName + '  active Account is NULL');
       return false;
     }
 
     try {
-      if (_notifier.value.isEmpty() || pullToRefresh) {
+      if (_notifier.value!.isEmpty() || pullToRefresh) {
         setNotifierLoading(_notifier);
       }
-      final result = await InvestrendTheme.tradingHttp.portfolioSummary(activeAccount.brokercode, activeAccount.accountcode, user.username,
-          InvestrendTheme.of(context).applicationPlatform, InvestrendTheme.of(context).applicationVersion);
+      final PortfolioSummaryData? result = await InvestrendTheme.tradingHttp
+          .portfolioSummary(
+              activeAccount.brokercode,
+              activeAccount.accountcode,
+              user.username,
+              InvestrendTheme.of(context).applicationPlatform,
+              InvestrendTheme.of(context).applicationVersion);
       if (result != null) {
-        print(routeName + ' Future portfolioSummary DATA : ' + result.toString());
+        print(
+            routeName + ' Future portfolioSummary DATA : ' + result.toString());
         if (mounted) {
           _notifier.setValue(result);
-          listHighest.clear();
-          listLowest.clear();
-          if(result.topgain1value > 0.0){
-            listHighest.add(ReturnInfo(result.topgain1stock, result.topgain1value));
+          listHighest?.clear();
+          listLowest?.clear();
+          if (result.topgain1value > 0.0) {
+            listHighest
+                ?.add(ReturnInfo(result.topgain1stock, result.topgain1value));
           }
-          if(result.topgain2value > 0.0){
-            listHighest.add(ReturnInfo(result.topgain2stock, result.topgain2value));
+          if (result.topgain2value > 0.0) {
+            listHighest
+                ?.add(ReturnInfo(result.topgain2stock, result.topgain2value));
           }
-          if(result.topgain3value > 0.0){
-            listHighest.add(ReturnInfo(result.topgain3stock, result.topgain3value));
+          if (result.topgain3value > 0.0) {
+            listHighest
+                ?.add(ReturnInfo(result.topgain3stock, result.topgain3value));
           }
-          if(result.toploss1value < 0.0) {
-            listLowest.add(ReturnInfo(result.toploss1stock,result.toploss1value ));
+          if (result.toploss1value < 0.0) {
+            listLowest
+                ?.add(ReturnInfo(result.toploss1stock, result.toploss1value));
           }
-          if(result.toploss2value < 0.0) {
-            listLowest.add(ReturnInfo(result.toploss2stock,result.toploss2value ));
+          if (result.toploss2value < 0.0) {
+            listLowest
+                ?.add(ReturnInfo(result.toploss2stock, result.toploss2value));
           }
-          if(result.toploss3value < 0.0) {
-            listLowest.add(ReturnInfo(result.toploss3stock,result.toploss3value ));
+          if (result.toploss3value < 0.0) {
+            listLowest
+                ?.add(ReturnInfo(result.toploss3stock, result.toploss3value));
           }
           _returnNotifier.value = !_returnNotifier.value;
         }
       } else {
-        listHighest.clear();
-        listLowest.clear();
-        if(mounted){
+        listHighest?.clear();
+        listLowest?.clear();
+        if (mounted) {
           _returnNotifier.value = !_returnNotifier.value;
         }
         print(routeName + ' Future portfolioSummary NO DATA');
@@ -131,7 +151,6 @@ class _ScreenPortfolioSummaryState extends BaseStateNoTabsWithParentTab<ScreenPo
       setNotifierError(_notifier, error.toString());
       handleNetworkError(context, error);
     }
-
 
     /*
     String accoun_codes = '';
@@ -206,7 +225,6 @@ class _ScreenPortfolioSummaryState extends BaseStateNoTabsWithParentTab<ScreenPo
       }
     }
     */
-
 
     /*
     int selected = context.read(accountChangeNotifier).index;
@@ -287,8 +305,8 @@ class _ScreenPortfolioSummaryState extends BaseStateNoTabsWithParentTab<ScreenPo
     List<Widget> childs = [
       ValueListenableBuilder(
         valueListenable: _notifier,
-        builder: (context, PortfolioSummaryData data, child) {
-          Widget noWidget = _notifier.currentState.getNoWidget(onRetry: (){
+        builder: (context, PortfolioSummaryData? data, child) {
+          Widget? noWidget = _notifier.currentState.getNoWidget(onRetry: () {
             doUpdate(pullToRefresh: true);
           });
           if (data == null) {
@@ -301,11 +319,9 @@ class _ScreenPortfolioSummaryState extends BaseStateNoTabsWithParentTab<ScreenPo
       ValueListenableBuilder(
         valueListenable: _returnNotifier,
         builder: (context, value, child) {
-
           return activeReturn(context, _buttonReturnNotifier.value);
         },
       ),
-
       SizedBox(
         height: paddingBottom,
       ),
@@ -316,12 +332,15 @@ class _ScreenPortfolioSummaryState extends BaseStateNoTabsWithParentTab<ScreenPo
       backgroundColor: Theme.of(context).colorScheme.secondary,
       onRefresh: onRefresh,
       child: ListView(
-        padding: const EdgeInsets.only(top: InvestrendTheme.cardPaddingGeneral, bottom: InvestrendTheme.cardPaddingGeneral),
+        padding: const EdgeInsets.only(
+            top: InvestrendTheme.cardPaddingGeneral,
+            bottom: InvestrendTheme.cardPaddingGeneral),
         shrinkWrap: false,
         children: childs,
       ),
     );
   }
+
   /*
   @override
   Widget createBody(BuildContext context, double paddingBottom) {
@@ -372,31 +391,39 @@ class _ScreenPortfolioSummaryState extends BaseStateNoTabsWithParentTab<ScreenPo
   }
   */
   AutoSizeGroup groupReturnValue = AutoSizeGroup();
-  Widget tile(BuildContext context, double size,double height, ReturnInfo info, List<Color> colorDarker, List<Color> colorLighter, Color colorBackground,{bool isFirst = false}) {
-    TextStyle small700 = InvestrendTheme.of(context).small_w600_compact.copyWith(color: InvestrendTheme.of(context).whiteColor, fontWeight: FontWeight.bold);
+  Widget tile(BuildContext context, double size, double height, ReturnInfo info,
+      List<Color> colorDarker, List<Color> colorLighter, Color? colorBackground,
+      {bool isFirst = false}) {
+    TextStyle? small700 = InvestrendTheme.of(context)
+        .small_w600_compact
+        ?.copyWith(
+            color: InvestrendTheme.of(context).whiteColor,
+            fontWeight: FontWeight.bold);
 
     return Container(
       color: colorBackground,
       child: Container(
         padding: EdgeInsets.all(8.0),
-        margin: EdgeInsets.only(left: (isFirst ? 0.0 : 8.0), top: 8.0, bottom: 8.0
+        margin: EdgeInsets.only(
+            left: (isFirst ? 0.0 : 8.0), top: 8.0, bottom: 8.0
             //, top: InvestrendTheme.cardMargin, bottom: InvestrendTheme.cardMargin
             ),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10.0),
-            gradient: Gradient.lerp(LinearGradient(
-              //tileMode: TileMode.repeated,
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                stops: [0.2, 0.4, 0.6, 0.8, 1],
-                colors: colorDarker), LinearGradient(
-              //tileMode: TileMode.repeated,
-                begin: Alignment.topRight,
-                end: Alignment.bottomLeft,
-                stops: [0.2, 0.4, 0.6, 0.8, 1],
-                colors: colorLighter), 0.5)
-        ),
-
+            borderRadius: BorderRadius.circular(10.0),
+            gradient: Gradient.lerp(
+                LinearGradient(
+                    //tileMode: TileMode.repeated,
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    stops: [0.2, 0.4, 0.6, 0.8, 1],
+                    colors: colorDarker),
+                LinearGradient(
+                    //tileMode: TileMode.repeated,
+                    begin: Alignment.topRight,
+                    end: Alignment.bottomLeft,
+                    stops: [0.2, 0.4, 0.6, 0.8, 1],
+                    colors: colorLighter),
+                0.5)),
         child: SizedBox(
           width: size,
           //height: size,
@@ -404,15 +431,28 @@ class _ScreenPortfolioSummaryState extends BaseStateNoTabsWithParentTab<ScreenPo
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Spacer(flex: 1,),
-              Text(info.code, style: small700,),
+              Spacer(
+                flex: 1,
+              ),
+              Text(
+                info.code!,
+                style: small700,
+              ),
               //Spacer(flex: 1,),
               //Text(InvestrendTheme.formatPercent(info.percentChange), style: small700,),
               //Spacer(flex: 1,),
               //Text(info.timeRange, style: InvestrendTheme.of(context).support_w400_compact.copyWith(color: InvestrendTheme.of(context).whiteColor),),
-              Spacer(flex: 5,),
+              Spacer(
+                flex: 5,
+              ),
               //Text(InvestrendTheme.formatMoney(info.change, prefixPlus: true),style: small700,),
-              AutoSizeText(InvestrendTheme.formatMoneyDouble(info.value, prefixPlus: true),style: small700, maxLines: 1, minFontSize: 5.0, group: groupReturnValue,),
+              AutoSizeText(
+                InvestrendTheme.formatMoneyDouble(info.value, prefixPlus: true),
+                style: small700,
+                maxLines: 1,
+                minFontSize: 5.0,
+                group: groupReturnValue,
+              ),
             ],
           ),
         ),
@@ -481,8 +521,8 @@ class _ScreenPortfolioSummaryState extends BaseStateNoTabsWithParentTab<ScreenPo
 
     List<Color> colorDarker;
     List<Color> colorLighter;
-    Color colorBackground = InvestrendTheme.of(context).tileBackground;
-    List<ReturnInfo> returnList;
+    Color? colorBackground = InvestrendTheme.of(context).tileBackground;
+    List<ReturnInfo>? returnList;
     if (highest) {
       returnList = listHighest;
       colorDarker = colorHighestDarker;
@@ -497,67 +537,79 @@ class _ScreenPortfolioSummaryState extends BaseStateNoTabsWithParentTab<ScreenPo
     double tileSize = MediaQuery.of(context).size.width * 0.34;
     double tileHeight = tileSize * 0.835;
 
-    if(returnList.isEmpty){
+    if (returnList!.isEmpty) {
       return Container(
         width: double.maxFinite,
         //height: tileSize + InvestrendTheme.cardPaddingGeneral + 8.0 + 8.0,
         height: tileHeight + InvestrendTheme.cardPaddingGeneral + 8.0 + 8.0,
-        margin: EdgeInsets.only(left: InvestrendTheme.cardMargin, right: InvestrendTheme.cardMargin, bottom: InvestrendTheme.cardMargin),
+        margin: EdgeInsets.only(
+            left: InvestrendTheme.cardMargin,
+            right: InvestrendTheme.cardMargin,
+            bottom: InvestrendTheme.cardMargin),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10.0),
-            color: colorBackground
-        ),
+            borderRadius: BorderRadius.circular(10.0), color: colorBackground),
         child: Center(
-          child: EmptyLabel(text: highest ? 'summary_return_highest_empty_label'.tr() : 'summary_return_lowest_empty_label'.tr(),),
+          child: EmptyLabel(
+            text: highest
+                ? 'summary_return_highest_empty_label'.tr()
+                : 'summary_return_lowest_empty_label'.tr(),
+          ),
         ),
       );
     }
 
-
     //colorBackground = Colors.orange;
 
-
+    // ignore: unnecessary_null_comparison
     int count = returnList != null ? returnList.length : 0;
     List<Widget> listContent = List<Widget>.generate(
       count,
       (int index) {
-        ReturnInfo info = returnList.elementAt(index);
-        if(info.value > 0 ){
+        ReturnInfo? info = returnList?.elementAt(index);
+        if (info!.value > 0) {
           colorDarker = colorHighestDarker;
           colorLighter = colorHighestLighter;
-        }else if(info.value < 0){
+        } else if (info.value < 0) {
           colorDarker = colorLowestDarker;
           colorLighter = colorLowestLighter;
-        }else{
+        } else {
           colorDarker = colorFlatDarker;
           colorLighter = colorFlatLighter;
         }
-        return tile(context, tileSize, tileHeight, info, colorDarker, colorLighter, colorBackground,isFirst: index==0);
+        return tile(context, tileSize, tileHeight, info, colorDarker,
+            colorLighter, colorBackground,
+            isFirst: index == 0);
       },
     );
 
-    listContent.insert(0, Container(
-      //height: tileSize+InvestrendTheme.cardPaddingPlusMargin,
-      //height: tileSize + InvestrendTheme.cardPaddingGeneral+ 8.0+8.0,
-      height: tileHeight + InvestrendTheme.cardPaddingGeneral+ 8.0+8.0,
-      width: 8.0,
-      margin: EdgeInsets.only(left: InvestrendTheme.cardMargin),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.only(topLeft: Radius.circular(10.0), bottomLeft: Radius.circular(10.0)),
-        color: colorBackground
-      ),
-    ));
-    listContent.insert(listContent.length, Container(
-      //height: tileSize+InvestrendTheme.cardPaddingPlusMargin,
-      //height: tileSize + InvestrendTheme.cardPaddingGeneral+ 8.0+8.0,
-      height: tileHeight + InvestrendTheme.cardPaddingGeneral+ 8.0+8.0,
-      width: 8.0,
-      margin: EdgeInsets.only(right: InvestrendTheme.cardMargin),
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.only(topRight: Radius.circular(10.0), bottomRight: Radius.circular(10.0)),
-          color: colorBackground
-      ),
-    ));
+    listContent.insert(
+        0,
+        Container(
+          //height: tileSize+InvestrendTheme.cardPaddingPlusMargin,
+          //height: tileSize + InvestrendTheme.cardPaddingGeneral+ 8.0+8.0,
+          height: tileHeight + InvestrendTheme.cardPaddingGeneral + 8.0 + 8.0,
+          width: 8.0,
+          margin: EdgeInsets.only(left: InvestrendTheme.cardMargin),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(10.0),
+                  bottomLeft: Radius.circular(10.0)),
+              color: colorBackground),
+        ));
+    listContent.insert(
+        listContent.length,
+        Container(
+          //height: tileSize+InvestrendTheme.cardPaddingPlusMargin,
+          //height: tileSize + InvestrendTheme.cardPaddingGeneral+ 8.0+8.0,
+          height: tileHeight + InvestrendTheme.cardPaddingGeneral + 8.0 + 8.0,
+          width: 8.0,
+          margin: EdgeInsets.only(right: InvestrendTheme.cardMargin),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(10.0),
+                  bottomRight: Radius.circular(10.0)),
+              color: colorBackground),
+        ));
     return Container(
       //width: MediaQuery.of(context).size.width - InvestrendTheme.cardPadding,
       //height: tileSize + InvestrendTheme.cardPaddingGeneral + 8.0 + 8.0,
@@ -577,29 +629,40 @@ class _ScreenPortfolioSummaryState extends BaseStateNoTabsWithParentTab<ScreenPo
     );
   }
 
-  Widget _rowBold(BuildContext context, String label, String value, {Color valueColor, bool usePaddingTopBottom = true}) {
-    TextStyle regular700 = InvestrendTheme.of(context).regular_w600_compact;
-    TextStyle valueStyle = regular700;
-    TextStyle labelStyle = regular700.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor);
+  Widget _rowBold(BuildContext context, String label, String value,
+      {Color? valueColor, bool usePaddingTopBottom = true}) {
+    TextStyle? regular700 = InvestrendTheme.of(context).regular_w600_compact;
+    TextStyle? valueStyle = regular700;
+    TextStyle? labelStyle = regular700?.copyWith(
+        color: InvestrendTheme.of(context).greyLighterTextColor);
     if (valueColor != null) {
-      valueStyle = regular700.copyWith(color: valueColor);
+      valueStyle = regular700?.copyWith(color: valueColor);
     }
     double paddingLeftRight = InvestrendTheme.cardPaddingGeneral;
-    double paddingTopBottom = usePaddingTopBottom ? InvestrendTheme.cardPaddingGeneral : 0.0;
+    double paddingTopBottom =
+        usePaddingTopBottom ? InvestrendTheme.cardPaddingGeneral : 0.0;
     return Padding(
-      padding: EdgeInsets.only(left: paddingLeftRight, right: paddingLeftRight, top: paddingTopBottom, bottom: paddingTopBottom),
+      padding: EdgeInsets.only(
+          left: paddingLeftRight,
+          right: paddingLeftRight,
+          top: paddingTopBottom,
+          bottom: paddingTopBottom),
       child: Row(
         children: [
           Text(label, style: labelStyle),
-          Expanded(flex: 1, child: Text(value, style: valueStyle, textAlign: TextAlign.right)),
+          Expanded(
+              flex: 1,
+              child:
+                  Text(value, style: valueStyle, textAlign: TextAlign.right)),
         ],
       ),
     );
   }
 
   Widget _rowNormal(BuildContext context, String label, String value) {
-    TextStyle small400 = InvestrendTheme.of(context).small_w400_compact;
-    TextStyle labelStyle = small400.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor);
+    TextStyle? small400 = InvestrendTheme.of(context).small_w400_compact;
+    TextStyle? labelStyle = small400?.copyWith(
+        color: InvestrendTheme.of(context).greyLighterTextColor);
 
     const padding = InvestrendTheme.cardPaddingGeneral;
     return Padding(
@@ -623,49 +686,84 @@ class _ScreenPortfolioSummaryState extends BaseStateNoTabsWithParentTab<ScreenPo
     );
   }
 
-  Widget _contentPerformance(BuildContext context, PortfolioSummaryData data) {
+  Widget _contentPerformance(BuildContext context, PortfolioSummaryData? data) {
     if (data == null) {
       return Text('No Data');
     } else {
       Color profitColor = InvestrendTheme.changeTextColor(data.totalprofit);
-      TextStyle regular700 = InvestrendTheme.of(context).regular_w600_compact;
-      TextStyle moreSupport400 = InvestrendTheme.of(context).more_support_w400_compact;
-      TextStyle small400 = InvestrendTheme.of(context).small_w400_compact;
+      TextStyle? regular700 = InvestrendTheme.of(context).regular_w600_compact;
+      TextStyle? moreSupport400 =
+          InvestrendTheme.of(context).more_support_w400_compact;
+      TextStyle? small400 = InvestrendTheme.of(context).small_w400_compact;
       const double padding = InvestrendTheme.cardPaddingGeneral;
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
           Padding(
-            padding: EdgeInsets.only(left: padding, right: padding, top: padding),
+            padding:
+                EdgeInsets.only(left: padding, right: padding, top: padding),
             child: Text('portfolio_summary_info_title'.tr(), style: regular700),
           ),
           Padding(
-            padding: EdgeInsets.only(left: padding, right: padding, bottom: 25.0, top: 4.0),
-            child: Text(data.begindate + ' - ' + 'portfolio_summary_current_label'.tr(),
-                style: moreSupport400.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor)),
+            padding: EdgeInsets.only(
+                left: padding, right: padding, bottom: 25.0, top: 4.0),
+            child: Text(
+                data.begindate! +
+                    ' - ' +
+                    'portfolio_summary_current_label'.tr(),
+                style: moreSupport400?.copyWith(
+                    color: InvestrendTheme.of(context).greyDarkerTextColor)),
           ),
 
           //SizedBox(height: 20.0),
-          _rowBold(context, 'portfolio_summary_total_asset_label'.tr(), InvestrendTheme.formatMoneyDouble(data.totalasset, prefixRp: false)),
-          _rowNormal(context, 'portfolio_summary_portfolio_value_label'.tr(), InvestrendTheme.formatMoneyDouble(data.portfoliovalue, prefixRp: false)),
-          _rowNormal(context, 'portfolio_summary_cash_label'.tr(), InvestrendTheme.formatMoneyDouble(data.cashvalue, prefixRp: false)),
+          _rowBold(
+              context,
+              'portfolio_summary_total_asset_label'.tr(),
+              InvestrendTheme.formatMoneyDouble(data.totalasset,
+                  prefixRp: false)),
+          _rowNormal(
+              context,
+              'portfolio_summary_portfolio_value_label'.tr(),
+              InvestrendTheme.formatMoneyDouble(data.portfoliovalue,
+                  prefixRp: false)),
+          _rowNormal(
+              context,
+              'portfolio_summary_cash_label'.tr(),
+              InvestrendTheme.formatMoneyDouble(data.cashvalue,
+                  prefixRp: false)),
           Padding(
-            padding: EdgeInsets.only(left: padding, right: padding, ),
+            padding: EdgeInsets.only(
+              left: padding,
+              right: padding,
+            ),
             child: ComponentCreator.divider(context),
           ),
-          _rowBold(context, 'portfolio_summary_capital_fund_label'.tr(), InvestrendTheme.formatMoneyDouble(data.modalsetor, prefixRp: false)),
-          _rowNormal(context, 'portfolio_summary_cash_in_label'.tr(), InvestrendTheme.formatMoneyDouble(data.cashin, prefixRp: false)),
-          _rowNormal(context, 'portfolio_summary_cash_out_label'.tr(), InvestrendTheme.formatMoneyDouble(data.cashout, prefixRp: false)),
+          _rowBold(
+              context,
+              'portfolio_summary_capital_fund_label'.tr(),
+              InvestrendTheme.formatMoneyDouble(data.modalsetor,
+                  prefixRp: false)),
+          _rowNormal(context, 'portfolio_summary_cash_in_label'.tr(),
+              InvestrendTheme.formatMoneyDouble(data.cashin, prefixRp: false)),
+          _rowNormal(context, 'portfolio_summary_cash_out_label'.tr(),
+              InvestrendTheme.formatMoneyDouble(data.cashout, prefixRp: false)),
           Padding(
-            padding: EdgeInsets.only(left: padding, right: padding, ),
+            padding: EdgeInsets.only(
+              left: padding,
+              right: padding,
+            ),
             child: ComponentCreator.divider(context),
           ),
           SizedBox(
             height: padding,
           ),
-          _rowBold(context, 'portfolio_summary_total_profit_label'.tr(), InvestrendTheme.formatMoneyDouble(data.totalprofit, prefixRp: false),
-              usePaddingTopBottom: false, valueColor: profitColor),
+          _rowBold(
+              context,
+              'portfolio_summary_total_profit_label'.tr(),
+              InvestrendTheme.formatMoneyDouble(data.totalprofit,
+                  prefixRp: false),
+              usePaddingTopBottom: false,
+              valueColor: profitColor),
           SizedBox(
             height: padding,
           ),
@@ -681,21 +779,30 @@ class _ScreenPortfolioSummaryState extends BaseStateNoTabsWithParentTab<ScreenPo
                 )),
           ),
           */
-          _rowNormal(context, 'portfolio_summary_realized_profit_label'.tr(), InvestrendTheme.formatMoneyDouble(data.realizedprofit, prefixRp: false)),
           _rowNormal(
-              context, 'portfolio_summary_unrealized_profit_label'.tr(), InvestrendTheme.formatMoneyDouble(data.unrealizedprofit, prefixRp: false)),
+              context,
+              'portfolio_summary_realized_profit_label'.tr(),
+              InvestrendTheme.formatMoneyDouble(data.realizedprofit,
+                  prefixRp: false)),
+          _rowNormal(
+              context,
+              'portfolio_summary_unrealized_profit_label'.tr(),
+              InvestrendTheme.formatMoneyDouble(data.unrealizedprofit,
+                  prefixRp: false)),
           //_rowNormal(context, 'portfolio_summary_interest_profit_label'.tr(), InvestrendTheme.formatMoney(data.interestProfit, prefixRp: false)),
           // SizedBox(
           //   height: padding,
           // ),
           Padding(
-            padding: EdgeInsets.only(left: padding, right: padding, top: padding, bottom: padding),
+            padding: EdgeInsets.only(
+                left: padding, right: padding, top: padding, bottom: padding),
             child: Align(
                 alignment: Alignment.centerRight,
-                child: Text('not_include_fee_label'.tr(), style: InvestrendTheme.of(context).more_support_w400_compact_greyDarker)),
+                child: Text('not_include_fee_label'.tr(),
+                    style: InvestrendTheme.of(context)
+                        .more_support_w400_compact_greyDarker)),
           ),
           ComponentCreator.dividerCard(context),
-
         ],
       );
     }
@@ -705,7 +812,7 @@ class _ScreenPortfolioSummaryState extends BaseStateNoTabsWithParentTab<ScreenPo
   void onActive() {
     //print(routeName + ' onActive');
     // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      doUpdate();
+    doUpdate();
     // });
   }
 
@@ -756,18 +863,21 @@ class _ScreenPortfolioSummaryState extends BaseStateNoTabsWithParentTab<ScreenPo
      */
   }
 
-  VoidCallback _activeAccountChangedListener;
+  VoidCallback? _activeAccountChangedListener;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
     if (_activeAccountChangedListener != null) {
-      context.read(accountChangeNotifier).removeListener(_activeAccountChangedListener);
+      context
+          .read(accountChangeNotifier)
+          .removeListener(_activeAccountChangedListener!);
     } else {
       _activeAccountChangedListener = () {
         if (mounted) {
-          bool hasAccount = context.read(dataHolderChangeNotifier).user.accountSize() > 0;
+          bool hasAccount =
+              context.read(dataHolderChangeNotifier).user.accountSize() > 0;
           if (hasAccount) {
             //_accountNotifier.value = !_accountNotifier.value;
             doUpdate(pullToRefresh: true);
@@ -775,8 +885,11 @@ class _ScreenPortfolioSummaryState extends BaseStateNoTabsWithParentTab<ScreenPo
         }
       };
     }
-    context.read(accountChangeNotifier).addListener(_activeAccountChangedListener);
+    context
+        .read(accountChangeNotifier)
+        .addListener(_activeAccountChangedListener!);
   }
+
   @override
   void dispose() {
     _buttonReturnNotifier.dispose();
@@ -784,10 +897,11 @@ class _ScreenPortfolioSummaryState extends BaseStateNoTabsWithParentTab<ScreenPo
     // _stockPositionNotifier.dispose();
     _returnNotifier.dispose();
 
-
     final container = ProviderContainer();
     if (_activeAccountChangedListener != null) {
-      container.read(accountChangeNotifier).removeListener(_activeAccountChangedListener);
+      container
+          .read(accountChangeNotifier)
+          .removeListener(_activeAccountChangedListener!);
     }
 
     super.dispose();
@@ -800,7 +914,7 @@ class _ScreenPortfolioSummaryState extends BaseStateNoTabsWithParentTab<ScreenPo
 }
 
 class ReturnInfo {
-  String code = '';
+  String? code = '';
   //String timeRange = '';
   //double percentChange = 0.0;
   //int change = 0;

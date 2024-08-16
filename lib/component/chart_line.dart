@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable, unused_local_variable
+
 import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:intl/intl.dart';
 import 'package:Investrend/objects/data_object.dart';
@@ -5,14 +7,14 @@ import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class ChartLine extends StatefulWidget {
-  List<Line> chartData;
-  int chipsRangeIndex;
-  double minimumData;
-  double maximumData;
-  List<String> listChipRange;
+  List<Line>? chartData;
+  int? chipsRangeIndex;
+  double? minimumData;
+  double? maximumData;
+  List<String>? listChipRange;
 
   ChartLine({
-    Key key,
+    Key? key,
     this.chartData,
     @required this.chipsRangeIndex,
     this.minimumData,
@@ -26,8 +28,8 @@ class ChartLine extends StatefulWidget {
 }
 
 class _ChartLineState extends State<ChartLine> {
-  CrosshairBehavior _crosshairBehavior;
-  TrackballBehavior _trackballBehavior;
+  CrosshairBehavior? _crosshairBehavior;
+  TrackballBehavior? _trackballBehavior;
   final formatString = NumberFormat('#,###');
   final dateFormat = new DateFormat('yyyy-MM-dd');
   final timeFormat = new DateFormat('HH:mm');
@@ -65,7 +67,7 @@ class _ChartLineState extends State<ChartLine> {
                     width: double.infinity,
                     child: widget.chipsRangeIndex == 0
                         ? Text(
-                            timeFormat.format(trackballDetails.point.x),
+                            timeFormat.format(trackballDetails.point!.x),
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 12,
@@ -74,7 +76,7 @@ class _ChartLineState extends State<ChartLine> {
                             textAlign: TextAlign.center,
                           )
                         : Text(
-                            dateFormat.format(trackballDetails.point.x),
+                            dateFormat.format(trackballDetails.point!.x),
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 12,
@@ -96,7 +98,7 @@ class _ChartLineState extends State<ChartLine> {
                   padding: EdgeInsets.only(top: 20),
                   width: double.infinity,
                   child: Text(
-                    formatString.format(trackballDetails.point.y).toString(),
+                    formatString.format(trackballDetails.point!.y).toString(),
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 12,
@@ -114,18 +116,18 @@ class _ChartLineState extends State<ChartLine> {
 
   @override
   Widget build(BuildContext context) {
-    TextStyle styleRight =
-        InvestrendTheme.of(context).more_support_w400_compact.copyWith(
+    TextStyle? styleRight =
+        InvestrendTheme.of(context).more_support_w400_compact?.copyWith(
               color: InvestrendTheme.of(context).greyDarkerTextColor,
             );
-    TextStyle styleBottom =
-        InvestrendTheme.of(context).more_support_w400_compact.copyWith(
+    TextStyle? styleBottom =
+        InvestrendTheme.of(context).more_support_w400_compact?.copyWith(
               color: InvestrendTheme.of(context).greyDarkerTextColor,
             );
     return SfCartesianChart(
       series: <ChartSeries>[
         LineSeries<Line, DateTime>(
-            dataSource: widget.chartData,
+            dataSource: widget.chartData!,
             xValueMapper: (Line lineData, _) => lineData.time,
             yValueMapper: (Line lineData, _) => lineData.close,
             markerSettings: MarkerSettings(

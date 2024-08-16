@@ -6,26 +6,27 @@ import 'package:image/image.dart' as imageTools;
 import 'dart:io';
 
 class Utils {
-  static int randomNumber(int min, int max, {Random random}) {
-    if (random = null) {
+  static int randomNumber(int min, int max, {Random? random}) {
+    if (random == null) {
       random = Random();
     }
     int next = min + random.nextInt(max - min);
     return next;
   }
 
-  static void printList(List<String> list, {String caller = ''}) {
+  static void printList(List<String>? list, {String caller = ''}) {
     int count = list != null ? list.length : 0;
     for (int i = 0; i < count; i++) {
-      print('$caller[$i] = ' + list.elementAt(i));
+      print('$caller[$i] = ' + list!.elementAt(i));
     }
   }
 
-  static imageTools.Image resizeImage(String path, {int maxWidth = 1080}) {
+  static imageTools.Image? resizeImage(String path, {int maxWidth = 1080}) {
     // Read a jpeg image from file.
-    File file = new File(path);
+    File? file = File(path);
+    // ignore: unnecessary_null_comparison
     if (file != null) {
-      imageTools.Image image = imageTools.decodeImage(file.readAsBytesSync());
+      imageTools.Image? image = imageTools.decodeImage(file.readAsBytesSync());
       // Resize the image to a 2000? thumbnail (maintaining the aspect ratio).
       if (image != null) {
         //int maxWidth = 500;
@@ -46,11 +47,11 @@ class Utils {
     return null;
   }
 
-  static imageTools.Image resizeImageFile(File file, {int maxWidth = 1080}) {
+  static imageTools.Image? resizeImageFile(File? file, {int maxWidth = 1080}) {
     // Read a jpeg image from file.
     //File file = new File(path);
     if (file != null) {
-      imageTools.Image image = imageTools.decodeImage(file.readAsBytesSync());
+      imageTools.Image? image = imageTools.decodeImage(file.readAsBytesSync());
       // Resize the image to a 2000? thumbnail (maintaining the aspect ratio).
       if (image != null) {
         //int maxWidth = 500;
@@ -78,15 +79,16 @@ class Utils {
       DateFormat('yyyy-MM-ddTHH:mm:ss.000000Z');
   //static DateFormat _sosmedFormatDataNormal = DateFormat('yyyy-MM-dd HH:mm:ss');
   static DateFormat _sosmedFormatDisplayDate = DateFormat('dd/MM/yy');
-  static DateFormat _sosmedFormatDisplayTime = DateFormat('HH:mm');
+  // static DateFormat _sosmedFormatDisplayTime = DateFormat('HH:mm');
   static DateFormat _sosmedFormatDate = DateFormat('yyyy-MM-dd');
 
-  static DateFormat _orderDataFormatDate = DateFormat('yyyyMMdd');
-  static DateFormat _orderDisplayFormatDate = DateFormat('dd/MM/yyyy');
+  // static DateFormat _orderDataFormatDate = DateFormat('yyyyMMdd');
+  // static DateFormat _orderDisplayFormatDate = DateFormat('dd/MM/yyyy');
 
-  static DateFormat _orderDataFormatTime =
-      DateFormat('HHmmss'); // 3 digit belakang di cut
-  static DateFormat _orderDisplayFormatTime = DateFormat('HH:mm:ss');
+  // static DateFormat _orderDataFormatTime =
+  //     DateFormat('HHmmss');
+  // 3 digit belakang di cut
+  // static DateFormat _orderDisplayFormatTime = DateFormat('HH:mm:ss');
 
   static String removeServerAddress(String text) {
     String errorText = text;
@@ -285,12 +287,29 @@ class Utils {
         created.toString());
 
     //num days = Jiffy([2018, 1, 29]).diff(Jiffy([2019, 10, 7]), Units.DAY); // -616
+    int weeks = Jiffy.parseFromList([created.year, created.month, created.day])
+        .diff(Jiffy.parseFromList([now.year, now.month, now.day]),
+            unit: Unit.week) as int;
+
+    int months = Jiffy.parseFromList([created.year, created.month, created.day])
+        .diff(Jiffy.parseFromList([now.year, now.month, now.day]),
+            unit: Unit.month) as int;
+
+    int years = Jiffy.parseFromList([created.year, created.month, created.day])
+        .diff(Jiffy.parseFromList([now.year, now.month, now.day]),
+            unit: Unit.year) as int;
+    /*
     int weeks = Jiffy([created.year, created.month, created.day])
         .diff(Jiffy([now.year, now.month, now.day]), Units.WEEK); // -88
+
+
     int months = Jiffy([created.year, created.month, created.day])
         .diff(Jiffy([now.year, now.month, now.day]), Units.MONTH); // -20
+
+
     int years = Jiffy([created.year, created.month, created.day])
         .diff(Jiffy([now.year, now.month, now.day]), Units.YEAR);
+        */
 
     int days = now.difference(created).inDays;
     int hours = now.difference(created).inHours;
@@ -439,7 +458,7 @@ class Utils {
     return 'sosmed_label_expire_under_minute'.tr();
   }
 
-  static String isPhoneNumberCompliant(String phone) {
+  static String? isPhoneNumberCompliant(String? phone) {
     if (phone == null || phone.isEmpty) {
       return 'error_phone_number_empty'.tr();
     }
@@ -454,7 +473,7 @@ class Utils {
     return null;
   }
 
-  static String isEmailCompliant(String email) {
+  static String? isEmailCompliant(String? email) {
     if (email == null || email.isEmpty) {
       return 'error_email_empty'.tr();
     }
@@ -473,7 +492,7 @@ class Utils {
   }
 
   static final String specialCharacters = '!-@_#%^&*(),.?":{}|<>';
-  static String isPasswordCompliant(String password, int minLength) {
+  static String? isPasswordCompliant(String? password, int minLength) {
     if (password == null || password.isEmpty) {
       return 'error_password_empty'.tr();
     }
@@ -496,12 +515,12 @@ class Utils {
       return 'error_password_lowercase'.tr();
     }
     //bool hasSpecialCharacters = password.contains(new RegExp(r'[!@#$%^&*(),.?":{}|<>\\|/]'));
-    bool hasSpecialCharacters =
+    bool? hasSpecialCharacters =
         password.contains(new RegExp(r'[!@_#$%^&*(),.?":{}|<>]'));
     if (!hasSpecialCharacters) {
       hasSpecialCharacters = StringUtils.isContains(password, '-');
     }
-    if (!hasSpecialCharacters) {
+    if (!hasSpecialCharacters!) {
       return 'error_password_symbol'.tr() + ' ' + specialCharacters + r'$';
     }
     return null;
@@ -561,7 +580,7 @@ class Utils {
     return defaultNo;
   }
 
-  static double absDouble(double data) {
+  static double absDouble(double? data) {
     if (data != null) {
       if (data < 0) {
         data = data * -1;
@@ -629,7 +648,7 @@ class Utils {
     // return f;
   }
 
-  static int safeLenght(List list) {
+  static int safeLenght(List? list) {
     return list == null ? 0 : list.length;
   }
 
@@ -639,14 +658,14 @@ class Utils {
     return reff;
   }
 
-  static List<int> parseListInt(String text) {
+  static List<int> parseListInt(String? text) {
     List<int> result = List.empty(growable: true);
     //String b_multi_text = parsedJson['b_multi'];
     if (!StringUtils.isEmtpy(text)) {
-      List<String> list = text.split('|');
-      int count = list == null ? 0 : list.length;
+      List<String>? list = text?.split('|');
+      int? count = list == null ? 0 : list.length;
       for (int i = 0; i < count; i++) {
-        String intText = StringUtils.noNullString(list.elementAt(i)).trim();
+        String? intText = StringUtils.noNullString(list?.elementAt(i))?.trim();
         if (!StringUtils.isEmtpy(intText)) {
           int port = Utils.safeInt(intText);
           result.add(port);
@@ -660,8 +679,8 @@ class Utils {
       DateFormat('EEEE, dd/MM/yyyy HH:mm:ss', 'id');
   static DateFormat dateTimeParser = DateFormat('yyyy-MM-dd HH:mm:ss');
 
-  static String formatLastDataUpdate(String date, String time) {
-    String displayTime = date + ' ' + time;
+  static String formatLastDataUpdate(String? date, String? time) {
+    String displayTime = date! + ' ' + time!;
     DateTime dateTime = dateTimeParser.parseUtc(displayTime);
     String formatedDate = dateFormatter.format(dateTime);
     return formatedDate;
@@ -686,15 +705,15 @@ class Utils {
   }
 
   static bool isVersionCodeNewer(
-      String existingVersionCode, String compareVersionCode) {
+      String? existingVersionCode, String? compareVersionCode) {
     if (StringUtils.isEmtpy(compareVersionCode)) {
       return false;
     }
     if (StringUtils.isEmtpy(existingVersionCode)) {
       return false;
     }
-    List<String> existingList = existingVersionCode.split('.');
-    List<String> compareList = compareVersionCode.split('.');
+    List<String>? existingList = existingVersionCode?.split('.');
+    List<String>? compareList = compareVersionCode?.split('.');
     if (existingList == null || existingList.length == 0) {
       return false;
     }
@@ -708,9 +727,9 @@ class Utils {
     bool flag = false;
     for (int i = 0; i < min; i++) {
       int existingSegment = Utils.safeInt(
-          StringUtils.noNullString(existingList.elementAt(i)).trim());
+          StringUtils.noNullString(existingList.elementAt(i))?.trim());
       int compareSegment = Utils.safeInt(
-          StringUtils.noNullString(compareList.elementAt(i)).trim());
+          StringUtils.noNullString(compareList.elementAt(i))?.trim());
       if (existingSegment == compareSegment) {
       } else if (existingSegment < compareSegment) {
         flag = true;
@@ -731,15 +750,15 @@ class Utils {
   }
 
   static bool isVersionCodeOlder(
-      String existingVersionCode, String compareVersionCode) {
+      String? existingVersionCode, String? compareVersionCode) {
     if (StringUtils.isEmtpy(compareVersionCode)) {
       return false;
     }
     if (StringUtils.isEmtpy(existingVersionCode)) {
       return false;
     }
-    List<String> existingList = existingVersionCode.split('.');
-    List<String> compareList = compareVersionCode.split('.');
+    List<String>? existingList = existingVersionCode?.split('.');
+    List<String>? compareList = compareVersionCode?.split('.');
     if (existingList == null || existingList.length == 0) {
       return false;
     }
@@ -753,9 +772,9 @@ class Utils {
     bool flag = false;
     for (int i = 0; i < min; i++) {
       int existingSegment = Utils.safeInt(
-          StringUtils.noNullString(existingList.elementAt(i)).trim());
+          StringUtils.noNullString(existingList.elementAt(i))?.trim());
       int compareSegment = Utils.safeInt(
-          StringUtils.noNullString(compareList.elementAt(i)).trim());
+          StringUtils.noNullString(compareList.elementAt(i))?.trim());
       if (existingSegment == compareSegment) {
       } else if (existingSegment > compareSegment) {
         flag = true;

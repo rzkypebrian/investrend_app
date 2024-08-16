@@ -1,16 +1,15 @@
-
 import '../RedisProtocol.dart';
 import 'RedisQuery.dart';
 
 abstract class RedisResult implements RedisProtocol {
-  RedisQuery query;
-  RedisResult(this.query) ;
+  RedisQuery? query;
+  RedisResult(this.query);
   bool isEmpty = true;
   bool _status = false;
   String _message = "";
   int count = 1;
   int nextIndex = 0;
-  bool isEmptyResult(List<String> data) {
+  bool isEmptyResult(List<String?>? data) {
     bool empty = true;
     if (data != null && data.length > 0) {
       for (int i = 0; i < data.length; i++) {
@@ -31,7 +30,7 @@ abstract class RedisResult implements RedisProtocol {
 }
 
 class SingleResult extends RedisResult {
-  SingleResult(RedisQuery req) : super(req) ;
+  SingleResult(RedisQuery req) : super(req);
 
   bool addReply(String msg) {
     if (msg.startsWith(RedisProtocol.POSITIVE) ||
@@ -66,7 +65,7 @@ class PingResult extends SingleResult {
   // ping
   // -ERR only (P)SUBSCRIBE / (P)UNSUBSCRIBE / QUIT allowed in this context
 
-  PingResult(RedisQuery req) : super(req) ;
+  PingResult(RedisQuery req) : super(req);
 }
 
 class MultipleResult extends RedisResult {
@@ -74,21 +73,21 @@ class MultipleResult extends RedisResult {
   //String _message;
 
   int nextLenght = 0;
-  List<String> datas;
+  List<String>? datas;
 
-  MultipleResult(RedisQuery req) : super(req) ;
+  MultipleResult(RedisQuery? req) : super(req);
 
-  void _addData(String data) {
+  void _addData(String? data) {
     if (datas == null) {
-      datas = new List();
+      datas = <String>[];
       //print("create List($count)");
     }
-    datas.add(data);
+    datas?.add(data!);
   }
 
-  void printDatas(){
-    datas.forEach((item) {
-      print('${datas.indexOf(item)}: $item');
+  void printDatas() {
+    datas?.forEach((item) {
+      print('${datas?.indexOf(item)}: $item');
     });
   }
 
@@ -117,8 +116,12 @@ class MultipleResult extends RedisResult {
         nextLenght = 0;
         nextIndex++;
         _addData(msg);
-      }else{
-        print("RedisConnector INVALID expected length : $nextLenght but receive length : "+msg.length.toString()+" --> "+msg);
+      } else {
+        print(
+            "RedisConnector INVALID expected length : $nextLenght but receive length : " +
+                msg.length.toString() +
+                " --> " +
+                msg);
       }
     } else {
       nextIndex++;
@@ -140,7 +143,7 @@ class SubscribeResult extends MultipleResult {
   //  SSI.FITR007
   //  :1
 
-  SubscribeResult(RedisQuery req) : super(req) ;
+  SubscribeResult(RedisQuery req) : super(req);
 }
 
 class UnSubscribeResult extends MultipleResult {
@@ -163,7 +166,7 @@ class UnSubscribeResult extends MultipleResult {
   //  SSI.FITR007
   //  :1
 
-  UnSubscribeResult(RedisQuery req) : super(req) ;
+  UnSubscribeResult(RedisQuery req) : super(req);
 }
 
 class MGetResult extends MultipleResult {
@@ -183,11 +186,10 @@ class MGetResult extends MultipleResult {
   //  SSI|A|0|0|2020-02-17|14:16:13|BBCA|RG|81|33400|33750|33400|33575|35300|25700|2019-02-18|2020-02-17|27400|25.27|175|0.52|12641100|424386647500|3379|191857143|24408459900|33400|33575|2400|33600|580400|--|819514041142500|33572.0|185542962500|36146032500|238843685000|388240615000|35300|31850|0.44|243076865746775
   //  $-1
 
-  MGetResult(RedisQuery req) : super(req) ;
+  MGetResult(RedisQuery req) : super(req);
 }
 
 class HGetAll extends MultipleResult {
-
   //  HGETALL HL
   //  -ERR operation not permitted
 
@@ -206,11 +208,10 @@ class HGetAll extends MultipleResult {
   //  $1
   //  S
 
-  HGetAll(RedisQuery req) : super(req) ;
+  HGetAll(RedisQuery req) : super(req);
 }
 
 class HMGet extends MultipleResult {
-
   //  HMGET HL status
   //  -ERR operation not permitted
 
@@ -229,5 +230,5 @@ class HMGet extends MultipleResult {
   //  $14
   //  Second Session
 
-  HMGet(RedisQuery req) : super(req) ;
+  HMGet(RedisQuery req) : super(req);
 }

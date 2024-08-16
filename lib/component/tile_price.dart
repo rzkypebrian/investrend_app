@@ -1,30 +1,42 @@
-
-
 import 'package:Investrend/utils/investrend_theme.dart';
-import 'package:auto_size_text/auto_size_text.dart';
+// import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
-
 class TilePriceTwo extends StatelessWidget {
-  final String codeText;
+  final String? codeText;
   final String priceText;
   final String changeText;
   final String percentChangeText;
-  final Color priceColor;
+  final Color? priceColor;
   final Color percentChangeBackgroundColor;
-  final EdgeInsets padding;
-  final EdgeInsets paddingChange;
+  final EdgeInsets? padding;
+  final EdgeInsets? paddingChange;
   final double width;
-  final double height;
-  final VoidCallback onPressed;
-  final TextStyle codeStyle;
-  final TextStyle percentStyle;
-  final TextStyle priceStyle;
-  const TilePriceTwo({Key key, this.codeStyle,this.percentStyle, this.priceStyle, this.onPressed, this.codeText ='-', this.changeText = '-',this.priceText ='-', this.percentChangeText='-', this.priceColor/*=Colors.white*/, this.percentChangeBackgroundColor=Colors.purple, this.padding, this.paddingChange, this.width=100, this.height}) : super(key: key);
+  final double? height;
+  final VoidCallback? onPressed;
+  final TextStyle? codeStyle;
+  final TextStyle? percentStyle;
+  final TextStyle? priceStyle;
+  const TilePriceTwo(
+      {Key? key,
+      this.codeStyle,
+      this.percentStyle,
+      this.priceStyle,
+      this.onPressed,
+      this.codeText = '-',
+      this.changeText = '-',
+      this.priceText = '-',
+      this.percentChangeText = '-',
+      this.priceColor/*=Colors.white*/,
+      this.percentChangeBackgroundColor = Colors.purple,
+      this.padding,
+      this.paddingChange,
+      this.width = 100,
+      this.height})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-
     return SizedBox(
       width: width,
       height: height ?? width,
@@ -32,12 +44,13 @@ class TilePriceTwo extends StatelessWidget {
         height: 64.0,
         elevation: 0.0,
         splashColor: InvestrendTheme.of(context).tileSplashColor,
-        padding: padding ?? EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0, bottom: 8.0),
+        padding: padding ??
+            EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0, bottom: 8.0),
         color: InvestrendTheme.of(context).tileBackground,
         shape: RoundedRectangleBorder(
           borderRadius: new BorderRadius.circular(10.0),
           side: BorderSide(
-            color: InvestrendTheme.of(context).tileBackground,
+            color: InvestrendTheme.of(context).tileBackground!,
             width: 0.0,
           ),
         ),
@@ -69,13 +82,20 @@ class TilePriceTwo extends StatelessWidget {
                     ),
                     */
                     Text(
-                      codeText,
-                      style: codeStyle ?? InvestrendTheme.of(context).small_w600_compact,
+                      codeText!,
+                      style: codeStyle ??
+                          InvestrendTheme.of(context).small_w600_compact,
                       maxLines: 1,
                     ),
                     Text(
                       priceText,
-                      style: priceStyle ?? InvestrendTheme.of(context).more_support_w600_compact.copyWith(fontSize: 12.0, color: priceColor ?? InvestrendTheme.of(context).textWhite),
+                      style: priceStyle ??
+                          InvestrendTheme.of(context)
+                              .more_support_w600_compact
+                              ?.copyWith(
+                                  fontSize: 12.0,
+                                  color: priceColor ??
+                                      InvestrendTheme.of(context).textWhite),
                       maxLines: 1,
                     ),
                   ],
@@ -88,7 +108,9 @@ class TilePriceTwo extends StatelessWidget {
                 height: 48.0,
                 //color: percentChangeBackgroundColor,
                 margin: EdgeInsets.only(left: 8.0),
-                padding: paddingChange ?? EdgeInsets.only(left: 8.0, right: 8.0, top: 8.0, bottom: 8.0),
+                padding: paddingChange ??
+                    EdgeInsets.only(
+                        left: 8.0, right: 8.0, top: 8.0, bottom: 8.0),
                 decoration: BoxDecoration(
                   color: percentChangeBackgroundColor,
                   shape: BoxShape.rectangle,
@@ -101,13 +123,19 @@ class TilePriceTwo extends StatelessWidget {
                   children: [
                     Text(
                       changeText,
-                      style: percentStyle ?? InvestrendTheme.of(context).more_support_w600_compact.copyWith(fontSize: 12.0, color: priceColor),
+                      style: percentStyle ??
+                          InvestrendTheme.of(context)
+                              .more_support_w600_compact
+                              ?.copyWith(fontSize: 12.0, color: priceColor),
                       maxLines: 1,
                       textAlign: TextAlign.end,
                     ),
                     Text(
                       percentChangeText,
-                      style: percentStyle ?? InvestrendTheme.of(context).more_support_w600_compact.copyWith(fontSize: 12.0, color: priceColor),
+                      style: percentStyle ??
+                          InvestrendTheme.of(context)
+                              .more_support_w600_compact
+                              ?.copyWith(fontSize: 12.0, color: priceColor),
                       maxLines: 1,
                       textAlign: TextAlign.end,
                     ),
@@ -140,26 +168,39 @@ class TilePriceTwo extends StatelessWidget {
   }
 }
 
-
 class TilePriceThree extends StatelessWidget {
-  final String codeText;
+  final String? codeText;
   final String priceText;
   final String percentChangeText;
-  final Color priceColor;
+  final Color? priceColor;
   final Color percentChangeBackgroundColor;
-  final EdgeInsets padding;
-  final EdgeInsets paddingPercent;
+  final EdgeInsets? padding;
+  final EdgeInsets? paddingPercent;
   final double width;
-  final double height;
-  final VoidCallback onPressed;
-  final TextStyle codeStyle;
-  final TextStyle percentStyle;
-  final TextStyle priceStyle;
-  TilePriceThree({Key key, this.codeStyle,this.percentStyle, this.priceStyle, this.onPressed, this.codeText ='-', this.priceText ='-', this.percentChangeText='-', this.priceColor/*= Colors.white*/, this.percentChangeBackgroundColor=Colors.purple, this.padding, this.paddingPercent, this.width=100, this.height}) : super(key: key);
+  final double? height;
+  final VoidCallback? onPressed;
+  final TextStyle? codeStyle;
+  final TextStyle? percentStyle;
+  final TextStyle? priceStyle;
+  TilePriceThree(
+      {Key? key,
+      this.codeStyle,
+      this.percentStyle,
+      this.priceStyle,
+      this.onPressed,
+      this.codeText = '-',
+      this.priceText = '-',
+      this.percentChangeText = '-',
+      this.priceColor/*= Colors.white*/,
+      this.percentChangeBackgroundColor = Colors.purple,
+      this.padding,
+      this.paddingPercent,
+      this.width = 100,
+      this.height})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-
     return SizedBox(
       width: width,
       height: height ?? width,
@@ -173,7 +214,7 @@ class TilePriceThree extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: new BorderRadius.circular(10.0),
           side: BorderSide(
-            color: InvestrendTheme.of(context).tileBackground,
+            color: InvestrendTheme.of(context).tileBackground!,
             width: 0.0,
           ),
         ),
@@ -197,19 +238,25 @@ class TilePriceThree extends StatelessWidget {
             ),
             */
             Text(
-              codeText,
-              style: codeStyle ?? InvestrendTheme.of(context).small_w600_compact,
+              codeText!,
+              style:
+                  codeStyle ?? InvestrendTheme.of(context).small_w600_compact,
               maxLines: 1,
             ),
-
             Text(
               priceText, //InvestrendTheme.formatPriceDouble(data.price, showDecimal: false),
-              style: priceStyle ?? InvestrendTheme.of(context).more_support_w600_compact.copyWith(fontSize: 12.0, color: priceColor ?? InvestrendTheme.of(context).textWhite),
+              style: priceStyle ??
+                  InvestrendTheme.of(context)
+                      .more_support_w600_compact
+                      ?.copyWith(
+                          fontSize: 12.0,
+                          color: priceColor ??
+                              InvestrendTheme.of(context).textWhite),
               maxLines: 1,
             ),
-
             Container(
-              padding: paddingPercent ?? EdgeInsets.only(left: 8.0, right: 8.0, top: 4.0, bottom: 4.0),
+              padding: paddingPercent ??
+                  EdgeInsets.only(left: 8.0, right: 8.0, top: 4.0, bottom: 4.0),
               decoration: BoxDecoration(
                 color: percentChangeBackgroundColor,
                 shape: BoxShape.rectangle,
@@ -225,7 +272,10 @@ class TilePriceThree extends StatelessWidget {
               */
               child: Text(
                 percentChangeText,
-                style: percentStyle ?? InvestrendTheme.of(context).more_support_w600_compact.copyWith(fontSize: 12.0, color: priceColor),
+                style: percentStyle ??
+                    InvestrendTheme.of(context)
+                        .more_support_w600_compact
+                        ?.copyWith(fontSize: 12.0, color: priceColor),
                 maxLines: 1,
               ),
             ),

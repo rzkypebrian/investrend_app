@@ -1,6 +1,6 @@
 import 'package:Investrend/objects/iii_objects.dart';
 
-typedef StringCallback = String Function(String);
+typedef StringCallback = String Function(String?);
 typedef IntCallback = int Function(int);
 typedef DoubleCallback = double Function(double);
 typedef RangeCallback = Function(int, String, String);

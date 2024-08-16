@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable, unused_field, unnecessary_null_comparison, must_call_super, non_constant_identifier_names
+
 import 'dart:async';
 
 import 'package:Investrend/component/button_order.dart';
@@ -35,8 +37,8 @@ abstract class BaseTradeState<T extends StatefulWidget>
   final TabController tabController;
   final ValueNotifier<bool> updateDataNotifier;
   final bool onlyFastOrder;
-  final PriceLot initialPriceLot;
-  final ValueNotifier<bool> keyboardNotifier;
+  final PriceLot? initialPriceLot;
+  final ValueNotifier<bool>? keyboardNotifier;
   BaseTradeState(this.orderType, this.fastModeNotifier, this.tabController,
       this.orderbookNotifier, this.updateDataNotifier, this.onlyFastOrder,
       {this.initialPriceLot, this.keyboardNotifier});
@@ -44,12 +46,12 @@ abstract class BaseTradeState<T extends StatefulWidget>
   Key _fastKey = UniqueKey();
   Key _normalKey = UniqueKey();
   bool _active = false;
-  Timer _timer;
-  Timer _timerAccount;
-  FocusNode focusNodePrice;
-  FocusNode focusNodeLot;
-  FocusNode focusNodeSplitLoop;
-  FastOrderbook _fastOrderbook;
+  Timer? _timer;
+  Timer? _timerAccount;
+  FocusNode? focusNodePrice;
+  FocusNode? focusNodeLot;
+  FocusNode? focusNodeSplitLoop;
+  FastOrderbook? _fastOrderbook;
   final fieldPriceController = TextEditingController();
   final fieldLotController = TextEditingController();
   final fieldSplitLoopController = TextEditingController();
@@ -61,9 +63,9 @@ abstract class BaseTradeState<T extends StatefulWidget>
 
   //OrderbookNotifier _orderbookNotifier = OrderbookNotifier(OrderbookData());
 
-  ValueNotifier<double> animatePaddingNotifier;
+  ValueNotifier<double>? animatePaddingNotifier;
   //Key fastKey = UniqueKey();
-  Key fastKey;
+  Key? fastKey;
   static const Duration _durationUpdate = Duration(milliseconds: 2000);
   static const Duration _durationUpdateAccount = Duration(milliseconds: 5000);
 
@@ -73,7 +75,7 @@ abstract class BaseTradeState<T extends StatefulWidget>
 
   final ValueNotifier<String> predefineLotSourceNotifier =
       ValueNotifier<String>('cash_available_label'.tr());
-  VoidCallback resetPredefineLot;
+  VoidCallback? resetPredefineLot;
   List<String> _order_options = [
     'Normal',
     'Loop',
@@ -83,7 +85,6 @@ abstract class BaseTradeState<T extends StatefulWidget>
   ValueNotifier<bool> acceptRemoveNotifier = ValueNotifier<bool>(false);
 
   void onVisibilityChanged(WidgetVisibility visibility) {
-    // TODO: Use visibility
     switch (visibility) {
       case WidgetVisibility.VISIBLE:
         // Like Android's Activity.onResume()
@@ -107,43 +108,43 @@ abstract class BaseTradeState<T extends StatefulWidget>
     super.onVisibilityChanged(visibility);
   }
 
-  SubscribeAndHGET subscribeSummary;
-  SubscribeAndHGET subscribeOrderbook;
-  SubscribeAndHGET subscribeTradebook;
+  SubscribeAndHGET? subscribeSummary;
+  SubscribeAndHGET? subscribeOrderbook;
+  SubscribeAndHGET? subscribeTradebook;
   void unsubscribe(BuildContext context, String caller) {
     if (subscribeSummary != null) {
       print(orderType.routeName +
           ' unsubscribe Summary : ' +
-          subscribeSummary.channel);
+          subscribeSummary!.channel!);
       context
           .read(managerDatafeedNotifier)
-          .unsubscribe(subscribeSummary, orderType.routeName + '.' + caller);
+          .unsubscribe(subscribeSummary!, orderType.routeName + '.' + caller);
       subscribeSummary = null;
     }
 
     if (subscribeOrderbook != null) {
       print(orderType.routeName +
           ' unsubscribe Orderbook : ' +
-          subscribeOrderbook.channel);
+          subscribeOrderbook!.channel!);
       context
           .read(managerDatafeedNotifier)
-          .unsubscribe(subscribeOrderbook, orderType.routeName + '.' + caller);
+          .unsubscribe(subscribeOrderbook!, orderType.routeName + '.' + caller);
       subscribeOrderbook = null;
     }
 
     if (subscribeTradebook != null) {
       print(orderType.routeName +
           ' unsubscribe Tradebook : ' +
-          subscribeTradebook.channel);
+          subscribeTradebook!.channel!);
       context
           .read(managerDatafeedNotifier)
-          .unsubscribe(subscribeTradebook, orderType.routeName + '.' + caller);
+          .unsubscribe(subscribeTradebook!, orderType.routeName + '.' + caller);
       subscribeTradebook = null;
     }
   }
 
-  void subscribe(BuildContext context, Stock stock, String caller) {
-    String codeBoard = stock.code + '.' + stock.defaultBoard;
+  void subscribe(BuildContext context, Stock? stock, String caller) {
+    String codeBoard = stock!.code! + '.' + stock.defaultBoard;
 
     String channelSummary = DatafeedType.Summary.key + '.' + codeBoard;
     context.read(stockSummaryChangeNotifier).setStock(stock);
@@ -153,19 +154,20 @@ abstract class BaseTradeState<T extends StatefulWidget>
       print(channelSummary + ' got : ' + message.elementAt(1));
       print(message);
       if (mounted) {
-        StockSummary stockSummary = StockSummary.fromStreaming(message);
-        FundamentalCache cache =
+        StockSummary? stockSummary = StockSummary.fromStreaming(message);
+        FundamentalCache? cache =
             context.read(fundamentalCacheNotifier).getCache(stockSummary.code);
         stockSummary.updateCache(context, cache);
         context
             .read(stockSummaryChangeNotifier)
             .setData(stockSummary, check: true);
       }
+      return '';
     }, validator: validatorSummary);
     print(orderType.routeName + ' subscribe Summary : $codeBoard');
     context
         .read(managerDatafeedNotifier)
-        .subscribe(subscribeSummary, orderType.routeName + '.' + caller);
+        .subscribe(subscribeSummary!, orderType.routeName + '.' + caller);
 
     String channelOrderbook = DatafeedType.Orderbook.key + '.' + codeBoard;
     context.read(orderBookChangeNotifier).setStock(stock);
@@ -181,7 +183,7 @@ abstract class BaseTradeState<T extends StatefulWidget>
         orderbook.generateDataForUI(10, context: context);
 
         context.read(orderBookChangeNotifier).setData(orderbook);
-        StockSummary stockSummary =
+        StockSummary? stockSummary =
             context.read(stockSummaryChangeNotifier).summary;
         OrderbookData orderbookData = OrderbookData();
         orderbookData.orderbook = orderbook;
@@ -192,6 +194,7 @@ abstract class BaseTradeState<T extends StatefulWidget>
         orderbookNotifier.setValue(orderbookData);
         print('got orderbook --> notify');
       }
+      return '';
     }, validator: validatorOrderbook);
     print(orderType.routeName + ' subscribe Orderbook : $codeBoard');
     context
@@ -221,6 +224,7 @@ abstract class BaseTradeState<T extends StatefulWidget>
         context.read(tradeBookChangeNotifier).setData(tradebook);
         print('got tradebook --> notify');
       }
+      return '';
     }, validator: validatorTradebook);
     print(orderType.routeName + ' subscribe Tradebook : $codeBoard');
     context
@@ -228,7 +232,7 @@ abstract class BaseTradeState<T extends StatefulWidget>
         .subscribe(subscribeTradebook, orderType.routeName + '.' + caller);
   }
 
-  bool validatorOrderbook(List<String> data, String channel) {
+  bool validatorOrderbook(List<String>? data, String channel) {
     //List<String> data = message.split('|');
     if (data != null &&
         data.length >
@@ -251,7 +255,7 @@ abstract class BaseTradeState<T extends StatefulWidget>
     return false;
   }
 
-  bool validatorTradebook(List<String> data, String channel) {
+  bool validatorTradebook(List<String>? data, String channel) {
     //List<String> data = message.split('|');
     if (data != null &&
         data.length >
@@ -274,7 +278,7 @@ abstract class BaseTradeState<T extends StatefulWidget>
     return false;
   }
 
-  bool validatorSummary(List<String> data, String channel) {
+  bool validatorSummary(List<String>? data, String channel) {
     //List<String> data = message.split('|');
     if (data != null &&
         data.length >
@@ -321,7 +325,7 @@ abstract class BaseTradeState<T extends StatefulWidget>
         _startTimer();
 
         unsubscribe(context, 'onActive');
-        Stock stock = context.read(primaryStockChangeNotifier).stock;
+        Stock? stock = context.read(primaryStockChangeNotifier).stock;
         subscribe(context, stock, 'onActive');
       }
 
@@ -348,26 +352,26 @@ abstract class BaseTradeState<T extends StatefulWidget>
   //VoidCallback _pageListener;
 
   double offsetScroll = 0.0;
-  VoidCallback keyboardEvent() {
+  VoidCallback? keyboardEvent() {
     print(orderType.routeName +
         ' keyboardEvent  mounted : $mounted  keyboardNotifier : ' +
         (keyboardNotifier != null ? 'listening' : 'null'));
     if (mounted && keyboardNotifier != null) {
       print(orderType.routeName +
           ' keyboardEvent  show : ' +
-          keyboardNotifier.value.toString() +
+          keyboardNotifier!.value.toString() +
           '  scrollController.offset : ' +
           scrollController.offset.toString() +
           '  scrollControllerFast.offset : ' +
           scrollControllerFast.offset.toString());
-      if (keyboardNotifier.value) {
+      if (keyboardNotifier!.value) {
         offsetScroll = scrollControllerFast.offset;
 
         Future.delayed(Duration(milliseconds: 1000), () {
           if (isFastMode()) {
             print(orderType.routeName +
                 ' keyboardEvent  show : ' +
-                keyboardNotifier.value.toString() +
+                keyboardNotifier!.value.toString() +
                 '  offsetScroll : ' +
                 offsetScroll.toString() +
                 '  scrollControllerFast.offset : ' +
@@ -383,6 +387,7 @@ abstract class BaseTradeState<T extends StatefulWidget>
         });
       }
     }
+    return null;
   }
 
   @override
@@ -399,7 +404,7 @@ abstract class BaseTradeState<T extends StatefulWidget>
         (initialPriceLot != null ? initialPriceLot.toString() : 'NONE'));
 
     if (keyboardNotifier != null) {
-      keyboardNotifier.addListener(keyboardEvent);
+      keyboardNotifier?.addListener(keyboardEvent);
     }
 
     scrollControllerFast.addListener(() {
@@ -416,7 +421,7 @@ abstract class BaseTradeState<T extends StatefulWidget>
           scrollController.position.pixels.toString());
     });
     fastKey = Key(orderType.routeName + '_FAST');
-    fieldLotController.addListener(resetPredefineLot);
+    fieldLotController.addListener(resetPredefineLot!);
     fieldLotController.addListener(calculateOrder);
 
     fieldPriceController.addListener(calculateOrder);
@@ -431,13 +436,13 @@ abstract class BaseTradeState<T extends StatefulWidget>
     Timer(new Duration(milliseconds: 300), () {
       //paddingHeight = 1;
       if (initialPriceLot != null) {
-        if (initialPriceLot.price > 0) {
+        if (initialPriceLot!.price > 0) {
           fieldPriceController.text =
-              InvestrendTheme.formatComma(initialPriceLot.price);
+              InvestrendTheme.formatComma(initialPriceLot?.price);
         }
-        if (initialPriceLot.lot > 0) {
+        if (initialPriceLot!.lot > 0) {
           fieldLotController.text =
-              InvestrendTheme.formatComma(initialPriceLot.lot);
+              InvestrendTheme.formatComma(initialPriceLot?.lot);
         }
       }
       setState(() {});
@@ -553,11 +558,11 @@ abstract class BaseTradeState<T extends StatefulWidget>
     animatePaddingNotifier = ValueNotifier<double>(paddingHeight);
     */
 
-    Stock stock = context.read(primaryStockChangeNotifier).stock;
+    Stock? stock = context.read(primaryStockChangeNotifier).stock;
     if (stockChangeListener != null) {
       context
           .read(primaryStockChangeNotifier)
-          .removeListener(stockChangeListener);
+          .removeListener(stockChangeListener!);
       stockChangeListener = null;
     }
     /*
@@ -609,16 +614,16 @@ abstract class BaseTradeState<T extends StatefulWidget>
       print(orderType.routeName + '.stockChangeListener ' + mounted.toString());
 
       //final container = ProviderContainer();
-      Stock stock = context.read(primaryStockChangeNotifier).stock;
+      Stock? stock = context.read(primaryStockChangeNotifier).stock;
       BuySell data = context.read(buySellChangeNotifier).getData(orderType);
       //String existingCode = context.read(buySellChangeNotifier).getData(orderType).stock_code;
       bool isChanged =
-          !StringUtils.equalsIgnoreCase(stock.code, data.stock_code);
+          !StringUtils.equalsIgnoreCase(stock?.code, data.stock_code);
       print(orderType.routeName +
           '.stockChangeListener newCode : ' +
-          stock.code +
+          stock!.code! +
           '  existingCode : ' +
-          data.stock_code +
+          data.stock_code! +
           '  isChanged : $isChanged');
 
       //context.read(buySellChangeNotifier).setStock(stock.code, stock.name);
@@ -654,7 +659,7 @@ abstract class BaseTradeState<T extends StatefulWidget>
     if (clearChangeListener != null) {
       context
           .read(clearOrderChangeNotifier)
-          .removeListener(clearChangeListener);
+          .removeListener(clearChangeListener!);
       clearChangeListener = null;
     }
     // if (clearChangeListener == null) {
@@ -675,12 +680,12 @@ abstract class BaseTradeState<T extends StatefulWidget>
     };
     // }
 
-    context.read(primaryStockChangeNotifier).addListener(stockChangeListener);
-    context.read(clearOrderChangeNotifier).addListener(clearChangeListener);
+    context.read(primaryStockChangeNotifier).addListener(stockChangeListener!);
+    context.read(clearOrderChangeNotifier).addListener(clearChangeListener!);
     context
         .read(buySellChangeNotifier)
         .getData(orderType)
-        .setStock(stock.code, stock.name);
+        .setStock(stock?.code, stock?.name);
 
     // if (widget._fastModeNotifier.value) {
     //
@@ -695,31 +700,31 @@ abstract class BaseTradeState<T extends StatefulWidget>
       animatePaddingNotifier = ValueNotifier<double>(paddingHeight);
 
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        if (animatePaddingNotifier.value > 1.0) {
+        if (animatePaddingNotifier!.value > 1.0) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            animatePaddingNotifier.value = 1.0;
+            animatePaddingNotifier!.value = 1.0;
           });
         }
       });
     }
   }
 
-  VoidCallback stockChangeListener;
-  VoidCallback clearChangeListener;
+  VoidCallback? stockChangeListener;
+  VoidCallback? clearChangeListener;
 
   @override
   void dispose() {
     print(orderType.routeName + '.dispose');
     if (keyboardNotifier != null) {
-      keyboardNotifier.removeListener(keyboardEvent);
+      keyboardNotifier?.removeListener(keyboardEvent);
     }
     final container = ProviderContainer();
     container
         .read(primaryStockChangeNotifier)
-        .removeListener(stockChangeListener);
+        .removeListener(stockChangeListener!);
     container
         .read(clearOrderChangeNotifier)
-        .removeListener(clearChangeListener);
+        .removeListener(clearChangeListener!);
     /*
     if(_pageListener!=null){
       //final container = ProviderContainer();
@@ -747,17 +752,17 @@ abstract class BaseTradeState<T extends StatefulWidget>
     _timerAccount?.cancel();
     //_stopTimer();
     //calculateNotifier.dispose();
-    focusNodeLot.dispose();
-    focusNodePrice.dispose();
+    focusNodeLot?.dispose();
+    focusNodePrice?.dispose();
     predefineLotNotifier.dispose();
     valueOrderNotifier.dispose();
     fieldPriceController.dispose();
     fieldLotController.dispose();
     scrollController.dispose();
     scrollControllerFast.dispose();
-    animatePaddingNotifier.dispose();
+    animatePaddingNotifier?.dispose();
     _orderTypeNotifier.dispose();
-    focusNodeSplitLoop.dispose();
+    focusNodeSplitLoop?.dispose();
     predefineLotSourceNotifier.dispose();
     //_orderbookNotifier.dispose();
 
@@ -766,11 +771,12 @@ abstract class BaseTradeState<T extends StatefulWidget>
 
   void _startTimer() {
     if (!InvestrendTheme.DEBUG) {
-      if (_timer == null || !_timer.isActive) {
+      if (_timer == null || !_timer!.isActive) {
         print(orderType.routeName + '._startTimer _timer');
         _timer = Timer.periodic(_durationUpdate, (timer) {
-          print(
-              orderType.routeName + ' _timer.tick : ' + _timer.tick.toString());
+          print(orderType.routeName +
+              ' _timer.tick : ' +
+              _timer!.tick.toString());
           if (_active) {
             if (onProgress) {
               print(orderType.routeName +
@@ -782,12 +788,12 @@ abstract class BaseTradeState<T extends StatefulWidget>
         });
       }
 
-      if (_timerAccount == null || !_timerAccount.isActive) {
+      if (_timerAccount == null || !_timerAccount!.isActive) {
         print(orderType.routeName + '._startTimer _timerAccount');
         _timerAccount = Timer.periodic(_durationUpdateAccount, (timer) {
           print(orderType.routeName +
               ' _timerAccount.tick : ' +
-              _timerAccount.tick.toString());
+              _timerAccount!.tick.toString());
           if (_active) {
             if (onProgressAccount) {
               print(orderType.routeName +
@@ -803,13 +809,13 @@ abstract class BaseTradeState<T extends StatefulWidget>
 
   void _stopTimer() {
     print(orderType.routeName + '._stopTimer _timer');
-    if (_timer != null && _timer.isActive) {
-      _timer.cancel();
+    if (_timer != null && _timer!.isActive) {
+      _timer?.cancel();
     }
 
     print(orderType.routeName + '._stopTimer _timerAccount');
-    if (_timerAccount != null && _timerAccount.isActive) {
-      _timerAccount.cancel();
+    if (_timerAccount != null && _timerAccount!.isActive) {
+      _timerAccount?.cancel();
     }
   }
 
@@ -983,16 +989,16 @@ abstract class BaseTradeState<T extends StatefulWidget>
         "  _active : $_active  mounted : $mounted  pullToRefresh : $pullToRefresh");
 
     onProgress = true;
-    Stock stock = context.read(primaryStockChangeNotifier).stock;
+    Stock? stock = context.read(primaryStockChangeNotifier).stock;
 
     if (stock == null || !stock.isValid()) {
-      Stock stockDefault = InvestrendTheme.storedData.listStock.isEmpty
+      Stock? stockDefault = InvestrendTheme.storedData!.listStock!.isEmpty
           ? null
-          : InvestrendTheme.storedData.listStock.first;
+          : InvestrendTheme.storedData?.listStock?.first;
       context.read(primaryStockChangeNotifier).setStock(stockDefault);
       stock = context.read(primaryStockChangeNotifier).stock;
     }
-    print('doUpdate : ' + stock.code);
+    print('doUpdate : ' + stock!.code!);
 
     //context.read(stockSummaryChangeNotifier).setStock(stock);
     //context.read(orderBookChangeNotifier).setStock(stock);
@@ -1065,7 +1071,7 @@ abstract class BaseTradeState<T extends StatefulWidget>
   */
     int selected = context.read(accountChangeNotifier).index;
     //Account account = InvestrendTheme.of(context).user.getAccount(selected);
-    Account account =
+    Account? account =
         context.read(dataHolderChangeNotifier).user.getAccount(selected);
 
     if (account == null) {
@@ -1224,7 +1230,7 @@ abstract class BaseTradeState<T extends StatefulWidget>
   Widget createTopInfo(BuildContext context);
 
   void predefineLot(int percentage) {
-    fieldLotController.removeListener(resetPredefineLot);
+    fieldLotController.removeListener(resetPredefineLot!);
     predefineLotNotifier.value = percentage;
 
     if (orderType.isBuyOrAmendBuy()) {
@@ -1234,11 +1240,11 @@ abstract class BaseTradeState<T extends StatefulWidget>
       int price = Utils.safeInt(fieldPriceController.text.replaceAll(',', ''));
       double buyingPower =
           context.read(buyRdnBuyingPowerChangeNotifier).buyingPower;
-      double feeBuy = context.read(dataHolderChangeNotifier).user.feepct;
+      double? feeBuy = context.read(dataHolderChangeNotifier).user.feepct;
       double cashAvailable =
           context.read(buyRdnBuyingPowerChangeNotifier).cashAvailable;
 
-      Account activeAccount = context
+      Account? activeAccount = context
           .read(dataHolderChangeNotifier)
           .user
           .getAccount(context.read(accountChangeNotifier).index);
@@ -1251,7 +1257,7 @@ abstract class BaseTradeState<T extends StatefulWidget>
       if (price <= 0) {
         InvestrendTheme.of(context)
             .showSnackBar(context, 'predefine_price_error_text'.tr());
-        focusNodePrice.requestFocus();
+        focusNodePrice?.requestFocus();
         predefineLotNotifier.value = 0;
         return;
       }
@@ -1273,7 +1279,7 @@ abstract class BaseTradeState<T extends StatefulWidget>
             context,
             //'Please wait for buyingPower first.'
             error);
-        focusNodePrice.requestFocus();
+        focusNodePrice?.requestFocus();
         predefineLotNotifier.value = 0;
         return;
       }
@@ -1287,7 +1293,7 @@ abstract class BaseTradeState<T extends StatefulWidget>
             context,
             //'Please wait for buyingPower first.'
             error);
-        focusNodePrice.requestFocus();
+        focusNodePrice?.requestFocus();
         predefineLotNotifier.value = 0;
         return;
       }
@@ -1306,18 +1312,18 @@ abstract class BaseTradeState<T extends StatefulWidget>
 
         //int lot = ( (buyingPower * (percentage / 100)) / ( price * 100 * loop * (1.0 + (feeBuy / 100)) ) ).toInt();
         int lot = (usedValue * (percentage / 100)) ~/
-                (price * 100 * loop * (1.0 + (feeBuy / 100)));
+            (price * 100 * loop * (1.0 + (feeBuy! / 100)));
 
         //int lot = ((buyingPower / price * 100) / feeBuy).toInt();
         //int value = price * lot * fee;
         //lot = value / price / fee
         print('predefineLot ' + orderType.text + '  result lot : $lot');
         fieldLotController.text = InvestrendTheme.formatComma(lot);
-        focusNodeLot.unfocus();
+        focusNodeLot?.unfocus();
       } else {
         InvestrendTheme.of(context)
             .showSnackBar(context, 'predefine_price_error_text'.tr());
-        focusNodePrice.requestFocus();
+        focusNodePrice?.requestFocus();
         predefineLotNotifier.value = 0;
       }
     } else {
@@ -1336,10 +1342,10 @@ abstract class BaseTradeState<T extends StatefulWidget>
       }
       print('predefineLot ' + orderType.text + '  result lot : $lot');
       fieldLotController.text = InvestrendTheme.formatComma(lot);
-      focusNodeLot.unfocus();
+      focusNodeLot?.unfocus();
     }
 
-    fieldLotController.addListener(resetPredefineLot);
+    fieldLotController.addListener(resetPredefineLot!);
   }
 
   // Widget minusButton(double iconSize, VoidCallback onPressed) {
@@ -1415,7 +1421,7 @@ abstract class BaseTradeState<T extends StatefulWidget>
                     Text(labelType,
                         style: InvestrendTheme.of(context)
                             .small_w500
-                            .copyWith(fontWeight: FontWeight.w600)),
+                            ?.copyWith(fontWeight: FontWeight.w600)),
                     SizedBox(
                       width: 2,
                       height: 2,
@@ -1428,7 +1434,7 @@ abstract class BaseTradeState<T extends StatefulWidget>
                               left: InvestrendTheme.cardPadding,
                               right: InvestrendTheme.cardPadding),
                           child: Text(
-                            _order_options.elementAt(index),
+                            _order_options.elementAt(index as int),
                             style: InvestrendTheme.of(context).small_w400,
                             textAlign: TextAlign.end,
                           ),
@@ -1476,7 +1482,7 @@ abstract class BaseTradeState<T extends StatefulWidget>
                     Text('trade_form_price_label'.tr(),
                         style: InvestrendTheme.of(context)
                             .small_w500
-                            .copyWith(fontWeight: FontWeight.w600)),
+                            ?.copyWith(fontWeight: FontWeight.w600)),
                     TradeComponentCreator.minusButton(iconSize, () {
                       addOrSubstractPriceTick(-1);
                     }),
@@ -1499,7 +1505,7 @@ abstract class BaseTradeState<T extends StatefulWidget>
                     Text('trade_form_lot_label'.tr(),
                         style: InvestrendTheme.of(context)
                             .small_w500
-                            .copyWith(fontWeight: FontWeight.w600)),
+                            ?.copyWith(fontWeight: FontWeight.w600)),
                     TradeComponentCreator.minusButton(iconSize, () {
                       addOrSubstractLot(-1);
                     }),
@@ -1554,10 +1560,10 @@ abstract class BaseTradeState<T extends StatefulWidget>
                             height: 1,
                           );
                         } else {
-                          return Text(_order_options.elementAt(index),
+                          return Text(_order_options.elementAt(index as int),
                               style: InvestrendTheme.of(context)
                                   .small_w500
-                                  .copyWith(fontWeight: FontWeight.w600));
+                                  ?.copyWith(fontWeight: FontWeight.w600));
                         }
                       },
                     ),
@@ -1687,7 +1693,8 @@ abstract class BaseTradeState<T extends StatefulWidget>
                             builder: (context, valueSource, child) {
                               //#PERCENT#% of your #VALUE#
                               String text = 'predefine_lot_by_text'.tr();
-                              text = text.replaceFirst("#VALUE#", valueSource);
+                              text = text.replaceFirst(
+                                  "#VALUE#", valueSource as String);
                               text = text.replaceFirst(
                                   "#PERCENT#", value.toString());
                               //AlignmentGeometry textAlign = StringUtils.equalsIgnoreCase(valueSource, 'trade_buy_label_buying_power'.tr()) ? Alignment.centerLeft : Alignment.centerRight;
@@ -1695,7 +1702,7 @@ abstract class BaseTradeState<T extends StatefulWidget>
                                 text,
                                 style: InvestrendTheme.of(context)
                                     .support_w500_compact
-                                    .copyWith(
+                                    ?.copyWith(
                                         color: InvestrendTheme.of(context)
                                             .investrendPurpleText),
                               );
@@ -1854,7 +1861,7 @@ abstract class BaseTradeState<T extends StatefulWidget>
     // fieldLotController.removeListener(resetPredefineLot);
     fieldLotController.text = lot.toString();
     //focusNodeLot.requestFocus();
-    focusNodeLot.unfocus();
+    focusNodeLot?.unfocus();
     // if (predefineLotNotifier.value != 0) {
     //   predefineLotNotifier.value = 0;
     // }
@@ -1872,7 +1879,7 @@ abstract class BaseTradeState<T extends StatefulWidget>
     }
     fieldSplitLoopController.text = splitLoop.toString();
     //focusNodeLot.requestFocus();
-    focusNodeSplitLoop.unfocus();
+    focusNodeSplitLoop?.unfocus();
   }
 
   int priceTickUp(int price) {
@@ -1936,7 +1943,7 @@ abstract class BaseTradeState<T extends StatefulWidget>
     }
 
     //focusNodePrice.requestFocus();
-    focusNodePrice.unfocus();
+    focusNodePrice?.unfocus();
   }
 
   Widget accelerationLabel(BuildContext context) {
@@ -1945,7 +1952,7 @@ abstract class BaseTradeState<T extends StatefulWidget>
       if (notifier.invalid()) {
         return Center(child: CircularProgressIndicator());
       }
-      if (notifier.stock.isAccelerationBoard()) {
+      if (notifier.stock!.isAccelerationBoard()) {
         return Container(
           margin: const EdgeInsets.only(
             top: InvestrendTheme.cardPadding,
@@ -1956,7 +1963,7 @@ abstract class BaseTradeState<T extends StatefulWidget>
           color: InvestrendTheme.of(context).accelerationBackground,
           child: Text(
             'stock_detail_overview_card_detail_special_notation'.tr(),
-            style: InvestrendTheme.of(context).support_w400_compact.copyWith(
+            style: InvestrendTheme.of(context).support_w400_compact?.copyWith(
                 color: InvestrendTheme.of(context).accelerationTextColor),
             textAlign: TextAlign.center,
           ),
@@ -1999,8 +2006,9 @@ abstract class BaseTradeState<T extends StatefulWidget>
       key: _normalKey,
       color: InvestrendTheme.of(context).textWhite,
       //backgroundColor: orderType.color,
-      backgroundColor:
-          Theme.of(context).colorScheme.secondary, // putri minta warna disamain ama buy
+      backgroundColor: Theme.of(context)
+          .colorScheme
+          .secondary, // putri minta warna disamain ama buy
       onRefresh: onRefresh,
       child: ListView(
         controller: scrollController,
@@ -2021,11 +2029,11 @@ abstract class BaseTradeState<T extends StatefulWidget>
           //   height: InvestrendTheme.cardMargin,
           // ),
           ValueListenableBuilder(
-            valueListenable: animatePaddingNotifier,
+            valueListenable: animatePaddingNotifier!,
             builder: (context, value, child) {
               return AnimatedPadding(
                   curve: Curves.easeInOutCubic,
-                  padding: EdgeInsets.only(top: value),
+                  padding: EdgeInsets.only(top: value as double),
                   duration: Duration(milliseconds: 500));
             },
           ),
@@ -2110,7 +2118,7 @@ abstract class BaseTradeState<T extends StatefulWidget>
 
   Future onRefresh() {
     unsubscribe(context, 'onRefresh');
-    Stock stock = context.read(primaryStockChangeNotifier).stock;
+    Stock? stock = context.read(primaryStockChangeNotifier).stock;
     subscribe(context, stock, 'onRefresh');
 
     doUpdateAccount(pullToRefresh: true);
@@ -2152,8 +2160,9 @@ abstract class BaseTradeState<T extends StatefulWidget>
                   acceptRemoveNotifier.value = false;
                 },
                 onAccept: (data) {
-                  data.primaryOpenNotifier.value.value = "0";
+                  data.primaryOpenNotifier.value?.value = "0";
                   acceptRemoveNotifier.value = false;
+                  // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
                   data.primaryOpenNotifier.notifyListeners();
                 },
                 builder: (context, wrapperNotifier, child) {
@@ -2229,7 +2238,7 @@ abstract class BaseTradeState<T extends StatefulWidget>
               //calculateNotifier: null,
             ),
             */
-            _fastOrderbook,
+            _fastOrderbook as Widget,
           ],
         ));
   }
@@ -2248,12 +2257,12 @@ abstract class BaseTradeState<T extends StatefulWidget>
           duration: Duration(milliseconds: 500), curve: Curves.easeInOutQuint);
     } else if (field == TypeField.Queue) {
       if (data.queue > 0) {
-        Stock stock = context.read(primaryStockChangeNotifier).stock;
+        Stock? stock = context.read(primaryStockChangeNotifier).stock;
         Navigator.push(
             context,
             CupertinoPageRoute(
               builder: (_) => ScreenOrderQueue(
-                  stock.code, stock.defaultBoard, type.text, data.price),
+                  stock?.code, stock?.defaultBoard, type.text, data.price),
               settings: RouteSettings(name: '/order_queue'),
             ));
       }
@@ -2344,15 +2353,15 @@ abstract class BaseTradeState<T extends StatefulWidget>
       }
     }
 
-    double feeBuy = context.read(dataHolderChangeNotifier).user.feepct;
-    Account activeAccount = context
+    double? feeBuy = context.read(dataHolderChangeNotifier).user.feepct;
+    Account? activeAccount = context
         .read(dataHolderChangeNotifier)
         .user
         .getAccount(context.read(accountChangeNotifier).index);
     if (activeAccount != null) {
       feeBuy = activeAccount.commission;
     }
-    if (orderType.isBuyOrAmendBuy() && feeBuy > 0) {
+    if (orderType.isBuyOrAmendBuy() && feeBuy! > 0) {
       value = (value * (1.0 + (feeBuy / 100))).toInt();
     }
 

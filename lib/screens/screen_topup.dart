@@ -7,17 +7,16 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 class ScreenTopUp extends StatelessWidget {
-  const ScreenTopUp({Key key}) : super(key: key);
+  const ScreenTopUp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
-
         backgroundColor: Theme.of(context).colorScheme.background,
         elevation: 0.0,
-        leading: AppBarActionIcon('images/icons/action_clear.png', (){
+        leading: AppBarActionIcon('images/icons/action_clear.png', () {
           Navigator.pop(context);
         }),
 
@@ -27,31 +26,60 @@ class ScreenTopUp extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Spacer(flex: 1,),
+          Spacer(
+            flex: 1,
+          ),
           Center(
             child: FractionallySizedBox(
-              widthFactor: 0.7,
-                child: Image.asset('images/topup_image.png')),
+                widthFactor: 0.7, child: Image.asset('images/topup_image.png')),
           ),
-          Spacer(flex: 2,),
+          Spacer(
+            flex: 2,
+          ),
           Padding(
             padding: const EdgeInsets.only(left: 30.0, right: 30.0),
-            child: Text('top_up_info'.tr(), style: InvestrendTheme.of(context).regular_w400.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor), textAlign: TextAlign.center,),
+            child: Text(
+              'top_up_info'.tr(),
+              style: InvestrendTheme.of(context).regular_w400?.copyWith(
+                  color: InvestrendTheme.of(context).greyDarkerTextColor),
+              textAlign: TextAlign.center,
+            ),
           ),
-          Spacer(flex: 2,),
+          Spacer(
+            flex: 2,
+          ),
           FractionallySizedBox(
-            widthFactor: 0.4,
-              child: ComponentCreator.roundedButton(context, 'button_top_up'.tr(), Theme.of(context).colorScheme.secondary, Theme.of(context).primaryColor, Theme.of(context).colorScheme.secondary, () {
-                Navigator.push(context, CupertinoPageRoute(
-                  builder: (_) => ScreenTopUpHowTo(), settings: RouteSettings(name: '/topup_how_to'),));
+              widthFactor: 0.4,
+              child: ComponentCreator.roundedButton(
+                  context,
+                  'button_top_up'.tr(),
+                  Theme.of(context).colorScheme.secondary,
+                  Theme.of(context).primaryColor,
+                  Theme.of(context).colorScheme.secondary, () {
+                Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                      builder: (_) => ScreenTopUpHowTo(),
+                      settings: RouteSettings(name: '/topup_how_to'),
+                    ));
               })),
           //SizedBox(height: 8.0,),
           TextButton(
-              onPressed: (){}, child: Padding(
+              onPressed: () {},
+              child: Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text('button_learn_more'.tr(), style: InvestrendTheme.of(context).small_w400_compact.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor),),
+                child: Text(
+                  'button_learn_more'.tr(),
+                  style: InvestrendTheme.of(context)
+                      .small_w400_compact
+                      ?.copyWith(
+                          color:
+                              InvestrendTheme.of(context).greyDarkerTextColor),
+                ),
               )),
-          Spacer(flex: 2,),
+          Spacer(
+            flex: 2,
+          ),
         ],
       ),
     );

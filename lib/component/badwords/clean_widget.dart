@@ -11,52 +11,52 @@ class CleanWidget extends StatelessWidget {
   /// if [source] is empty, return empty [Text] widget.
   /// if [source] is not empty, return a [Text] widget with clean text.
   ///
-  final String source;
+  final String? source;
 
   /// [style] is the [TextStyle] to be used for the [Text] widget.
-  final TextStyle style;
+  final TextStyle? style;
 
   /// [strustStyle] is the [StrutStyle] to be used for the [Text] widget.
-  final StrutStyle strutStyle;
+  final StrutStyle? strutStyle;
 
   /// [textAlign] is the [TextAlign] to be used for the [Text] widget.
   /// if [textAlign] is null, use [TextAlign.start] as default.
-  final TextAlign textAlign;
+  final TextAlign? textAlign;
 
   /// [textDirection] is the [TextDirection] to be used for the [Text] widget.
   /// This is useful for languages that read right-to-left.
-  final TextDirection textDirection;
+  final TextDirection? textDirection;
 
   /// [locale] is the [Locale] to be used for the [Text] widget.
-  final Locale locale;
+  final Locale? locale;
 
   /// [softWrap] is the [bool] to be used for the [Text] widget.
-  final bool softWrap;
+  final bool? softWrap;
 
   /// [overflow] is the [TextOverflow] to be used for the [Text] widget.
-  final TextOverflow overflow;
+  final TextOverflow? overflow;
 
   /// [textScaleFactor] is the [double] to be used for the [Text] widget.
   /// This can be used to increase or decrease the size of the text.
-  final double textScaleFactor;
+  final double? textScaleFactor;
 
   /// [maxLines] is the [int] to be used for the [Text] widget.
   /// This can be used to limit the number of lines in the text.
-  final int maxLines;
+  final int? maxLines;
 
   /// [semanticsLabel] is the [String] to be used for the [Text] widget.
-  final String semanticsLabel;
+  final String? semanticsLabel;
 
   /// [textWidthBasis] is the [TextWidthBasis] to be used for the [Text] widget.
   /// The different ways of measuring the width of one or more lines of text.
-  final TextWidthBasis textWidthBasis;
+  final TextWidthBasis? textWidthBasis;
 
   /// [textHeightBehavior] is the [TextHeightBehavior] to be used for the [Text] widget.
-  final TextHeightBehavior textHeightBehavior;
+  final TextHeightBehavior? textHeightBehavior;
 
   /// [isSelectable] is the [bool] to be used for the [Text] widget.
   /// This can be used to make the text selectable.
-  final bool isSelecatable;
+  final bool? isSelecatable;
 
   /// [obscuringCharacter] is the [String] to be used for the [Text] widget.
   /// This can be used to obscure the text.
@@ -65,7 +65,7 @@ class CleanWidget extends StatelessWidget {
 
   /// [keepFirstLastLetters] is the [bool] to be used for the [Text] widget.
   /// This can be used to keep the first and last letters of the text.
-  final bool keepFirstLastLetters;
+  final bool? keepFirstLastLetters;
 
   /// [hideEmails] is the [bool] to be used for the [Text] widget.
   /// This can be used to hide/clean emails.
@@ -73,20 +73,20 @@ class CleanWidget extends StatelessWidget {
 
   /// [hidePhoneNumbers] is the [bool] to be used for the [Text] widget.
   /// This can be used to hide phone numbers.
-  final bool hidePhoneNumbers;
+  final bool? hidePhoneNumbers;
 
   /// [extraWords] is [List] of [String]s to be used for the [Text] widget.
   /// other [extraWords] to be cleaned.
   /// This is useful for hiding extra words in a [source].
-  final List<String> extraWords;
+  final List<String>? extraWords;
 
   /// [caseSensitive] is the [bool] to be used for the [Text] widget.
   /// This can be used to make the text case sensitive.
   /// This is useful for hiding [extraWords] in a text.
-  final bool caseSensitive;
+  final bool? caseSensitive;
 
   const CleanWidget({
-    Key key,
+    Key? key,
     @required this.source,
     this.style,
     this.strutStyle,
@@ -112,8 +112,8 @@ class CleanWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     /// [text] is the clean [String] of [source].
-    final text = cleanText(source);
-    if (isSelecatable) {
+    final text = cleanText(source!);
+    if (isSelecatable!) {
       return SelectableText(
         text,
         style: style,
@@ -149,24 +149,24 @@ class CleanWidget extends StatelessWidget {
   /// It can be used to clean up text that is used in a widget.
   ///
   String cleanText(String source) {
-    if (hideEmails && hidePhoneNumbers) {
+    if (hideEmails && hidePhoneNumbers!) {
       source = source.hideEmails(obscuringCharacter: obscuringCharacter);
       source = source.hidePhoneNumbers(obscuringCharacter: obscuringCharacter);
     } else if (hideEmails) {
       source = source.hideEmails(obscuringCharacter: obscuringCharacter);
-    } else if (hidePhoneNumbers) {
+    } else if (hidePhoneNumbers!) {
       source = source.hidePhoneNumbers(obscuringCharacter: obscuringCharacter);
-    } else if (extraWords.isNotEmpty) {
+    } else if (extraWords!.isNotEmpty) {
       source = source.cleanWords(
-        extraWords,
+        extraWords!,
         obscuringCharacter: obscuringCharacter,
-        keepFirstLastLetters: keepFirstLastLetters,
-        caseSensitive: caseSensitive,
+        keepFirstLastLetters: keepFirstLastLetters!,
+        caseSensitive: caseSensitive!,
       );
     }
     return source.cleanBadWords(
       obscuringCharacter: obscuringCharacter,
-      keepFirstLastLetters: keepFirstLastLetters,
+      keepFirstLastLetters: keepFirstLastLetters!,
     );
   }
 }

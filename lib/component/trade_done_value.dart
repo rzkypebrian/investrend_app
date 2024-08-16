@@ -1,17 +1,17 @@
 import 'package:flutter/cupertino.dart';
 
 class TradeDoneValue {
-  String time;
-  int noId;
-  String price;
-  String lot;
-  String fdBuy;
-  String buy;
-  String sell;
-  String fdSell;
-  String chg;
-  String percent;
-  Color color;
+  String? time;
+  int? noId;
+  String? price;
+  String? lot;
+  String? fdBuy;
+  String? buy;
+  String? sell;
+  String? fdSell;
+  String? chg;
+  String? percent;
+  Color? color;
   bool isShown;
 
   TradeDoneValue({

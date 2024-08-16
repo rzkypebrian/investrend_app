@@ -1,3 +1,5 @@
+// ignore_for_file: unused_element
+
 import 'package:Investrend/component/button_order.dart';
 import 'package:Investrend/component/component_creator.dart';
 import 'package:Investrend/component/empty_label.dart';
@@ -22,30 +24,39 @@ class ScreenProfilePortfolio extends StatefulWidget {
   final TabController tabController;
   final int tabIndex;
 
-  ScreenProfilePortfolio(this.tabIndex, this.tabController, {Key key}) : super(key: key);
+  ScreenProfilePortfolio(this.tabIndex, this.tabController, {Key? key})
+      : super(key: key);
 
   @override
-    _ScreenProfilePortfolioState createState() => _ScreenProfilePortfolioState(tabIndex, tabController);
-  }
+  _ScreenProfilePortfolioState createState() =>
+      _ScreenProfilePortfolioState(tabIndex, tabController);
+}
 
-class _ScreenProfilePortfolioState extends BaseStateNoTabsWithParentTab<ScreenProfilePortfolio> {
+class _ScreenProfilePortfolioState
+    extends BaseStateNoTabsWithParentTab<ScreenProfilePortfolio> {
   final SlidableController slidableController = SlidableController();
   //PortfolioNotifier _portfolioNotifier = PortfolioNotifier(new PortfolioData());
-  StockPositionNotifier _stockPositionNotifier = StockPositionNotifier(new StockPosition('', 0, 0, 0, 0, 0, 0, List.empty(growable: true)));
+  StockPositionNotifier _stockPositionNotifier = StockPositionNotifier(
+      new StockPosition('', 0, 0, 0, 0, 0, 0, List.empty(growable: true)));
   final ValueNotifier<bool> _updateListNotifier = ValueNotifier<bool>(false);
   Map summarys = new Map();
 
   bool canTapRow = true;
-  _ScreenProfilePortfolioState(int tabIndex, TabController tabController) : super('/profile_portfolio', tabIndex, tabController,parentTabIndex: Tabs.Portfolio.index);
+  _ScreenProfilePortfolioState(int tabIndex, TabController tabController)
+      : super('/profile_portfolio', tabIndex, tabController,
+            parentTabIndex: Tabs.Portfolio.index);
 
   @override
-  Widget createAppBar(BuildContext context) {
+  PreferredSizeWidget? createAppBar(BuildContext context) {
     return null;
   }
 
   Widget _optionsPortfolio(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8.0, left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral),
+      padding: const EdgeInsets.only(
+          bottom: 8.0,
+          left: InvestrendTheme.cardPaddingGeneral,
+          right: InvestrendTheme.cardPaddingGeneral),
       child: Container(
         //color: Colors.purple,
         child: Row(
@@ -67,12 +78,11 @@ class _ScreenProfilePortfolioState extends BaseStateNoTabsWithParentTab<ScreenPr
                     ),
                     Text(
                       'button_filter'.tr(),
-                      style: InvestrendTheme.of(context).more_support_w400_compact,
+                      style:
+                          InvestrendTheme.of(context).more_support_w400_compact,
                     ),
                   ],
                 )),
-
-
           ],
         ),
       ),
@@ -102,23 +112,19 @@ class _ScreenProfilePortfolioState extends BaseStateNoTabsWithParentTab<ScreenPr
   //       ));
   // }
 
-
-  void onChanged(StockPositionDetail stockPD, bool value){
-
-  }
+  void onChanged(StockPositionDetail stockPD, bool value) {}
 
   @override
   Widget createBody(BuildContext context, double paddingBottom) {
-
     // int todayReturnValue = 3288000;
     // double todayReturnPercentage = 12.0;
 
     // int totalReturnValue = 20824000;
     // double totalReturnPercentage = 76.11;
 
-
-    bool hasAccount = context.read(dataHolderChangeNotifier).user.accountSize() > 0;
-    if(!hasAccount){
+    bool hasAccount =
+        context.read(dataHolderChangeNotifier).user.accountSize() > 0;
+    if (!hasAccount) {
       //return Center(child: EmptyLabel(),);
       return Column(
         children: [
@@ -136,16 +142,22 @@ class _ScreenProfilePortfolioState extends BaseStateNoTabsWithParentTab<ScreenPr
           ButtonOutlinedRounded(
             'button_find_stock'.tr(),
             onPressed: () {
-              final result = InvestrendTheme.showFinderScreen(context, showStockOnly: true);
+              final result = InvestrendTheme.showFinderScreen(context,
+                  showStockOnly: true);
               result.then((value) {
                 if (value == null) {
                   print('result finder = null');
                 } else if (value is Stock) {
-                  print('result finder = ' + value.code);
+                  print('result finder = ' + value.code!);
                   context.read(primaryStockChangeNotifier).setStock(value);
 
-                  bool hasAccount = context.read(dataHolderChangeNotifier).user.accountSize() > 0;
-                  InvestrendTheme.pushScreenTrade(context, hasAccount, type: OrderType.Buy);
+                  bool hasAccount = context
+                          .read(dataHolderChangeNotifier)
+                          .user
+                          .accountSize() >
+                      0;
+                  InvestrendTheme.pushScreenTrade(context, hasAccount,
+                      type: OrderType.Buy);
                   /*
                                     Navigator.push(
                                         context,
@@ -157,7 +169,7 @@ class _ScreenProfilePortfolioState extends BaseStateNoTabsWithParentTab<ScreenPr
                                         ));
                                     */
                 } else if (value is People) {
-                  print('result finder = ' + value.name);
+                  print('result finder = ' + value.name!);
                 }
               });
 
@@ -175,15 +187,16 @@ class _ScreenProfilePortfolioState extends BaseStateNoTabsWithParentTab<ScreenPr
           return Center(child: CircularProgressIndicator());
         }
 
-        int itemCount = _stockPositionNotifier.value.count();
+        int? itemCount = _stockPositionNotifier.value?.count();
         return ListView(
           children: List<Widget>.generate(
-            itemCount,
-                (int index) {
-              StockPositionDetail gp = _stockPositionNotifier.value.getStockPositionDetail(index);
-              StockSummary summary;
-              if(summarys.containsKey(gp.stockCode)){
-                summary = summarys[gp.stockCode];
+            itemCount!,
+            (int index) {
+              StockPositionDetail? gp =
+                  _stockPositionNotifier.value?.getStockPositionDetail(index);
+              StockSummary? summary;
+              if (summarys.containsKey(gp?.stockCode)) {
+                summary = summarys[gp?.stockCode];
               }
 
               return Slidable(
@@ -195,20 +208,33 @@ class _ScreenProfilePortfolioState extends BaseStateNoTabsWithParentTab<ScreenPr
                     TradeSlideAction(
                       'button_buy'.tr(),
                       InvestrendTheme.buyColor,
-                          () {
-                        print('buy clicked code : ' + gp.stockCode);
-                        Stock stock = InvestrendTheme.storedData.findStock(gp.stockCode);
+                      () {
+                        print('buy clicked code : ' + gp!.stockCode!);
+                        Stock? stock =
+                            InvestrendTheme.storedData?.findStock(gp.stockCode);
                         if (stock == null) {
-                          print('buy clicked code : ' + gp.stockCode + ' aborted, not find stock on StockStorer');
+                          print('buy clicked code : ' +
+                              gp.stockCode! +
+                              ' aborted, not find stock on StockStorer');
                           return;
                         }
 
-                        context.read(primaryStockChangeNotifier).setStock(stock);
+                        context
+                            .read(primaryStockChangeNotifier)
+                            .setStock(stock);
 
                         //InvestrendTheme.push(context, ScreenTrade(OrderType.Buy), ScreenTransition.SlideLeft, '/trade');
 
-                        bool hasAccount = context.read(dataHolderChangeNotifier).user.accountSize() > 0;
-                        InvestrendTheme.pushScreenTrade(context, hasAccount, type: OrderType.Buy,);
+                        bool hasAccount = context
+                                .read(dataHolderChangeNotifier)
+                                .user
+                                .accountSize() >
+                            0;
+                        InvestrendTheme.pushScreenTrade(
+                          context,
+                          hasAccount,
+                          type: OrderType.Buy,
+                        );
                         /*
                         Navigator.push(context, CupertinoPageRoute(
                           builder: (_) => ScreenTrade(OrderType.Buy), settings: RouteSettings(name: '/trade'),));
@@ -219,19 +245,32 @@ class _ScreenProfilePortfolioState extends BaseStateNoTabsWithParentTab<ScreenPr
                     TradeSlideAction(
                       'button_sell'.tr(),
                       InvestrendTheme.sellColor,
-                          () {
-                        print('sell clicked code : ' + gp.stockCode);
-                        Stock stock = InvestrendTheme.storedData.findStock(gp.stockCode);
+                      () {
+                        print('sell clicked code : ' + gp!.stockCode!);
+                        Stock? stock =
+                            InvestrendTheme.storedData?.findStock(gp.stockCode);
                         if (stock == null) {
-                          print('sell clicked code : ' + gp.stockCode + ' aborted, not find stock on StockStorer');
+                          print('sell clicked code : ' +
+                              gp.stockCode! +
+                              ' aborted, not find stock on StockStorer');
                           return;
                         }
 
-                        context.read(primaryStockChangeNotifier).setStock(stock);
+                        context
+                            .read(primaryStockChangeNotifier)
+                            .setStock(stock);
                         //InvestrendTheme.push(context, ScreenTrade(OrderType.Sell), ScreenTransition.SlideLeft, '/trade');
 
-                        bool hasAccount = context.read(dataHolderChangeNotifier).user.accountSize() > 0;
-                        InvestrendTheme.pushScreenTrade(context, hasAccount, type: OrderType.Sell,);
+                        bool hasAccount = context
+                                .read(dataHolderChangeNotifier)
+                                .user
+                                .accountSize() >
+                            0;
+                        InvestrendTheme.pushScreenTrade(
+                          context,
+                          hasAccount,
+                          type: OrderType.Sell,
+                        );
                         /*
                         Navigator.push(context, CupertinoPageRoute(
                           builder: (_) => ScreenTrade(OrderType.Sell), settings: RouteSettings(name: '/trade'),));
@@ -243,35 +282,37 @@ class _ScreenProfilePortfolioState extends BaseStateNoTabsWithParentTab<ScreenPr
                     // CancelSlideAction('button_cancel'.tr(), Theme.of(context).backgroundColor, () {
                     //   InvestrendTheme.of(context).showSnackBar(context, 'cancel');
                     // }),
-
                   ],
-
-
                   child: RowStockPositions(
-                    gp,
+                    gp!,
                     firstRow: (index == 0),
                     modeProfile: true,
                     callbackChecked: onChanged,
                     onTap: () {
-                      print('clicked code : ' + gp.stockCode+'  canTapRow : $canTapRow');
-                      if(canTapRow){
+                      print('clicked code : ' +
+                          gp.stockCode! +
+                          '  canTapRow : $canTapRow');
+                      if (canTapRow) {
                         canTapRow = false;
 
-                        Stock stock = InvestrendTheme.storedData.findStock(gp.stockCode);
+                        Stock? stock =
+                            InvestrendTheme.storedData?.findStock(gp.stockCode);
                         if (stock == null) {
-                          print('clicked code : ' + gp.stockCode + ' aborted, not find stock on StockStorer');
+                          print('clicked code : ' +
+                              gp.stockCode! +
+                              ' aborted, not find stock on StockStorer');
                           canTapRow = true;
                           return;
                         }
-                        context.read(primaryStockChangeNotifier).setStock(stock);
+                        context
+                            .read(primaryStockChangeNotifier)
+                            .setStock(stock);
 
-                        Future.delayed(Duration(milliseconds: 200),(){
+                        Future.delayed(Duration(milliseconds: 200), () {
                           canTapRow = true;
                           InvestrendTheme.of(context).showStockDetail(context);
                         });
                       }
-
-
                     },
                     paddingLeftRight: InvestrendTheme.cardPaddingGeneral,
                     summary: summary,
@@ -281,7 +322,6 @@ class _ScreenProfilePortfolioState extends BaseStateNoTabsWithParentTab<ScreenPr
         );
       },
     );
-
 
     /*
     return ValueListenableBuilder(
@@ -604,7 +644,7 @@ class _ScreenProfilePortfolioState extends BaseStateNoTabsWithParentTab<ScreenPr
     canTapRow = true;
 
     // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      doUpdate();
+    doUpdate();
     // });
   }
 
@@ -636,68 +676,72 @@ class _ScreenProfilePortfolioState extends BaseStateNoTabsWithParentTab<ScreenPr
     });
   }
   */
-  void doUpdate() async{
+  void doUpdate() async {
     String routeName = '/profile';
 
-
-    bool hasAccount = context.read(dataHolderChangeNotifier).user.accountSize() > 0;
-    if(hasAccount){
+    bool hasAccount =
+        context.read(dataHolderChangeNotifier).user.accountSize() > 0;
+    if (hasAccount) {
       String accounCodes = '';
-      context.read(dataHolderChangeNotifier).user?.accounts?.forEach((account) {
-        if(StringUtils.isEmtpy(accounCodes)){
+      context.read(dataHolderChangeNotifier).user.accounts?.forEach((account) {
+        if (StringUtils.isEmtpy(accounCodes)) {
           accounCodes = account.accountcode;
-        }else{
-          accounCodes += '|'+account.accountcode;
+        } else {
+          accounCodes += '|' + account.accountcode;
         }
       });
 
       try {
-        print(routeName+' try stockPosition');
+        print(routeName + ' try stockPosition');
         final stockPosition = await InvestrendTheme.tradingHttp.stock_position(
             '', // broker
             accounCodes,
             '', // username
             InvestrendTheme.of(super.context).applicationPlatform,
             InvestrendTheme.of(super.context).applicationVersion);
-        DebugWriter.information(routeName+' Got stockPosition ' + stockPosition.accountcode + '   stockList.size : ' + stockPosition.stockListSize().toString());
+        DebugWriter.information(routeName +
+            ' Got stockPosition ' +
+            stockPosition.accountcode! +
+            '   stockList.size : ' +
+            stockPosition.stockListSize().toString());
 
         _stockPositionNotifier.setValue(stockPosition);
         _updateListNotifier.value = !_updateListNotifier.value;
       } catch (e) {
-        DebugWriter.information(routeName+' stockPosition Exception : ' + e.toString());
+        DebugWriter.information(
+            routeName + ' stockPosition Exception : ' + e.toString());
         handleNetworkError(context, e);
         return;
       }
 
-
       try {
         print('try Summarys');
-        String codes = _stockPositionNotifier.joinCode('_');
-        if(!StringUtils.isEmtpy(codes)){
-          final stockSummarys = await InvestrendTheme.datafeedHttp.fetchStockSummaryMultiple(codes, 'RG');
+        String? codes = _stockPositionNotifier.joinCode('_');
+        if (!StringUtils.isEmtpy(codes)) {
+          final List<StockSummary>? stockSummarys = await InvestrendTheme
+              .datafeedHttp
+              .fetchStockSummaryMultiple(codes, 'RG');
           if (stockSummarys != null && stockSummarys.isNotEmpty) {
-
-            stockSummarys.forEach((summary) {
-              if(summary != null){
+            stockSummarys.forEach((StockSummary? summary) {
+              if (summary != null) {
                 summarys[summary.code] = summary;
               }
             });
             _updateListNotifier.value = !_updateListNotifier.value;
-
           } else {
             print(routeName + ' Future Summarys NO DATA');
           }
-        }else{
+        } else {
           print(routeName + ' Future Summarys codes EMPTY, not requesting');
         }
-
       } catch (e) {
-        DebugWriter.information(routeName + ' Summarys Exception : ' + e.toString());
+        DebugWriter.information(
+            routeName + ' Summarys Exception : ' + e.toString());
         print(e);
       }
     }
-
   }
+
   @override
   void dispose() {
     //_portfolioNotifier.dispose();
@@ -711,12 +755,13 @@ class _ScreenProfilePortfolioState extends BaseStateNoTabsWithParentTab<ScreenPr
     super.didChangeDependencies();
     super.context.read(accountChangeNotifier).addListener(() {
       if (mounted) {
-        _stockPositionNotifier.setValue(null);
+        _stockPositionNotifier.setValue(
+            StockPosition(null, null, null, null, null, null, null, null));
         doUpdate();
       }
     });
-
   }
+
   @override
   void onInactive() {
     //print(routeName + ' onInactive');

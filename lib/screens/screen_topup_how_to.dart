@@ -16,7 +16,7 @@ import 'base/base_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ScreenTopUpHowTo extends StatefulWidget {
-  const ScreenTopUpHowTo({Key key}) : super(key: key);
+  const ScreenTopUpHowTo({Key? key}) : super(key: key);
 
   @override
   _ScreenTopUpHowToState createState() => _ScreenTopUpHowToState();
@@ -25,17 +25,17 @@ class ScreenTopUpHowTo extends StatefulWidget {
 class _ScreenTopUpHowToState extends BaseStateNoTabs<ScreenTopUpHowTo> {
   _ScreenTopUpHowToState() : super('/topup_how_to');
 
-  TopUpBanksNotifier _banksNotifier = TopUpBanksNotifier(ResultTopUpBank());
-  BankRDNNotifier _bankRDNNotifier = BankRDNNotifier(BankRDN('', '', '', ''));
+  TopUpBanksNotifier? _banksNotifier = TopUpBanksNotifier(ResultTopUpBank());
+  BankRDNNotifier? _bankRDNNotifier = BankRDNNotifier(BankRDN('', '', '', ''));
 
-  VoidCallback onAccountChangeListener;
+  VoidCallback? onAccountChangeListener;
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (onAccountChangeListener != null) {
       context
           .read(accountChangeNotifier)
-          .removeListener(onAccountChangeListener);
+          .removeListener(onAccountChangeListener!);
     } else {
       onAccountChangeListener = () {
         if (mounted) {
@@ -43,17 +43,17 @@ class _ScreenTopUpHowToState extends BaseStateNoTabs<ScreenTopUpHowTo> {
         }
       };
     }
-    context.read(accountChangeNotifier).addListener(onAccountChangeListener);
+    context.read(accountChangeNotifier).addListener(onAccountChangeListener!);
   }
 
   @override
   void dispose() {
-    _bankRDNNotifier.dispose();
-    _banksNotifier.dispose();
+    _bankRDNNotifier?.dispose();
+    _banksNotifier?.dispose();
     final container = ProviderContainer();
     container
         .read(accountChangeNotifier)
-        .removeListener(onAccountChangeListener);
+        .removeListener(onAccountChangeListener!);
     super.dispose();
   }
 
@@ -62,21 +62,21 @@ class _ScreenTopUpHowToState extends BaseStateNoTabs<ScreenTopUpHowTo> {
       final notifier = context.read(accountChangeNotifier);
 
       User user = context.read(dataHolderChangeNotifier).user;
-      Account active = user.getAccount(notifier.index);
+      Account? active = user.getAccount(notifier.index);
 
       if (active != null) {
-        if (_bankRDNNotifier.value.isEmpty() || pullToRefresh) {
+        if (_bankRDNNotifier!.value!.isEmpty() || pullToRefresh) {
           setNotifierLoading(_bankRDNNotifier);
         }
 
-        final result = await InvestrendTheme.tradingHttp.getBankRDN(
+        final BankRDN? result = await InvestrendTheme.tradingHttp.getBankRDN(
             active.accountcode,
             InvestrendTheme.of(context).applicationPlatform,
             InvestrendTheme.of(context).applicationVersion);
         if (result != null) {
           print(routeName + ' Future bank rdn DATA : ' + result.toString());
           if (mounted) {
-            _bankRDNNotifier.setValue(result);
+            _bankRDNNotifier?.setValue(result);
           }
         } else {
           print(routeName + ' Future bank rdn NO DATA');
@@ -91,14 +91,15 @@ class _ScreenTopUpHowToState extends BaseStateNoTabs<ScreenTopUpHowTo> {
     }
 
     try {
-      if (_banksNotifier.value.isEmpty() || pullToRefresh) {
+      if (_banksNotifier!.value!.isEmpty()! || pullToRefresh) {
         setNotifierLoading(_banksNotifier);
       }
-      final result = await InvestrendTheme.datafeedHttp.fetchTopUpBanks();
+      final ResultTopUpBank? result =
+          await InvestrendTheme.datafeedHttp.fetchTopUpBanks();
       if (result != null) {
         print(routeName + ' Future topup banks DATA : ' + result.toString());
         if (mounted) {
-          _banksNotifier.setValue(result);
+          _banksNotifier?.setValue(result);
         }
       } else {
         print(routeName + ' Future topup banks NO DATA');
@@ -303,9 +304,8 @@ class _ScreenTopUpHowToState extends BaseStateNoTabs<ScreenTopUpHowTo> {
       children: [
         Text(
           '•  ',
-          style: InvestrendTheme.of(context)
-              .more_support_w400
-              .copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor),
+          style: InvestrendTheme.of(context).more_support_w400?.copyWith(
+              color: InvestrendTheme.of(context).greyDarkerTextColor),
         ),
         SizedBox(
           width: 5.0,
@@ -314,7 +314,7 @@ class _ScreenTopUpHowToState extends BaseStateNoTabs<ScreenTopUpHowTo> {
           flex: 1,
           child: Text(
             text,
-            style: InvestrendTheme.of(context).more_support_w400.copyWith(
+            style: InvestrendTheme.of(context).more_support_w400?.copyWith(
                 color: InvestrendTheme.of(context).greyDarkerTextColor),
           ),
         ),
@@ -323,8 +323,7 @@ class _ScreenTopUpHowToState extends BaseStateNoTabs<ScreenTopUpHowTo> {
   }
 
   @override
-  Widget createAppBar(BuildContext context) {
-    // TODO: implement createAppBar
+  PreferredSizeWidget createAppBar(BuildContext context) {
     double elevation = 0.0;
     Color shadowColor = Theme.of(context).shadowColor;
     if (!InvestrendTheme.tradingHttp.is_production) {
@@ -345,18 +344,18 @@ class _ScreenTopUpHowToState extends BaseStateNoTabs<ScreenTopUpHowTo> {
 
   Widget createBankInformation(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: _bankRDNNotifier,
-      builder: (context, BankRDN value, child) {
+      valueListenable: _bankRDNNotifier!,
+      builder: (context, BankRDN? value, child) {
         Widget imageWidget;
-        if (StringUtils.isEmtpy(value.bank)) {
+        if (StringUtils.isEmtpy(value?.bank)) {
           imageWidget = Text(
-            value.bank,
+            value!.bank!,
             style: InvestrendTheme.of(context).small_w400,
           );
         } else {
           imageWidget = ComponentCreator.imageNetworkCached(
               'https://www.investrend.co.id/mobile/assets/banks_icon/' +
-                  value.bank.toLowerCase() +
+                  value!.bank!.toLowerCase() +
                   '.png',
               width: 40.0,
               height: 40.0,
@@ -386,11 +385,11 @@ class _ScreenTopUpHowToState extends BaseStateNoTabs<ScreenTopUpHowTo> {
             children: [
               Text(
                 'account_name_label'.tr(),
-                style: InvestrendTheme.of(context).more_support_w400.copyWith(
+                style: InvestrendTheme.of(context).more_support_w400?.copyWith(
                     color: InvestrendTheme.of(context).greyLighterTextColor),
               ),
               Text(
-                value.acc_name,
+                value.acc_name!,
                 style: InvestrendTheme.of(context).small_w400,
               ),
               SizedBox(
@@ -407,7 +406,7 @@ class _ScreenTopUpHowToState extends BaseStateNoTabs<ScreenTopUpHowTo> {
                         'bank_label'.tr(),
                         style: InvestrendTheme.of(context)
                             .more_support_w400
-                            .copyWith(
+                            ?.copyWith(
                                 color: InvestrendTheme.of(context)
                                     .greyLighterTextColor),
                       ),
@@ -425,7 +424,7 @@ class _ScreenTopUpHowToState extends BaseStateNoTabs<ScreenTopUpHowTo> {
                         'account_number_label'.tr(),
                         style: InvestrendTheme.of(context)
                             .more_support_w400
-                            .copyWith(
+                            ?.copyWith(
                                 color: InvestrendTheme.of(context)
                                     .greyLighterTextColor),
                       ),
@@ -433,7 +432,7 @@ class _ScreenTopUpHowToState extends BaseStateNoTabs<ScreenTopUpHowTo> {
                         height: 40.0,
                         alignment: Alignment.center,
                         child: Text(
-                          value.acc_no,
+                          value.acc_no!,
                           style: InvestrendTheme.of(context).small_w400_compact,
                         ),
                       ),
@@ -449,7 +448,7 @@ class _ScreenTopUpHowToState extends BaseStateNoTabs<ScreenTopUpHowTo> {
                         ' ',
                         style: InvestrendTheme.of(context)
                             .more_support_w400
-                            .copyWith(
+                            ?.copyWith(
                                 color: InvestrendTheme.of(context)
                                     .greyLighterTextColor),
                       ),
@@ -459,13 +458,13 @@ class _ScreenTopUpHowToState extends BaseStateNoTabs<ScreenTopUpHowTo> {
                         child: OutlinedButton(
                             onPressed: () {
                               Clipboard.setData(
-                                      new ClipboardData(text: value.acc_no))
+                                      new ClipboardData(text: value.acc_no!))
                                   .then((_) {
                                 String info =
                                     'account_number_copied_to_clipboard_info'
                                         .tr();
-                                info =
-                                    info.replaceFirst('#ACC_NO#', value.acc_no);
+                                info = info.replaceFirst(
+                                    '#ACC_NO#', value.acc_no!);
                                 InvestrendTheme.of(context)
                                     .showSnackBar(context, info);
                               });
@@ -501,7 +500,7 @@ class _ScreenTopUpHowToState extends BaseStateNoTabs<ScreenTopUpHowTo> {
             ],
           ),
         );
-        Widget noWidget = _bankRDNNotifier.currentState
+        Widget? noWidget = _bankRDNNotifier?.currentState
             .getNoWidget(onRetry: () => doUpdate(pullToRefresh: true));
         if (noWidget != null) {
           return Stack(
@@ -523,10 +522,10 @@ class _ScreenTopUpHowToState extends BaseStateNoTabs<ScreenTopUpHowTo> {
       backgroundColor: Theme.of(context).colorScheme.secondary,
       onRefresh: onRefresh,
       child: ValueListenableBuilder(
-          valueListenable: _banksNotifier,
-          builder: (context, ResultTopUpBank value, child) {
+          valueListenable: _banksNotifier!,
+          builder: (context, ResultTopUpBank? value, child) {
             if (value == null) {
-              value = _banksNotifier.value;
+              value = _banksNotifier?.value;
             }
             List<Widget> childs = List.empty(growable: true);
             childs.add(Padding(
@@ -536,7 +535,7 @@ class _ScreenTopUpHowToState extends BaseStateNoTabs<ScreenTopUpHowTo> {
                   top: 10.0),
               child: Text(
                 'choose_account_label'.tr(),
-                style: InvestrendTheme.of(context).more_support_w400.copyWith(
+                style: InvestrendTheme.of(context).more_support_w400?.copyWith(
                     color: InvestrendTheme.of(context).greyLighterTextColor),
               ),
             ));
@@ -564,9 +563,10 @@ class _ScreenTopUpHowToState extends BaseStateNoTabs<ScreenTopUpHowTo> {
             childs.add(Padding(
               padding: const EdgeInsets.all(InvestrendTheme.cardPaddingGeneral),
               child: FormatTextBullet(
-                value.getTerm(
-                    language: EasyLocalization.of(context).locale.languageCode),
-                style: InvestrendTheme.of(context).more_support_w400.copyWith(
+                value?.getTerm(
+                    language:
+                        EasyLocalization.of(context)!.locale.languageCode),
+                style: InvestrendTheme.of(context).more_support_w400?.copyWith(
                     color: InvestrendTheme.of(context).greyDarkerTextColor),
               ),
             ));
@@ -576,13 +576,13 @@ class _ScreenTopUpHowToState extends BaseStateNoTabs<ScreenTopUpHowTo> {
             //   String bulletText
             // }
 
-            Widget noWidget = _banksNotifier.currentState
+            Widget? noWidget = _banksNotifier?.currentState
                 .getNoWidget(onRetry: () => doUpdate(pullToRefresh: true));
             if (noWidget != null) {
               childs.add(Center(child: noWidget));
             }
             int countChilds = childs.length;
-            int countAll = childs.length + value.count();
+            int? countAll = childs.length + value!.count()!;
 
             return ListView.separated(
               itemCount: countAll,
@@ -590,9 +590,9 @@ class _ScreenTopUpHowToState extends BaseStateNoTabs<ScreenTopUpHowTo> {
                 if (index < countChilds) {
                   return childs.elementAt(index);
                 }
-                int indexBank = index - countChilds;
-                if (indexBank < value.count()) {
-                  TopUpBank bank = value.datas.elementAt(indexBank);
+                int? indexBank = index - countChilds;
+                if (indexBank < value!.count()!) {
+                  TopUpBank? bank = value.datas?.elementAt(indexBank);
                   return createBankHowTo(context, bank);
                 }
                 return EmptyLabel(
@@ -620,14 +620,14 @@ class _ScreenTopUpHowToState extends BaseStateNoTabs<ScreenTopUpHowTo> {
     );
   }
 
-  Widget createBankHowTo(BuildContext context, TopUpBank bank) {
+  Widget createBankHowTo(BuildContext context, TopUpBank? bank) {
     return Padding(
       padding: const EdgeInsets.all(InvestrendTheme.cardPaddingGeneral),
       child: TopupBankInfoWidget(
-          bank.code,
-          bank.icon_url,
-          bank.getGuide(
-              language: EasyLocalization.of(context).locale.languageCode)),
+          bank?.code,
+          bank?.icon_url,
+          bank?.getGuide(
+              language: EasyLocalization.of(context)!.locale.languageCode)),
     );
   }
 
@@ -637,7 +637,5 @@ class _ScreenTopUpHowToState extends BaseStateNoTabs<ScreenTopUpHowTo> {
   }
 
   @override
-  void onInactive() {
-    // TODO: implement onInactive
-  }
+  void onInactive() {}
 }

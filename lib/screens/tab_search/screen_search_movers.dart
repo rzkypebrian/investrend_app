@@ -1,3 +1,5 @@
+// ignore_for_file: override_on_non_overriding_member, unnecessary_null_comparison, non_constant_identifier_names, unused_element
+
 import 'dart:async';
 import 'dart:math';
 
@@ -23,11 +25,11 @@ import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 class ScreenSearchMovers extends StatefulWidget {
-  final TabController tabController;
+  final TabController? tabController;
   final int tabIndex;
-  final ValueNotifier<bool> visibilityNotifier;
+  final ValueNotifier<bool>? visibilityNotifier;
   ScreenSearchMovers(this.tabIndex, this.tabController,
-      {Key key, this.visibilityNotifier})
+      {Key? key, this.visibilityNotifier})
       : super(key: key);
 
   @override
@@ -38,7 +40,7 @@ class ScreenSearchMovers extends StatefulWidget {
 
 class _ScreenSearchMoversState
     extends BaseStateNoTabsWithParentTab<ScreenSearchMovers> {
-  final GeneralPriceNotifier _moversDataNotifier =
+  final GeneralPriceNotifier? _moversDataNotifier =
       GeneralPriceNotifier(new GeneralPriceData());
   final SlidableController slidableController = SlidableController();
   final ValueNotifier<int> _moversTypeNotifier = ValueNotifier<int>(0);
@@ -46,10 +48,10 @@ class _ScreenSearchMoversState
   static const Duration _durationUpdate = Duration(milliseconds: 2500);
 
   bool canTapRow = true;
-  Timer _timer;
+  Timer? _timer;
 
-  _ScreenSearchMoversState(int tabIndex, TabController tabController,
-      {ValueNotifier<bool> visibilityNotifier})
+  _ScreenSearchMoversState(int tabIndex, TabController? tabController,
+      {ValueNotifier<bool>? visibilityNotifier})
       : super('/search_movers', tabIndex, tabController,
             parentTabIndex: Tabs.Search.index,
             visibilityNotifier: visibilityNotifier);
@@ -95,7 +97,7 @@ class _ScreenSearchMoversState
   }
 
   @override
-  Widget createAppBar(BuildContext context) {
+  PreferredSizeWidget? createAppBar(BuildContext context) {
     return null;
   }
 
@@ -161,8 +163,8 @@ class _ScreenSearchMoversState
         setNotifierError(_groupedNotifier, error.toString());
       }
       */
-    if (pullToRefresh || _moversDataNotifier.value.isEmpty()) {
-      _moversDataNotifier.setLoading();
+    if (pullToRefresh || _moversDataNotifier!.value!.isEmpty()) {
+      _moversDataNotifier?.setLoading();
     }
     String type = _movers_types.elementAt(_moversTypeNotifier.value);
     String range = _movers_ranges.elementAt(_rangeNotifier.value);
@@ -171,9 +173,9 @@ class _ScreenSearchMoversState
       try {
         print(routeName + ' try movers');
 
-        final topStocks =
+        final ResultTopStock? topStocks =
             await InvestrendTheme.datafeedHttp.fetchTopStock(type);
-        if (topStocks != null && !topStocks.isEmpty()) {
+        if (topStocks != null && !topStocks.isEmpty()!) {
           String currentType =
               _movers_types.elementAt(_moversTypeNotifier.value);
           String currentRange = _movers_ranges.elementAt(_rangeNotifier.value);
@@ -185,9 +187,9 @@ class _ScreenSearchMoversState
           if (validType && validRange) {
             GeneralPriceData dataMovers = GeneralPriceData();
 
-            topStocks.datas.forEach((mover) {
-              Stock stock = InvestrendTheme.storedData.findStock(mover.code);
-              String name = stock != null ? stock.name : '-';
+            topStocks.datas?.forEach((mover) {
+              Stock? stock = InvestrendTheme.storedData?.findStock(mover.code);
+              String? name = stock != null ? stock.name : '-';
               //dataMovers.datas.add(GeneralPrice(mover.code, InvestrendTheme.formatPrice(mover.close), InvestrendTheme.formatPrice(mover.change), InvestrendTheme.formatPercent(mover.percentChange), InvestrendTheme.changeTextColor(mover.percentChange), name: name));
 
               WatchlistPrice gp = WatchlistPrice(
@@ -221,10 +223,10 @@ class _ScreenSearchMoversState
               } catch (e) {
                 print(e);
               }
-              dataMovers.datas.add(gp);
+              dataMovers.datas?.add(gp);
             });
             if (mounted) {
-              _moversDataNotifier.setValue(dataMovers);
+              _moversDataNotifier?.setValue(dataMovers);
             }
           } else {
             print(routeName +
@@ -246,9 +248,9 @@ class _ScreenSearchMoversState
       try {
         print(routeName + ' try movers historical $range');
 
-        final topStocks = await InvestrendTheme.datafeedHttp
+        final ResultTopStock? topStocks = await InvestrendTheme.datafeedHttp
             .fetchTopStockHistorical(type, range);
-        if (topStocks != null && !topStocks.isEmpty()) {
+        if (topStocks != null && !topStocks.isEmpty()!) {
           GeneralPriceData dataMovers = GeneralPriceData();
           String currentType =
               _movers_types.elementAt(_moversTypeNotifier.value);
@@ -259,9 +261,9 @@ class _ScreenSearchMoversState
           bool validRange =
               StringUtils.equalsIgnoreCase(currentRange, topStocks.range);
           if (validType && validRange) {
-            topStocks.datas.forEach((mover) {
-              Stock stock = InvestrendTheme.storedData.findStock(mover.code);
-              String name = stock != null ? stock.name : '-';
+            topStocks.datas?.forEach((mover) {
+              Stock? stock = InvestrendTheme.storedData?.findStock(mover.code);
+              String? name = stock != null ? stock.name : '-';
               //dataMovers.datas.add(GeneralPrice(mover.code, InvestrendTheme.formatPrice(mover.close), InvestrendTheme.formatPrice(mover.change), InvestrendTheme.formatPercent(mover.percentChange), InvestrendTheme.changeTextColor(mover.percentChange), name: name));
               //dataMovers.datas.add(GeneralPrice(mover.code, mover.close.toDouble(), mover.change.toDouble(), mover.percentChange, name: name));
 
@@ -311,10 +313,10 @@ class _ScreenSearchMoversState
                 print(e);
               }
 
-              dataMovers.datas.add(gp);
+              dataMovers.datas?.add(gp);
             });
             if (mounted) {
-              _moversDataNotifier.setValue(dataMovers);
+              _moversDataNotifier?.setValue(dataMovers);
             }
           } else {
             print(routeName +
@@ -467,10 +469,10 @@ class _ScreenSearchMoversState
             bottom:
                 paddingBottom + 80 /*InvestrendTheme.cardPaddingPlusMargin*/),
         child: ValueListenableBuilder(
-            valueListenable: _moversDataNotifier,
-            builder: (context, GeneralPriceData data, child) {
-              Widget noWidget =
-                  _moversDataNotifier.currentState.getNoWidget(onRetry: () {
+            valueListenable: _moversDataNotifier!,
+            builder: (context, GeneralPriceData? data, child) {
+              Widget? noWidget =
+                  _moversDataNotifier?.currentState.getNoWidget(onRetry: () {
                 doUpdate(pullToRefresh: true);
               });
               if (noWidget != null) {
@@ -490,22 +492,23 @@ class _ScreenSearchMoversState
               return ListView.builder(
                   shrinkWrap: false,
                   padding: const EdgeInsets.all(8),
-                  itemCount: preChilds.length + data.count(),
+                  itemCount: preChilds.length + data!.count(),
                   itemBuilder: (BuildContext context, int index) {
                     if (index < preChilds.length) {
                       return preChilds.elementAt(index);
                     } else if (index < (preChilds.length + data.count())) {
                       int indexData = index - preChilds.length;
-                      GeneralPrice gp = data.datas.elementAt(indexData);
+                      GeneralPrice? gp = data.datas?.elementAt(indexData);
                       return createRow(context, gp, indexData);
                     }
+                    return SizedBox();
                   });
             }),
       ),
     );
   }
 
-  Widget createRow(BuildContext context, GeneralPrice gp, int indexData) {
+  Widget createRow(BuildContext context, GeneralPrice? gp, int indexData) {
     return Slidable(
         controller: slidableController,
         actionPane: SlidableDrawerActionPane(),
@@ -515,11 +518,11 @@ class _ScreenSearchMoversState
             'button_buy'.tr(),
             InvestrendTheme.buyColor,
             () {
-              print('buy clicked code : ' + gp.code);
-              Stock stock = InvestrendTheme.storedData.findStock(gp.code);
+              print('buy clicked code : ' + gp!.code!);
+              Stock? stock = InvestrendTheme.storedData?.findStock(gp.code);
               if (stock == null) {
                 print('buy clicked code : ' +
-                    gp.code +
+                    gp.code! +
                     ' aborted, not find stock on StockStorer');
                 return;
               }
@@ -542,11 +545,11 @@ class _ScreenSearchMoversState
             'button_sell'.tr(),
             InvestrendTheme.sellColor,
             () {
-              print('sell clicked code : ' + gp.code);
-              Stock stock = InvestrendTheme.storedData.findStock(gp.code);
+              print('sell clicked code : ' + gp!.code!);
+              Stock? stock = InvestrendTheme.storedData?.findStock(gp.code!);
               if (stock == null) {
                 print('sell clicked code : ' +
-                    gp.code +
+                    gp.code! +
                     ' aborted, not find stock on StockStorer');
                 return;
               }
@@ -566,27 +569,28 @@ class _ScreenSearchMoversState
             tag: 'button_sell',
           ),
           CancelSlideAction(
-              'button_cancel'.tr(), Theme.of(context).colorScheme.background, () {
+              'button_cancel'.tr(), Theme.of(context).colorScheme.background,
+              () {
             InvestrendTheme.of(context).showSnackBar(context, 'cancel');
           }),
         ],
         child: RowGeneralPrice(
-          gp.code,
-          gp.price,
-          gp.change,
-          gp.percent,
-          gp.priceColor,
-          name: gp.name,
+          gp?.code,
+          gp?.price,
+          gp?.change,
+          gp?.percent,
+          gp?.priceColor,
+          name: gp?.name,
           firstRow: (indexData == 0),
           onTap: () {
-            print('clicked code : ' + gp.code + '  canTapRow : $canTapRow');
+            print('clicked code : ' + gp!.code! + '  canTapRow : $canTapRow');
             if (canTapRow) {
               canTapRow = false;
-              Stock stock = InvestrendTheme.storedData.findStock(gp.code);
+              Stock? stock = InvestrendTheme.storedData?.findStock(gp.code!);
               if (stock == null) {
                 canTapRow = true;
                 print('clicked code : ' +
-                    gp.code +
+                    gp.code! +
                     ' aborted, not find stock on StockStorer');
                 return;
               }
@@ -613,10 +617,10 @@ class _ScreenSearchMoversState
     childs.add(Expanded(
       flex: 1,
       child: ValueListenableBuilder(
-        valueListenable: _moversDataNotifier,
-        builder: (context, GeneralPriceData data, child) {
-          Widget noWidget =
-              _moversDataNotifier.currentState.getNoWidget(onRetry: () {
+        valueListenable: _moversDataNotifier!,
+        builder: (context, GeneralPriceData? data, child) {
+          Widget? noWidget =
+              _moversDataNotifier?.currentState.getNoWidget(onRetry: () {
             doUpdate(pullToRefresh: true);
           });
 
@@ -632,11 +636,11 @@ class _ScreenSearchMoversState
           return ListView(
             padding: EdgeInsets.only(bottom: paddingBottom),
             children: List<Widget>.generate(
-              data.count(),
+              data!.count(),
               (int index) {
-                GeneralPrice generalPrice = data.datas.elementAt(index);
+                GeneralPrice? generalPrice = data.datas?.elementAt(index);
                 //GeneralPrice generalPrice = data.datas.elementAt(indexData);
-                WatchlistPrice gp;
+                WatchlistPrice? gp;
                 if (generalPrice is WatchlistPrice) {
                   gp = generalPrice;
                 }
@@ -649,12 +653,12 @@ class _ScreenSearchMoversState
                         'button_buy'.tr(),
                         InvestrendTheme.buyColor,
                         () {
-                          print('buy clicked code : ' + gp.code);
-                          Stock stock =
-                              InvestrendTheme.storedData.findStock(gp.code);
+                          print('buy clicked code : ' + gp!.code!);
+                          Stock? stock =
+                              InvestrendTheme.storedData?.findStock(gp.code!);
                           if (stock == null) {
                             print('buy clicked code : ' +
-                                gp.code +
+                                gp.code! +
                                 ' aborted, not find stock on StockStorer');
                             return;
                           }
@@ -682,12 +686,12 @@ class _ScreenSearchMoversState
                         'button_sell'.tr(),
                         InvestrendTheme.sellColor,
                         () {
-                          print('sell clicked code : ' + gp.code);
-                          Stock stock =
-                              InvestrendTheme.storedData.findStock(gp.code);
+                          print('sell clicked code : ' + gp!.code!);
+                          Stock? stock =
+                              InvestrendTheme.storedData?.findStock(gp.code!);
                           if (stock == null) {
                             print('sell clicked code : ' +
-                                gp.code +
+                                gp.code! +
                                 ' aborted, not find stock on StockStorer');
                             return;
                           }
@@ -720,16 +724,16 @@ class _ScreenSearchMoversState
                       firstRow: (index == 0),
                       onTap: () {
                         print('clicked code : ' +
-                            gp.code +
+                            gp!.code! +
                             '  canTapRow : $canTapRow');
                         if (canTapRow) {
                           canTapRow = false;
-                          Stock stock =
-                              InvestrendTheme.storedData.findStock(gp.code);
+                          Stock? stock =
+                              InvestrendTheme.storedData?.findStock(gp.code!);
                           if (stock == null) {
                             canTapRow = true;
                             print('clicked code : ' +
-                                gp.code +
+                                gp.code! +
                                 ' aborted, not find stock on StockStorer');
                             return;
                           }
@@ -748,12 +752,12 @@ class _ScreenSearchMoversState
                       showBidOffer: false,
                       onPressedButtonCorporateAction: () =>
                           onPressedButtonCorporateAction(
-                              context, gp.corporateAction),
+                              context, gp?.corporateAction),
                       //onPressedButtonSpecialNotation: ()=> onPressedButtonSpecialNotation(context, gp.notation),
                       onPressedButtonSpecialNotation: () =>
                           onPressedButtonImportantInformation(
-                              context, gp.notation, gp.suspendStock),
-                      stockInformationStatus: gp.status,
+                              context, gp?.notation, gp?.suspendStock),
+                      stockInformationStatus: gp?.status,
                     ));
               },
             ),
@@ -939,7 +943,7 @@ class _ScreenSearchMoversState
   */
 
   void onPressedButtonImportantInformation(BuildContext context,
-      List<Remark2Mapping> notation, SuspendStock suspendStock) {
+      List<Remark2Mapping>? notation, SuspendStock? suspendStock) {
     int count = notation == null ? 0 : notation.length;
     if (count == 0 && suspendStock == null) {
       print(routeName +
@@ -955,20 +959,20 @@ class _ScreenSearchMoversState
 
       DateFormat dateFormatter = DateFormat('EEEE, dd/MM/yyyy', 'id');
       DateFormat dateParser = DateFormat('yyyy-MM-dd');
-      DateTime dateTime = dateParser.parseUtc(suspendStock.date);
+      DateTime dateTime = dateParser.parseUtc(suspendStock.date!);
       print('dateTime : ' + dateTime.toString());
       //print('indexSummary.date : '+data.date+' '+data.time);
       String formatedDate = dateFormatter.format(dateTime);
       //String formatedTime = timeFormatter.format(dateTime);
       //infoSuspend = infoSuspend.replaceAll('#BOARD#', suspendStock.board);
       infoSuspend = infoSuspend.replaceAll('#DATE#', formatedDate);
-      infoSuspend = infoSuspend.replaceAll('#TIME#', suspendStock.time);
+      infoSuspend = infoSuspend.replaceAll('#TIME#', suspendStock.time!);
       //displayTime = infoTime;
       height += 25.0;
       childs.add(Padding(
         padding: const EdgeInsets.only(bottom: 5.0),
         child: Text(
-          'Suspended ' + suspendStock.board,
+          'Suspended ' + suspendStock.board!,
           style: InvestrendTheme.of(context).small_w600,
         ),
       ));
@@ -1025,14 +1029,14 @@ class _ScreenSearchMoversState
         }
       }
       */
-      Remark2Mapping remark2 = notation.elementAt(i);
+      Remark2Mapping? remark2 = notation?.elementAt(i);
       if (remark2 != null) {
         if (remark2.isSurveilance()) {
           height += 35.0;
           childs.add(Padding(
             padding: const EdgeInsets.only(bottom: 15.0),
             child: Text(
-              remark2.code + ' : ' + remark2.value,
+              remark2.code! + ' : ' + remark2.value!,
               style: InvestrendTheme.of(context).small_w600,
             ),
           ));
@@ -1061,7 +1065,7 @@ class _ScreenSearchMoversState
                       style: InvestrendTheme.of(context).small_w600,
                     ),
                     TextSpan(
-                      text: ' : ' + remark2.value,
+                      text: ' : ' + remark2.value!,
                       style: InvestrendTheme.of(context).small_w400,
                     )
                   ]),
@@ -1100,12 +1104,12 @@ class _ScreenSearchMoversState
   }
   */
   void onPressedButtonCorporateAction(
-      BuildContext context, List<CorporateActionEvent> corporateAction) {
+      BuildContext context, List<CorporateActionEvent>? corporateAction) {
     print('onPressedButtonCorporateAction : ' + corporateAction.toString());
 
     List<Widget> childs = List.empty(growable: true);
     if (corporateAction != null && corporateAction.isNotEmpty) {
-      corporateAction.forEach((ca) {
+      corporateAction.forEach((CorporateActionEvent? ca) {
         if (ca != null) {
           childs.add(Padding(
             padding: const EdgeInsets.only(bottom: 20),
@@ -1189,9 +1193,9 @@ class _ScreenSearchMoversState
 
   void _startTimer() {
     print(routeName + '._startTimer');
-    if (_timer == null || !_timer.isActive) {
+    if (_timer == null || !_timer!.isActive) {
       _timer = Timer.periodic(_durationUpdate, (timer) {
-        print(routeName + ' _timer.tick : ' + _timer.tick.toString());
+        print(routeName + ' _timer.tick : ' + _timer!.tick.toString());
         if (active) {
           if (onProgress) {
             print(routeName +
@@ -1206,19 +1210,19 @@ class _ScreenSearchMoversState
 
   void _stopTimer() {
     print(routeName + '._stopTimer');
-    if (_timer != null && _timer.isActive) {
-      _timer.cancel();
+    if (_timer != null && _timer!.isActive) {
+      _timer?.cancel();
       _timer = null;
     }
   }
 
   @override
   void dispose() {
-    _moversDataNotifier.dispose();
+    _moversDataNotifier?.dispose();
     _moversTypeNotifier.dispose();
     _rangeNotifier.dispose();
     if (_timer != null) {
-      _timer.cancel();
+      _timer?.cancel();
     }
     super.dispose();
   }

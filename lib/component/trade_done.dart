@@ -1,10 +1,9 @@
 import 'package:Investrend/component/trade_done_value.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
-import 'package:easy_localization/src/public_ext.dart';
+// import 'package:easy_localization/src/public_ext.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/style.dart';
-import 'package:xml/xml.dart';
-
+// import 'package:flutter_html/style.dart';
+// import 'package:xml/xml.dart';
 
 class TradeDone extends StatefulWidget {
   @override
@@ -45,7 +44,7 @@ class TradeDoneState extends State<TradeDone> {
     return AppBar(
       centerTitle: true,
       title: Text('Trade Done'),
-      titleTextStyle: InvestrendTheme.of(context).regular_w600.copyWith(
+      titleTextStyle: InvestrendTheme.of(context).regular_w600?.copyWith(
             color: InvestrendTheme.of(context).investrendPurple,
             fontWeight: FontWeight.bold,
           ),
@@ -142,7 +141,7 @@ class TradeDoneState extends State<TradeDone> {
                   width: 80,
                   child: Text(
                     'TIME',
-                    style: InvestrendTheme.of(context).textLabelStyle.copyWith(
+                    style: InvestrendTheme.of(context).textLabelStyle?.copyWith(
                           fontSize: textFont,
                           color: Colors.black,
                         ),
@@ -153,7 +152,7 @@ class TradeDoneState extends State<TradeDone> {
                   width: 50,
                   child: Text(
                     'PRICE',
-                    style: InvestrendTheme.of(context).textLabelStyle.copyWith(
+                    style: InvestrendTheme.of(context).textLabelStyle?.copyWith(
                           fontSize: textFont,
                           color: Colors.black,
                         ),
@@ -164,7 +163,7 @@ class TradeDoneState extends State<TradeDone> {
                   width: 40,
                   child: Text(
                     'LOT',
-                    style: InvestrendTheme.of(context).textLabelStyle.copyWith(
+                    style: InvestrendTheme.of(context).textLabelStyle?.copyWith(
                           fontSize: textFont,
                           color: Colors.black,
                         ),
@@ -175,7 +174,7 @@ class TradeDoneState extends State<TradeDone> {
                   width: 25,
                   child: Text(
                     'F/D',
-                    style: InvestrendTheme.of(context).textLabelStyle.copyWith(
+                    style: InvestrendTheme.of(context).textLabelStyle?.copyWith(
                           fontSize: textFont,
                           color: Colors.black,
                         ),
@@ -186,7 +185,7 @@ class TradeDoneState extends State<TradeDone> {
                   width: 25,
                   child: Text(
                     'BY',
-                    style: InvestrendTheme.of(context).textLabelStyle.copyWith(
+                    style: InvestrendTheme.of(context).textLabelStyle?.copyWith(
                           fontSize: textFont,
                           color: Colors.black,
                         ),
@@ -197,7 +196,7 @@ class TradeDoneState extends State<TradeDone> {
                   width: 25,
                   child: Text(
                     'SL',
-                    style: InvestrendTheme.of(context).textLabelStyle.copyWith(
+                    style: InvestrendTheme.of(context).textLabelStyle?.copyWith(
                           fontSize: textFont,
                           color: Colors.black,
                         ),
@@ -208,7 +207,7 @@ class TradeDoneState extends State<TradeDone> {
                   width: 25,
                   child: Text(
                     'F/D',
-                    style: InvestrendTheme.of(context).textLabelStyle.copyWith(
+                    style: InvestrendTheme.of(context).textLabelStyle?.copyWith(
                           fontSize: textFont,
                           color: Colors.black,
                         ),
@@ -219,7 +218,7 @@ class TradeDoneState extends State<TradeDone> {
                   width: 40,
                   child: Text(
                     'CHG',
-                    style: InvestrendTheme.of(context).textLabelStyle.copyWith(
+                    style: InvestrendTheme.of(context).textLabelStyle?.copyWith(
                           fontSize: textFont,
                           color: Colors.black,
                         ),
@@ -230,7 +229,7 @@ class TradeDoneState extends State<TradeDone> {
                   width: 50,
                   child: Text(
                     '%',
-                    style: InvestrendTheme.of(context).textLabelStyle.copyWith(
+                    style: InvestrendTheme.of(context).textLabelStyle?.copyWith(
                           fontSize: textFont,
                           color: Colors.black,
                         ),
@@ -259,10 +258,10 @@ class TradeDoneState extends State<TradeDone> {
                                     Container(
                                       width: 80,
                                       child: Text(
-                                        data[index].time,
+                                        data[index].time!,
                                         style: InvestrendTheme.of(context)
                                             .textLabelStyle
-                                            .copyWith(
+                                            ?.copyWith(
                                               fontSize: 14,
                                               color: InvestrendTheme
                                                   .blackTextColor,
@@ -273,15 +272,15 @@ class TradeDoneState extends State<TradeDone> {
                                     Container(
                                       width: 50,
                                       child: Text(
-                                        data[index].price,
+                                        data[index].price!,
                                         style: InvestrendTheme.of(context)
                                             .textLabelStyle
-                                            .copyWith(
+                                            ?.copyWith(
                                               fontSize: 14,
                                               color: data[index].price == prev
                                                   ? Colors.blue
                                                   : int.parse(data[index]
-                                                              .price) <
+                                                              .price!) <
                                                           int.parse(prev)
                                                       ? Colors.red
                                                       : Colors.green,
@@ -293,10 +292,10 @@ class TradeDoneState extends State<TradeDone> {
                                     Container(
                                       width: 40,
                                       child: Text(
-                                        data[index].lot,
+                                        data[index].lot!,
                                         style: InvestrendTheme.of(context)
                                             .textLabelStyle
-                                            .copyWith(
+                                            ?.copyWith(
                                               fontSize: 14,
                                               color: InvestrendTheme
                                                   .blackTextColor,
@@ -307,10 +306,10 @@ class TradeDoneState extends State<TradeDone> {
                                     Container(
                                       width: 25,
                                       child: Text(
-                                        data[index].fdBuy,
+                                        data[index].fdBuy!,
                                         style: InvestrendTheme.of(context)
                                             .textLabelStyle
-                                            .copyWith(
+                                            ?.copyWith(
                                               fontSize: 14,
                                               color: InvestrendTheme
                                                   .blackTextColor,
@@ -321,10 +320,10 @@ class TradeDoneState extends State<TradeDone> {
                                     Container(
                                       width: 25,
                                       child: Text(
-                                        data[index].buy,
+                                        data[index].buy!,
                                         style: InvestrendTheme.of(context)
                                             .textLabelStyle
-                                            .copyWith(
+                                            ?.copyWith(
                                               fontSize: 14,
                                               color: InvestrendTheme
                                                   .blackTextColor,
@@ -335,10 +334,10 @@ class TradeDoneState extends State<TradeDone> {
                                     Container(
                                       width: 25,
                                       child: Text(
-                                        data[index].sell,
+                                        data[index].sell!,
                                         style: InvestrendTheme.of(context)
                                             .textLabelStyle
-                                            .copyWith(
+                                            ?.copyWith(
                                               fontSize: 14,
                                               color: InvestrendTheme
                                                   .blackTextColor,
@@ -349,10 +348,10 @@ class TradeDoneState extends State<TradeDone> {
                                     Container(
                                       width: 25,
                                       child: Text(
-                                        data[index].fdSell,
+                                        data[index].fdSell!,
                                         style: InvestrendTheme.of(context)
                                             .textLabelStyle
-                                            .copyWith(
+                                            ?.copyWith(
                                               fontSize: 14,
                                               color: InvestrendTheme
                                                   .blackTextColor,
@@ -363,15 +362,15 @@ class TradeDoneState extends State<TradeDone> {
                                     Container(
                                       width: 40,
                                       child: Text(
-                                        data[index].chg,
+                                        data[index].chg!,
                                         style: InvestrendTheme.of(context)
                                             .textLabelStyle
-                                            .copyWith(
+                                            ?.copyWith(
                                               fontSize: 14,
                                               color: data[index].chg == '0'
                                                   ? Colors.blue
                                                   : data[index]
-                                                          .chg
+                                                          .chg!
                                                           .contains('+')
                                                       ? Colors.green
                                                       : Colors.red,
@@ -382,16 +381,16 @@ class TradeDoneState extends State<TradeDone> {
                                     Container(
                                       width: 50,
                                       child: Text(
-                                        data[index].percent,
+                                        data[index].percent!,
                                         style: InvestrendTheme.of(context)
                                             .textLabelStyle
-                                            .copyWith(
+                                            ?.copyWith(
                                                 fontSize: 14,
                                                 color:
                                                     data[index].percent == '0'
                                                         ? Colors.blue
                                                         : data[index]
-                                                                .percent
+                                                                .percent!
                                                                 .contains('+')
                                                             ? Colors.green
                                                             : Colors.red),

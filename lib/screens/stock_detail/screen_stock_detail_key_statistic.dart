@@ -14,25 +14,35 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
 
 class ScreenStockDetailKeyStatistic extends StatefulWidget {
-  final TabController tabController;
+  final TabController? tabController;
   final int tabIndex;
-  final ValueNotifier<bool> visibilityNotifier;
-  ScreenStockDetailKeyStatistic(this.tabIndex, this.tabController,  {Key key, this.visibilityNotifier}) : super( key: key);
+  final ValueNotifier<bool>? visibilityNotifier;
+  ScreenStockDetailKeyStatistic(this.tabIndex, this.tabController,
+      {Key? key, this.visibilityNotifier})
+      : super(key: key);
 
   @override
-  _ScreenStockDetailKeyStatisticState createState() => _ScreenStockDetailKeyStatisticState(tabIndex, tabController,visibilityNotifier: visibilityNotifier);
-
+  _ScreenStockDetailKeyStatisticState createState() =>
+      _ScreenStockDetailKeyStatisticState(tabIndex, tabController!,
+          visibilityNotifier: visibilityNotifier!);
 }
 
-class _ScreenStockDetailKeyStatisticState extends BaseStateNoTabsWithParentTab<ScreenStockDetailKeyStatistic>
-{
-  EarningPerShareNotifier _earningPerShareNotifier = EarningPerShareNotifier(EarningPerShareData.createBasic());
-  LabelValueNotifier _performanceYTDNotifier = LabelValueNotifier(new LabelValueData());
-  LabelValueNotifier _balanceSheetNotifier = LabelValueNotifier(new LabelValueData());
-  LabelValueNotifier _valuationNotifier = LabelValueNotifier(new LabelValueData());
-  LabelValueNotifier _perShareNotifier = LabelValueNotifier(new LabelValueData());
-  LabelValueNotifier _profitabilityNotifier = LabelValueNotifier(new LabelValueData());
-  LabelValueNotifier _liquidityNotifier = LabelValueNotifier(new LabelValueData());
+class _ScreenStockDetailKeyStatisticState
+    extends BaseStateNoTabsWithParentTab<ScreenStockDetailKeyStatistic> {
+  EarningPerShareNotifier _earningPerShareNotifier =
+      EarningPerShareNotifier(EarningPerShareData.createBasic());
+  LabelValueNotifier _performanceYTDNotifier =
+      LabelValueNotifier(new LabelValueData());
+  LabelValueNotifier _balanceSheetNotifier =
+      LabelValueNotifier(new LabelValueData());
+  LabelValueNotifier _valuationNotifier =
+      LabelValueNotifier(new LabelValueData());
+  LabelValueNotifier _perShareNotifier =
+      LabelValueNotifier(new LabelValueData());
+  LabelValueNotifier _profitabilityNotifier =
+      LabelValueNotifier(new LabelValueData());
+  LabelValueNotifier _liquidityNotifier =
+      LabelValueNotifier(new LabelValueData());
 
   // LocalForeignNotifier _localForeignNotifier = LocalForeignNotifier(new LocalForeignData());
   // PerformanceNotifier _performanceNotifier = PerformanceNotifier(new PerformanceData());
@@ -40,38 +50,41 @@ class _ScreenStockDetailKeyStatisticState extends BaseStateNoTabsWithParentTab<S
   // _localForeignNotifier = LocalForeignNotifier(new LocalForeignData());
   // _performanceNotifier = PerformanceNotifier(new PerformanceData());
 
-  _ScreenStockDetailKeyStatisticState(int tabIndex, TabController tabController,{ValueNotifier<bool> visibilityNotifier})
-      : super('/stock_detail_key_statistic', tabIndex, tabController, notifyStockChange: true,visibilityNotifier: visibilityNotifier);
+  _ScreenStockDetailKeyStatisticState(int tabIndex, TabController tabController,
+      {ValueNotifier<bool>? visibilityNotifier})
+      : super('/stock_detail_key_statistic', tabIndex, tabController,
+            notifyStockChange: true, visibilityNotifier: visibilityNotifier);
 
   // @override
   // bool get wantKeepAlive => true;
 
-
-
   @override
-  void onStockChanged(Stock newStock) {
+  void onStockChanged(Stock? newStock) {
     super.onStockChanged(newStock);
     doUpdate(pullToRefresh: true);
   }
+
   @override
-  Widget createAppBar(BuildContext context) {
+  PreferredSizeWidget? createAppBar(BuildContext context) {
     return null;
   }
 
   Future doUpdate({bool pullToRefresh = false}) async {
     print(routeName + '.doUpdate : ' + DateTime.now().toString());
-    if( !active ){
-      print(routeName + '.doUpdate aborted active : $active' );
+    if (!active) {
+      print(routeName + '.doUpdate aborted active : $active');
       return;
     }
-    Stock stock = context.read(primaryStockChangeNotifier).stock;
+    Stock? stock = context.read(primaryStockChangeNotifier).stock;
     if (stock == null || !stock.isValid()) {
-      Stock stockDefault = InvestrendTheme.storedData.listStock.isEmpty ? null : InvestrendTheme.storedData.listStock.first;
-      context.read(primaryStockChangeNotifier).setStock(stockDefault);
+      Stock? stockDefault = InvestrendTheme.storedData!.listStock!.isEmpty
+          ? null
+          : InvestrendTheme.storedData?.listStock?.first;
+      context.read(primaryStockChangeNotifier).setStock(stockDefault!);
       stock = context.read(primaryStockChangeNotifier).stock;
     }
-    String code = stock != null ? stock.code : "";
-    if( !StringUtils.isEmtpy(code) ){
+    String? code = stock != null ? stock.code : "";
+    if (!StringUtils.isEmtpy(code)) {
       setNotifierLoading(_earningPerShareNotifier);
       setNotifierLoading(_performanceYTDNotifier);
       setNotifierLoading(_balanceSheetNotifier);
@@ -81,66 +94,143 @@ class _ScreenStockDetailKeyStatisticState extends BaseStateNoTabsWithParentTab<S
       setNotifierLoading(_liquidityNotifier);
 
       try {
-        int close = context.read(stockSummaryChangeNotifier).summary.close;
-        final result = await InvestrendTheme.datafeedHttp.fetchKeyStatistic(code, close.toString());
-        if(result != null && !result.isEmpty()){
-          if(mounted){
+        int? close = context.read(stockSummaryChangeNotifier).summary!.close;
+        final ResultKeyStatistic? result = await InvestrendTheme.datafeedHttp
+            .fetchKeyStatistic(code, close.toString());
+        if (result != null && !result.isEmpty()) {
+          if (mounted) {
             //_groupedNotifier.setValue(groupedData);
             _earningPerShareNotifier.setValue(result.earningPerShare);
 
             LabelValueData dataPerformanceYTD = new LabelValueData();
-            dataPerformanceYTD.datas.add(LabelValue('card_performance_ytd_sales_label'.tr(), InvestrendTheme.formatValue(context, result.sales)));
-            dataPerformanceYTD.datas.add(LabelValue('card_performance_ytd_operating_profit_label'.tr(), InvestrendTheme.formatValue(context, result.operating_profit)));
-            dataPerformanceYTD.datas.add(LabelValue('card_performance_ytd_net_profit_label'.tr(), InvestrendTheme.formatValue(context, result.net_profit)));
-            dataPerformanceYTD.datas.add(LabelValue('card_performance_ytd_cash_flow_label'.tr(), InvestrendTheme.formatValue(context, result.cash_flow), valueColor: InvestrendTheme.priceTextColor(result.cash_flow)));
+            dataPerformanceYTD.datas?.add(LabelValue(
+                'card_performance_ytd_sales_label'.tr(),
+                InvestrendTheme.formatValue(context, result.sales)));
+            dataPerformanceYTD.datas?.add(LabelValue(
+                'card_performance_ytd_operating_profit_label'.tr(),
+                InvestrendTheme.formatValue(context, result.operating_profit)));
+            dataPerformanceYTD.datas?.add(LabelValue(
+                'card_performance_ytd_net_profit_label'.tr(),
+                InvestrendTheme.formatValue(context, result.net_profit)));
+            dataPerformanceYTD.datas?.add(LabelValue(
+                'card_performance_ytd_cash_flow_label'.tr(),
+                InvestrendTheme.formatValue(context, result.cash_flow),
+                valueColor: InvestrendTheme.priceTextColor(result.cash_flow)));
 
             _performanceYTDNotifier.setValue(dataPerformanceYTD);
 
             LabelValueData dataBalanceSheet = new LabelValueData();
-            dataBalanceSheet.datas.add(LabelValue('card_balance_sheet_assets_label'.tr(), InvestrendTheme.formatValue(context, result.assets)));
-            dataBalanceSheet.datas.add(LabelValue('card_balance_sheet_cash_and_equiv_label'.tr(), InvestrendTheme.formatValue(context, result.cash_and_equiv)));
-            dataBalanceSheet.datas.add(LabelValue('card_balance_sheet_liability_label'.tr(), InvestrendTheme.formatValue(context, result.liability)));
-            dataBalanceSheet.datas.add(LabelValue('card_balance_sheet_debt_label'.tr(), InvestrendTheme.formatValue(context, result.debt)));
-            dataBalanceSheet.datas.add(LabelValue('card_balance_sheet_equity_label'.tr(), InvestrendTheme.formatValue(context, result.equity)));
+            dataBalanceSheet.datas?.add(LabelValue(
+                'card_balance_sheet_assets_label'.tr(),
+                InvestrendTheme.formatValue(context, result.assets)));
+            dataBalanceSheet.datas?.add(LabelValue(
+                'card_balance_sheet_cash_and_equiv_label'.tr(),
+                InvestrendTheme.formatValue(context, result.cash_and_equiv)));
+            dataBalanceSheet.datas?.add(LabelValue(
+                'card_balance_sheet_liability_label'.tr(),
+                InvestrendTheme.formatValue(context, result.liability)));
+            dataBalanceSheet.datas?.add(LabelValue(
+                'card_balance_sheet_debt_label'.tr(),
+                InvestrendTheme.formatValue(context, result.debt)));
+            dataBalanceSheet.datas?.add(LabelValue(
+                'card_balance_sheet_equity_label'.tr(),
+                InvestrendTheme.formatValue(context, result.equity)));
 
             _balanceSheetNotifier.setValue(dataBalanceSheet);
 
             LabelValueData dataValuation = new LabelValueData();
-            dataValuation.datas.add(LabelValue('card_valuation_price_earning_ratio_label'.tr(), InvestrendTheme.formatPercent(result.price_earning_ratio, sufixPercent: false, prefixPlus: false)+'x'));
-            dataValuation.datas.add(LabelValue('card_valuation_price_sales_ratio_label'.tr(), InvestrendTheme.formatPercent(result.price_sales_ratio, sufixPercent: false, prefixPlus: false)+'x'));
-            dataValuation.datas.add(LabelValue('card_valuation_price_book_value_ratio_label'.tr(), InvestrendTheme.formatPercent(result.price_book_value_ratio, sufixPercent: false, prefixPlus: false)+'x'));
-            dataValuation.datas.add(LabelValue('card_valuation_price_cash_flow_ratio_label'.tr(), InvestrendTheme.formatPercent(result.price_cash_flow_ratio, sufixPercent: false, prefixPlus: false)+'x', valueColor: InvestrendTheme.changeTextColor(result.price_cash_flow_ratio)));
-            dataValuation.datas.add(LabelValue('card_valuation_dividend_yield_label'.tr(), InvestrendTheme.formatPercentChange(result.dividend_yield)));
+            dataValuation.datas?.add(LabelValue(
+                'card_valuation_price_earning_ratio_label'.tr(),
+                InvestrendTheme.formatPercent(result.price_earning_ratio,
+                        sufixPercent: false, prefixPlus: false) +
+                    'x'));
+            dataValuation.datas?.add(LabelValue(
+                'card_valuation_price_sales_ratio_label'.tr(),
+                InvestrendTheme.formatPercent(result.price_sales_ratio,
+                        sufixPercent: false, prefixPlus: false) +
+                    'x'));
+            dataValuation.datas?.add(LabelValue(
+                'card_valuation_price_book_value_ratio_label'.tr(),
+                InvestrendTheme.formatPercent(result.price_book_value_ratio,
+                        sufixPercent: false, prefixPlus: false) +
+                    'x'));
+            dataValuation.datas?.add(LabelValue(
+                'card_valuation_price_cash_flow_ratio_label'.tr(),
+                InvestrendTheme.formatPercent(result.price_cash_flow_ratio,
+                        sufixPercent: false, prefixPlus: false) +
+                    'x',
+                valueColor: InvestrendTheme.changeTextColor(
+                    result.price_cash_flow_ratio)));
+            dataValuation.datas?.add(LabelValue(
+                'card_valuation_dividend_yield_label'.tr(),
+                InvestrendTheme.formatPercentChange(result.dividend_yield)));
 
             _valuationNotifier.setValue(dataValuation);
 
             LabelValueData dataPerShare = new LabelValueData();
-            dataPerShare.datas.add(LabelValue('card_per_share_earning_per_share_label'.tr(), InvestrendTheme.formatPrice(result.earning_per_share)));
-            dataPerShare.datas.add(LabelValue('card_per_share_dividend_per_share_label'.tr(), InvestrendTheme.formatPrice(result.dividend_per_share)));
-            dataPerShare.datas.add(LabelValue('card_per_share_revenue_per_share_label'.tr(), InvestrendTheme.formatPrice(result.revenue_per_share)));
-            dataPerShare.datas.add(LabelValue('card_per_share_book_value_per_share_label'.tr(), InvestrendTheme.formatPrice(result.book_value_per_share)));
-            dataPerShare.datas.add(LabelValue('card_per_share_cash_equiv_per_share_label'.tr(), InvestrendTheme.formatPrice(result.cash_equiv_per_share)));
-            dataPerShare.datas.add(LabelValue('card_per_share_cash_flow_per_share_label'.tr(), InvestrendTheme.formatPrice(result.cash_flow_per_share), valueColor: InvestrendTheme.priceTextColor(result.cash_flow_per_share)));
-            dataPerShare.datas.add(LabelValue('card_per_share_net_assets_per_share_label'.tr(), InvestrendTheme.formatPrice(result.net_assets_per_share)));
+            dataPerShare.datas?.add(LabelValue(
+                'card_per_share_earning_per_share_label'.tr(),
+                InvestrendTheme.formatPrice(result.earning_per_share)));
+            dataPerShare.datas?.add(LabelValue(
+                'card_per_share_dividend_per_share_label'.tr(),
+                InvestrendTheme.formatPrice(result.dividend_per_share)));
+            dataPerShare.datas?.add(LabelValue(
+                'card_per_share_revenue_per_share_label'.tr(),
+                InvestrendTheme.formatPrice(result.revenue_per_share)));
+            dataPerShare.datas?.add(LabelValue(
+                'card_per_share_book_value_per_share_label'.tr(),
+                InvestrendTheme.formatPrice(result.book_value_per_share)));
+            dataPerShare.datas?.add(LabelValue(
+                'card_per_share_cash_equiv_per_share_label'.tr(),
+                InvestrendTheme.formatPrice(result.cash_equiv_per_share)));
+            dataPerShare.datas?.add(LabelValue(
+                'card_per_share_cash_flow_per_share_label'.tr(),
+                InvestrendTheme.formatPrice(result.cash_flow_per_share),
+                valueColor: InvestrendTheme.priceTextColor(
+                    result.cash_flow_per_share)));
+            dataPerShare.datas?.add(LabelValue(
+                'card_per_share_net_assets_per_share_label'.tr(),
+                InvestrendTheme.formatPrice(result.net_assets_per_share)));
 
             _perShareNotifier.setValue(dataPerShare);
 
             LabelValueData dataProfitability = new LabelValueData();
-            dataProfitability.datas.add(LabelValue('card_profitability_operating_profit_margin_label'.tr(), InvestrendTheme.formatPercent(result.operating_profit_margin, prefixPlus: false)));
-            dataProfitability.datas.add(LabelValue('card_profitability_net_profit_margin_label'.tr(), InvestrendTheme.formatPercent(result.net_profit_margin, prefixPlus: false)));
-            dataProfitability.datas.add(LabelValue('card_profitability_return_on_equity_label'.tr(), InvestrendTheme.formatPercent(result.return_on_equity, prefixPlus: false)));
-            dataProfitability.datas.add(LabelValue('card_profitability_return_on_assets_label'.tr(), InvestrendTheme.formatPercent(result.return_on_assets, prefixPlus: false)));
+            dataProfitability.datas?.add(LabelValue(
+                'card_profitability_operating_profit_margin_label'.tr(),
+                InvestrendTheme.formatPercent(result.operating_profit_margin,
+                    prefixPlus: false)));
+            dataProfitability.datas?.add(LabelValue(
+                'card_profitability_net_profit_margin_label'.tr(),
+                InvestrendTheme.formatPercent(result.net_profit_margin,
+                    prefixPlus: false)));
+            dataProfitability.datas?.add(LabelValue(
+                'card_profitability_return_on_equity_label'.tr(),
+                InvestrendTheme.formatPercent(result.return_on_equity,
+                    prefixPlus: false)));
+            dataProfitability.datas?.add(LabelValue(
+                'card_profitability_return_on_assets_label'.tr(),
+                InvestrendTheme.formatPercent(result.return_on_assets,
+                    prefixPlus: false)));
 
             _profitabilityNotifier.setValue(dataProfitability);
 
             LabelValueData dataLiquidity = new LabelValueData();
-            dataLiquidity.datas.add(LabelValue('card_liquidity_debt_equity_ratio_label'.tr(), InvestrendTheme.formatPercent(result.debt_equity_ratio, prefixPlus: false)));
-            dataLiquidity.datas.add(LabelValue('card_liquidity_current_ratio_label'.tr(), InvestrendTheme.formatPercent(result.current_ratio, prefixPlus: false)));
-            dataLiquidity.datas.add(LabelValue('card_liquidity_cash_ratio_label'.tr(), InvestrendTheme.formatPercent(result.cash_ratio, prefixPlus: false)));
+            dataLiquidity.datas?.add(LabelValue(
+                'card_liquidity_debt_equity_ratio_label'.tr(),
+                InvestrendTheme.formatPercent(result.debt_equity_ratio,
+                    prefixPlus: false)));
+            dataLiquidity.datas?.add(LabelValue(
+                'card_liquidity_current_ratio_label'.tr(),
+                InvestrendTheme.formatPercent(result.current_ratio,
+                    prefixPlus: false)));
+            dataLiquidity.datas?.add(LabelValue(
+                'card_liquidity_cash_ratio_label'.tr(),
+                InvestrendTheme.formatPercent(result.cash_ratio,
+                    prefixPlus: false)));
 
             _liquidityNotifier.setValue(dataLiquidity);
           }
-        }else{
+        } else {
           //setNotifierNoData(_groupedNotifier);
           setNotifierNoData(_earningPerShareNotifier);
           setNotifierNoData(_performanceYTDNotifier);
@@ -150,7 +240,6 @@ class _ScreenStockDetailKeyStatisticState extends BaseStateNoTabsWithParentTab<S
           setNotifierNoData(_profitabilityNotifier);
           setNotifierNoData(_liquidityNotifier);
         }
-
       } catch (error) {
         //setNotifierError(_groupedNotifier, error);
         print(error);
@@ -164,17 +253,18 @@ class _ScreenStockDetailKeyStatisticState extends BaseStateNoTabsWithParentTab<S
       }
     }
 
-
-
     print(routeName + '.doUpdate finished. pullToRefresh : $pullToRefresh');
     return true;
   }
+
   Future onRefresh() {
     context.read(stockDetailRefreshChangeNotifier).setRoute(routeName);
-    if(!active){
+    if (!active) {
       active = true;
       //onActive();
-      context.read(stockDetailScreenVisibilityChangeNotifier).setActive(tabIndex, true);
+      context
+          .read(stockDetailScreenVisibilityChangeNotifier)
+          .setActive(tabIndex, true);
     }
     return doUpdate(pullToRefresh: true);
     // return Future.delayed(Duration(seconds: 3));
@@ -183,21 +273,29 @@ class _ScreenStockDetailKeyStatisticState extends BaseStateNoTabsWithParentTab<S
   @override
   Widget createBody(BuildContext context, double paddingBottom) {
     List<Widget> childs = [
-      CardEarningPerShare(_earningPerShareNotifier, onRetry: (){
-        doUpdate(pullToRefresh: true);
-      },),
-      CardLabelValueNotifier('card_performance_ytd_title'.tr(), _performanceYTDNotifier),
+      CardEarningPerShare(
+        _earningPerShareNotifier,
+        onRetry: () {
+          doUpdate(pullToRefresh: true);
+        },
+      ),
+      CardLabelValueNotifier(
+          'card_performance_ytd_title'.tr(), _performanceYTDNotifier),
       ComponentCreator.divider(context),
-      CardLabelValueNotifier('card_balance_sheet_title'.tr(), _balanceSheetNotifier),
+      CardLabelValueNotifier(
+          'card_balance_sheet_title'.tr(), _balanceSheetNotifier),
       ComponentCreator.divider(context),
       CardLabelValueNotifier('card_valuation_title'.tr(), _valuationNotifier),
       ComponentCreator.divider(context),
       CardLabelValueNotifier('card_per_share_title'.tr(), _perShareNotifier),
       ComponentCreator.divider(context),
-      CardLabelValueNotifier('card_profitability_title'.tr(), _profitabilityNotifier),
+      CardLabelValueNotifier(
+          'card_profitability_title'.tr(), _profitabilityNotifier),
       ComponentCreator.divider(context),
       CardLabelValueNotifier('card_liquidity_title'.tr(), _liquidityNotifier),
-      SizedBox(height: paddingBottom + 80,),
+      SizedBox(
+        height: paddingBottom + 80,
+      ),
     ];
 
     return RefreshIndicator(
@@ -211,6 +309,7 @@ class _ScreenStockDetailKeyStatisticState extends BaseStateNoTabsWithParentTab<S
       ),
     );
   }
+
   /*
   @override
   Widget createBody(BuildContext context, double paddingBottom) {
@@ -245,10 +344,11 @@ class _ScreenStockDetailKeyStatisticState extends BaseStateNoTabsWithParentTab<S
   @override
   void onActive() {
     //print(routeName+' onActive');
-    context.read(stockDetailScreenVisibilityChangeNotifier).setActive(tabIndex, true);
+    context
+        .read(stockDetailScreenVisibilityChangeNotifier)
+        .setActive(tabIndex, true);
     doUpdate();
   }
-
 
   @override
   void initState() {
@@ -354,7 +454,6 @@ class _ScreenStockDetailKeyStatisticState extends BaseStateNoTabsWithParentTab<S
 
     });
     */
-
   }
   /*
   void onSummaryChanged(){
@@ -406,7 +505,6 @@ class _ScreenStockDetailKeyStatisticState extends BaseStateNoTabsWithParentTab<S
   }
   */
 
-
   @override
   void dispose() {
     _earningPerShareNotifier.dispose();
@@ -419,15 +517,17 @@ class _ScreenStockDetailKeyStatisticState extends BaseStateNoTabsWithParentTab<S
     // _localForeignNotifier.dispose();
     // _performanceNotifier.dispose();
     final container = ProviderContainer();
-    container.read(stockDetailScreenVisibilityChangeNotifier).setActive(tabIndex, false);
+    container
+        .read(stockDetailScreenVisibilityChangeNotifier)
+        .setActive(tabIndex, false);
     super.dispose();
   }
-
-
 
   @override
   void onInactive() {
     //print(routeName+' onInactive');
-    context.read(stockDetailScreenVisibilityChangeNotifier).setActive(tabIndex, false);
+    context
+        .read(stockDetailScreenVisibilityChangeNotifier)
+        .setActive(tabIndex, false);
   }
 }

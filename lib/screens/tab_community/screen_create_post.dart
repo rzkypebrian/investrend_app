@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable, non_constant_identifier_names
+
 import 'package:Investrend/component/avatar.dart';
 import 'package:Investrend/component/component_app_bar.dart';
 import 'package:Investrend/component/component_creator.dart';
@@ -25,14 +27,14 @@ import 'dart:io';
 
 class ScreenCreatePost extends StatefulWidget {
   final String fromRoute;
-  final BuySell orderData;
+  final BuySell? orderData;
 
-  const ScreenCreatePost(this.fromRoute, {this.orderData, Key key})
+  const ScreenCreatePost(this.fromRoute, {this.orderData, Key? key})
       : super(key: key);
 
   @override
   _ScreenCreatePostState createState() =>
-      _ScreenCreatePostState(this.fromRoute, this.orderData);
+      _ScreenCreatePostState(this.fromRoute, this.orderData!);
 }
 
 /*
@@ -52,10 +54,10 @@ class ImageList with ChangeNotifier{
 */
 class _ScreenCreatePostState extends BaseStateNoTabs<ScreenCreatePost> {
   final String fromRoute;
-  final BuySell orderData;
+  final BuySell? orderData;
 
   ScrollController scrollController = ScrollController();
-  TextEditingController fieldTextController;
+  TextEditingController? fieldTextController;
   final ImagePicker _picker = ImagePicker();
   List<String> paths = List.empty(growable: true);
 
@@ -93,13 +95,13 @@ class _ScreenCreatePostState extends BaseStateNoTabs<ScreenCreatePost> {
 
   imageTools.Image resizeImage(String path) {
     // Read a jpeg image from file.
-    imageTools.Image image =
+    imageTools.Image? image =
         imageTools.decodeImage(new File(path).readAsBytesSync());
 
     // Resize the image to a 120x? thumbnail (maintaining the aspect ratio).
 
     int maxWidth = 2000;
-    if (image.width > maxWidth) {
+    if (image!.width > maxWidth) {
       imageTools.Image resized = imageTools.copyResize(image, width: maxWidth);
       return resized;
     } else {
@@ -109,7 +111,7 @@ class _ScreenCreatePostState extends BaseStateNoTabs<ScreenCreatePost> {
 
   Future pickImage(BuildContext context, ImageSource source) async {
     try {
-      XFile pickedFile = await _picker.pickImage(source: source);
+      XFile? pickedFile = await _picker.pickImage(source: source);
       //PickedFile pickedFile = await _picker.getImage(source: source);
       if (pickedFile != null) {
         print('picked image try to uopload');
@@ -196,13 +198,13 @@ class _ScreenCreatePostState extends BaseStateNoTabs<ScreenCreatePost> {
   void dispose() {
     scrollController.dispose();
     typeNotifier.dispose();
-    fieldTextController.dispose();
+    fieldTextController?.dispose();
     imageNotifier.dispose();
     super.dispose();
   }
 
   @override
-  Widget createAppBar(BuildContext context) {
+  PreferredSizeWidget createAppBar(BuildContext context) {
     // return null;
 
     return AppBar(
@@ -252,7 +254,7 @@ class _ScreenCreatePostState extends BaseStateNoTabs<ScreenCreatePost> {
                       padding: const EdgeInsets.only(top: 12.0),
                       child: Consumer(builder: (context, watch, child) {
                         final notifier = watch(avatarChangeNotifier);
-                        String url = notifier.url;
+                        String? url = notifier.url;
                         if (notifier.invalid()) {
                           url = 'https://' +
                               InvestrendTheme.tradingHttp.tradingBaseUrl +
@@ -260,14 +262,14 @@ class _ScreenCreatePostState extends BaseStateNoTabs<ScreenCreatePost> {
                               context
                                   .read(dataHolderChangeNotifier)
                                   .user
-                                  .username +
+                                  .username! +
                               '&url=&nocache=';
                         }
                         return AvatarProfileButton(
                           fullname: context
                               .read(dataHolderChangeNotifier)
                               .user
-                              .realname,
+                              .realname!,
                           url: url,
                           size: 32.0,
                           // style: Theme.of(context)
@@ -299,12 +301,12 @@ class _ScreenCreatePostState extends BaseStateNoTabs<ScreenCreatePost> {
                               hintText: 'create_post_information'.tr(),
                               hintStyle: InvestrendTheme.of(context)
                                   .regular_w400_compact
-                                  .copyWith(
+                                  ?.copyWith(
                                       color: InvestrendTheme.of(context)
                                           .greyDarkerTextColor),
                               counterStyle: InvestrendTheme.of(context)
                                   .more_support_w400_compact
-                                  .copyWith(fontSize: 10.0)
+                                  ?.copyWith(fontSize: 10.0)
                                   .copyWith(
                                       color: InvestrendTheme.of(context)
                                           .greyLighterTextColor),
@@ -370,12 +372,12 @@ class _ScreenCreatePostState extends BaseStateNoTabs<ScreenCreatePost> {
                                     },
                                   );
                                 } else if (isOrder && orderData != null) {
-                                  bool isBuy = orderData.isBuy();
+                                  bool? isBuy = orderData?.isBuy();
                                   print('fromOrder widget isBuy : $isBuy ');
                                   print(
                                       'fromOrder --> ' + orderData.toString());
 
-                                  if (isBuy) {
+                                  if (isBuy!) {
                                     return ComposeActivityBuyWidget(
                                       orderData,
                                       onDelete: () {
@@ -467,7 +469,7 @@ class _ScreenCreatePostState extends BaseStateNoTabs<ScreenCreatePost> {
     return StringUtils.equalsIgnoreCase(fromRoute, '/trade');
   }
 
-  Color _getColorToggle(BuildContext context, int index) {
+  Color? _getColorToggle(BuildContext context, int index) {
     if (index == 0 && _fromOrder()) {
       return isSelected[index]
           ? Theme.of(context).colorScheme.secondary
@@ -612,7 +614,7 @@ class _ScreenCreatePostState extends BaseStateNoTabs<ScreenCreatePost> {
 
               OutlinedButton(
                 style: OutlinedButton.styleFrom(
-                  primary: Theme.of(context).primaryColor,
+                  foregroundColor: Theme.of(context).primaryColor,
                   minimumSize: Size(50.0, 36.0),
                   side: BorderSide(
                       color: Theme.of(context).colorScheme.secondary,
@@ -626,7 +628,7 @@ class _ScreenCreatePostState extends BaseStateNoTabs<ScreenCreatePost> {
                   'button_post'.tr(),
                   style: InvestrendTheme.of(context)
                       .small_w600_compact
-                      .copyWith(color: Theme.of(context).primaryColor),
+                      ?.copyWith(color: Theme.of(context).primaryColor),
                 ),
               ),
             ],
@@ -697,28 +699,28 @@ class _ScreenCreatePostState extends BaseStateNoTabs<ScreenCreatePost> {
       return;
     }
 
-    String text = fieldTextController.text;
+    String text = fieldTextController!.text;
     if (StringUtils.isEmtpy(text)) {
       InvestrendTheme.of(context)
           .showSnackBar(context, 'sosmed_error_text'.tr());
       return;
     }
     if (isPrediction) {
-      String error = statePrediction.getError();
+      String? error = statePrediction.getError();
       if (!StringUtils.isEmtpy(error)) {
-        InvestrendTheme.of(context).showSnackBar(context, error);
+        InvestrendTheme.of(context).showSnackBar(context, error!);
         return;
       }
     } else if (isPoll) {
-      String error = statePoll.getError();
+      String? error = statePoll.getError();
       if (!StringUtils.isEmtpy(error)) {
-        InvestrendTheme.of(context).showSnackBar(context, error);
+        InvestrendTheme.of(context).showSnackBar(context, error!);
         return;
       }
-    } else if (isOrder && orderData.isSell()) {
-      String error = stateTransaction.getError();
+    } else if (isOrder && orderData!.isSell()) {
+      String? error = stateTransaction.getError();
       if (!StringUtils.isEmtpy(error)) {
-        InvestrendTheme.of(context).showSnackBar(context, error);
+        InvestrendTheme.of(context).showSnackBar(context, error!);
         return;
       }
     }
@@ -746,7 +748,7 @@ class _ScreenCreatePostState extends BaseStateNoTabs<ScreenCreatePost> {
             attachments: paths,
             language: EasyLocalization.of(context).locale.languageCode);
         */
-        SubmitCreateText submitResult;
+        SubmitCreateText? submitResult;
         if (Utils.safeLenght(paths) <= 0) {
           /*
           submitResult = await SosMedHttp.createPostText(
@@ -756,11 +758,11 @@ class _ScreenCreatePostState extends BaseStateNoTabs<ScreenCreatePost> {
           */
 
           submitResult = await InvestrendTheme.tradingHttp.sosmedCreatePostText(
-              fieldTextController.text,
+              fieldTextController!.text,
               InvestrendTheme.of(context).applicationPlatform,
               InvestrendTheme.of(context).applicationVersion,
               //attachments: paths,
-              language: EasyLocalization.of(context).locale.languageCode);
+              language: EasyLocalization.of(context)!.locale.languageCode);
         } else {
           /*
           submitResult = await SosMedHttp.createPostTextWithAttachments(
@@ -770,11 +772,11 @@ class _ScreenCreatePostState extends BaseStateNoTabs<ScreenCreatePost> {
 
           submitResult = await InvestrendTheme.tradingHttp
               .sosmedCreatePostTextWithAttachments(
-                  fieldTextController.text,
+                  fieldTextController!.text,
                   paths,
                   InvestrendTheme.of(context).applicationPlatform,
                   InvestrendTheme.of(context).applicationVersion,
-                  language: EasyLocalization.of(context).locale.languageCode);
+                  language: EasyLocalization.of(context)!.locale.languageCode);
         }
         if (submitResult != null) {
           print('submitResult = ' + submitResult.toString());
@@ -822,22 +824,22 @@ class _ScreenCreatePostState extends BaseStateNoTabs<ScreenCreatePost> {
         */
       }
     } else if (isOrder) {
-      String code = orderData.stock_code;
-      int buyPrice = 0;
-      int sellPrice = 0;
+      String? code = orderData?.stock_code;
+      int? buyPrice = 0;
+      int? sellPrice = 0;
       String transactionType = '';
-      String orderId = orderData.orderid;
+      String? orderId = orderData?.orderid;
       String publishTime = _fromOrder() ? 'PENDING' : 'NOW';
-      String orderDate = orderData.orderdate;
-      if (orderData.isBuy()) {
+      String? orderDate = orderData?.orderdate;
+      if (orderData!.isBuy()) {
         transactionType = 'BUY';
-        buyPrice = orderData.normalPriceLot.price;
+        buyPrice = orderData?.normalPriceLot?.price;
         sellPrice = 0;
       } else {
         transactionType = 'SELL';
         buyPrice = stateTransaction
             .averagePrice; //  di isi berdasarkan average price portfolio stock nya.
-        sellPrice = orderData.normalPriceLot.price;
+        sellPrice = orderData?.normalPriceLot?.price;
       }
 
       try {
@@ -848,19 +850,19 @@ class _ScreenCreatePostState extends BaseStateNoTabs<ScreenCreatePost> {
             '123', InvestrendTheme.of(context).applicationPlatform, InvestrendTheme.of(context).applicationVersion,
             language: EasyLocalization.of(context).locale.languageCode);
         */
-        SubmitCreateTransaction submitResult = await InvestrendTheme.tradingHttp
-            .sosmedCreatePostTransaction(
+        SubmitCreateTransaction? submitResult =
+            await InvestrendTheme.tradingHttp.sosmedCreatePostTransaction(
                 code,
                 transactionType,
                 buyPrice,
                 sellPrice,
-                fieldTextController.text,
+                fieldTextController!.text,
                 orderId,
                 publishTime,
                 orderDate,
                 InvestrendTheme.of(context).applicationPlatform,
                 InvestrendTheme.of(context).applicationVersion,
-                language: EasyLocalization.of(context).locale.languageCode);
+                language: EasyLocalization.of(context)!.locale.languageCode);
 
         if (submitResult != null) {
           print('submitResult = ' + submitResult.toString());
@@ -916,14 +918,14 @@ class _ScreenCreatePostState extends BaseStateNoTabs<ScreenCreatePost> {
         //     InvestrendTheme.of(context).applicationPlatform, InvestrendTheme.of(context).applicationVersion,
         //     language: EasyLocalization.of(context).locale.languageCode);
 
-        SubmitCreatePolls submitResult = await InvestrendTheme.tradingHttp
+        SubmitCreatePolls? submitResult = await InvestrendTheme.tradingHttp
             .sosmedCreatePostPoll(
-                fieldTextController.text,
+                fieldTextController!.text,
                 statePoll.options,
                 statePoll.expire_at,
                 InvestrendTheme.of(context).applicationPlatform,
                 InvestrendTheme.of(context).applicationVersion,
-                language: EasyLocalization.of(context).locale.languageCode);
+                language: EasyLocalization.of(context)!.locale.languageCode);
 
         if (submitResult != null) {
           print('submitResult = ' + submitResult.toString());
@@ -968,7 +970,6 @@ class _ScreenCreatePostState extends BaseStateNoTabs<ScreenCreatePost> {
           }
         }
         */
-
       }
     } else if (isPrediction) {
       try {
@@ -979,17 +980,17 @@ class _ScreenCreatePostState extends BaseStateNoTabs<ScreenCreatePost> {
             InvestrendTheme.of(context).applicationPlatform, InvestrendTheme.of(context).applicationVersion,
             language: EasyLocalization.of(context).locale.languageCode);
         */
-        SubmitCreatePrediction submitResult = await InvestrendTheme.tradingHttp
+        SubmitCreatePrediction? submitResult = await InvestrendTheme.tradingHttp
             .sosmedCreatePostPrediction(
                 statePrediction.transaction_type,
-                fieldTextController.text,
+                fieldTextController!.text,
                 statePrediction.code,
                 statePrediction.start_price,
                 statePrediction.target_price,
                 statePrediction.expire_at,
                 InvestrendTheme.of(context).applicationPlatform,
                 InvestrendTheme.of(context).applicationVersion,
-                language: EasyLocalization.of(context).locale.languageCode);
+                language: EasyLocalization.of(context)!.locale.languageCode);
 
         if (submitResult != null) {
           print('submitResult = ' + submitResult.toString());
@@ -1042,9 +1043,7 @@ class _ScreenCreatePostState extends BaseStateNoTabs<ScreenCreatePost> {
   void onActive() {}
 
   @override
-  void onInactive() {
-    // TODO: implement onInactive
-  }
+  void onInactive() {}
 }
 
 class IntFlag {
@@ -1054,7 +1053,7 @@ class IntFlag {
 
 class StateActivityTransaction {
   int averagePrice = 0;
-  String getError() {
+  String? getError() {
     if (averagePrice == IntFlag.error_value) {
       return 'sosmed_activity_error_cost_failed'.tr();
     } else if (averagePrice == IntFlag.loading_value) {
@@ -1097,7 +1096,7 @@ class StateComposePoll {
     return !valid();
   }
 
-  String getError() {
+  String? getError() {
     int optionsCount = 0;
     options.forEach((value) {
       if (!StringUtils.isEmtpy(value)) {
@@ -1140,7 +1139,7 @@ class StateComposePrediction {
     return !valid();
   }
 
-  String getError() {
+  String? getError() {
     if (StringUtils.isEmtpy(code)) {
       return 'sosmed_prediction_error_code'.tr();
     } else if (target_price <= 0) {

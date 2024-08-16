@@ -1,7 +1,7 @@
-import 'package:Investrend/component/animation_creator.dart';
+// ignore_for_file: unused_local_variable
+
 import 'package:Investrend/component/component_creator.dart';
 import 'package:Investrend/screens/base/base_stateless_widget.dart';
-import 'package:Investrend/screens/onboarding/screen_register_rdn.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -26,10 +26,10 @@ class ScreenLandingRDN extends BaseStatelessWidget {
           TextButton(
             child: Text(
               'landing_rdn_button_skip'.tr(),
-              style: Theme.of(context).textTheme.button.copyWith(
+              style: Theme.of(context).textTheme.labelLarge?.copyWith(
                   fontWeight: FontWeight.normal,
                   //color: InvestrendCustomTheme.textfield_labelTextColor( lightTheme),
-                  color: Theme.of(context).textTheme.bodyText1.color),
+                  color: Theme.of(context).textTheme.bodyLarge?.color),
             ),
             onPressed: () {
               // pressed
@@ -55,8 +55,8 @@ class ScreenLandingRDN extends BaseStatelessWidget {
             Text('landing_rdn_info_text_1'.tr(),
                 style: Theme.of(context)
                     .textTheme
-                    .bodyText1
-                    .copyWith(fontWeight: FontWeight.bold)),
+                    .bodyLarge
+                    ?.copyWith(fontWeight: FontWeight.bold)),
             Spacer(
               flex: 1,
             ),
@@ -64,8 +64,8 @@ class ScreenLandingRDN extends BaseStatelessWidget {
                 textAlign: TextAlign.center,
                 style: Theme.of(context)
                     .textTheme
-                    .bodyText1
-                    .copyWith(height: 2.0, fontWeight: FontWeight.normal)),
+                    .bodyLarge
+                    ?.copyWith(height: 2.0, fontWeight: FontWeight.normal)),
             Spacer(
               flex: 8,
             ),
@@ -79,7 +79,7 @@ class ScreenLandingRDN extends BaseStatelessWidget {
                   Theme.of(context).colorScheme.secondary, () {
                 // on presss
                 //showFindFriendsPage(context);
-                showRegisterRDNPage(context);
+                // showRegisterRDNPage(context);
               }),
             ),
             Spacer(
@@ -110,7 +110,7 @@ class ScreenLandingRDN extends BaseStatelessWidget {
     );
      */
   }
-
+/*
   void showRegisterRDNPage(BuildContext context) {
     // InvestrendTheme.pushReplacement(context, ScreenMain(), ScreenTransition.SlideUp, '/main');
 
@@ -132,4 +132,5 @@ class ScreenLandingRDN extends BaseStatelessWidget {
           ),
     );
   }
+  */
 }

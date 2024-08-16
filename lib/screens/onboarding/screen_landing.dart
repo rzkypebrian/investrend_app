@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'package:Investrend/component/component_creator.dart';
 import 'package:Investrend/screens/screen_login.dart';
 import 'package:Investrend/screens/onboarding/screen_register.dart';
@@ -32,6 +34,7 @@ class ScreenLanding extends StatelessWidget {
     double dotWidth = 10;
     double dotHeight = 5;
     bool lightTheme = Theme.of(context).brightness == Brightness.light;
+    // ignore: unnecessary_null_comparison
     bool accentColorIsNull = Theme.of(context).colorScheme.secondary == null;
     print('lightTheme : $lightTheme  accentColorIsNull : $accentColorIsNull');
     return Container(
@@ -46,7 +49,7 @@ class ScreenLanding extends StatelessWidget {
           //Center(child: Image.asset('images/icons/ic_launcher.png')),
           Center(
               child: Image.asset(
-            InvestrendTheme.of(context).ic_launcher,
+            InvestrendTheme.of(context).ic_launcher!,
           )),
           Spacer(
             flex: 1,
@@ -130,7 +133,7 @@ class ScreenLanding extends StatelessWidget {
               ),
               TextButton(
                 style: TextButton.styleFrom(
-                    primary: InvestrendTheme.of(context).hyperlink,
+                    foregroundColor: InvestrendTheme.of(context).hyperlink,
                     padding: EdgeInsets.all(0.0),
                     //visualDensity: VisualDensity.compact,
                     animationDuration: Duration(milliseconds: 500),

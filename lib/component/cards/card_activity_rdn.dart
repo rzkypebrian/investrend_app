@@ -11,25 +11,30 @@ import 'package:flutter/cupertino.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 class CardMutationHistorical extends StatelessWidget {
-  final GroupedNotifier notifier;
-  final VoidCallback onRetry;
-  CardMutationHistorical(this.notifier,{this.onRetry, Key key}) : super(key: key);
+  final GroupedNotifier? notifier;
+  final VoidCallback? onRetry;
+  CardMutationHistorical(this.notifier, {this.onRetry, Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     bool comingSoon = true;
     Widget title;
-    if(comingSoon){
-      title = ComponentCreator.subtitleNoButtonMore(context, 'card_cash_mutation_historical_title'.tr(), );
-    }else{
-      title = ComponentCreator.subtitleButtonMore(context, 'card_cash_mutation_historical_title'.tr(), (){
-
-          Navigator.push(context, CupertinoPageRoute(
-            builder: (_) => ScreenESatement(), settings: RouteSettings(name: '/e-statement'),));
-
-
-      },
-          image: '', textButton: 'card_cash_mutation_other_month_button'.tr());
+    if (comingSoon == comingSoon) {
+      title = ComponentCreator.subtitleNoButtonMore(
+        context,
+        'card_cash_mutation_historical_title'.tr(),
+      );
+    } else {
+      title = ComponentCreator.subtitleButtonMore(
+          context, 'card_cash_mutation_historical_title'.tr(), () {
+        Navigator.push(
+            context,
+            CupertinoPageRoute(
+              builder: (_) => ScreenESatement(),
+              settings: RouteSettings(name: '/e-statement'),
+            ));
+      }, image: '', textButton: 'card_cash_mutation_other_month_button'.tr());
     }
     return Container(
       //color: Colors.lightBlueAccent,
@@ -40,7 +45,8 @@ class CardMutationHistorical extends StatelessWidget {
           //ComponentCreator.subtitle(context, 'card_cash_mutation_historical_title'.tr()),
 
           Padding(
-            padding: const EdgeInsets.only(left: InvestrendTheme.cardPaddingGeneral),
+            padding:
+                const EdgeInsets.only(left: InvestrendTheme.cardPaddingGeneral),
             child: title,
             /*
             child: ComponentCreator.subtitleButtonMore(context, 'card_cash_mutation_historical_title'.tr(), (){
@@ -60,11 +66,14 @@ class CardMutationHistorical extends StatelessWidget {
           ),
 
           Padding(
-            padding: EdgeInsets.only(left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral),
+            padding: EdgeInsets.only(
+                left: InvestrendTheme.cardPaddingGeneral,
+                right: InvestrendTheme.cardPaddingGeneral),
             child: ValueListenableBuilder(
-                valueListenable: notifier,
-                builder: (context, GroupedData value, child) {
-                  Widget noWidget = notifier.currentState.getNoWidget(onRetry: onRetry);
+                valueListenable: notifier!,
+                builder: (context, GroupedData? value, child) {
+                  Widget? noWidget =
+                      notifier?.currentState.getNoWidget(onRetry: onRetry!);
 
                   if (noWidget != null) {
                     return Center(
@@ -72,29 +81,32 @@ class CardMutationHistorical extends StatelessWidget {
                     );
                   }
 
-                  List list = List<Widget>.generate(
-                      value.datasSize(),
-                          (int index) {
+                  List<Widget>? list =
+                      List<Widget>.generate(value!.datasSize(), (int index) {
+                    StringIndex? holder = value.elementAt(index);
+                    print('index : $index  ' + holder.toString());
+                    if (holder.number! < 0) {
+                      String? group = holder.text;
+                      print('group : $group');
 
-                        StringIndex holder = value.elementAt(index);
-                        print('index : $index  '+holder.toString());
-                        if(holder.number < 0){
-                          String group = holder.text;
-                          print('group : $group');
-
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: InvestrendTheme.cardPaddingVertical),
-                            child: Text(
-                              group,
-                              style: InvestrendTheme.of(context).support_w400_compact.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor),
-                            ),
-                          );
-                        }else{
-                          Mutasi mutasi = value.map[holder.text].elementAt(holder.number) as Mutasi;
-                          return createRowMutasi(context, mutasi);
-                        }
-                      }
-                  );
+                      return Padding(
+                        padding: const EdgeInsets.only(
+                            bottom: InvestrendTheme.cardPaddingVertical),
+                        child: Text(
+                          group!,
+                          style: InvestrendTheme.of(context)
+                              .support_w400_compact
+                              ?.copyWith(
+                                  color: InvestrendTheme.of(context)
+                                      .greyLighterTextColor),
+                        ),
+                      );
+                    } else {
+                      Mutasi mutasi = value.map?[holder.text]
+                          ?.elementAt(holder.number!) as Mutasi;
+                      return createRowMutasi(context, mutasi);
+                    }
+                  });
                   return Container(
                     width: double.maxFinite,
                     child: Column(
@@ -109,28 +121,46 @@ class CardMutationHistorical extends StatelessWidget {
     );
   }
 
-  AutoSizeGroup groupDate = AutoSizeGroup();
+  final AutoSizeGroup? groupDate = AutoSizeGroup();
   Widget createRowMutasi(BuildContext context, Mutasi mutasi) {
-    TextStyle styleDate = InvestrendTheme.of(context).small_w600_compact_greyDarker;
-    TextStyle styleNominal = InvestrendTheme.of(context).small_w600_compact;
-    TextStyle styleContent = InvestrendTheme.of(context).small_w400_compact_greyDarker;
+    TextStyle? styleDate =
+        InvestrendTheme.of(context).small_w600_compact_greyDarker;
+    TextStyle? styleNominal = InvestrendTheme.of(context).small_w600_compact;
+    TextStyle? styleContent =
+        InvestrendTheme.of(context).small_w400_compact_greyDarker;
     return Column(
       children: [
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(flex: 2, child: AutoSizeText(mutasi.dateMonth ?? '-', style: styleDate, maxLines: 1, minFontSize: 6.0, group: groupDate,)),
+            Expanded(
+                flex: 2,
+                child: AutoSizeText(
+                  mutasi.dateMonth ?? '-',
+                  style: styleDate,
+                  maxLines: 1,
+                  minFontSize: 6.0,
+                  group: groupDate,
+                )),
             Expanded(
               flex: 7,
               child: Padding(
-                padding: const EdgeInsets.only(left:8.0),
+                padding: const EdgeInsets.only(left: 8.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(InvestrendTheme.formatMoneyDouble(mutasi.amount, decimal: false) ?? '-', style: styleNominal),
-                    SizedBox(height: 4.0,),
-                    Text(mutasi.info_trx() ?? '-', style: styleContent), // info_trx
-                    SizedBox(height: 4.0,),
+                    Text(
+                        InvestrendTheme.formatMoneyDouble(mutasi.amount,
+                            decimal: false),
+                        style: styleNominal),
+                    SizedBox(
+                      height: 4.0,
+                    ),
+                    Text(mutasi.info_trx() ?? '-',
+                        style: styleContent), // info_trx
+                    SizedBox(
+                      height: 4.0,
+                    ),
                     //Text(mutasi.accountcode ?? '-', style: styleContent), // name
                     //SizedBox(height: 4.0,),
                     Text(mutasi.bank ?? '-', style: styleContent),
@@ -141,7 +171,9 @@ class CardMutationHistorical extends StatelessWidget {
           ],
         ),
         Padding(
-          padding: const EdgeInsets.only(top: InvestrendTheme.cardPaddingGeneral, bottom: InvestrendTheme.cardPaddingGeneral),
+          padding: const EdgeInsets.only(
+              top: InvestrendTheme.cardPaddingGeneral,
+              bottom: InvestrendTheme.cardPaddingGeneral),
           child: ComponentCreator.divider(context),
         ),
       ],
@@ -149,18 +181,16 @@ class CardMutationHistorical extends StatelessWidget {
   }
 }
 
-
-
-
 class CardCashMutationHistorical extends StatelessWidget {
-  final MutasiNotifier notifier;
-  final VoidCallback onRetry;
+  final MutasiNotifier? notifier;
+  final VoidCallback? onRetry;
 
-   CardCashMutationHistorical(this.notifier, {this.onRetry, Key key}) : super(key: key);
+  CardCashMutationHistorical(this.notifier, {this.onRetry, Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    bool comingSoon = false;
+    bool? comingSoon = false;
     return Container(
       //color: Colors.lightBlueAccent,
       //margin: EdgeInsets.only(top: InvestrendTheme.cardPaddingGeneral, bottom: InvestrendTheme.cardPaddingGeneral),
@@ -169,30 +199,42 @@ class CardCashMutationHistorical extends StatelessWidget {
         children: [
           //ComponentCreator.subtitle(context, 'card_cash_mutation_historical_title'.tr()),
           Padding(
-            padding: const EdgeInsets.only(left: InvestrendTheme.cardPaddingGeneral),
-
-            child: ComponentCreator.subtitleButtonMore(context, 'card_cash_mutation_historical_title'.tr(), (){
-              if(comingSoon){
-                InvestrendTheme.of(context).showSnackBar(context, 'coming_soon_label'.tr());
-              }else{
-                Navigator.push(context, CupertinoPageRoute(
-                  builder: (_) => ScreenESatement(), settings: RouteSettings(name: '/e-statement'),));
+            padding:
+                const EdgeInsets.only(left: InvestrendTheme.cardPaddingGeneral),
+            child: ComponentCreator.subtitleButtonMore(
+                context, 'card_cash_mutation_historical_title'.tr(), () {
+              if (comingSoon == comingSoon) {
+                InvestrendTheme.of(context)
+                    .showSnackBar(context, 'coming_soon_label'.tr());
+              } else {
+                Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                      builder: (_) => ScreenESatement(),
+                      settings: RouteSettings(name: '/e-statement'),
+                    ));
               }
-
             },
-                image: '', textButton: 'card_cash_mutation_other_month_button'.tr()),
+                image: '',
+                textButton: 'card_cash_mutation_other_month_button'.tr()),
           ),
           SizedBox(
             height: InvestrendTheme.cardPadding,
           ),
           Padding(
-            padding: EdgeInsets.only(left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral),
+            padding: EdgeInsets.only(
+                left: InvestrendTheme.cardPaddingGeneral,
+                right: InvestrendTheme.cardPaddingGeneral),
             child: ValueListenableBuilder(
-                valueListenable: notifier,
-                builder: (context, ResultMutasi data, child) {
+                valueListenable: notifier!,
+                builder: (context, ResultMutasi? data, child) {
                   return Text(
-                    comingSoon ? ' - ' : (data.month ?? '-'),
-                    style: InvestrendTheme.of(context).support_w400_compact.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor),
+                    comingSoon == comingSoon ? ' - ' : (data?.month ?? '-'),
+                    style: InvestrendTheme.of(context)
+                        .support_w400_compact
+                        ?.copyWith(
+                            color: InvestrendTheme.of(context)
+                                .greyLighterTextColor),
                   );
                 }),
           ),
@@ -203,31 +245,31 @@ class CardCashMutationHistorical extends StatelessWidget {
           // coming_soon ? Container( color: Colors.orange,
           //     child: ScreenComingSoon(scrollable: false,)):
           Padding(
-            padding: EdgeInsets.only(left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral),
+            padding: EdgeInsets.only(
+                left: InvestrendTheme.cardPaddingGeneral,
+                right: InvestrendTheme.cardPaddingGeneral),
             child: ValueListenableBuilder(
-                valueListenable: notifier,
-                builder: (context, ResultMutasi data, child) {
-
+                valueListenable: notifier!,
+                builder: (context, ResultMutasi? data, child) {
                   // if(coming_soon){
                   //   return ConstrainedBox(constraints:BoxConstraints(
                   //     maxHeight: MediaQuery.of(context).size.width
                   //   ),child: ScreenComingSoon(scrollable: false,));
                   // }
 
-
-                  Widget noWidget = notifier.currentState.getNoWidget(onRetry: onRetry);
+                  Widget? noWidget =
+                      notifier?.currentState.getNoWidget(onRetry: onRetry!);
 
                   if (noWidget != null) {
                     return Center(
                       child: noWidget,
                     );
                   }
-                  List list = List<Widget>.generate(
-                      data.count(),
-                          (int index) {
-                        return createRowMutasi(context, data.datas.elementAt(index));
-                      }
-                  );
+                  List<Widget> list =
+                      List<Widget>.generate(data!.count(), (int index) {
+                    return createRowMutasi(
+                        context, data.datas?.elementAt(index));
+                  });
                   return Container(
                     width: double.maxFinite,
                     child: Column(
@@ -235,38 +277,57 @@ class CardCashMutationHistorical extends StatelessWidget {
                     ),
                   );
                 }),
-
           ),
-
         ],
       ),
     );
   }
 
-  AutoSizeGroup groupDate = AutoSizeGroup();
-  Widget createRowMutasi(BuildContext context, Mutasi mutasi) {
-    TextStyle styleDate = InvestrendTheme.of(context).small_w600_compact_greyDarker;
-    TextStyle styleNominal = InvestrendTheme.of(context).small_w600_compact;
-    TextStyle styleContent = InvestrendTheme.of(context).small_w400_compact_greyDarker;
+  final AutoSizeGroup? groupDate = AutoSizeGroup();
+  Widget createRowMutasi(BuildContext context, Mutasi? mutasi) {
+    TextStyle? styleDate =
+        InvestrendTheme.of(context).small_w600_compact_greyDarker;
+    TextStyle? styleNominal = InvestrendTheme.of(context).small_w600_compact;
+    TextStyle? styleContent =
+        InvestrendTheme.of(context).small_w400_compact_greyDarker;
     return Column(
       children: [
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(flex: 3, child: AutoSizeText(mutasi.date ?? '-', style: styleDate, maxLines: 1, minFontSize: 6.0, group: groupDate,)),
+            Expanded(
+                flex: 3,
+                child: AutoSizeText(
+                  mutasi?.date ?? '-',
+                  style: styleDate,
+                  maxLines: 1,
+                  minFontSize: 6.0,
+                  group: groupDate,
+                )),
             Expanded(
               flex: 8,
               child: Padding(
-                padding: const EdgeInsets.only(left:8.0),
+                padding: const EdgeInsets.only(left: 8.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(InvestrendTheme.formatMoneyDouble(mutasi.amount, decimal: false) ?? '-', style: styleNominal),
-                    SizedBox(height: 4.0,),
-                    Text(mutasi.info_trx() ?? '-', style: styleContent), // info_trx
-                    SizedBox(height: 4.0,),
-                    Text(mutasi.accountcode ?? '-', style: styleContent), // name
-                    SizedBox(height: 4.0,),
+                    Text(
+                        InvestrendTheme.formatMoneyDouble(mutasi?.amount,
+                            decimal: false),
+                        style: styleNominal),
+                    SizedBox(
+                      height: 4.0,
+                    ),
+                    Text(mutasi!.info_trx() ?? '-',
+                        style: styleContent), // info_trx
+                    SizedBox(
+                      height: 4.0,
+                    ),
+                    Text(mutasi.accountcode ?? '-',
+                        style: styleContent), // name
+                    SizedBox(
+                      height: 4.0,
+                    ),
                     Text(mutasi.bank ?? '-', style: styleContent),
                   ],
                 ),
@@ -275,7 +336,9 @@ class CardCashMutationHistorical extends StatelessWidget {
           ],
         ),
         Padding(
-          padding: const EdgeInsets.only(top: InvestrendTheme.cardPaddingGeneral, bottom: InvestrendTheme.cardPaddingGeneral),
+          padding: const EdgeInsets.only(
+              top: InvestrendTheme.cardPaddingGeneral,
+              bottom: InvestrendTheme.cardPaddingGeneral),
           child: ComponentCreator.divider(context),
         ),
       ],
@@ -283,26 +346,31 @@ class CardCashMutationHistorical extends StatelessWidget {
   }
 
   Widget historicalRDN(BuildContext context, ActivityRDNData data) {
-    TextStyle small600 = InvestrendTheme.of(context).small_w600;
-    TextStyle small400 = InvestrendTheme.of(context).small_w400;
-    TextStyle smallLighter400 = small400.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor);
-    TextStyle smallDarker400 = small400.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor);
-    TextStyle reguler600 = InvestrendTheme.of(context).regular_w600;
+    TextStyle? small600 = InvestrendTheme.of(context).small_w600;
+    TextStyle? small400 = InvestrendTheme.of(context).small_w400;
+    TextStyle? smallLighter400 = small400?.copyWith(
+        color: InvestrendTheme.of(context).greyLighterTextColor);
+    TextStyle? smallDarker400 = small400?.copyWith(
+        color: InvestrendTheme.of(context).greyDarkerTextColor);
+    TextStyle? reguler600 = InvestrendTheme.of(context).regular_w600;
 
     const double paddingTopBottom = 15.0;
     const double paddingHeaderTopBottom = 10.0;
     List<TableRow> list = List.empty(growable: true);
     list.add(TableRow(children: [
       Padding(
-        padding: const EdgeInsets.only(top: paddingHeaderTopBottom, bottom: paddingHeaderTopBottom),
+        padding: const EdgeInsets.only(
+            top: paddingHeaderTopBottom, bottom: paddingHeaderTopBottom),
         child: Text('date_label'.tr(), style: small600),
       ),
       Padding(
-        padding: const EdgeInsets.only(top: paddingHeaderTopBottom, bottom: paddingHeaderTopBottom),
+        padding: const EdgeInsets.only(
+            top: paddingHeaderTopBottom, bottom: paddingHeaderTopBottom),
         child: Text('transaction_label'.tr(), style: small600),
       ),
       Padding(
-        padding: const EdgeInsets.only(top: paddingHeaderTopBottom, bottom: paddingHeaderTopBottom),
+        padding: const EdgeInsets.only(
+            top: paddingHeaderTopBottom, bottom: paddingHeaderTopBottom),
         child: Text(
           'value_label'.tr(),
           style: small600,
@@ -322,9 +390,9 @@ class CardCashMutationHistorical extends StatelessWidget {
     //   SizedBox(height: paddingTopBottom,),
     // ]));
 
-    if (data.count() > 0) {
+    if (data.count()! > 0) {
       bool first = true;
-      data.datas.forEach((rdn) {
+      data.datas?.forEach((rdn) {
         if (!first) {
           list.add(TableRow(children: [
             ComponentCreator.divider(context),
@@ -335,15 +403,18 @@ class CardCashMutationHistorical extends StatelessWidget {
         first = false;
         list.add(TableRow(children: [
           Padding(
-            padding: const EdgeInsets.only(top: paddingTopBottom, bottom: paddingTopBottom),
+            padding: const EdgeInsets.only(
+                top: paddingTopBottom, bottom: paddingTopBottom),
             child: Text(rdn.date, style: smallDarker400),
           ),
           Padding(
-            padding: const EdgeInsets.only(top: paddingTopBottom, bottom: paddingTopBottom),
+            padding: const EdgeInsets.only(
+                top: paddingTopBottom, bottom: paddingTopBottom),
             child: Text(rdn.transaction, style: smallLighter400),
           ),
           Padding(
-            padding: const EdgeInsets.only(top: paddingTopBottom, bottom: paddingTopBottom),
+            padding: const EdgeInsets.only(
+                top: paddingTopBottom, bottom: paddingTopBottom),
             child: FittedBox(
                 fit: BoxFit.scaleDown,
                 child: Text(

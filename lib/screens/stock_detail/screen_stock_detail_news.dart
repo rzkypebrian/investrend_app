@@ -1,5 +1,6 @@
 import 'package:Investrend/component/component_creator.dart';
 import 'package:Investrend/objects/class_value_notifier.dart';
+import 'package:Investrend/objects/home_objects.dart';
 import 'package:Investrend/objects/riverpod_change_notifier.dart';
 import 'package:Investrend/objects/iii_objects.dart';
 import 'package:Investrend/screens/base/base_state.dart';
@@ -7,77 +8,82 @@ import 'package:Investrend/utils/connection_services.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:easy_localization/easy_localization.dart';
+// import 'package:easy_localization/easy_localization.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:share_plus/share_plus.dart';
 
 class ScreenStockDetailNews extends StatefulWidget {
-  final TabController tabController;
+  final TabController? tabController;
   final int tabIndex;
-  final ValueNotifier<bool> visibilityNotifier;
-  ScreenStockDetailNews(this.tabIndex, this.tabController,  {Key key, this.visibilityNotifier}) : super( key: key);
+  final ValueNotifier<bool>? visibilityNotifier;
+  ScreenStockDetailNews(this.tabIndex, this.tabController,
+      {Key? key, this.visibilityNotifier})
+      : super(key: key);
 
   @override
-  _ScreenStockDetailNewsState createState() => _ScreenStockDetailNewsState(tabIndex, tabController, visibilityNotifier: visibilityNotifier);
-
+  _ScreenStockDetailNewsState createState() =>
+      _ScreenStockDetailNewsState(tabIndex, tabController!,
+          visibilityNotifier: visibilityNotifier!);
 }
 
-class _ScreenStockDetailNewsState extends BaseStateNoTabsWithParentTab<ScreenStockDetailNews>
-
-{
-
+class _ScreenStockDetailNewsState
+    extends BaseStateNoTabsWithParentTab<ScreenStockDetailNews> {
   //Future<List<HomeNews>> news;
-  HomeNewsNotifier _notifier = HomeNewsNotifier(ResultHomeNews());
+  HomeNewsNotifier? _notifier = HomeNewsNotifier(ResultHomeNews());
 
-  _ScreenStockDetailNewsState(int tabIndex, TabController tabController, {ValueNotifier<bool> visibilityNotifier}) : super('/stock_detail_news', tabIndex, tabController, notifyStockChange: true , visibilityNotifier: visibilityNotifier);
+  _ScreenStockDetailNewsState(int tabIndex, TabController tabController,
+      {ValueNotifier<bool>? visibilityNotifier})
+      : super('/stock_detail_news', tabIndex, tabController,
+            notifyStockChange: true, visibilityNotifier: visibilityNotifier);
 
   // @override
   // bool get wantKeepAlive => true;
 
-
-
-  void onStockChanged(Stock newStock){
+  void onStockChanged(Stock? newStock) {
     super.onStockChanged(newStock);
     doUpdate(pullToRefresh: true);
   }
+
   @override
-  Widget createAppBar(BuildContext context) {
+  PreferredSizeWidget? createAppBar(BuildContext context) {
     return null;
   }
 
-
   Future doUpdate({bool pullToRefresh = false}) async {
     print(routeName + '.doUpdate : ' + DateTime.now().toString());
-    if( !active ){
-      print(routeName + '.doUpdate aborted active : $active' );
+    if (!active) {
+      print(routeName + '.doUpdate aborted active : $active');
       return;
     }
-    if(_notifier.value.isEmpty() || pullToRefresh){
+    if (_notifier!.value!.isEmpty()! || pullToRefresh) {
       setNotifierLoading(_notifier);
     }
-    try{
-      String code = context.read(primaryStockChangeNotifier).stock.code;
-      final news = await HttpIII.fetchNewsPasarDana(code);
-      if(news != null){
+    try {
+      String? code = context.read(primaryStockChangeNotifier).stock?.code;
+      final List<HomeNews>? news = await HttpIII.fetchNewsPasarDana(code);
+      if (news != null) {
         ResultHomeNews data = ResultHomeNews();
-        data.datas.addAll(news);
-        _notifier.setValue(data);
-      }else{
+        data.datas?.addAll(news);
+        _notifier?.setValue(data);
+      } else {
         setNotifierNoData(_notifier);
       }
-    }catch(error){
+    } catch (error) {
       setNotifierError(_notifier, error);
     }
 
     print(routeName + '.doUpdate finished. pullToRefresh : $pullToRefresh');
     return true;
   }
+
   Future onRefresh() {
     context.read(stockDetailRefreshChangeNotifier).setRoute(routeName);
-    if(!active){
+    if (!active) {
       active = true;
       //onActive();
-      context.read(stockDetailScreenVisibilityChangeNotifier).setActive(tabIndex, true);
+      context
+          .read(stockDetailScreenVisibilityChangeNotifier)
+          .setActive(tabIndex, true);
     }
     return doUpdate(pullToRefresh: true);
     // return Future.delayed(Duration(seconds: 3));
@@ -89,56 +95,68 @@ class _ScreenStockDetailNewsState extends BaseStateNoTabsWithParentTab<ScreenSto
     //
     // ];
 
-
-
     return RefreshIndicator(
       color: InvestrendTheme.of(context).textWhite,
       backgroundColor: Theme.of(context).colorScheme.secondary,
       onRefresh: onRefresh,
       child: ValueListenableBuilder(
-          valueListenable: _notifier,
-          builder: (context, ResultHomeNews value, child) {
+          valueListenable: _notifier!,
+          builder: (context, ResultHomeNews? value, child) {
             List<Widget> list = List.empty(growable: true);
-            Widget noWidget = _notifier.currentState.getNoWidget(onRetry: ()=>doUpdate(pullToRefresh: true));
-            if(noWidget != null){
-
+            Widget? noWidget = _notifier?.currentState
+                .getNoWidget(onRetry: () => doUpdate(pullToRefresh: true));
+            if (noWidget != null) {
               list.add(Padding(
-                padding:  EdgeInsets.only(top: MediaQuery.of(context).size.width / 4),
-                child: Center(child: noWidget,),
+                padding:
+                    EdgeInsets.only(top: MediaQuery.of(context).size.width / 4),
+                child: Center(
+                  child: noWidget,
+                ),
               ));
-            }else{
-              int maxCount =  value.count();
-              for (int i = 0; i < maxCount; i++) {
+            } else {
+              int? maxCount = value?.count();
+              for (int i = 0; i < maxCount!; i++) {
                 //list.add(tileNews(context, snapshot.data[i]));
-                if(i > 0){
-                  list.add(SizedBox(height: InvestrendTheme.cardMargin,));
+                if (i > 0) {
+                  list.add(SizedBox(
+                    height: InvestrendTheme.cardMargin,
+                  ));
                 }
                 list.add(ComponentCreator.tileNews(
                   context,
-                  value.datas[i],
+                  value?.datas?[i],
                   commentClick: () {
-                    InvestrendTheme.of(context).showSnackBar(context, 'commentClick');
+                    InvestrendTheme.of(context)
+                        .showSnackBar(context, 'commentClick');
                   },
                   likeClick: () {
-                    InvestrendTheme.of(context).showSnackBar(context, 'likeClick');
+                    InvestrendTheme.of(context)
+                        .showSnackBar(context, 'likeClick');
                   },
                   shareClick: () {
                     //InvestrendTheme.of(context).showSnackBar(context, 'shareClick');
-                    String shareTextAndLink = value.datas[i].title+'\n'+value.datas[i].url_news;
+                    String shareTextAndLink = value!.datas![i].title +
+                        '\n' +
+                        value.datas![i].url_news;
                     Share.share(shareTextAndLink);
                   },
                 ));
               }
-              list.add(SizedBox(height: paddingBottom + 80,));
+              list.add(SizedBox(
+                height: paddingBottom + 80,
+              ));
             }
             return ListView.builder(
-              controller: pScrollController,
+                controller: pScrollController,
                 shrinkWrap: false,
-                padding: EdgeInsets.only(left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral, top: InvestrendTheme.cardPaddingVertical, bottom: InvestrendTheme.cardPaddingVertical),
-                itemCount: list.length  ,
+                padding: EdgeInsets.only(
+                    left: InvestrendTheme.cardPaddingGeneral,
+                    right: InvestrendTheme.cardPaddingGeneral,
+                    top: InvestrendTheme.cardPaddingVertical,
+                    bottom: InvestrendTheme.cardPaddingVertical),
+                itemCount: list.length,
                 itemBuilder: (BuildContext context, int index) {
                   return list.elementAt(index);
-
                 });
           }),
       /*
@@ -214,6 +232,7 @@ class _ScreenStockDetailNewsState extends BaseStateNoTabsWithParentTab<ScreenSto
       */
     );
   }
+
   /*
   @override
   Widget createBody(BuildContext context, double paddingBottom) {
@@ -287,10 +306,11 @@ class _ScreenStockDetailNewsState extends BaseStateNoTabsWithParentTab<ScreenSto
   @override
   void onActive() {
     //print(routeName+' onActive');
-    context.read(stockDetailScreenVisibilityChangeNotifier).setActive(tabIndex, true);
+    context
+        .read(stockDetailScreenVisibilityChangeNotifier)
+        .setActive(tabIndex, true);
     doUpdate();
   }
-
 
   @override
   void initState() {
@@ -356,26 +376,26 @@ class _ScreenStockDetailNewsState extends BaseStateNoTabsWithParentTab<ScreenSto
 
     });
      */
-
   }
-
 
   @override
   void dispose() {
-    _notifier.dispose();
+    _notifier?.dispose();
     // _shareHolderCompositionNotifier.dispose();
     // _boardOfCommisionersNotifier.dispose();
     final container = ProviderContainer();
-    container.read(stockDetailScreenVisibilityChangeNotifier).setActive(tabIndex, false);
+    container
+        .read(stockDetailScreenVisibilityChangeNotifier)
+        .setActive(tabIndex, false);
 
     super.dispose();
   }
 
-
-
   @override
   void onInactive() {
     //print(routeName+' onInactive');
-    context.read(stockDetailScreenVisibilityChangeNotifier).setActive(tabIndex, false);
+    context
+        .read(stockDetailScreenVisibilityChangeNotifier)
+        .setActive(tabIndex, false);
   }
 }

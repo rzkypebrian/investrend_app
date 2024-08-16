@@ -1,6 +1,6 @@
-
+/*
 import 'package:Investrend/component/chart_series_legend.dart';
-import 'package:Investrend/component/charts/chart_color.dart';
+// import 'package:Investrend/component/charts/chart_color.dart';
 import 'package:Investrend/component/charts/year_value.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -23,16 +23,27 @@ class ChartDualBarLine extends StatelessWidget {
   final double max_value;
   final double min_value;
 
-  const ChartDualBarLine(this.data_bar_1, this.data_bar_2, this.data_line, this.title_bar_1, this.title_bar_2, this.title_line, this.color_bar_1,
-      this.color_bar_2, this.color_line,
-      {Key key, this.animate = false, this.max_value, this.min_value})
+  const ChartDualBarLine(
+      this.data_bar_1,
+      this.data_bar_2,
+      this.data_line,
+      this.title_bar_1,
+      this.title_bar_2,
+      this.title_line,
+      this.color_bar_1,
+      this.color_bar_2,
+      this.color_line,
+      {required Key key,
+      this.animate = false,
+      this.max_value = 0.0,
+      this.min_value = 0.0})
       : super(key: key);
 
   static const secondaryMeasureAxisId = 'secondaryMeasureAxisId';
 
   @override
   Widget build(BuildContext context) {
-    String languageCode = EasyLocalization.of(context).locale.languageCode;
+    String? languageCode = EasyLocalization.of(context)?.locale.languageCode;
 
     // if(min_value < 0.0 && max_value > 0.0){
     //   min_value = max_value * -1;
@@ -55,8 +66,11 @@ class ChartDualBarLine extends StatelessWidget {
                   //symbolRenderer: charts.RectSymbolRenderer()
                 ),
                 primaryMeasureAxis: new charts.NumericAxisSpec(
-                  tickFormatterSpec: new charts.BasicNumericTickFormatterSpec.fromNumberFormat(NumberFormat('#％')),
-                  tickProviderSpec: new charts.BasicNumericTickProviderSpec(desiredTickCount: 4),
+                  tickFormatterSpec:
+                      new charts.BasicNumericTickFormatterSpec.fromNumberFormat(
+                          NumberFormat('#％')),
+                  tickProviderSpec: new charts.BasicNumericTickProviderSpec(
+                      desiredTickCount: 4),
                   // tickProviderSpec: new charts.StaticNumericTickProviderSpec(
                   //   <charts.TickSpec<num>>[
                   //     charts.TickSpec<num>(min_value),
@@ -68,8 +82,9 @@ class ChartDualBarLine extends StatelessWidget {
 
                 // primaryMeasureAxis: new charts.PercentAxisSpec(),
                 secondaryMeasureAxis: new charts.NumericAxisSpec(
-                  tickFormatterSpec:
-                      new charts.BasicNumericTickFormatterSpec.fromNumberFormat(NumberFormat.compact(locale: languageCode /*'en_US'*/)),
+                  tickFormatterSpec: new charts
+                      .BasicNumericTickFormatterSpec.fromNumberFormat(
+                      NumberFormat.compact(locale: languageCode /*'en_US'*/)),
                   tickProviderSpec: new charts.BasicNumericTickProviderSpec(
                     desiredTickCount: 4,
                   ),
@@ -206,7 +221,8 @@ class ChartDualBarLine extends StatelessWidget {
           id: title_bar_1,
           //colorFn: (_, __) => charts.MaterialPalette.purple.shadeDefault,
           //colorFn: (_, __) => ChartColorPurple().shadeDefault,
-          colorFn: (_, __) => ChartColor(color_bar_1).shadeDefault,
+          // colorFn: (_, __) => ChartColor(color_bar_1).shadeDefault,
+          colorFn: (_, __) =>,
           domainFn: (YearValue sales, _) => sales.year,
           measureFn: (YearValue sales, _) => sales.value,
           // measureLowerBoundFn: (YearValue sales, _) => sales.value,
@@ -245,7 +261,6 @@ class ChartDualBarLine extends StatelessWidget {
       //   ..setAttribute(charts.rendererIdKey, 'customLineConvoy'),
     ];
   }
-
 }
 // class CustomCircleSymbolRenderer extends charts.CircleSymbolRenderer {
 //
@@ -266,3 +281,4 @@ class ChartDualBarLine extends StatelessWidget {
 //     );
 //   }
 // }
+*/  

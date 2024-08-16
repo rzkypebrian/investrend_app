@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'dart:async';
 import 'package:Investrend/component/component_app_bar.dart';
 import 'package:Investrend/component/component_creator.dart';
@@ -7,7 +9,7 @@ import 'package:Investrend/objects/data_object.dart';
 import 'package:Investrend/objects/iii_objects.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:Investrend/utils/string_utils.dart';
-import 'package:Investrend/utils/ui_helper.dart';
+// import 'package:Investrend/utils/ui_helper.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:visibility_aware_state/visibility_aware_state.dart';
@@ -15,35 +17,38 @@ import 'package:visibility_aware_state/visibility_aware_state.dart';
 class ScreenOrderQueue extends StatefulWidget {
   //final StockThemes themes;
   //final List<Stock> list;
-  final String code;
-  final String board;
-  final String type;
-  final int price;
+  final String? code;
+  final String? board;
+  final String? type;
+  final int? price;
 
   // final Color color;
   // final Index indexSector;
 
   //code=BUMI&board=RG&price=66&type=BID
 
-  const ScreenOrderQueue(this.code, this.board, this.type, this.price, {Key key}) : super(key: key);
+  const ScreenOrderQueue(this.code, this.board, this.type, this.price,
+      {Key? key})
+      : super(key: key);
 
   @override
-  _ScreenOrderQueueState createState() => _ScreenOrderQueueState(code, board, type, price);
+  _ScreenOrderQueueState createState() =>
+      _ScreenOrderQueueState(code, board, type, price);
 }
 
 class _ScreenOrderQueueState extends VisibilityAwareState<ScreenOrderQueue> {
   final String routeName = '/order_queue';
 
-  String code = '';
-  String board = '';
-  String type = '';
-  int price = 0;
+  String? code = '';
+  String? board = '';
+  String? type = '';
+  int? price = 0;
 
   _ScreenOrderQueueState(this.code, this.board, this.type,
       this.price); //final GeneralPriceNotifier _watchlistDataNotifier = GeneralPriceNotifier(new GeneralPriceData());
   //final SlidableController slidableController = SlidableController();
 
-  final OrderQueueNotifier _notifier = OrderQueueNotifier(OrderQueueData());
+  final OrderQueueNotifier? _notifier = OrderQueueNotifier(OrderQueueData());
   bool active = false;
 
   /*
@@ -96,7 +101,7 @@ class _ScreenOrderQueueState extends VisibilityAwareState<ScreenOrderQueue> {
 
   @override
   void dispose() {
-    _notifier.dispose();
+    _notifier?.dispose();
     super.dispose();
   }
 
@@ -137,26 +142,34 @@ class _ScreenOrderQueueState extends VisibilityAwareState<ScreenOrderQueue> {
 
   Future doUpdate({bool pullToRefresh = false}) async {
     if (!active) {
-      print(routeName + '.doUpdate Aborted : ' + DateTime.now().toString() + "  active : $active  pullToRefresh : $pullToRefresh");
+      print(routeName +
+          '.doUpdate Aborted : ' +
+          DateTime.now().toString() +
+          "  active : $active  pullToRefresh : $pullToRefresh");
       return false;
     }
     onProgress = true;
-    print(routeName + '.doUpdate : ' + DateTime.now().toString() + "  active : $active  pullToRefresh : $pullToRefresh");
+    print(routeName +
+        '.doUpdate : ' +
+        DateTime.now().toString() +
+        "  active : $active  pullToRefresh : $pullToRefresh");
 
     try {
-      final orderQueue = await InvestrendTheme.datafeedHttp.fetchOrderQueue(code, board, price, type);
+      final OrderQueueData? orderQueue = await InvestrendTheme.datafeedHttp
+          .fetchOrderQueue(code, board, price, type);
       if (orderQueue != null) {
-        print('Future DATA : ' + orderQueue.type);
+        print('Future DATA : ' + orderQueue.type!);
         if (mounted) {
-          _notifier.setValue(orderQueue);
+          _notifier?.setValue(orderQueue);
           if (orderQueue.hasMessage()) {
-            InvestrendTheme.of(context).showSnackBar(context, orderQueue.message);
+            InvestrendTheme.of(context)
+                .showSnackBar(context, orderQueue.message);
           }
         }
       } else {
         print('Future NO DATA');
       }
-    } catch (error,trace) {
+    } catch (error, trace) {
       print(error);
       print(trace);
     }
@@ -224,7 +237,6 @@ class _ScreenOrderQueueState extends VisibilityAwareState<ScreenOrderQueue> {
   }
 
   void onVisibilityChanged(WidgetVisibility visibility) {
-    // TODO: Use visibility
     switch (visibility) {
       case WidgetVisibility.VISIBLE:
         // Like Android's Activity.onResume()
@@ -238,7 +250,8 @@ class _ScreenOrderQueueState extends VisibilityAwareState<ScreenOrderQueue> {
         break;
       case WidgetVisibility.GONE:
         // Like Android's Activity.onDestroy()
-        print('*** ScreenVisibility.GONE: ${this.routeName}   mounted : $mounted');
+        print(
+            '*** ScreenVisibility.GONE: ${this.routeName}   mounted : $mounted');
         _onInactiveBase(caller: 'onVisibilityChanged.GONE');
         break;
     }
@@ -312,25 +325,27 @@ class _ScreenOrderQueueState extends VisibilityAwareState<ScreenOrderQueue> {
     );
   }
 
-  Widget createBottomSheet(BuildContext context, double paddingBottom) {
+  PreferredSizeWidget? createBottomSheet(
+      BuildContext context, double paddingBottom) {
     return null;
 
-    TextStyle valueStyle = InvestrendTheme.of(context).small_w400_compact;
-    Size size = UIHelper.textSize('Lg|', valueStyle);
-    double contentHeight = (10 + 10 + size.height) * 3;
-    double paddingHeight = 8.0 + (paddingBottom > 0 ? paddingBottom : 8.0) + 50.0;
-    return Padding(
-      padding: EdgeInsets.only(
-          top: 8.0,
-          bottom: paddingBottom > 0 ? paddingBottom : 8.0,
-          left: InvestrendTheme.cardPaddingGeneral,
-          right: InvestrendTheme.cardPaddingGeneral),
-      child: Container(
-        color: Colors.orangeAccent,
-        width: double.maxFinite,
-        height: 150.0,
-      ),
-    );
+    // TextStyle valueStyle = InvestrendTheme.of(context).small_w400_compact;
+    // Size size = UIHelper.textSize('Lg|', valueStyle);
+    // double contentHeight = (10 + 10 + size.height) * 3;
+    // double paddingHeight =
+    //     8.0 + (paddingBottom > 0 ? paddingBottom : 8.0) + 50.0;
+    // return Padding(
+    //   padding: EdgeInsets.only(
+    //       top: 8.0,
+    //       bottom: paddingBottom > 0 ? paddingBottom : 8.0,
+    //       left: InvestrendTheme.cardPaddingGeneral,
+    //       right: InvestrendTheme.cardPaddingGeneral),
+    //   child: Container(
+    //     color: Colors.orangeAccent,
+    //     width: double.maxFinite,
+    //     height: 150.0,
+    //   ),
+    // );
   }
 
   /*
@@ -476,57 +491,109 @@ class _ScreenOrderQueueState extends VisibilityAwareState<ScreenOrderQueue> {
   double ratioWidthStatus = 0.15;
 
   Widget createTopInfo(BuildContext context) {
-
     return Container(
-      padding: EdgeInsets.only(left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral, bottom: InvestrendTheme.cardPadding),
+      padding: EdgeInsets.only(
+          left: InvestrendTheme.cardPaddingGeneral,
+          right: InvestrendTheme.cardPaddingGeneral,
+          bottom: InvestrendTheme.cardPadding),
       child: ValueListenableBuilder(
-          valueListenable: _notifier,
-          builder: (context, OrderQueueData data, child) {
-            Widget noWidget = _notifier.currentState.getNoWidget(onRetry: (){
+          valueListenable: _notifier!,
+          builder: (context, OrderQueueData? data, child) {
+            Widget? noWidget = _notifier?.currentState.getNoWidget(onRetry: () {
               doUpdate(pullToRefresh: true);
             });
-            if(noWidget != null){
-
-              return SizedBox(width: 1.0,);
+            if (noWidget != null) {
+              return SizedBox(
+                width: 1.0,
+              );
             }
 
-            Stock stock = InvestrendTheme.storedData.findStock(data.code);
-            String name = stock == null ? '-' : stock.name;
+            Stock? stock = InvestrendTheme.storedData?.findStock(data?.code);
+            String? name = stock == null ? '-' : stock.name;
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(data.code, style: InvestrendTheme.of(context).regular_w600,),
+                Text(
+                  data!.code!,
+                  style: InvestrendTheme.of(context).regular_w600,
+                ),
                 SizedBox(
                   height: 4.0,
                 ),
-                Text(name, style: InvestrendTheme.of(context).more_support_w400_compact_greyDarker),
+                Text(name!,
+                    style: InvestrendTheme.of(context)
+                        .more_support_w400_compact_greyDarker),
                 SizedBox(
                   height: InvestrendTheme.cardPadding,
                 ),
-                Table(defaultVerticalAlignment: TableCellVerticalAlignment.middle, columnWidths: {
-                  0: FractionColumnWidth(.5),
-                  1: FractionColumnWidth(.5)
-                }, children: [
-                  TableRow(children: [
-                    Text(data.translateType().toCapitalized(), style: InvestrendTheme.of(context).small_w400.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor),),
-                    Text('Queue', style: InvestrendTheme.of(context).small_w400.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor),),
-                  ]),
-                  TableRow(children: [
-                    Text(InvestrendTheme.formatComma(data.price), style: InvestrendTheme.of(context).regular_w600,),
-                    Text(InvestrendTheme.formatComma(data.datas_count), style: InvestrendTheme.of(context).regular_w600,),
-                  ]),
-                  TableRow(children: [
-                    Text('Total Balance Lot', style: InvestrendTheme.of(context).small_w400.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor),),
-                    Text('Total Lot', style: InvestrendTheme.of(context).small_w400.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor),),
-                  ]),
-                  TableRow(children: [
-                    Text(InvestrendTheme.formatComma(data.total_remaining_lot()), style: InvestrendTheme.of(context).regular_w600,),
-                    Text(InvestrendTheme.formatComma(data.total_lot()), style: InvestrendTheme.of(context).regular_w600,),
+                Table(
+                    defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                    columnWidths: {
+                      0: FractionColumnWidth(.5),
+                      1: FractionColumnWidth(.5)
+                    },
+                    children: [
+                      TableRow(children: [
+                        Text(
+                          data.translateType()!.toCapitalized(),
+                          style: InvestrendTheme.of(context)
+                              .small_w400
+                              ?.copyWith(
+                                  color: InvestrendTheme.of(context)
+                                      .greyLighterTextColor),
+                        ),
+                        Text(
+                          'Queue',
+                          style: InvestrendTheme.of(context)
+                              .small_w400
+                              ?.copyWith(
+                                  color: InvestrendTheme.of(context)
+                                      .greyLighterTextColor),
+                        ),
+                      ]),
+                      TableRow(children: [
+                        Text(
+                          InvestrendTheme.formatComma(data.price),
+                          style: InvestrendTheme.of(context).regular_w600,
+                        ),
+                        Text(
+                          InvestrendTheme.formatComma(data.datas_count),
+                          style: InvestrendTheme.of(context).regular_w600,
+                        ),
+                      ]),
+                      TableRow(children: [
+                        Text(
+                          'Total Balance Lot',
+                          style: InvestrendTheme.of(context)
+                              .small_w400
+                              ?.copyWith(
+                                  color: InvestrendTheme.of(context)
+                                      .greyLighterTextColor),
+                        ),
+                        Text(
+                          'Total Lot',
+                          style: InvestrendTheme.of(context)
+                              .small_w400
+                              ?.copyWith(
+                                  color: InvestrendTheme.of(context)
+                                      .greyLighterTextColor),
+                        ),
+                      ]),
+                      TableRow(children: [
+                        Text(
+                          InvestrendTheme.formatComma(
+                              data.total_remaining_lot()),
+                          style: InvestrendTheme.of(context).regular_w600,
+                        ),
+                        Text(
+                          InvestrendTheme.formatComma(data.total_lot()),
+                          style: InvestrendTheme.of(context).regular_w600,
+                        ),
 
-                    // Text(data.total_remaining_volume.toString(), style: InvestrendTheme.of(context).regular_w600,),
-                    // Text(data.total_volume.toString(), style: InvestrendTheme.of(context).regular_w600,),
-                  ]),
-                ]),
+                        // Text(data.total_remaining_volume.toString(), style: InvestrendTheme.of(context).regular_w600,),
+                        // Text(data.total_volume.toString(), style: InvestrendTheme.of(context).regular_w600,),
+                      ]),
+                    ]),
               ],
             );
           }),
@@ -558,8 +625,11 @@ class _ScreenOrderQueueState extends VisibilityAwareState<ScreenOrderQueue> {
       onRefresh: onRefresh,
       child: LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-          TextStyle styleHeader = InvestrendTheme.of(context).small_w500_compact;
-          final double widthAvailable = constraints.maxWidth - InvestrendTheme.cardPaddingGeneral - InvestrendTheme.cardPaddingGeneral;
+          TextStyle? styleHeader =
+              InvestrendTheme.of(context).small_w500_compact;
+          final double widthAvailable = constraints.maxWidth -
+              InvestrendTheme.cardPaddingGeneral -
+              InvestrendTheme.cardPaddingGeneral;
           return Column(
             children: [
               createTopInfo(context),
@@ -568,46 +638,62 @@ class _ScreenOrderQueueState extends VisibilityAwareState<ScreenOrderQueue> {
               Expanded(
                 flex: 1,
                 child: ValueListenableBuilder(
-                    valueListenable: _notifier,
-                    builder: (context, OrderQueueData data, child) {
-                      Widget noWidget = _notifier.currentState.getNoWidget(onRetry: (){
+                    valueListenable: _notifier!,
+                    builder: (context, OrderQueueData? data, child) {
+                      Widget? noWidget =
+                          _notifier?.currentState.getNoWidget(onRetry: () {
                         doUpdate(pullToRefresh: true);
                       });
 
-                      if(_notifier.currentState.isNoData() && !StringUtils.isEmtpy(data.message)){
-                        noWidget = EmptyLabel(text: data.message,);
+                      if (_notifier!.currentState.isNoData() &&
+                          !StringUtils.isEmtpy(data?.message)) {
+                        noWidget = EmptyLabel(
+                          text: data?.message,
+                        );
                       }
-                      if(noWidget != null){
+                      if (noWidget != null) {
                         return ListView(
                           children: [
-
                             Padding(
-                              padding:  EdgeInsets.only(top: MediaQuery.of(context).size.width / 4, left: 20.0, right: 20.0),
-                              child: Center(child: noWidget,),
+                              padding: EdgeInsets.only(
+                                  top: MediaQuery.of(context).size.width / 4,
+                                  left: 20.0,
+                                  right: 20.0),
+                              child: Center(
+                                child: noWidget,
+                              ),
                             ),
                           ],
                         );
                       }
 
-                      int dataCount = data != null ? data.count() : 0;
-                      TextStyle styleNo = InvestrendTheme.of(context).small_w400_compact_greyDarker;
+                      int? dataCount = data != null ? data.count() : 0;
+                      TextStyle? styleNo = InvestrendTheme.of(context)
+                          .small_w400_compact_greyDarker;
 
-                      TextStyle styleDarker = InvestrendTheme.of(context).small_w400_compact_greyDarker;
-                      TextStyle styleLighter =
-                          InvestrendTheme.of(context).small_w400_compact.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor);
-                      TextStyle style = InvestrendTheme.of(context).small_w400;
-                      TextStyle styleSupport = InvestrendTheme.of(context).more_support_w400;
+                      TextStyle? styleDarker = InvestrendTheme.of(context)
+                          .small_w400_compact_greyDarker;
+                      TextStyle? styleLighter = InvestrendTheme.of(context)
+                          .small_w400_compact
+                          ?.copyWith(
+                              color: InvestrendTheme.of(context)
+                                  .greyLighterTextColor);
+                      TextStyle? style = InvestrendTheme.of(context).small_w400;
+                      TextStyle? styleSupport =
+                          InvestrendTheme.of(context).more_support_w400;
 
                       return ListView.separated(
                           shrinkWrap: false,
                           //padding: const EdgeInsets.all(8),
-                          itemCount: dataCount,
+                          itemCount: dataCount!,
                           separatorBuilder: (BuildContext context, int index) {
                             // if(index == 0){
                             //   return SizedBox(width: 1.0,);
                             // }
                             return Container(
-                                padding: EdgeInsets.only(left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral),
+                                padding: EdgeInsets.only(
+                                    left: InvestrendTheme.cardPaddingGeneral,
+                                    right: InvestrendTheme.cardPaddingGeneral),
                                 color: Theme.of(context).colorScheme.background,
                                 child: ComponentCreator.divider(context));
                           },
@@ -624,16 +710,19 @@ class _ScreenOrderQueueState extends VisibilityAwareState<ScreenOrderQueue> {
                             //   return createHeader(context, styleHeader, widthAvailable);
                             // }
                             int indexData = index;
-                            OrderQueue gp = data.datas.elementAt(indexData);
-                            Color colorDivider = Theme.of(context).dividerColor;
+                            OrderQueue? gp = data?.datas?.elementAt(indexData);
+                            Color? colorDivider =
+                                Theme.of(context).dividerColor;
                             String status = 'Open';
-                            if (gp.volume != gp.remaining) {
-                              colorDivider = Theme.of(context).colorScheme.secondary;
+                            if (gp?.volume != gp?.remaining) {
+                              colorDivider =
+                                  Theme.of(context).colorScheme.secondary;
                               status = 'Partial';
                             }
 
                             //return createRow(context, gp, styleDarker, styleLighter, widthAvailable);
-                            return createRowWithoutBroker(context, gp, styleDarker, styleLighter, widthAvailable);
+                            return createRowWithoutBroker(context, gp,
+                                styleDarker, styleLighter, widthAvailable);
                             /*
                             return Padding(
                               padding: const EdgeInsets.only(
@@ -869,11 +958,16 @@ class _ScreenOrderQueueState extends VisibilityAwareState<ScreenOrderQueue> {
     */
   }
 
-  Widget createRow(BuildContext context, OrderQueue gp, TextStyle darker, TextStyle lighter, double widthAvailable) {
+  Widget createRow(BuildContext context, OrderQueue gp, TextStyle darker,
+      TextStyle lighter, double widthAvailable) {
     return Container(
       width: double.maxFinite,
       // color: Colors.orangeAccent,
-      padding: EdgeInsets.only(top: 8.0, bottom: 8.0, left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral),
+      padding: EdgeInsets.only(
+          top: 8.0,
+          bottom: 8.0,
+          left: InvestrendTheme.cardPaddingGeneral,
+          right: InvestrendTheme.cardPaddingGeneral),
       //height: 40.0,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -896,7 +990,7 @@ class _ScreenOrderQueueState extends VisibilityAwareState<ScreenOrderQueue> {
             child: Column(
               children: [
                 AutoSizeText(
-                  gp.order,
+                  gp.order!,
                   style: darker,
                   textAlign: TextAlign.center,
                   maxLines: 1,
@@ -907,7 +1001,7 @@ class _ScreenOrderQueueState extends VisibilityAwareState<ScreenOrderQueue> {
                   height: 4.0,
                 ),
                 AutoSizeText(
-                  gp.time,
+                  gp.time!,
                   style: lighter,
                   textAlign: TextAlign.center,
                   maxLines: 1,
@@ -946,8 +1040,11 @@ class _ScreenOrderQueueState extends VisibilityAwareState<ScreenOrderQueue> {
           Container(
             width: 0.15 * widthAvailable,
             child: AutoSizeText(
-              gp.broker,
-              style: gp.brokerIsEmpty() ? darker : InvestrendTheme.of(context).small_w600_compact.copyWith(color: Theme.of(context).colorScheme.secondary),
+              gp.broker!,
+              style: gp.brokerIsEmpty()
+                  ? darker
+                  : InvestrendTheme.of(context).small_w600_compact?.copyWith(
+                      color: Theme.of(context).colorScheme.secondary),
               textAlign: TextAlign.center,
               maxLines: 1,
               minFontSize: 6.0,
@@ -957,7 +1054,7 @@ class _ScreenOrderQueueState extends VisibilityAwareState<ScreenOrderQueue> {
           Container(
             width: 0.1 * widthAvailable,
             child: AutoSizeText(
-              gp.type,
+              gp.type!,
               style: darker,
               textAlign: TextAlign.center,
               maxLines: 1,
@@ -981,11 +1078,16 @@ class _ScreenOrderQueueState extends VisibilityAwareState<ScreenOrderQueue> {
     );
   }
 
-  Widget createHeader(BuildContext context, TextStyle header, double widthAvailable) {
+  Widget createHeader(
+      BuildContext context, TextStyle header, double widthAvailable) {
     return Container(
       // color: Colors.blue,
       width: double.maxFinite,
-      padding: EdgeInsets.only(top: 8.0, bottom: 8.0, left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral),
+      padding: EdgeInsets.only(
+          top: 8.0,
+          bottom: 8.0,
+          left: InvestrendTheme.cardPaddingGeneral,
+          right: InvestrendTheme.cardPaddingGeneral),
       //height: 40.0,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1123,12 +1225,16 @@ class _ScreenOrderQueueState extends VisibilityAwareState<ScreenOrderQueue> {
   }
   */
 
-
-  Widget createRowWithoutBroker(BuildContext context, OrderQueue gp, TextStyle darker, TextStyle lighter, double widthAvailable) {
+  Widget createRowWithoutBroker(BuildContext context, OrderQueue? gp,
+      TextStyle? darker, TextStyle? lighter, double widthAvailable) {
     return Container(
       width: double.maxFinite,
       // color: Colors.orangeAccent,
-      padding: EdgeInsets.only(top: 8.0, bottom: 8.0, left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral),
+      padding: EdgeInsets.only(
+          top: 8.0,
+          bottom: 8.0,
+          left: InvestrendTheme.cardPaddingGeneral,
+          right: InvestrendTheme.cardPaddingGeneral),
       //height: 40.0,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1137,7 +1243,7 @@ class _ScreenOrderQueueState extends VisibilityAwareState<ScreenOrderQueue> {
             // color: Colors.green,
             width: 0.15 * widthAvailable,
             child: AutoSizeText(
-              InvestrendTheme.formatComma(gp.no),
+              InvestrendTheme.formatComma(gp?.no),
               style: darker,
               textAlign: TextAlign.center,
               maxLines: 1,
@@ -1152,7 +1258,7 @@ class _ScreenOrderQueueState extends VisibilityAwareState<ScreenOrderQueue> {
             child: Column(
               children: [
                 AutoSizeText(
-                  gp.order,
+                  gp!.order!,
                   style: darker,
                   textAlign: TextAlign.center,
                   maxLines: 1,
@@ -1163,7 +1269,7 @@ class _ScreenOrderQueueState extends VisibilityAwareState<ScreenOrderQueue> {
                   height: 4.0,
                 ),
                 AutoSizeText(
-                  gp.time,
+                  gp.time!,
                   style: lighter,
                   textAlign: TextAlign.center,
                   maxLines: 1,
@@ -1216,7 +1322,7 @@ class _ScreenOrderQueueState extends VisibilityAwareState<ScreenOrderQueue> {
           Container(
             width: 0.12 * widthAvailable,
             child: AutoSizeText(
-              gp.type,
+              gp.type!,
               style: darker,
               textAlign: TextAlign.center,
               maxLines: 1,
@@ -1240,11 +1346,16 @@ class _ScreenOrderQueueState extends VisibilityAwareState<ScreenOrderQueue> {
     );
   }
 
-  Widget createHeaderWithoutBroker(BuildContext context, TextStyle header, double widthAvailable) {
+  Widget createHeaderWithoutBroker(
+      BuildContext context, TextStyle? header, double widthAvailable) {
     return Container(
       // color: Colors.blue,
       width: double.maxFinite,
-      padding: EdgeInsets.only(top: 8.0, bottom: 8.0, left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral),
+      padding: EdgeInsets.only(
+          top: 8.0,
+          bottom: 8.0,
+          left: InvestrendTheme.cardPaddingGeneral,
+          right: InvestrendTheme.cardPaddingGeneral),
       //height: 40.0,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1359,6 +1470,4 @@ class _ScreenOrderQueueState extends VisibilityAwareState<ScreenOrderQueue> {
       ),
     );
   }
-
-
 }

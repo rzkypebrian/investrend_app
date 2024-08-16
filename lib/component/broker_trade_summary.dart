@@ -9,15 +9,14 @@ import 'package:Investrend/utils/ui_helper.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:search_choices/search_choices.dart';
 
 class BrokerTradeSummary extends StatefulWidget {
-  final TextStyle styleBroker;
-  final AutoSizeGroup groupValue;
-  final String selectValue;
+  final TextStyle? styleBroker;
+  final AutoSizeGroup? groupValue;
+  final String? selectValue;
 
   BrokerTradeSummary({
-    Key key,
+    Key? key,
     this.styleBroker,
     this.groupValue,
     this.selectValue,
@@ -135,7 +134,7 @@ class BrokerTradeSummaryState extends State<BrokerTradeSummary> {
       shadowColor: shadowColor,
       centerTitle: true,
       title: Text('Broker Trade Summary'),
-      titleTextStyle: InvestrendTheme.of(context).regular_w600.copyWith(
+      titleTextStyle: InvestrendTheme.of(context).regular_w600?.copyWith(
             color: InvestrendTheme.of(context).investrendPurple,
             fontWeight: FontWeight.bold,
           ),
@@ -163,20 +162,20 @@ class BrokerTradeSummaryState extends State<BrokerTradeSummary> {
     dateInfo = dateInfo.replaceAll('#DATE#', formatedDate);
     dateInfo = dateInfo.replaceAll('#TIME#', waktuSekarang);
 
-    String selectedValue = widget.selectValue;
+    String selectedValue = widget.selectValue!;
 
-    TextStyle textStyle =
-        InvestrendTheme.of(context).small_w500_compact.copyWith(fontSize: 14);
+    TextStyle? textStyle =
+        InvestrendTheme.of(context).small_w500_compact?.copyWith(fontSize: 14);
     List<BrokerTradeSummaryValue> data = BrokerTradeSummaryValue.listDummy;
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
-      TextStyle styleNo =
+      // TextStyle? styleNo =
+      //     InvestrendTheme.of(context).small_w400_compact_greyDarker;
+
+      TextStyle? styleDarker =
           InvestrendTheme.of(context).small_w400_compact_greyDarker;
 
-      TextStyle styleDarker =
-          InvestrendTheme.of(context).small_w400_compact_greyDarker;
-
-      TextStyle style = InvestrendTheme.of(context).small_w400_compact;
+      // TextStyle style = InvestrendTheme.of(context).small_w400_compact;
       double centerWidth = UIHelper.textSize(' 000 ', styleDarker).width;
       double availableWidth = constraints.maxWidth -
           (InvestrendTheme.cardPaddingGeneral * 2) -
@@ -222,7 +221,7 @@ class BrokerTradeSummaryState extends State<BrokerTradeSummary> {
                 icon: Icon(Icons.arrow_drop_down_sharp),
                 onChanged: (newValue) {
                   setState(() {
-                    selectedValue = newValue;
+                    selectedValue = newValue!;
                   });
                 },
               ),
@@ -281,9 +280,9 @@ class BrokerTradeSummaryState extends State<BrokerTradeSummary> {
                         SizedBox(
                           width: leftWidth * 0.3,
                           child: Text(
-                            data[index].buyStock,
-                            style: textStyle.copyWith(
-                                color: colorStock[data[index].buyStockSector],
+                            data[index].buyStock!,
+                            style: textStyle?.copyWith(
+                                color: colorStock[data[index].buyStockSector!],
                                 fontWeight: FontWeight.bold),
                             textAlign: TextAlign.left,
                           ),
@@ -291,7 +290,7 @@ class BrokerTradeSummaryState extends State<BrokerTradeSummary> {
                         SizedBox(
                           width: leftWidth * 0.35,
                           child: AutoSizeText(
-                            data[index].bAverage,
+                            data[index].bAverage!,
                             style: textStyle,
                             textAlign: TextAlign.right,
                             group: widget.groupValue,
@@ -302,7 +301,7 @@ class BrokerTradeSummaryState extends State<BrokerTradeSummary> {
                         SizedBox(
                           width: leftWidth * 0.35,
                           child: AutoSizeText(
-                            data[index].bValue,
+                            data[index].bValue!,
                             style: textStyle,
                             textAlign: TextAlign.right,
                             group: widget.groupValue,
@@ -320,7 +319,7 @@ class BrokerTradeSummaryState extends State<BrokerTradeSummary> {
                               InvestrendTheme.of(context).greyLighterTextColor,
                           child: AutoSizeText(
                             InvestrendTheme.formatNewComma(line.toDouble()),
-                            style: textStyle.copyWith(
+                            style: textStyle?.copyWith(
                                 color: InvestrendTheme.of(context).textWhite),
                             textAlign: TextAlign.center,
                             group: widget.groupValue,
@@ -334,9 +333,9 @@ class BrokerTradeSummaryState extends State<BrokerTradeSummary> {
                         SizedBox(
                           width: leftWidth * 0.3,
                           child: Text(
-                            data[index].sellStock,
-                            style: textStyle.copyWith(
-                                color: colorStock[data[index].sellStockSector],
+                            data[index].sellStock!,
+                            style: textStyle?.copyWith(
+                                color: colorStock[data[index].sellStockSector!],
                                 fontWeight: FontWeight.bold),
                             textAlign: TextAlign.left,
                           ),
@@ -344,7 +343,7 @@ class BrokerTradeSummaryState extends State<BrokerTradeSummary> {
                         SizedBox(
                           width: leftWidth * 0.35,
                           child: AutoSizeText(
-                            data[index].sAverage,
+                            data[index].sAverage!,
                             style: textStyle,
                             textAlign: TextAlign.right,
                             group: widget.groupValue,
@@ -355,7 +354,7 @@ class BrokerTradeSummaryState extends State<BrokerTradeSummary> {
                         SizedBox(
                           width: leftWidth * 0.35,
                           child: AutoSizeText(
-                            data[index].sValue,
+                            data[index].sValue!,
                             style: textStyle,
                             textAlign: TextAlign.right,
                             group: widget.groupValue,
@@ -376,7 +375,7 @@ class BrokerTradeSummaryState extends State<BrokerTradeSummary> {
                   dateInfo,
                   style: InvestrendTheme.of(context)
                       .more_support_w400_compact
-                      .copyWith(
+                      ?.copyWith(
                         fontWeight: FontWeight.w500,
                         color: InvestrendTheme.of(context).greyDarkerTextColor,
                         fontStyle: FontStyle.italic,
@@ -395,8 +394,8 @@ class BrokerTradeSummaryState extends State<BrokerTradeSummary> {
     double centerWidth,
     double rightWidth,
   ) {
-    TextStyle styleBold = InvestrendTheme.of(context).regular_w600_compact;
-    TextStyle styleHeader = InvestrendTheme.of(context).small_w500_compact;
+    TextStyle? styleBold = InvestrendTheme.of(context).regular_w600_compact;
+    TextStyle? styleHeader = InvestrendTheme.of(context).small_w500_compact;
     return Column(
       children: [
         Padding(
@@ -412,7 +411,7 @@ class BrokerTradeSummaryState extends State<BrokerTradeSummary> {
                 child: Text(
                   'Buyer',
                   textAlign: TextAlign.center,
-                  style: styleBold.copyWith(
+                  style: styleBold?.copyWith(
                       color: Theme.of(context).colorScheme.secondary),
                 ),
                 flex: 1,
@@ -423,7 +422,7 @@ class BrokerTradeSummaryState extends State<BrokerTradeSummary> {
                   'Seller',
                   textAlign: TextAlign.center,
                   style:
-                      styleBold.copyWith(color: InvestrendTheme.sellTextColor),
+                      styleBold?.copyWith(color: InvestrendTheme.sellTextColor),
                 ),
                 flex: 1,
               ),
@@ -538,6 +537,6 @@ class BrokerTradeSummaryState extends State<BrokerTradeSummary> {
   }
 
   Widget createBottomSheet(BuildContext context, double paddingBottom) {
-    return null;
+    return SizedBox();
   }
 }

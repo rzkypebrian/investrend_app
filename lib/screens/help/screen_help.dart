@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_use_of_protected_member
+
 import 'package:Investrend/component/button_rounded.dart';
 import 'package:Investrend/component/component_app_bar.dart';
 import 'package:Investrend/component/component_creator.dart';
@@ -16,7 +18,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class ScreenHelp extends StatefulWidget {
   final int defaultMenuIndex;
 
-  const ScreenHelp({this.defaultMenuIndex = 0, Key key}) : super(key: key);
+  const ScreenHelp({this.defaultMenuIndex = 0, Key? key}) : super(key: key);
 
   @override
   _ScreenHelpState createState() => _ScreenHelpState('/help', defaultMenuIndex);
@@ -24,9 +26,12 @@ class ScreenHelp extends StatefulWidget {
 
 class _ScreenHelpState extends BaseStateNoTabs<ScreenHelp> {
   final int defaultMenuIndex;
-  ValueNotifier<int> _optionNotifier; // = ValueNotifier(5);
+  ValueNotifier<int>? _optionNotifier; // = ValueNotifier(5);
 
-  _ScreenHelpState(String routeName, this.defaultMenuIndex) : super(routeName);
+  _ScreenHelpState(
+    String routeName,
+    this.defaultMenuIndex,
+  ) : super(routeName);
 
   @override
   void initState() {
@@ -34,10 +39,10 @@ class _ScreenHelpState extends BaseStateNoTabs<ScreenHelp> {
     _optionNotifier = ValueNotifier<int>(defaultMenuIndex);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       Future.delayed(Duration(milliseconds: 500), () {
-        if (context.read(helpNotifier).data.loaded) {
+        if (context.read(helpNotifier).data!.loaded) {
           updateMenusAndContents();
         } else {
-          context.read(helpNotifier).data.load().then((value) {
+          context.read(helpNotifier).data?.load().then((value) {
             updateMenusAndContents();
           }).onError((error, stackTrace) {
             print(routeName + ' Future help load Error');
@@ -54,7 +59,7 @@ class _ScreenHelpState extends BaseStateNoTabs<ScreenHelp> {
   }
 
   @override
-  Widget createAppBar(BuildContext context) {
+  PreferredSizeWidget createAppBar(BuildContext context) {
     return AppBar(
       elevation: 0.0,
       title: AppBarTitleText('eipo_help_title'.tr()),
@@ -78,9 +83,10 @@ class _ScreenHelpState extends BaseStateNoTabs<ScreenHelp> {
 
   void updateMenusAndContents() {
     options.clear();
-    if (context.read(helpNotifier).data.loaded) {
-      for (var menu in context.read(helpNotifier).data.menus) {
-        String menuText = menu.getMenu(language: EasyLocalization.of(context).locale.languageCode);
+    if (context.read(helpNotifier).data!.loaded) {
+      for (var menu in context.read(helpNotifier).data!.menus!) {
+        String menuText = menu.getMenu(
+            language: EasyLocalization.of(context)!.locale.languageCode);
         options.add(menuText);
       }
     }
@@ -109,39 +115,56 @@ class _ScreenHelpState extends BaseStateNoTabs<ScreenHelp> {
     }
     */
 
-    if(!context.read(helpNotifier).data.loaded){
-      print(routeName + ' doUpdate aborted helpNotifier.data.loaded : '+context.read(helpNotifier).data.loaded.toString());
+    if (!context.read(helpNotifier).data!.loaded) {
+      print(routeName +
+          ' doUpdate aborted helpNotifier.data.loaded : ' +
+          context.read(helpNotifier).data!.loaded.toString());
       return;
     }
     try {
-      String md5HelpContents = context.read(helpNotifier).data.md5_help_contents;
-      String md5HelpMenus = context.read(helpNotifier).data.md5_help_menus;
-      final help = await InvestrendTheme.datafeedHttp.fetchHelp(md5_help_contents: md5HelpContents, md5_help_menus: md5HelpMenus);
+      String? md5HelpContents =
+          context.read(helpNotifier).data?.md5_help_contents;
+      String? md5HelpMenus = context.read(helpNotifier).data?.md5_help_menus;
+      final HelpData? help = await InvestrendTheme.datafeedHttp.fetchHelp(
+          md5_help_contents: md5HelpContents, md5_help_menus: md5HelpMenus);
       if (help != null) {
         print(routeName + ' Future help DATA : ' + help.toString());
         //_summaryNotifier.setData(stockSummary);
-        bool menusChanged = !StringUtils.equalsIgnoreCase(md5HelpMenus, help.md5_help_menus) && help.menus != null && help.menus.isNotEmpty;
-        bool contentChanged = !StringUtils.equalsIgnoreCase(md5HelpContents, help.md5_help_contents) &&
+        bool menusChanged =
+            !StringUtils.equalsIgnoreCase(md5HelpMenus, help.md5_help_menus) &&
+                help.menus != null &&
+                help.menus!.isNotEmpty;
+        bool contentChanged = !StringUtils.equalsIgnoreCase(
+                md5HelpContents, help.md5_help_contents) &&
             help.contents != null &&
-            help.md5_help_contents.isNotEmpty;
+            help.md5_help_contents!.isNotEmpty;
 
         if (menusChanged) {
-          int countBefore = context.read(helpNotifier).data.menus.length;
-          context.read(helpNotifier).data.updateMenus(help.md5_help_menus, help.menus);
-          int countAfter = context.read(helpNotifier).data.menus.length;
-          print(routeName + '  menusChanged : $menusChanged  countBefore : $countBefore  countAfter : $countAfter');
+          int? countBefore = context.read(helpNotifier).data?.menus?.length;
+          context
+              .read(helpNotifier)
+              .data
+              ?.updateMenus(help.md5_help_menus, help.menus);
+          int? countAfter = context.read(helpNotifier).data?.menus?.length;
+          print(routeName +
+              '  menusChanged : $menusChanged  countBefore : $countBefore  countAfter : $countAfter');
         }
         if (contentChanged) {
-          int countBefore = context.read(helpNotifier).data.contents.length;
-          context.read(helpNotifier).data.updateContents(help.md5_help_contents, help.contents);
-          int countAfter = context.read(helpNotifier).data.contents.length;
-          print(routeName + '  contentChanged : $contentChanged  countBefore : $countBefore  countAfter : $countAfter');
+          int? countBefore = context.read(helpNotifier).data?.contents?.length;
+          context
+              .read(helpNotifier)
+              .data
+              ?.updateContents(help.md5_help_contents, help.contents);
+          int? countAfter = context.read(helpNotifier).data?.contents?.length;
+          print(routeName +
+              '  contentChanged : $contentChanged  countBefore : $countBefore  countAfter : $countAfter');
         }
         if (menusChanged || contentChanged) {
-          context.read(helpNotifier).data.save();
+          context.read(helpNotifier).data?.save();
           updateMenusAndContents();
           //setState(() {});
         }
+        // ignore: invalid_use_of_visible_for_testing_member
         context.read(helpNotifier).notifyListeners();
       } else {
         print(routeName + ' Future help NO DATA');
@@ -176,12 +199,19 @@ class _ScreenHelpState extends BaseStateNoTabs<ScreenHelp> {
                 Expanded(
                   flex: 1,
                   child: ValueListenableBuilder(
-                    valueListenable: _optionNotifier,
+                    valueListenable: _optionNotifier!,
                     builder: (context, index, child) {
-                      HelpMenu activeMenu = context.read(helpNotifier).data.menus.elementAt(index);
-                      String menuText = activeMenu.getMenu(language: EasyLocalization.of(context).locale.languageCode);
+                      HelpMenu? activeMenu = context
+                          .read(helpNotifier)
+                          .data
+                          ?.menus
+                          ?.elementAt(index as int);
+                      String? menuText = activeMenu?.getMenu(
+                          language: EasyLocalization.of(context)!
+                              .locale
+                              .languageCode);
                       return Text(
-                        menuText, //'eipo_label'.tr(),
+                        menuText!, //'eipo_label'.tr(),
                         style: InvestrendTheme.of(context).regular_w600_compact,
                       );
                     },
@@ -202,20 +232,32 @@ class _ScreenHelpState extends BaseStateNoTabs<ScreenHelp> {
           Expanded(
             flex: 1,
             child: ValueListenableBuilder(
-                valueListenable: _optionNotifier,
+                valueListenable: _optionNotifier!,
                 builder: (context, index, child) {
-                  HelpMenu activeMenu = context.read(helpNotifier).data.menus.elementAt(index);
-                  List<HelpContent> activeContents = context.read(helpNotifier).getContent(activeMenu);
-                  int countContent = activeContents != null ? activeContents.length : 0;
+                  HelpMenu? activeMenu = context
+                      .read(helpNotifier)
+                      .data
+                      ?.menus
+                      ?.elementAt(index as int);
+                  List<HelpContent>? activeContents =
+                      context.read(helpNotifier).getContent(activeMenu);
+                  int? countContent =
+                      activeContents != null ? activeContents.length : 0;
                   return ListView.builder(
                     itemCount: countContent,
                     itemBuilder: (context, index) {
-                      HelpContent content = activeContents.elementAt(index);
+                      HelpContent? content = activeContents?.elementAt(index);
                       if (content == null) {
                         return EmptyLabel();
                       }
-                      String subtitleText = content.getSubtitle(language: EasyLocalization.of(context).locale.languageCode);
-                      String contentText = content.getContent(language: EasyLocalization.of(context).locale.languageCode);
+                      String subtitleText = content.getSubtitle(
+                          language: EasyLocalization.of(context)!
+                              .locale
+                              .languageCode);
+                      String contentText = content.getContent(
+                          language: EasyLocalization.of(context)!
+                              .locale
+                              .languageCode);
                       return createTile(context, subtitleText, contentText);
                     },
                   );
@@ -305,9 +347,14 @@ class _ScreenHelpState extends BaseStateNoTabs<ScreenHelp> {
       ),
       title: Text(
         label,
-        style: InvestrendTheme.of(context).regular_w400_compact.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor),
+        style: InvestrendTheme.of(context)
+            .regular_w400_compact
+            ?.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor),
       ),
-      trailing: Image.asset('images/icons/arrow_forward.png', width: 15.0, height: 15.0, color: InvestrendTheme.of(context).greyDarkerTextColor),
+      trailing: Image.asset('images/icons/arrow_forward.png',
+          width: 15.0,
+          height: 15.0,
+          color: InvestrendTheme.of(context).greyDarkerTextColor),
       onTap: () {
         Navigator.push(
             context,
@@ -321,17 +368,13 @@ class _ScreenHelpState extends BaseStateNoTabs<ScreenHelp> {
 
   @override
   void dispose() {
-    _optionNotifier.dispose();
+    _optionNotifier?.dispose();
     super.dispose();
   }
 
   @override
-  void onActive() {
-    // TODO: implement onActive
-  }
+  void onActive() {}
 
   @override
-  void onInactive() {
-    // TODO: implement onInactive
-  }
+  void onInactive() {}
 }

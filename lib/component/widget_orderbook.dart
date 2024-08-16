@@ -1,4 +1,6 @@
-  import 'dart:math';
+// ignore_for_file: unused_local_variable
+
+import 'dart:math';
 
 import 'package:Investrend/objects/riverpod_change_notifier.dart';
 import 'package:Investrend/objects/iii_objects.dart';
@@ -10,39 +12,42 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class WidgetOrderbook extends StatelessWidget {
-
   final int maxShowLevel;
   final String owner;
-  final VoidCallback onRetry;
+  final VoidCallback? onRetry;
 
-  const WidgetOrderbook(/*this._orderbookNotifier,*/ this.maxShowLevel, {this.onRetry,Key key, this.owner = ''}) : super(key: key);
+  const WidgetOrderbook(/*this._orderbookNotifier,*/ this.maxShowLevel,
+      {this.onRetry, Key? key, this.owner = ''})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-
     return LayoutBuilder(
       builder: (context, constraints) {
         print('WidgetOrderbook constrains ' + constraints.maxWidth.toString());
-        return buildOrderbook(context, constraints.maxWidth, constraints.maxHeight);
+        return buildOrderbook(
+            context, constraints.maxWidth, constraints.maxHeight);
       },
     );
   }
 
-  Size _textSize(String text, TextStyle style) {
+  Size _textSize(String text, TextStyle? style) {
     final TextPainter textPainter = TextPainter(
-        text: TextSpan(text: text, style: style), maxLines: 1, textDirection: TextDirection.ltr, )
-      ..layout(minWidth: 0, maxWidth: double.infinity);
+      text: TextSpan(text: text, style: style),
+      maxLines: 1,
+      textDirection: TextDirection.ltr,
+    )..layout(minWidth: 0, maxWidth: double.infinity);
     return textPainter.size;
   }
 
   static const double middle_gap = 20.0;
 
-  Widget buildOrderbook(BuildContext context, double widthWidget, double heightWidget) {
+  Widget buildOrderbook(
+      BuildContext context, double widthWidget, double heightWidget) {
     double widthHalf = widthWidget / 2;
     double widthSection = (widthWidget - middle_gap) / 2;
 
-
-    return Consumer(builder: (context, watch,child){
+    return Consumer(builder: (context, watch, child) {
       final notifier = watch(orderBookChangeNotifier);
       if (notifier.invalid()) {
         return Center(child: CircularProgressIndicator());
@@ -53,38 +58,41 @@ class WidgetOrderbook extends StatelessWidget {
       Widget headers = createHeader(context, widthSection);
       list.add(headers);
 
-      StockSummary stockSummary = context.read(stockSummaryChangeNotifier).summary;
+      StockSummary? stockSummary =
+          context.read(stockSummaryChangeNotifier).summary;
 
-      int prev = stockSummary != null
-          && stockSummary.prev != null
-          && StringUtils.equalsIgnoreCase(stockSummary.code, notifier.orderbook.code)
+      int? prev = stockSummary != null &&
+              stockSummary.prev != null &&
+              StringUtils.equalsIgnoreCase(
+                  stockSummary.code!, notifier.orderbook?.code)
           ? stockSummary.prev
           : 0;
 
-      int close = stockSummary != null
-          && stockSummary.close != null
-          && StringUtils.equalsIgnoreCase(stockSummary.code, notifier.orderbook.code)
+      int? close = stockSummary != null &&
+              stockSummary.close != null &&
+              StringUtils.equalsIgnoreCase(
+                  stockSummary.code!, notifier.orderbook?.code)
           ? stockSummary.close
           : 0;
 
-      notifier.orderbook.generateDataForUI(maxShowLevel);
-      int totalVolumeShowedBid = notifier.orderbook.totalVolumeShowedBid;
-      int totalVolumeShowedOffer = notifier.orderbook.totalVolumeShowedOffer;
+      notifier.orderbook?.generateDataForUI(maxShowLevel);
+      int? totalVolumeShowedBid = notifier.orderbook?.totalVolumeShowedBid;
+      int? totalVolumeShowedOffer = notifier.orderbook?.totalVolumeShowedOffer;
 
-      double fontSize = InvestrendTheme.of(context).small_w400.fontSize;
-      fontSize = useFontSize(context, fontSize, widthSection, notifier.orderbook);
-      int count = min(maxShowLevel, notifier.orderbook.countBids());
+      double? fontSize = InvestrendTheme.of(context).small_w400?.fontSize;
+      fontSize =
+          useFontSize(context, fontSize, widthSection, notifier.orderbook);
+      int count = min(maxShowLevel, notifier.orderbook!.countBids());
       for (int index = 0; index < count; index++) {
         // double fractionBid = value.bidVol(index) / totalVolumeShowedBid;
         // double fractionOffer = value.offerVol(index) / totalVolumeShowedOffer;
 
-        bool showBid = notifier.orderbook.bids.elementAt(index) > 0;
-        bool showOffer = notifier.orderbook.offers.elementAt(index) > 0;
+        bool showBid = notifier.orderbook?.bids?.elementAt(index) > 0;
+        bool showOffer = notifier.orderbook?.offers?.elementAt(index) > 0;
 
         // print('orderbook[$index] --> fractionBid : $fractionBid  fractionOffer --> $fractionOffer');
         // print('orderbook[$index] --> totalBid : ' + value.totalBid.toString() + '  bidVol --> ' + value.bidVol(index).toString());
         // print('orderbook[$index] --> totalOffer : ' + value.totalOffer.toString() + '  offerVol --> ' + value.offerVol(index).toString());
-
 
         // String bidQueue = InvestrendTheme.formatComma(value.bidsQueue.elementAt(index));
         // String bidLot = InvestrendTheme.formatComma(value.bidLot(index));
@@ -96,15 +104,23 @@ class WidgetOrderbook extends StatelessWidget {
         // String offerPrice = InvestrendTheme.formatPrice(value.offers.elementAt(index));
         // Color offerColor = InvestrendTheme.priceTextColor(value.offers.elementAt(index), prev: prev);
 
-
-        String bidQueue = notifier.orderbook.bidsQueueText.elementAt(index);
-        String bidLot = notifier.orderbook.bidsLotText.elementAt(index);
-        String bidPrice = notifier.orderbook.bidsText.elementAt(index);
-        Color bidColor = prev == 0 ? InvestrendTheme.of(context).blackAndWhiteText : InvestrendTheme.priceTextColor(notifier.orderbook.bids.elementAt(index), prev: prev);
-        String offerQueue = notifier.orderbook.offersQueueText.elementAt(index);
-        String offerLot = notifier.orderbook.offersLotText.elementAt(index);
-        String offerPrice = notifier.orderbook.offersText.elementAt(index);
-        Color offerColor = prev == 0 ? InvestrendTheme.of(context).blackAndWhiteText : InvestrendTheme.priceTextColor(notifier.orderbook.offers.elementAt(index), prev: prev);
+        String bidQueue = notifier.orderbook?.bidsQueueText?.elementAt(index);
+        String bidLot = notifier.orderbook?.bidsLotText?.elementAt(index);
+        String bidPrice = notifier.orderbook?.bidsText?.elementAt(index);
+        Color? bidColor = prev == 0
+            ? InvestrendTheme.of(context).blackAndWhiteText
+            : InvestrendTheme.priceTextColor(
+                notifier.orderbook?.bids?.elementAt(index),
+                prev: prev!);
+        String offerQueue =
+            notifier.orderbook?.offersQueueText?.elementAt(index);
+        String offerLot = notifier.orderbook?.offersLotText?.elementAt(index);
+        String offerPrice = notifier.orderbook?.offersText?.elementAt(index);
+        Color? offerColor = prev == 0
+            ? InvestrendTheme.of(context).blackAndWhiteText
+            : InvestrendTheme.priceTextColor(
+                notifier.orderbook?.offers?.elementAt(index),
+                prev: prev!);
 
         // String bidQueue = '100,000';
         // String bidLot = '1,000,000';
@@ -115,36 +131,38 @@ class WidgetOrderbook extends StatelessWidget {
         // String offerPrice = '1,780';
         // Color offerColor = InvestrendTheme.priceTextColor(value.offers.elementAt(index), prev: prev);
 
-
         list.add(createRow(
             context,
             bidQueue,
             bidLot,
             bidPrice,
-            bidColor,
+            bidColor!,
             offerQueue,
             offerLot,
             offerPrice,
-            offerColor,
-            widthSection, fontSize));
+            offerColor!,
+            widthSection,
+            fontSize));
       }
       return Column(
         mainAxisSize: MainAxisSize.max,
         children: list,
       );
-
     });
-
   }
 
-  double useFontSize(BuildContext context, double fontSize, double widthSection, OrderBook value, {int offset=0}){
-    print('WidgetOrderbook[$owner].useFontSize try fontSize  : $fontSize  offset : $offset');
-    TextStyle smallW400 = InvestrendTheme.of(context).small_w400.copyWith(fontSize: fontSize);
-    TextStyle smallW500 = InvestrendTheme.of(context).small_w500.copyWith(fontSize: fontSize);
+  double? useFontSize(BuildContext context, double? fontSize,
+      double widthSection, OrderBook? value,
+      {int offset = 0}) {
+    print(
+        'WidgetOrderbook[$owner].useFontSize try fontSize  : $fontSize  offset : $offset');
+    TextStyle? smallW400 =
+        InvestrendTheme.of(context).small_w400?.copyWith(fontSize: fontSize);
+    TextStyle? smallW500 =
+        InvestrendTheme.of(context).small_w500?.copyWith(fontSize: fontSize);
     const double font_step = 1.0;
-    int count = min(maxShowLevel, value.countBids());
+    int count = min(maxShowLevel, value!.countBids());
     for (int index = offset; index < count; index++) {
-
       // String bidQueue = '100,000';
       // String bidLot = '1,000,000';
       // String bidPrice = '200,000';
@@ -153,15 +171,13 @@ class WidgetOrderbook extends StatelessWidget {
       // String offerLot = InvestrendTheme.formatComma(value.offerLot(index));
       // String offerPrice = '1,780';
 
-      String bidQueue = value.bidsQueueText.elementAt(index);
-      String bidLot = value.bidsLotText.elementAt(index);
-      String bidPrice = value.bidsText.elementAt(index);
+      String bidQueue = value.bidsQueueText?.elementAt(index);
+      String bidLot = value.bidsLotText?.elementAt(index);
+      String bidPrice = value.bidsText?.elementAt(index);
 
-      String offerQueue = value.offersQueueText.elementAt(index);
-      String offerLot = value.offersLotText.elementAt(index);
-      String offerPrice = value.offersText.elementAt(index);
-
-
+      String offerQueue = value.offersQueueText?.elementAt(index);
+      String offerLot = value.offersLotText?.elementAt(index);
+      String offerPrice = value.offersText?.elementAt(index);
 
       // double widthSectionTextLeft = _textSize(bidQueue, small_w400).width + _textSize(bidLot, small_w400).width + _textSize(bidPrice, small_w500).width;
       // double widthSectionTextRight = _textSize(offerPrice, small_w500).width + _textSize(offerLot, small_w400).width + _textSize(offerQueue, small_w400).width;
@@ -171,17 +187,21 @@ class WidgetOrderbook extends StatelessWidget {
       double widthSectionTextLeft = _textSize(leftText, smallW400).width;
       double widthSectionTextRight = _textSize(righText, smallW500).width;
 
-      bool reduceFontSize = widthSectionTextLeft > widthSection || widthSectionTextRight > widthSection;
+      bool reduceFontSize = widthSectionTextLeft > widthSection ||
+          widthSectionTextRight > widthSection;
       // print(' useFontSize widthSection  : $widthSection   widthSectionTextLeft : $widthSectionTextLeft   widthSectionTextRight : $widthSectionTextRight  reduceFontSize : $reduceFontSize');
-      if(reduceFontSize){
-        fontSize = useFontSize(context, fontSize - 2, widthSection, value, offset: index);
+      if (reduceFontSize) {
+        fontSize = useFontSize(context, fontSize! - 2, widthSection, value,
+            offset: index);
         //break;
         return fontSize;
       }
     }
-    print('WidgetOrderbook[$owner].useFontSize Final fontSize  : $fontSize  offset : $offset');
+    print(
+        'WidgetOrderbook[$owner].useFontSize Final fontSize  : $fontSize  offset : $offset');
     return fontSize;
   }
+
   Widget createHeader(BuildContext context, double widthSection) {
     return Row(
       children: [
@@ -216,7 +236,8 @@ class WidgetOrderbook extends StatelessWidget {
     );
   }
 
-  Widget createRow(BuildContext context,
+  Widget createRow(
+      BuildContext context,
       String bidQueue,
       String bidLot,
       String bidPrice,
@@ -226,7 +247,7 @@ class WidgetOrderbook extends StatelessWidget {
       String offerPrice,
       Color offerColor,
       double widthSection,
-      double fontSize) {
+      double? fontSize) {
     return Row(
       children: [
         Container(
@@ -234,10 +255,15 @@ class WidgetOrderbook extends StatelessWidget {
           //color: Colors.yellow,
           child: Stack(
             children: [
-              createLabelPrice(context, fontSize, '', TextAlign.right, bidColor),
-              Positioned.fill(child: createLabelQueue(context, fontSize, bidQueue, TextAlign.left)),
+              createLabelPrice(
+                  context, fontSize, '', TextAlign.right, bidColor),
+              Positioned.fill(
+                  child: createLabelQueue(
+                      context, fontSize, bidQueue, TextAlign.left)),
               Positioned.fill(child: createLabelLot(context, fontSize, bidLot)),
-              Positioned.fill(child: createLabelPrice(context, fontSize, bidPrice, TextAlign.right, bidColor)),
+              Positioned.fill(
+                  child: createLabelPrice(
+                      context, fontSize, bidPrice, TextAlign.right, bidColor)),
             ],
           ),
         ),
@@ -249,10 +275,16 @@ class WidgetOrderbook extends StatelessWidget {
           width: widthSection,
           child: Stack(
             children: [
-              createLabelPrice(context, fontSize, '', TextAlign.left, offerColor),
-              Positioned.fill(child: createLabelPrice(context, fontSize, offerPrice, TextAlign.left, offerColor)),
-              Positioned.fill(child: createLabelLot(context, fontSize, offerLot)),
-              Positioned.fill(child: createLabelQueue(context, fontSize, offerQueue, TextAlign.right)),
+              createLabelPrice(
+                  context, fontSize, '', TextAlign.left, offerColor),
+              Positioned.fill(
+                  child: createLabelPrice(context, fontSize, offerPrice,
+                      TextAlign.left, offerColor)),
+              Positioned.fill(
+                  child: createLabelLot(context, fontSize, offerLot)),
+              Positioned.fill(
+                  child: createLabelQueue(
+                      context, fontSize, offerQueue, TextAlign.right)),
             ],
           ),
         ),
@@ -265,9 +297,7 @@ class WidgetOrderbook extends StatelessWidget {
       padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
       child: Text(
         text,
-        style: InvestrendTheme
-            .of(context)
-            .small_w500,
+        style: InvestrendTheme.of(context).small_w500,
         textAlign: TextAlign.left,
       ),
     );
@@ -278,9 +308,7 @@ class WidgetOrderbook extends StatelessWidget {
       padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
       child: Text(
         text,
-        style: InvestrendTheme
-            .of(context)
-            .small_w500,
+        style: InvestrendTheme.of(context).small_w500,
         textAlign: TextAlign.right,
       ),
     );
@@ -291,60 +319,52 @@ class WidgetOrderbook extends StatelessWidget {
       padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
       child: Text(
         text,
-        style: InvestrendTheme
-            .of(context)
-            .small_w500,
+        style: InvestrendTheme.of(context).small_w500,
         textAlign: TextAlign.center,
       ),
     );
   }
 
-  Widget createLabelQueue(BuildContext context, double fontSize, String text, TextAlign textAlign) {
+  Widget createLabelQueue(BuildContext context, double? fontSize, String text,
+      TextAlign textAlign) {
     return Padding(
       padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
       child: Text(
         text,
-        style: InvestrendTheme
-            .of(context)
-            .small_w400
-            .copyWith(color: InvestrendTheme
-            .of(context)
-            .greyLighterTextColor, fontSize: fontSize),
+        style: InvestrendTheme.of(context).small_w400?.copyWith(
+            color: InvestrendTheme.of(context).greyLighterTextColor,
+            fontSize: fontSize),
         textAlign: textAlign,
       ),
     );
   }
 
-  Widget createLabelLot(BuildContext context, double fontSize, String text) {
+  Widget createLabelLot(BuildContext context, double? fontSize, String text) {
     return Padding(
       padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
       child: Text(
         text,
-        style: InvestrendTheme
-            .of(context)
-            .small_w400
-            .copyWith(color: InvestrendTheme
-            .of(context)
-            .greyDarkerTextColor, fontSize: fontSize),
+        style: InvestrendTheme.of(context).small_w400?.copyWith(
+            color: InvestrendTheme.of(context).greyDarkerTextColor,
+            fontSize: fontSize),
         textAlign: TextAlign.center,
       ),
     );
   }
 
-  Widget createLabelPrice(BuildContext context, double fontSize, String text, TextAlign textAlign, Color color) {
+  Widget createLabelPrice(BuildContext context, double? fontSize, String text,
+      TextAlign textAlign, Color color) {
     return Padding(
       padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
       child: Text(
         text,
-        style: InvestrendTheme
-            .of(context)
+        style: InvestrendTheme.of(context)
             .small_w500
-            .copyWith(color: color, fontSize: fontSize),
+            ?.copyWith(color: color, fontSize: fontSize),
         textAlign: textAlign,
       ),
     );
   }
-
 
 /*
   Widget getTableDataOrderbook(BuildContext context) {

@@ -3,22 +3,22 @@ import 'dart:math' show pi;
 import 'package:flutter/material.dart';
 
 class Spinnies extends StatefulWidget {
-  final Duration duration;
+  final Duration? duration;
   final List<SpinRect> rects;
   final BlendMode blendMode;
 
   Spinnies({
-    Key key,
+    Key? key,
     @required this.duration,
     this.blendMode = BlendMode.screen,
-    List<SpinRect> rects,
+    List<SpinRect>? rects,
   })  : this.rects = rects ??
-      [
-        SpinRect(color: Color(0xFFDB4437), begin: 0.0, end: 1.0),
-        SpinRect(color: Color(0xFFF4B400), begin: 0.25, end: 1.25),
-        SpinRect(color: Color(0xFF4285F4), begin: 0.5, end: 1.5),
-        SpinRect(color: Color(0xFF0F9D58), begin: 0.75, end: 1.75),
-      ],
+            [
+              SpinRect(color: Color(0xFFDB4437), begin: 0.0, end: 1.0),
+              SpinRect(color: Color(0xFFF4B400), begin: 0.25, end: 1.25),
+              SpinRect(color: Color(0xFF4285F4), begin: 0.5, end: 1.5),
+              SpinRect(color: Color(0xFF0F9D58), begin: 0.75, end: 1.75),
+            ],
         super(key: key);
 
   @override
@@ -27,7 +27,7 @@ class Spinnies extends StatefulWidget {
 
 class _SpinniesState extends State<Spinnies>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
+  AnimationController? _controller;
 
   @override
   void initState() {
@@ -40,7 +40,7 @@ class _SpinniesState extends State<Spinnies>
 
   @override
   void dispose() {
-    _controller.dispose();
+    _controller!.dispose();
     super.dispose();
   }
 
@@ -50,29 +50,31 @@ class _SpinniesState extends State<Spinnies>
       painter: SpinniesPainter(
         blendMode: widget.blendMode,
         rects: widget.rects,
-        animation: _controller,
+        animation: _controller!,
       ),
     );
   }
 }
 
 class SpinniesPainter extends CustomPainter {
-  final List<SpinRect> rects;
+  final List<SpinRect>? rects;
 
   // We accept the animation for two reasons: first, it drives when the custom
   // painter should repaint. Second, it allows us to get the current value of
   // the animation so we can use that to calculate the current rotation of each
   // SpinRect.
-  final Animation<double> animation;
-  final BlendMode blendMode;
+  final Animation<double>? animation;
+  final BlendMode? blendMode;
 
-  Size _cachedSize;
-  RRect _cachedFunkyRect;
+  Size? cachedSize;
+  RRect? cachedFunkyRect;
 
   SpinniesPainter({
-    @required this.rects,
-    @required this.animation,
-    @required this.blendMode,
+    required this.rects,
+    required this.animation,
+    required this.blendMode,
+    this.cachedSize,
+    this.cachedFunkyRect,
   }) : super(repaint: animation);
 
   @override
@@ -86,19 +88,19 @@ class SpinniesPainter extends CustomPainter {
 
     // The drawing portion of the class. It is responsible for drawing all of
     // the different rectangles.
-    for (final rect in rects) {
+    for (final rect in rects!) {
       canvas.save();
 
       // Rotate the correct amount around an origin point
       canvas.translate(size.width / 2, size.height / 2);
-      canvas.rotate(rect.tween.transform(animation.value) * pi * 2);
+      canvas.rotate(rect.tween.transform(animation!.value) * pi * 2);
       canvas.translate(-size.width / 2, -size.height / 2);
 
       // Then draw the rectangle
       canvas.drawRRect(
           funkyRect,
           Paint()
-            ..blendMode = blendMode
+            ..blendMode = blendMode!
             ..strokeWidth = rect.strokeWidth
             ..style = PaintingStyle.stroke
             ..color = rect.color);
@@ -116,8 +118,8 @@ class SpinniesPainter extends CustomPainter {
   }
 
   RRect _buildFunkyRect(Size size) {
-    if (size != _cachedSize) {
-      _cachedFunkyRect = RRect.fromLTRBAndCorners(
+    if (size != cachedSize) {
+      cachedFunkyRect = RRect.fromLTRBAndCorners(
         0.0,
         0.0,
         size.width,
@@ -140,10 +142,10 @@ class SpinniesPainter extends CustomPainter {
         ),
       );
 
-      _cachedSize = size;
+      cachedSize = size;
     }
 
-    return _cachedFunkyRect;
+    return cachedFunkyRect!;
   }
 }
 
@@ -153,9 +155,9 @@ class SpinRect {
   final Tween<double> tween;
 
   SpinRect({
-    @required this.color,
-    @required double begin,
-    @required double end,
+    required this.color,
+    required double begin,
+    required double end,
     this.strokeWidth = 16.0,
   }) : tween = Tween<double>(begin: begin, end: end);
 }

@@ -10,7 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ScreenESatement extends StatefulWidget {
-  const ScreenESatement({Key key}) : super(key: key);
+  const ScreenESatement({Key? key}) : super(key: key);
 
   @override
   _ScreenESatementState createState() => _ScreenESatementState();
@@ -37,14 +37,11 @@ class _ScreenESatementState extends BaseStateNoTabs<ScreenESatement> {
   }
 
   Future doUpdate({bool pullToRefresh = false}) async {
-
     final notifier = context.read(accountChangeNotifier);
-    User user = context
-        .read(dataHolderChangeNotifier)
-        .user;
-    Account active = user.getAccount(notifier.index);
-    if(active == null){
-      print(routeName+'  active Account is NULL');
+    User user = context.read(dataHolderChangeNotifier).user;
+    Account? active = user.getAccount(notifier.index);
+    if (active == null) {
+      print(routeName + '  active Account is NULL');
       return false;
     }
     /*
@@ -142,11 +139,8 @@ class _ScreenESatementState extends BaseStateNoTabs<ScreenESatement> {
     return doUpdate(pullToRefresh: true);
   }
 
-
-
   @override
-  Widget createAppBar(BuildContext context) {
-    // TODO: implement createAppBar
+  PreferredSizeWidget createAppBar(BuildContext context) {
     return AppBar(
       backgroundColor: Theme.of(context).colorScheme.background,
       elevation: 0.0,
@@ -158,10 +152,16 @@ class _ScreenESatementState extends BaseStateNoTabs<ScreenESatement> {
       //icon: Image.asset('images/icons/action_clear.png', color: InvestrendTheme.greenText, width: 12.0, height: 12.0),
     );
   }
-  Widget createRow(BuildContext context, String date, String url){
+
+  Widget createRow(BuildContext context, String? date, String url) {
     return Container(
-      margin: EdgeInsets.only(/*bottom: InvestrendTheme.cardPaddingGeneral, */left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral),
-      padding: EdgeInsets.only(left: 12.0, /*right: 12.0, top: 10.0,bottom: 10.0*/),
+      margin: EdgeInsets.only(
+          /*bottom: InvestrendTheme.cardPaddingGeneral, */ left:
+              InvestrendTheme.cardPaddingGeneral,
+          right: InvestrendTheme.cardPaddingGeneral),
+      padding: EdgeInsets.only(
+        left: 12.0, /*right: 12.0, top: 10.0,bottom: 10.0*/
+      ),
       decoration: BoxDecoration(
         color: Color(0xFFF4F2F9),
         borderRadius: BorderRadius.circular(3.0),
@@ -169,39 +169,73 @@ class _ScreenESatementState extends BaseStateNoTabs<ScreenESatement> {
       width: double.maxFinite,
       child: Row(
         children: [
-          Image.asset('images/icons/statement.png', height: 24.0, width: 24.0,),
-          SizedBox(width: InvestrendTheme.cardPaddingGeneral,),
-          Text(date??'-', style: InvestrendTheme.of(context).small_w400_compact.copyWith(color: Theme.of(context).colorScheme.secondary),),
-          Spacer(flex: 1,),
-          TextButton(child: Text('button_see'.tr(), style: InvestrendTheme.of(context).small_w600_compact.copyWith(color: Theme.of(context).colorScheme.secondary),),onPressed: ()=> launchURL(context, url),),
+          Image.asset(
+            'images/icons/statement.png',
+            height: 24.0,
+            width: 24.0,
+          ),
+          SizedBox(
+            width: InvestrendTheme.cardPaddingGeneral,
+          ),
+          Text(
+            date ?? '-',
+            style: InvestrendTheme.of(context)
+                .small_w400_compact
+                ?.copyWith(color: Theme.of(context).colorScheme.secondary),
+          ),
+          Spacer(
+            flex: 1,
+          ),
+          TextButton(
+            child: Text(
+              'button_see'.tr(),
+              style: InvestrendTheme.of(context)
+                  .small_w600_compact
+                  ?.copyWith(color: Theme.of(context).colorScheme.secondary),
+            ),
+            onPressed: () => launchURL(context, url),
+          ),
         ],
       ),
     );
   }
-  Widget createGroupTitle(BuildContext context, String year){
+
+  Widget createGroupTitle(BuildContext context, String? year) {
     return Padding(
-      padding: const EdgeInsets.only(top:20.0, /*bottom:8.0,*/ left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral),
-      child: Text(year??'-', style: InvestrendTheme.of(context).support_w400_compact.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor),),
+      padding: const EdgeInsets.only(
+          top: 20.0,
+          /*bottom:8.0,*/ left: InvestrendTheme.cardPaddingGeneral,
+          right: InvestrendTheme.cardPaddingGeneral),
+      child: Text(
+        year ?? '-',
+        style: InvestrendTheme.of(context)
+            .support_w400_compact
+            ?.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor),
+      ),
     );
   }
+
   void launchURL(BuildContext context, String _url) async {
-    try{
-      await canLaunch(_url) ? await launch(_url) : throw 'Could not launch $_url';
-    }catch(error){
+    try {
+      await canLaunchUrl(Uri.dataFromString(_url))
+          ? await launchUrl(Uri.dataFromString(_url))
+          : throw 'Could not launch $_url';
+    } catch (error) {
       //InvestrendTheme.of(context).showSnackBar(context, error.toString());
     }
   }
 
-
-
-
-
-  Widget dividerWithPadding(BuildContext context){
+  Widget dividerWithPadding(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom:InvestrendTheme.cardPaddingGeneral, left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral, top: InvestrendTheme.cardPaddingGeneral),
+      padding: const EdgeInsets.only(
+          bottom: InvestrendTheme.cardPaddingGeneral,
+          left: InvestrendTheme.cardPaddingGeneral,
+          right: InvestrendTheme.cardPaddingGeneral,
+          top: InvestrendTheme.cardPaddingGeneral),
       child: ComponentCreator.divider(context),
     );
   }
+
   @override
   Widget createBody(BuildContext context, double paddingBottom) {
     return RefreshIndicator(
@@ -210,44 +244,57 @@ class _ScreenESatementState extends BaseStateNoTabs<ScreenESatement> {
       onRefresh: onRefresh,
       child: ListView(
         children: [
-
           Padding(
-            padding: const EdgeInsets.only(bottom:InvestrendTheme.cardPaddingGeneral, left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral),
+            padding: const EdgeInsets.only(
+                bottom: InvestrendTheme.cardPaddingGeneral,
+                left: InvestrendTheme.cardPaddingGeneral,
+                right: InvestrendTheme.cardPaddingGeneral),
             child: Text(
               'choose_period_label'.tr(),
               style: InvestrendTheme.of(context).regular_w600,
             ),
           ),
-
           createGroupTitle(context, '2021'),
           dividerWithPadding(context),
-          createRow(context, 'Agustus 2021', 'https://www.e-ipo.co.id/en/pipeline/get-additional-info?id=44'),
+          createRow(context, 'Agustus 2021',
+              'https://www.e-ipo.co.id/en/pipeline/get-additional-info?id=44'),
           dividerWithPadding(context),
-          createRow(context, 'Juli 2021', 'https://www.e-ipo.co.id/en/pipeline/get-additional-info?id=44'),
+          createRow(context, 'Juli 2021',
+              'https://www.e-ipo.co.id/en/pipeline/get-additional-info?id=44'),
           dividerWithPadding(context),
-          createRow(context, 'Juni 2021', 'https://www.e-ipo.co.id/en/pipeline/get-additional-info?id=44'),
+          createRow(context, 'Juni 2021',
+              'https://www.e-ipo.co.id/en/pipeline/get-additional-info?id=44'),
           dividerWithPadding(context),
-          createRow(context, 'Mei 2021', 'https://www.e-ipo.co.id/en/pipeline/get-additional-info?id=44'),
+          createRow(context, 'Mei 2021',
+              'https://www.e-ipo.co.id/en/pipeline/get-additional-info?id=44'),
           dividerWithPadding(context),
-          createRow(context, 'April 2021', 'https://www.e-ipo.co.id/en/pipeline/get-additional-info?id=44'),
-
+          createRow(context, 'April 2021',
+              'https://www.e-ipo.co.id/en/pipeline/get-additional-info?id=44'),
           createGroupTitle(context, '2020'),
           dividerWithPadding(context),
-          createRow(context, 'Desember 2020', 'https://www.e-ipo.co.id/en/pipeline/get-additional-info?id=44'),
+          createRow(context, 'Desember 2020',
+              'https://www.e-ipo.co.id/en/pipeline/get-additional-info?id=44'),
           dividerWithPadding(context),
-          createRow(context, 'November 2020', 'https://www.e-ipo.co.id/en/pipeline/get-additional-info?id=44'),
+          createRow(context, 'November 2020',
+              'https://www.e-ipo.co.id/en/pipeline/get-additional-info?id=44'),
           dividerWithPadding(context),
-          createRow(context, 'September 2020', 'https://www.e-ipo.co.id/en/pipeline/get-additional-info?id=44'),
+          createRow(context, 'September 2020',
+              'https://www.e-ipo.co.id/en/pipeline/get-additional-info?id=44'),
           dividerWithPadding(context),
-          createRow(context, 'Agustus 2020', 'https://www.e-ipo.co.id/en/pipeline/get-additional-info?id=44'),
+          createRow(context, 'Agustus 2020',
+              'https://www.e-ipo.co.id/en/pipeline/get-additional-info?id=44'),
           dividerWithPadding(context),
-          createRow(context, 'Juli 2020', 'https://www.e-ipo.co.id/en/pipeline/get-additional-info?id=44'),
+          createRow(context, 'Juli 2020',
+              'https://www.e-ipo.co.id/en/pipeline/get-additional-info?id=44'),
           dividerWithPadding(context),
-          createRow(context, 'Juni 2020', 'https://www.e-ipo.co.id/en/pipeline/get-additional-info?id=44'),
+          createRow(context, 'Juni 2020',
+              'https://www.e-ipo.co.id/en/pipeline/get-additional-info?id=44'),
           dividerWithPadding(context),
-          createRow(context, 'Mei 2020', 'https://www.e-ipo.co.id/en/pipeline/get-additional-info?id=44'),
+          createRow(context, 'Mei 2020',
+              'https://www.e-ipo.co.id/en/pipeline/get-additional-info?id=44'),
           dividerWithPadding(context),
-          createRow(context, 'April 2020', 'https://www.e-ipo.co.id/en/pipeline/get-additional-info?id=44'),
+          createRow(context, 'April 2020',
+              'https://www.e-ipo.co.id/en/pipeline/get-additional-info?id=44'),
           /*
           ValueListenableBuilder(
             valueListenable: _termNotifier,
@@ -269,10 +316,8 @@ class _ScreenESatementState extends BaseStateNoTabs<ScreenESatement> {
           ),
           
            */
-
         ],
       ),
-
 
       /*
       child: ValueListenableBuilder(
@@ -360,7 +405,6 @@ class _ScreenESatementState extends BaseStateNoTabs<ScreenESatement> {
 
   @override
   void onInactive() {
-    // TODO: implement onInactive
     //FocusScope.of(context).requestFocus(new FocusNode());
   }
 }

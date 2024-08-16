@@ -7,8 +7,8 @@ class SortAndFilterPopUp {
   SortAndFilterPopUp(this.data);
 
   void show({
-    @required BuildContext context,
-    ValueChanged<List<SortAndFilterModel>> onChanged,
+    required BuildContext context,
+    ValueChanged<List<SortAndFilterModel>>? onChanged,
   }) {
     ValueNotifier<List<SortAndFilterModel>> notifier =
         ValueNotifier<List<SortAndFilterModel>>(data);
@@ -34,7 +34,7 @@ class SortAndFilterPopUp {
           ),
           child: ValueListenableBuilder<List<SortAndFilterModel>>(
             valueListenable: notifier,
-            builder: (BuildContext context, data, Widget child) {
+            builder: (BuildContext context, data, Widget? child) {
               return ReorderableWrap(
                 needsLongPressDraggable: false,
                 alignment: WrapAlignment.spaceBetween,
@@ -63,7 +63,7 @@ class SortAndFilterPopUp {
                   notifier.value = data;
                   // ignore: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
                   notifier.notifyListeners();
-                  onChanged(data);
+                  onChanged!(data);
                 },
                 children: List.generate(
                   data.length,
@@ -94,7 +94,7 @@ class SortAndFilterPopUp {
                                     "data terakhir = ${lastShown.name} + posisi terakhir = $lastShownIndex + listoverview index = ${data[index].name}");
                                 print("posisi terakhir $lastShownIndex");
 
-                                data[index].status = newValue;
+                                data[index].status = newValue!;
 
                                 if (newValue == false) {
                                   data.add(data[index]);
@@ -119,13 +119,13 @@ class SortAndFilterPopUp {
                                 notifier.value = data;
                                 // ignore: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
                                 notifier.notifyListeners();
-                                onChanged(data);
+                                onChanged!(data);
                               }
                             },
                           ),
                           Expanded(
                             child: Container(
-                              child: Text(data[index].name),
+                              child: Text(data[index].name!),
                             ),
                           ),
                           data[index].status == true
@@ -146,11 +146,11 @@ class SortAndFilterPopUp {
 }
 
 class SortAndFilterModel {
-  String name;
-  bool status;
+  String? name;
+  bool? status;
 
   SortAndFilterModel({
-    @required this.name,
-    @required this.status,
+    required this.name,
+    required this.status,
   });
 }

@@ -12,12 +12,12 @@ import 'package:Investrend/utils/string_utils.dart';
 import 'package:Investrend/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'base/base_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ScreenFundOut extends StatefulWidget {
-  const ScreenFundOut({Key key}) : super(key: key);
+  const ScreenFundOut({Key? key}) : super(key: key);
 
   @override
   _ScreenFundOutState createState() => _ScreenFundOutState();
@@ -26,12 +26,12 @@ class ScreenFundOut extends StatefulWidget {
 class _ScreenFundOutState extends BaseStateNoTabs<ScreenFundOut> {
   _ScreenFundOutState() : super('/fund_out');
 
-  CashPositionNotifier _cashNotifier =
+  CashPositionNotifier? _cashNotifier =
       CashPositionNotifier(CashPosition.createBasic());
-  BankRDNNotifier _bankRDNNotifier = BankRDNNotifier(BankRDN('', '', '', ''));
-  BankAccountNotifier _bankAccountNotifier =
+  BankRDNNotifier? _bankRDNNotifier = BankRDNNotifier(BankRDN('', '', '', ''));
+  BankAccountNotifier? _bankAccountNotifier =
       BankAccountNotifier(BankAccount('', '', '', '', '', '', ''));
-  FundOutTermNotifier _termNotifier =
+  FundOutTermNotifier? _termNotifier =
       FundOutTermNotifier(ResultFundOutTerm('', ''));
   TextEditingController _priceTextEditingController =
       TextEditingController(text: '');
@@ -41,8 +41,8 @@ class _ScreenFundOutState extends BaseStateNoTabs<ScreenFundOut> {
   FocusNode _focusNodeInstruction = FocusNode();
   ValueNotifier<bool> _showButtonSendNotifier = ValueNotifier(false);
   ValueNotifier<bool> _keyboardNotifier = ValueNotifier(false);
-  VoidCallback onAccountChangeListener;
-  ValueNotifier<String> _dateNotifier;
+  VoidCallback? onAccountChangeListener;
+  ValueNotifier<String>? _dateNotifier;
 
   ValueNotifier<bool> _agreeTnCNotifier = ValueNotifier<bool>(false);
 
@@ -133,7 +133,7 @@ class _ScreenFundOutState extends BaseStateNoTabs<ScreenFundOut> {
     if (onAccountChangeListener != null) {
       context
           .read(accountChangeNotifier)
-          .removeListener(onAccountChangeListener);
+          .removeListener(onAccountChangeListener!);
     } else {
       onAccountChangeListener = () {
         if (mounted) {
@@ -142,16 +142,16 @@ class _ScreenFundOutState extends BaseStateNoTabs<ScreenFundOut> {
         }
       };
     }
-    context.read(accountChangeNotifier).addListener(onAccountChangeListener);
+    context.read(accountChangeNotifier).addListener(onAccountChangeListener!);
   }
 
   @override
   void dispose() {
-    _dateNotifier.dispose();
-    _cashNotifier.dispose();
-    _termNotifier.dispose();
-    _bankRDNNotifier.dispose();
-    _bankAccountNotifier.dispose();
+    _dateNotifier?.dispose();
+    _cashNotifier?.dispose();
+    _termNotifier?.dispose();
+    _bankRDNNotifier?.dispose();
+    _bankAccountNotifier?.dispose();
     _priceTextEditingController.dispose();
     _instructionTextEditingController.dispose();
     _focusNodePrice.dispose();
@@ -164,7 +164,7 @@ class _ScreenFundOutState extends BaseStateNoTabs<ScreenFundOut> {
     if (onAccountChangeListener != null) {
       container
           .read(accountChangeNotifier)
-          .removeListener(onAccountChangeListener);
+          .removeListener(onAccountChangeListener!);
     }
 
     super.dispose();
@@ -175,7 +175,7 @@ class _ScreenFundOutState extends BaseStateNoTabs<ScreenFundOut> {
     DateTime
         initDate; // =  _dateFormat.parse(_customFromNotifier.value, false);
     try {
-      initDate = _dateFormat.parse(_dateNotifier.value, false);
+      initDate = _dateFormat.parse(_dateNotifier!.value, false);
     } catch (e) {
       initDate = DateTime.now();
       print(e);
@@ -185,7 +185,7 @@ class _ScreenFundOutState extends BaseStateNoTabs<ScreenFundOut> {
       print('change $date');
     }, onConfirm: (date) {
       print('confirm $date');
-      _dateNotifier.value = _dateFormat.format(date);
+      _dateNotifier!.value = _dateFormat.format(date);
     }, currentTime: initDate); // DateTime.now()
   }
 
@@ -193,24 +193,24 @@ class _ScreenFundOutState extends BaseStateNoTabs<ScreenFundOut> {
     final notifier = context.read(accountChangeNotifier);
 
     User user = context.read(dataHolderChangeNotifier).user;
-    Account active = user.getAccount(notifier.index);
+    Account? active = user.getAccount(notifier.index);
     if (active == null) {
       print(routeName + '  active Account is NULL');
       return false;
     }
     try {
-      if (_bankRDNNotifier.value.isEmpty() || pullToRefresh) {
+      if (_bankRDNNotifier!.value!.isEmpty() || pullToRefresh) {
         setNotifierLoading(_bankRDNNotifier);
       }
 
-      final result = await InvestrendTheme.tradingHttp.getBankRDN(
+      final BankRDN? result = await InvestrendTheme.tradingHttp.getBankRDN(
           active.accountcode,
           InvestrendTheme.of(context).applicationPlatform,
           InvestrendTheme.of(context).applicationVersion);
       if (result != null) {
         print(routeName + ' Future bank rdn DATA : ' + result.toString());
         if (mounted) {
-          _bankRDNNotifier.setValue(result);
+          _bankRDNNotifier?.setValue(result);
         }
       } else {
         print(routeName + ' Future bank rdn NO DATA');
@@ -224,17 +224,18 @@ class _ScreenFundOutState extends BaseStateNoTabs<ScreenFundOut> {
     }
 
     try {
-      if (_bankAccountNotifier.value.isEmpty() || pullToRefresh) {
+      if (_bankAccountNotifier!.value!.isEmpty() || pullToRefresh) {
         setNotifierLoading(_bankAccountNotifier);
       }
-      final result = await InvestrendTheme.tradingHttp.getBankAcccount(
-          active.accountcode,
-          InvestrendTheme.of(context).applicationPlatform,
-          InvestrendTheme.of(context).applicationVersion);
+      final BankAccount? result = await InvestrendTheme.tradingHttp
+          .getBankAcccount(
+              active.accountcode,
+              InvestrendTheme.of(context).applicationPlatform,
+              InvestrendTheme.of(context).applicationVersion);
       if (result != null) {
         print(routeName + ' Future bank account DATA : ' + result.toString());
         if (mounted) {
-          _bankAccountNotifier.setValue(result);
+          _bankAccountNotifier?.setValue(result);
         }
       } else {
         print(routeName + ' Future bank account NO DATA');
@@ -248,19 +249,20 @@ class _ScreenFundOutState extends BaseStateNoTabs<ScreenFundOut> {
     }
 
     try {
-      if (_cashNotifier.value.isEmpty() || pullToRefresh) {
+      if (_cashNotifier!.value!.isEmpty() || pullToRefresh) {
         setNotifierLoading(_cashNotifier);
       }
-      final result = await InvestrendTheme.tradingHttp.cashPosition(
-          active.brokercode,
-          active.accountcode,
-          user.username,
-          InvestrendTheme.of(context).applicationPlatform,
-          InvestrendTheme.of(context).applicationVersion);
+      final CashPosition? result = await InvestrendTheme.tradingHttp
+          .cashPosition(
+              active.brokercode,
+              active.accountcode,
+              user.username!,
+              InvestrendTheme.of(context).applicationPlatform,
+              InvestrendTheme.of(context).applicationVersion);
       if (result != null) {
         print(routeName + ' Future cash DATA : ' + result.toString());
         if (mounted) {
-          _cashNotifier.setValue(result);
+          _cashNotifier?.setValue(result);
         }
       } else {
         print(routeName + ' Future cash NO DATA');
@@ -274,14 +276,15 @@ class _ScreenFundOutState extends BaseStateNoTabs<ScreenFundOut> {
     }
 
     try {
-      if (_termNotifier.value.isEmpty() || pullToRefresh) {
+      if (_termNotifier!.value!.isEmpty() || pullToRefresh) {
         setNotifierLoading(_termNotifier);
       }
-      final result = await InvestrendTheme.datafeedHttp.fetchFundOutTerm();
+      final ResultFundOutTerm? result =
+          await InvestrendTheme.datafeedHttp.fetchFundOutTerm();
       if (result != null) {
         print(routeName + ' Future fund out term DATA : ' + result.toString());
         if (mounted) {
-          _termNotifier.setValue(result);
+          _termNotifier?.setValue(result);
         }
       } else {
         print(routeName + ' Future fund out term NO DATA');
@@ -302,8 +305,7 @@ class _ScreenFundOutState extends BaseStateNoTabs<ScreenFundOut> {
   }
 
   @override
-  Widget createAppBar(BuildContext context) {
-    // TODO: implement createAppBar
+  PreferredSizeWidget createAppBar(BuildContext context) {
     double elevation = 0.0;
     Color shadowColor = Theme.of(context).shadowColor;
     if (!InvestrendTheme.tradingHttp.is_production) {
@@ -325,8 +327,8 @@ class _ScreenFundOutState extends BaseStateNoTabs<ScreenFundOut> {
 
   Widget createBankSource(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: _bankRDNNotifier,
-      builder: (context, BankRDN value, child) {
+      valueListenable: _bankRDNNotifier!,
+      builder: (context, BankRDN? value, child) {
         Widget mainWidget = Padding(
           padding: const EdgeInsets.only(
               left: InvestrendTheme.cardPaddingGeneral,
@@ -337,27 +339,27 @@ class _ScreenFundOutState extends BaseStateNoTabs<ScreenFundOut> {
             children: [
               Text(
                 'fund_out_from_rdn'.tr(),
-                style: InvestrendTheme.of(context).more_support_w400.copyWith(
+                style: InvestrendTheme.of(context).more_support_w400?.copyWith(
                     color: InvestrendTheme.of(context).greyLighterTextColor),
               ),
               SizedBox(
                 height: 4.0,
               ),
               Text(
-                value.bank + ' - ' + value.acc_no,
+                value!.bank! + ' - ' + value.acc_no!,
                 style: InvestrendTheme.of(context).small_w400,
               ),
               SizedBox(
                 height: 4.0,
               ),
               Text(
-                value.acc_name,
+                value.acc_name!,
                 style: InvestrendTheme.of(context).more_support_w400,
               ),
             ],
           ),
         );
-        Widget noWidget = _bankRDNNotifier.currentState
+        Widget? noWidget = _bankRDNNotifier?.currentState
             .getNoWidget(onRetry: () => doUpdate(pullToRefresh: true));
         if (noWidget != null) {
           return Stack(
@@ -374,14 +376,14 @@ class _ScreenFundOutState extends BaseStateNoTabs<ScreenFundOut> {
 
   Widget createBankDestination(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: _bankAccountNotifier,
-      builder: (context, final BankAccount value, child) {
+      valueListenable: _bankAccountNotifier!,
+      builder: (context, final BankAccount? value, child) {
         bool lightTheme = Theme.of(context).brightness == Brightness.light;
 
         List<String> list = List.empty(growable: true);
-        list.add(value.bank + ' - ' + value.acc_no);
+        list.add(value!.bank! + ' - ' + value.acc_no!);
         if (value.isMultiple()) {
-          list.add(value.bank2 + ' - ' + value.acc_no2);
+          list.add(value.bank2! + ' - ' + value.acc_no2!);
         }
 
         Widget mainWidget = Column(
@@ -393,7 +395,7 @@ class _ScreenFundOutState extends BaseStateNoTabs<ScreenFundOut> {
                   right: InvestrendTheme.cardPaddingGeneral),
               child: Text(
                 'fund_out_to_account'.tr(),
-                style: InvestrendTheme.of(context).more_support_w400.copyWith(
+                style: InvestrendTheme.of(context).more_support_w400?.copyWith(
                     color: InvestrendTheme.of(context).greyLighterTextColor),
               ),
             ),
@@ -423,7 +425,7 @@ class _ScreenFundOutState extends BaseStateNoTabs<ScreenFundOut> {
                       left: InvestrendTheme.cardPaddingGeneral,
                       right: InvestrendTheme.cardPaddingGeneral),
                   child: Text(
-                    index == 0 ? value.acc_name : value.acc_name2,
+                    index == 0 ? value.acc_name! : value.acc_name2!,
                     style:
                         InvestrendTheme.of(context).more_support_w400_compact,
                   ),
@@ -448,7 +450,7 @@ class _ScreenFundOutState extends BaseStateNoTabs<ScreenFundOut> {
                   right: InvestrendTheme.cardPaddingGeneral),
               child: Text(
                 'fund_out_nominal'.tr(),
-                style: InvestrendTheme.of(context).more_support_w400.copyWith(
+                style: InvestrendTheme.of(context).more_support_w400?.copyWith(
                     color: InvestrendTheme.of(context).greyLighterTextColor),
               ),
             ),
@@ -513,15 +515,16 @@ class _ScreenFundOutState extends BaseStateNoTabs<ScreenFundOut> {
                     'fund_out_balance_rdn_t2'.tr(),
                     style: InvestrendTheme.of(context)
                         .more_support_w400
-                        .copyWith(
+                        ?.copyWith(
                             color: InvestrendTheme.of(context)
                                 .greyLighterTextColor),
                   ),
                   ValueListenableBuilder(
-                    valueListenable: _cashNotifier,
-                    builder: (context, CashPosition value, child) {
-                      Widget noWidget = _cashNotifier.currentState.getNoWidget(
-                          onRetry: () => doUpdate(pullToRefresh: true));
+                    valueListenable: _cashNotifier!,
+                    builder: (context, CashPosition? value, child) {
+                      Widget? noWidget = _cashNotifier?.currentState
+                          .getNoWidget(
+                              onRetry: () => doUpdate(pullToRefresh: true));
                       if (noWidget != null) {
                         return Center(
                           child: noWidget,
@@ -529,10 +532,10 @@ class _ScreenFundOutState extends BaseStateNoTabs<ScreenFundOut> {
                       }
                       return Text(
                         InvestrendTheme.formatMoneyDouble(
-                          value.cashBalance,
+                          value?.cashBalance,
                           prefixPlus: false,
                         ),
-                        style: InvestrendTheme.of(context).small_w400.copyWith(
+                        style: InvestrendTheme.of(context).small_w400?.copyWith(
                             color: Theme.of(context).colorScheme.secondary),
                       );
                     },
@@ -549,12 +552,12 @@ class _ScreenFundOutState extends BaseStateNoTabs<ScreenFundOut> {
                   right: InvestrendTheme.cardPaddingGeneral),
               child: Text(
                 'fund_out_date'.tr(),
-                style: InvestrendTheme.of(context).more_support_w400.copyWith(
+                style: InvestrendTheme.of(context).more_support_w400?.copyWith(
                     color: InvestrendTheme.of(context).greyLighterTextColor),
               ),
             ),
             ValueListenableBuilder(
-              valueListenable: _dateNotifier,
+              valueListenable: _dateNotifier!,
               builder: (context, value, child) {
                 return TextButton(
                   style: TextButton.styleFrom(
@@ -565,8 +568,8 @@ class _ScreenFundOutState extends BaseStateNoTabs<ScreenFundOut> {
                           bottom: InvestrendTheme.cardPadding),
                       alignment: Alignment.centerLeft),
                   child: Text(
-                    value,
-                    style: Theme.of(context).textTheme.button.copyWith(
+                    value as String,
+                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
                         color: InvestrendTheme.of(context).investrendPurple),
                   ),
                   onPressed: () => selectDate(context),
@@ -582,7 +585,7 @@ class _ScreenFundOutState extends BaseStateNoTabs<ScreenFundOut> {
                   right: InvestrendTheme.cardPaddingGeneral),
               child: Text(
                 'fund_out_description'.tr(),
-                style: InvestrendTheme.of(context).more_support_w400.copyWith(
+                style: InvestrendTheme.of(context).more_support_w400?.copyWith(
                     color: InvestrendTheme.of(context).greyLighterTextColor),
               ),
             ),
@@ -611,7 +614,7 @@ class _ScreenFundOutState extends BaseStateNoTabs<ScreenFundOut> {
             ),
           ],
         );
-        Widget noWidget = _bankAccountNotifier.currentState
+        Widget? noWidget = _bankAccountNotifier?.currentState
             .getNoWidget(onRetry: () => doUpdate(pullToRefresh: true));
         if (noWidget != null) {
           return Stack(
@@ -636,18 +639,18 @@ class _ScreenFundOutState extends BaseStateNoTabs<ScreenFundOut> {
       return;
     }
     User user = context.read(dataHolderChangeNotifier).user;
-    Account active = user.getAccount(notifier.index);
+    Account? active = user.getAccount(notifier.index);
     if (active == null) {
       InvestrendTheme.of(context)
           .showSnackBar(context, 'no_active_account_found_message'.tr());
       return;
     }
-    if (_bankRDNNotifier.value.isEmpty()) {
+    if (_bankRDNNotifier!.value!.isEmpty()) {
       InvestrendTheme.of(context)
           .showSnackBar(context, 'no_source_bank_found_message'.tr());
       return;
     }
-    if (_bankAccountNotifier.value.isEmpty()) {
+    if (_bankAccountNotifier!.value!.isEmpty()) {
       InvestrendTheme.of(context)
           .showSnackBar(context, 'no_destination_bank_found_message'.tr());
       return;
@@ -663,41 +666,41 @@ class _ScreenFundOutState extends BaseStateNoTabs<ScreenFundOut> {
     }
 
     bool firstBank = _bankDestinationNotifier.value == 0;
-    String email = user.email;
-    String realname = user.realname;
+    String? email = user.email;
+    String? realname = user.realname;
     String account = active.accountcode;
     String amount = _priceTextEditingController.text;
-    String rdnbank = _bankRDNNotifier.value.bank;
-    String rdnno = _bankRDNNotifier.value.acc_no;
-    String rdnname = _bankRDNNotifier.value.acc_name;
-    String bank = firstBank
-        ? _bankAccountNotifier.value.bank
-        : _bankAccountNotifier.value.bank2;
-    String bankno = firstBank
-        ? _bankAccountNotifier.value.acc_no
-        : _bankAccountNotifier.value.acc_no2;
-    String bankname = firstBank
-        ? _bankAccountNotifier.value.acc_name
-        : _bankAccountNotifier.value.acc_name2;
+    String? rdnbank = _bankRDNNotifier?.value?.bank;
+    String? rdnno = _bankRDNNotifier?.value?.acc_no;
+    String? rdnname = _bankRDNNotifier?.value?.acc_name;
+    String? bank = firstBank
+        ? _bankAccountNotifier?.value?.bank
+        : _bankAccountNotifier?.value?.bank2;
+    String? bankno = firstBank
+        ? _bankAccountNotifier?.value?.acc_no
+        : _bankAccountNotifier?.value?.acc_no2;
+    String? bankname = firstBank
+        ? _bankAccountNotifier?.value?.acc_name
+        : _bankAccountNotifier?.value?.acc_name2;
 
-    String date = _dateNotifier.value;
+    String date = _dateNotifier!.value;
     String message = _instructionTextEditingController.text;
 
-    String platform = InvestrendTheme.of(context).applicationPlatform;
-    String version = InvestrendTheme.of(context).applicationVersion;
+    String? platform = InvestrendTheme.of(context).applicationPlatform;
+    String? version = InvestrendTheme.of(context).applicationVersion;
     showLoading(context, text: 'loading_submit_fund_out'.tr());
     try {
-      final result = await InvestrendTheme.tradingHttp.submitFundOut(
-          email,
-          realname,
+      final String? result = await InvestrendTheme.tradingHttp.submitFundOut(
+          email!,
+          realname!,
           account,
           amount,
-          rdnbank,
-          rdnno,
-          rdnname,
-          bank,
-          bankno,
-          bankname,
+          rdnbank!,
+          rdnno!,
+          rdnname!,
+          bank!,
+          bankno!,
+          bankname!,
           date,
           message,
           platform,
@@ -734,7 +737,7 @@ class _ScreenFundOutState extends BaseStateNoTabs<ScreenFundOut> {
     return ValueListenableBuilder(
       valueListenable: _showButtonSendNotifier,
       builder: (context, value, child) {
-        if (value) {
+        if (value as bool) {
           return Container(
             width: double.maxFinite,
             //color: Colors.yellow,
@@ -786,8 +789,11 @@ class _ScreenFundOutState extends BaseStateNoTabs<ScreenFundOut> {
                     top: 10.0),
                 child: Text(
                   'choose_account_label'.tr(),
-                  style: InvestrendTheme.of(context).more_support_w400.copyWith(
-                      color: InvestrendTheme.of(context).greyLighterTextColor),
+                  style: InvestrendTheme.of(context)
+                      .more_support_w400
+                      ?.copyWith(
+                          color:
+                              InvestrendTheme.of(context).greyLighterTextColor),
                 ),
               ),
               ButtonAccount(),
@@ -831,9 +837,9 @@ class _ScreenFundOutState extends BaseStateNoTabs<ScreenFundOut> {
                 ),
               ),
               ValueListenableBuilder(
-                valueListenable: _termNotifier,
-                builder: (context, value, child) {
-                  Widget noWidget = _termNotifier.currentState.getNoWidget(
+                valueListenable: _termNotifier!,
+                builder: (context, ResultFundOutTerm? value, child) {
+                  Widget? noWidget = _termNotifier?.currentState.getNoWidget(
                       onRetry: () => doUpdate(pullToRefresh: true));
                   if (noWidget != null) {
                     return Center(
@@ -846,12 +852,13 @@ class _ScreenFundOutState extends BaseStateNoTabs<ScreenFundOut> {
                         left: InvestrendTheme.cardPaddingGeneral,
                         right: InvestrendTheme.cardPaddingGeneral),
                     child: FormatTextBullet(
-                      value.getTerm(
-                          language:
-                              EasyLocalization.of(context).locale.languageCode),
+                      value!.getTerm(
+                          language: EasyLocalization.of(context)!
+                              .locale
+                              .languageCode),
                       style: InvestrendTheme.of(context)
                           .more_support_w400
-                          .copyWith(
+                          ?.copyWith(
                               color: InvestrendTheme.of(context)
                                   .greyDarkerTextColor),
                     ),
@@ -960,7 +967,6 @@ class _ScreenFundOutState extends BaseStateNoTabs<ScreenFundOut> {
 
   @override
   void onInactive() {
-    // TODO: implement onInactive
     FocusScope.of(context).requestFocus(new FocusNode());
   }
 }

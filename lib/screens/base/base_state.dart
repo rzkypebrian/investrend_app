@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_null_comparison, override_on_non_overriding_member, must_call_super, non_constant_identifier_names
+
 import 'package:Investrend/component/bottom_sheet/bottom_sheet_alert.dart';
 import 'package:Investrend/objects/class_value_notifier.dart';
 import 'package:Investrend/objects/data_object.dart';
@@ -15,40 +17,46 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:visibility_aware_state/visibility_aware_state.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-abstract class BaseStateWithTabs<T extends StatefulWidget> extends VisibilityAwareState with SingleTickerProviderStateMixin {
+abstract class BaseStateWithTabs<T extends StatefulWidget>
+    extends VisibilityAwareState with SingleTickerProviderStateMixin {
   final ValueNotifier<bool> loadingNotifier = ValueNotifier(false);
-  TabController pTabController;
+  TabController? pTabController;
   bool active = false;
   final String routeName;
   final bool notifyStockChange;
   final bool screenAware;
   bool _route_active = false;
-  final BaseValueNotifier<bool> visibilityNotifier; // if there is visibilityNotifier, then this screen will ignore VisibilityAwareState event
-  BaseStateWithTabs(this.routeName, {this.notifyStockChange = false, this.screenAware = false, this.visibilityNotifier});
+  final BaseValueNotifier<bool>?
+      visibilityNotifier; // if there is visibilityNotifier, then this screen will ignore VisibilityAwareState event
+  BaseStateWithTabs(
+      this.routeName, this.pTabController, this._stockChangeListener,
+      {this.notifyStockChange = false,
+      this.screenAware = false,
+      this.visibilityNotifier});
 
   // harus set notifyStockChange = true saat constructor super class
   void onStockChanged(Stock newStock) {}
 
   void onVisibilityChanged(WidgetVisibility visibility) {
-    if(visibilityNotifier != null){
-      print('*** onVisibilityChanged ignored for: ${this.routeName}  caused by override of visibilityNotifier.');
-
-    }else {
-      // TODO: Use visibility
+    if (visibilityNotifier != null) {
+      print(
+          '*** onVisibilityChanged ignored for: ${this.routeName}  caused by override of visibilityNotifier.');
+    } else {
       switch (visibility) {
         case WidgetVisibility.VISIBLE:
-        // Like Android's Activity.onResume()
+          // Like Android's Activity.onResume()
           print('*** ScreenVisibility.VISIBLE: ${this.routeName}');
           _onActiveBase(caller: 'onVisibilityChanged.VISIBLE');
           break;
         case WidgetVisibility.INVISIBLE:
-        // Like Android's Activity.onPause()
+          // Like Android's Activity.onPause()
           print('*** ScreenVisibility.INVISIBLE: ${this.routeName}');
           _onInactiveBase(caller: 'onVisibilityChanged.INVISIBLE');
           break;
         case WidgetVisibility.GONE:
-        // Like Android's Activity.onDestroy()
-          print('*** ScreenVisibility.GONE: ${this.routeName}   mounted : $mounted');
+          // Like Android's Activity.onDestroy()
+          print(
+              '*** ScreenVisibility.GONE: ${this.routeName}   mounted : $mounted');
           if (active && mounted) {
             _onInactiveBase(caller: 'onVisibilityChanged.GONE');
           }
@@ -60,11 +68,12 @@ abstract class BaseStateWithTabs<T extends StatefulWidget> extends VisibilityAwa
   }
 
   void _onActiveBase({String caller = ''}) {
-    if(screenAware && !_route_active){
-      print(routeName + ' cancelled onActive  $caller caused by  _route_active : $_route_active');
+    if (screenAware && !_route_active) {
+      print(routeName +
+          ' cancelled onActive  $caller caused by  _route_active : $_route_active');
       return;
     }
-    if(active){
+    if (active) {
       print(routeName + ' onActive  $caller  aborted, already active');
       return;
     }
@@ -74,11 +83,12 @@ abstract class BaseStateWithTabs<T extends StatefulWidget> extends VisibilityAwa
   }
 
   void _onInactiveBase({String caller = ''}) {
-    if(screenAware && _route_active){
-      print(routeName + ' cancelled onInactive  $caller caused by  _route_active : $_route_active');
+    if (screenAware && _route_active) {
+      print(routeName +
+          ' cancelled onInactive  $caller caused by  _route_active : $_route_active');
       return;
     }
-    if(!active){
+    if (!active) {
       print(routeName + ' onInactive  $caller  aborted, already inactive');
       return;
     }
@@ -91,8 +101,8 @@ abstract class BaseStateWithTabs<T extends StatefulWidget> extends VisibilityAwa
 
   void onInactive();
 
-  void onRefreshCheckPageStatus(){
-    if(!active){
+  void onRefreshCheckPageStatus() {
+    if (!active) {
       active = true;
       onActive();
     }
@@ -109,26 +119,27 @@ abstract class BaseStateWithTabs<T extends StatefulWidget> extends VisibilityAwa
     });
   }
 
-  void showLoading(BuildContext context, {String text}) {
+  void showLoading(BuildContext context, {String? text}) {
     loadingNotifier.value = false;
     showModalBottomSheet(
         isScrollControlled: true,
         isDismissible: false,
         enableDrag: false,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(topLeft: Radius.circular(24.0), topRight: Radius.circular(24.0)),
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(24.0), topRight: Radius.circular(24.0)),
         ),
         //backgroundColor: Colors.transparent,
         context: context,
         builder: (context) {
           return LoadingBottomSheet(
             loadingNotifier,
-            text: text,
+            text: text!,
           );
         });
   }
 
-  void setNotifierError(BaseValueNotifier notifier, String error) {
+  void setNotifierError(BaseValueNotifier? notifier, String error) {
     if (mounted && notifier != null) {
       //notifier.setError(message: error);
 
@@ -141,13 +152,13 @@ abstract class BaseStateWithTabs<T extends StatefulWidget> extends VisibilityAwa
     }
   }
 
-  void setNotifierNoData(BaseValueNotifier notifier) {
+  void setNotifierNoData(BaseValueNotifier? notifier) {
     if (mounted && notifier != null) {
       notifier.setNoData();
     }
   }
 
-  void setNotifierLoading(BaseValueNotifier notifier) {
+  void setNotifierLoading(BaseValueNotifier? notifier) {
     if (mounted && notifier != null) {
       notifier.setLoading();
     }
@@ -167,7 +178,8 @@ abstract class BaseStateWithTabs<T extends StatefulWidget> extends VisibilityAwa
           InvestrendTheme.of(context).showSnackBar(context, error.message());
         } else {
           String networkErrorLabel = 'network_error_label'.tr();
-          networkErrorLabel = networkErrorLabel.replaceFirst("#CODE#", error.code.toString());
+          networkErrorLabel =
+              networkErrorLabel.replaceFirst("#CODE#", error.code.toString());
           InvestrendTheme.of(context).showSnackBar(context, networkErrorLabel);
         }
       } else {
@@ -229,20 +241,23 @@ abstract class BaseStateWithTabs<T extends StatefulWidget> extends VisibilityAwa
     );
   }
   */
-  VoidCallback _visibilityListener(){
-    print(routeName+' _visibilityListener  mounted : $mounted  notifier.value : '+visibilityNotifier.value.toString()+'  current state is_active : $active');
-    if(mounted){
-      if(visibilityNotifier.value){
-        if(!active){
+  VoidCallback? _visibilityListener() {
+    print(routeName +
+        ' _visibilityListener  mounted : $mounted  notifier.value : ' +
+        visibilityNotifier!.value.toString() +
+        '  current state is_active : $active');
+    if (mounted) {
+      if (visibilityNotifier!.value!) {
+        if (!active) {
           _onActiveBase(caller: 'visibilityNotifier ');
         }
-      }else{
+      } else {
         if (active) {
           _onInactiveBase(caller: 'visibilityNotifier');
         }
-
       }
     }
+    return null;
   }
 
   @override
@@ -250,10 +265,11 @@ abstract class BaseStateWithTabs<T extends StatefulWidget> extends VisibilityAwa
     super.initState();
     pTabController = new TabController(vsync: this, length: tabsLength());
 
-    if(visibilityNotifier != null){
-      visibilityNotifier.addListener(_visibilityListener);
+    if (visibilityNotifier != null) {
+      visibilityNotifier?.addListener(_visibilityListener);
     }
   }
+
   void _onRouteActiveBase({String caller = ''}) {
     _route_active = true;
     print(routeName + ' _onRouteActiveBase  route_active : $_route_active');
@@ -266,6 +282,7 @@ abstract class BaseStateWithTabs<T extends StatefulWidget> extends VisibilityAwa
     print(routeName + ' _onRouteInactiveBase  route_active : $_route_active');
     _onInactiveBase(caller: '_onRouteInactiveBase');
   }
+
   @override
   Widget build(BuildContext context) {
     double paddingBottom = MediaQuery.of(context).viewPadding.bottom;
@@ -312,43 +329,45 @@ abstract class BaseStateWithTabs<T extends StatefulWidget> extends VisibilityAwa
 
   int tabsLength();
 
-  Widget createTabs(BuildContext context);
+  PreferredSizeWidget? createTabs(BuildContext context);
 
   //Widget createBody(BuildContext context);
   Widget createBody(BuildContext context, double paddingBottom);
 
-  Widget createAppBar(BuildContext context);
+  PreferredSizeWidget? createAppBar(BuildContext context);
 
-  Widget createBottomSheet(BuildContext context, double paddingBottom) {
+  Widget? createBottomSheet(BuildContext context, double paddingBottom) {
     return null;
   }
 
-  void hideKeyboard({BuildContext context}) {
+  void hideKeyboard({BuildContext? context}) {
     if (context == null) {
       context = this.context;
     }
     if (mounted && context != null) {
       FocusScope.of(context).requestFocus(new FocusNode());
     } else {
-      print('hideKeyboard aborted caused by -->  mounted : $mounted  context : ' + (context != null ? 'OK' : 'NULL'));
+      print(
+          'hideKeyboard aborted caused by -->  mounted : $mounted  context : ' +
+              (context != null ? 'OK' : 'NULL'));
     }
   }
 
   @override
   void dispose() {
-    pTabController.dispose();
+    pTabController?.dispose();
     loadingNotifier.dispose();
     final container = ProviderContainer();
     if (_stockChangeListener != null) {
-      container.read(pageChangeNotifier).removeListener(_stockChangeListener);
+      container.read(pageChangeNotifier).removeListener(_stockChangeListener!);
     }
-    if(visibilityNotifier != null){
-      visibilityNotifier.removeListener(_visibilityListener);
+    if (visibilityNotifier != null) {
+      visibilityNotifier?.removeListener(_visibilityListener);
     }
     super.dispose();
   }
 
-  VoidCallback _stockChangeListener;
+  VoidCallback? _stockChangeListener;
 
   @override
   void didChangeDependencies() {
@@ -356,22 +375,27 @@ abstract class BaseStateWithTabs<T extends StatefulWidget> extends VisibilityAwa
 
     if (notifyStockChange) {
       if (_stockChangeListener != null) {
-        context.read(primaryStockChangeNotifier).removeListener(_stockChangeListener);
+        context
+            .read(primaryStockChangeNotifier)
+            .removeListener(_stockChangeListener!);
       } else {
         _stockChangeListener = () {
           if (mounted) {
-            Stock newStock = context.read(primaryStockChangeNotifier).stock;
-            print(routeName + ' onStockChanged newStock : ' + newStock?.code);
+            Stock? newStock = context.read(primaryStockChangeNotifier).stock;
+            print(routeName + ' onStockChanged newStock : ' + newStock!.code!);
             onStockChanged(newStock);
           }
         };
       }
-      context.read(primaryStockChangeNotifier).addListener(_stockChangeListener);
+      context
+          .read(primaryStockChangeNotifier)
+          .addListener(_stockChangeListener!);
     }
   }
 }
 
-abstract class BaseStateNoTabs<T extends StatefulWidget> extends VisibilityAwareState {
+abstract class BaseStateNoTabs<T extends StatefulWidget>
+    extends VisibilityAwareState {
   final ValueNotifier<bool> loadingNotifier = ValueNotifier(false);
   final String routeName;
   bool active = false;
@@ -379,55 +403,64 @@ abstract class BaseStateNoTabs<T extends StatefulWidget> extends VisibilityAware
   final bool overrideBackButton;
   bool _route_active = false;
 
-  BaseValueNotifier<bool> visibilityNotifier; // if there is visibilityNotifier, then this screen will ignore VisibilityAwareState event
-  BaseStateNoTabs(this.routeName, {this.screenAware = false, this.overrideBackButton=false, this.visibilityNotifier});
+  BaseValueNotifier<bool>?
+      visibilityNotifier; // if there is visibilityNotifier, then this screen will ignore VisibilityAwareState event
+  BaseStateNoTabs(this.routeName,
+      {this.screenAware = false,
+      this.overrideBackButton = false,
+      this.visibilityNotifier});
 
   void closeLoading() {
     loadingNotifier.value = true;
   }
 
-
-  VoidCallback _visibilityListener(){
-    print(routeName+' _visibilityListener  mounted : $mounted  notifier.value : '+visibilityNotifier.value.toString()+'  current state is_active : $active');
-    if(mounted){
-      if(visibilityNotifier.value){
-        if(!active){
+  VoidCallback? _visibilityListener() {
+    print(routeName +
+        ' _visibilityListener  mounted : $mounted  notifier.value : ' +
+        visibilityNotifier!.value.toString() +
+        '  current state is_active : $active');
+    if (mounted) {
+      if (visibilityNotifier!.value!) {
+        if (!active) {
           _onActiveBase(caller: 'visibilityNotifier ');
         }
-      }else{
+      } else {
         if (active) {
           _onInactiveBase(caller: 'visibilityNotifier');
         }
-
       }
     }
+    return null;
   }
-  DateTime pre_backpress;
+
+  DateTime? pre_backpress;
   @override
   void initState() {
     super.initState();
-    pre_backpress = DateTime.now().add(Duration(seconds: -5)); // - 5 detik sebelumnya
-    
-    if(visibilityNotifier != null){
-      visibilityNotifier.addListener(_visibilityListener);
+    pre_backpress =
+        DateTime.now().add(Duration(seconds: -5)); // - 5 detik sebelumnya
+
+    if (visibilityNotifier != null) {
+      visibilityNotifier?.addListener(_visibilityListener);
     }
   }
 
-  void showLoading(BuildContext context, {String text}) {
+  void showLoading(BuildContext context, {String? text}) {
     loadingNotifier.value = false;
     showModalBottomSheet(
         isScrollControlled: true,
         isDismissible: false,
         enableDrag: false,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(topLeft: Radius.circular(24.0), topRight: Radius.circular(24.0)),
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(24.0), topRight: Radius.circular(24.0)),
         ),
         //backgroundColor: Colors.transparent,
         context: context,
         builder: (context) {
           return LoadingBottomSheet(
             loadingNotifier,
-            text: text,
+            text: text!,
           );
         });
   }
@@ -457,7 +490,8 @@ abstract class BaseStateNoTabs<T extends StatefulWidget> extends VisibilityAware
           InvestrendTheme.of(context).showSnackBar(context, error.message());
         } else {
           String networkErrorLabel = 'network_error_label'.tr();
-          networkErrorLabel = networkErrorLabel.replaceFirst("#CODE#", error.code.toString());
+          networkErrorLabel =
+              networkErrorLabel.replaceFirst("#CODE#", error.code.toString());
           InvestrendTheme.of(context).showSnackBar(context, networkErrorLabel);
         }
       } else {
@@ -468,7 +502,7 @@ abstract class BaseStateNoTabs<T extends StatefulWidget> extends VisibilityAware
     }
   }
 
-  void setNotifierError(BaseValueNotifier notifier, String error) {
+  void setNotifierError(BaseValueNotifier? notifier, String error) {
     if (mounted && notifier != null) {
       //notifier.setError(message: error);
       String errorText = Utils.removeServerAddress(error);
@@ -481,56 +515,57 @@ abstract class BaseStateNoTabs<T extends StatefulWidget> extends VisibilityAware
     }
   }
 
-  void setNotifierNoData(BaseValueNotifier notifier) {
+  void setNotifierNoData(BaseValueNotifier? notifier) {
     if (mounted && notifier != null) {
       notifier.setNoData();
     }
   }
 
-  void setNotifierLoading(BaseValueNotifier notifier) {
+  void setNotifierLoading(BaseValueNotifier? notifier) {
     if (mounted && notifier != null) {
       notifier.setLoading();
     }
   }
 
-  void hideKeyboard({BuildContext context}) {
+  void hideKeyboard({BuildContext? context}) {
     if (context == null) {
       context = this.context;
     }
     if (mounted && context != null) {
       FocusScope.of(context).requestFocus(new FocusNode());
     } else {
-      print(routeName + '.hideKeyboard aborted caused by -->  mounted : $mounted  context : ' + (context != null ? 'OK' : 'NULL'));
+      print(routeName +
+          '.hideKeyboard aborted caused by -->  mounted : $mounted  context : ' +
+          (context != null ? 'OK' : 'NULL'));
     }
   }
 
   void onVisibilityChanged(WidgetVisibility visibility) {
-    if(visibilityNotifier != null){
-      print('*** onVisibilityChanged ignored for: ${this.routeName}  caused by override of visibilityNotifier.');
-
-    }else{
-      // TODO: Use visibility
+    if (visibilityNotifier != null) {
+      print(
+          '*** onVisibilityChanged ignored for: ${this.routeName}  caused by override of visibilityNotifier.');
+    } else {
       switch (visibility) {
         case WidgetVisibility.VISIBLE:
-        // Like Android's Activity.onResume()
+          // Like Android's Activity.onResume()
           print('*** ScreenVisibility.VISIBLE: ${this.routeName}');
           _onActiveBase(caller: 'onVisibilityChanged.VISIBLE');
           break;
         case WidgetVisibility.INVISIBLE:
-        // Like Android's Activity.onPause()
+          // Like Android's Activity.onPause()
           print('*** ScreenVisibility.INVISIBLE: ${this.routeName}');
           _onInactiveBase(caller: 'onVisibilityChanged.INVISIBLE');
           break;
         case WidgetVisibility.GONE:
-        // Like Android's Activity.onDestroy()
-          print('*** ScreenVisibility.GONE: ${this.routeName}   mounted : $mounted');
+          // Like Android's Activity.onDestroy()
+          print(
+              '*** ScreenVisibility.GONE: ${this.routeName}   mounted : $mounted');
           if (mounted) {
             _onInactiveBase(caller: 'onVisibilityChanged.GONE');
           }
           break;
       }
     }
-
 
     super.onVisibilityChanged(visibility);
   }
@@ -588,7 +623,8 @@ abstract class BaseStateNoTabs<T extends StatefulWidget> extends VisibilityAware
   */
 
   void updateAccountCashPosition(BuildContext context) {
-    bool hasAccount = context.read(dataHolderChangeNotifier).user.accountSize() > 0;
+    bool hasAccount =
+        context.read(dataHolderChangeNotifier).user.accountSize() > 0;
     //int accountSize = context.read(dataHolderChangeNotifier).user.accountSize();
     //if (accountSize > 0) {
     if (hasAccount) {
@@ -596,42 +632,60 @@ abstract class BaseStateNoTabs<T extends StatefulWidget> extends VisibilityAware
       // InvestrendTheme.of(context).user.accounts.forEach((account) {
       //   listAccountCode.add(account.accountcode);
       // });
-      context.read(dataHolderChangeNotifier).user.accounts.forEach((account) {
+      context.read(dataHolderChangeNotifier).user.accounts?.forEach((account) {
         listAccountCode.add(account.accountcode);
       });
 
       print(routeName + ' try accountStockPosition');
-      final accountStockPosition = InvestrendTheme.tradingHttp.accountStockPosition(
-          '' /*account.brokercode*/,
-          listAccountCode,
-          context.read(dataHolderChangeNotifier).user.username,
-          InvestrendTheme.of(context).applicationPlatform,
-          InvestrendTheme.of(context).applicationVersion);
+      final accountStockPosition = InvestrendTheme.tradingHttp
+          .accountStockPosition(
+              '' /*account.brokercode*/,
+              listAccountCode,
+              context.read(dataHolderChangeNotifier).user.username!,
+              InvestrendTheme.of(context).applicationPlatform,
+              InvestrendTheme.of(context).applicationVersion);
       accountStockPosition.then((value) {
         if (mounted) {
-          DebugWriter.information(routeName + ' Got accountStockPosition  accountStockPosition.size : ' + value.length.toString());
-          AccountStockPosition first = (value != null && value.length > 0) ? value.first : null;
+          DebugWriter.information(routeName +
+              ' Got accountStockPosition  accountStockPosition.size : ' +
+              value.length.toString());
+          AccountStockPosition? first =
+              (value != null && value.length > 0) ? value.first : null;
           if (first != null && first.ignoreThis()) {
             // ignore in aja
-            print(routeName + ' accountStockPosition ignored.  message : ' + first.message);
+            print(routeName +
+                ' accountStockPosition ignored.  message : ' +
+                first.message);
           } else {
             context.read(accountsInfosNotifier).updateList(value);
 
-            Account activeAccount = context.read(dataHolderChangeNotifier).user.getAccount(context.read(accountChangeNotifier).index);
+            Account? activeAccount = context
+                .read(dataHolderChangeNotifier)
+                .user
+                .getAccount(context.read(accountChangeNotifier).index);
             if (activeAccount != null) {
-              AccountStockPosition accountInfo = context.read(accountsInfosNotifier).getInfo(activeAccount.accountcode);
+              AccountStockPosition? accountInfo = context
+                  .read(accountsInfosNotifier)
+                  .getInfo(activeAccount.accountcode);
               if (accountInfo != null) {
                 //context.read(buyRdnBuyingPowerChangeNotifier).update(accountInfo.outstandingLimit, accountInfo.rdnBalance);
                 //context.read(buyRdnBuyingPowerChangeNotifier).update(accountInfo.outstandingLimit, accountInfo.cashBalance);
-                context.read(buyRdnBuyingPowerChangeNotifier).update(accountInfo.outstandingLimit, accountInfo.availableCash, accountInfo.creditLimit);
+                context.read(buyRdnBuyingPowerChangeNotifier).update(
+                    accountInfo.outstandingLimit,
+                    accountInfo.availableCash,
+                    accountInfo.creditLimit);
               }
             }
           }
         } else {
-          DebugWriter.information('NOT mounted --> Got accountStockPosition  accountStockPosition.size : ' + value.length.toString());
+          DebugWriter.information(
+              'NOT mounted --> Got accountStockPosition  accountStockPosition.size : ' +
+                  value.length.toString());
         }
       }).onError((error, stackTrace) {
-        DebugWriter.information(routeName+' accountStockPosition Exception : ' + error.toString());
+        DebugWriter.information(routeName +
+            ' accountStockPosition Exception : ' +
+            error.toString());
         handleNetworkError(context, error);
         /*
         if (error is TradingHttpException) {
@@ -727,9 +781,9 @@ abstract class BaseStateNoTabs<T extends StatefulWidget> extends VisibilityAware
   }
   */
   void _onActiveBase({String caller = ''}) {
-
-    if(screenAware && !_route_active){
-      print(routeName + ' cancelled onActive  $caller caused by  _route_active : $_route_active');
+    if (screenAware && !_route_active) {
+      print(routeName +
+          ' cancelled onActive  $caller caused by  _route_active : $_route_active');
       return;
     }
     active = true;
@@ -738,8 +792,9 @@ abstract class BaseStateNoTabs<T extends StatefulWidget> extends VisibilityAware
   }
 
   void _onInactiveBase({String caller = ''}) {
-    if(screenAware && _route_active){
-      print(routeName + ' cancelled onInactive  $caller caused by  _route_active : $_route_active');
+    if (screenAware && _route_active) {
+      print(routeName +
+          ' cancelled onInactive  $caller caused by  _route_active : $_route_active');
       return;
     }
     active = false;
@@ -767,25 +822,27 @@ abstract class BaseStateNoTabs<T extends StatefulWidget> extends VisibilityAware
     _onInactiveBase(caller: '_onRouteInactiveBase');
   }
 
-  Future<bool> onBackPressed(BuildContext context) async{
-
-    if(context.read(dataHolderChangeNotifier).isLogged){
-      final timegap = DateTime.now().difference(pre_backpress);
+  Future<bool> onBackPressed(BuildContext context) async {
+    if (context.read(dataHolderChangeNotifier).isLogged) {
+      final timegap = DateTime.now().difference(pre_backpress!);
       final cantExit = timegap >= Duration(seconds: 3);
       print('cantExit : $cantExit');
       pre_backpress = DateTime.now();
-      if(cantExit){
+      if (cantExit) {
         //show snackbar
-        final snack = SnackBar(content: Text('exit_back_button_instruction'.tr()),duration: Duration(seconds: 3),);
+        final snack = SnackBar(
+          content: Text('exit_back_button_instruction'.tr()),
+          duration: Duration(seconds: 3),
+        );
         ScaffoldMessenger.of(context).showSnackBar(snack);
         return false; // false will do nothing when back press
-      }else{
+      } else {
         SystemNavigator.pop();
-        return true;   // true will exit the app
+        return true; // true will exit the app
       }
-    }else{
+    } else {
       SystemNavigator.pop();
-      return true;   // true will exit the app
+      return true; // true will exit the app
     }
     /*
     return showDialog(
@@ -842,15 +899,16 @@ abstract class BaseStateNoTabs<T extends StatefulWidget> extends VisibilityAware
     );
 
     if (screenAware) {
-
-      if(overrideBackButton){
-        return WillPopScope(onWillPop: ()=>onBackPressed(context),child: ScreenAware(
-          routeName: routeName,
-          child: mainWidget,
-          onActive: _onRouteActiveBase,
-          onInactive: _onRouteInactiveBase,
-        ));
-      }else{
+      if (overrideBackButton) {
+        return WillPopScope(
+            onWillPop: () => onBackPressed(context),
+            child: ScreenAware(
+              routeName: routeName,
+              child: mainWidget,
+              onActive: _onRouteActiveBase,
+              onInactive: _onRouteInactiveBase,
+            ));
+      } else {
         return ScreenAware(
           routeName: routeName,
           child: mainWidget,
@@ -859,12 +917,12 @@ abstract class BaseStateNoTabs<T extends StatefulWidget> extends VisibilityAware
         );
       }
     } else {
-      if(overrideBackButton){
-        return WillPopScope(onWillPop: ()=>onBackPressed(context),child: mainWidget);
-      }else{
+      if (overrideBackButton) {
+        return WillPopScope(
+            onWillPop: () => onBackPressed(context), child: mainWidget);
+      } else {
         return mainWidget;
       }
-      
     }
     /*
     return ScreenAware(
@@ -882,30 +940,36 @@ abstract class BaseStateNoTabs<T extends StatefulWidget> extends VisibilityAware
     */
   }
 
-  Widget createBottomNavigationBar(BuildContext context) {
+  Widget? createBottomNavigationBar(BuildContext context) {
     return null;
   }
 
   Widget createBody(BuildContext context, double paddingBottom);
 
-  Widget createAppBar(BuildContext context);
+  PreferredSizeWidget? createAppBar(BuildContext context);
 
-  Widget createBottomSheet(BuildContext context, double paddingBottom) {
+  Widget? createBottomSheet(BuildContext context, double paddingBottom) {
     return null;
   }
 }
 
-abstract class BaseStateNoTabsWithParentTab<T extends StatefulWidget> extends VisibilityAwareState
+abstract class BaseStateNoTabsWithParentTab<T extends StatefulWidget>
+    extends VisibilityAwareState
     with AutomaticKeepAliveClientMixin<StatefulWidget> {
   final String routeName;
   bool active = false;
-  final TabController tabController;
+  final TabController? tabController;
   final int tabIndex;
   final int parentTabIndex;
   final bool notifyStockChange;
-  final ValueNotifier<bool> visibilityNotifier; // if there is visibilityNotifier, then this screen will ignore VisibilityAwareState event
+  final ValueNotifier<bool>?
+      visibilityNotifier; // if there is visibilityNotifier, then this screen will ignore VisibilityAwareState event
   ScrollController pScrollController = ScrollController();
-  BaseStateNoTabsWithParentTab(this.routeName, this.tabIndex, this.tabController, {this.parentTabIndex = -1, this.notifyStockChange = false, this.visibilityNotifier});
+  BaseStateNoTabsWithParentTab(
+      this.routeName, this.tabIndex, this.tabController,
+      {this.parentTabIndex = -1,
+      this.notifyStockChange = false,
+      this.visibilityNotifier});
 
   // BaseStateNoTabsWithParentTab(this.routeName);
   @override
@@ -923,7 +987,8 @@ abstract class BaseStateNoTabsWithParentTab<T extends StatefulWidget> extends Vi
   }
 
   void updateAccountCashPosition(BuildContext context) {
-    bool hasAccount = context.read(dataHolderChangeNotifier).user.accountSize() > 0;
+    bool hasAccount =
+        context.read(dataHolderChangeNotifier).user.accountSize() > 0;
     //int accountSize = context.read(dataHolderChangeNotifier).user.accountSize();
     //if (accountSize > 0) {
     if (hasAccount) {
@@ -931,42 +996,60 @@ abstract class BaseStateNoTabsWithParentTab<T extends StatefulWidget> extends Vi
       // InvestrendTheme.of(context).user.accounts.forEach((account) {
       //   listAccountCode.add(account.accountcode);
       // });
-      context.read(dataHolderChangeNotifier).user.accounts.forEach((account) {
+      context.read(dataHolderChangeNotifier).user.accounts?.forEach((account) {
         listAccountCode.add(account.accountcode);
       });
 
       print(routeName + ' try accountStockPosition');
-      final accountStockPosition = InvestrendTheme.tradingHttp.accountStockPosition(
-          '' /*account.brokercode*/,
-          listAccountCode,
-          context.read(dataHolderChangeNotifier).user.username,
-          InvestrendTheme.of(context).applicationPlatform,
-          InvestrendTheme.of(context).applicationVersion);
-      accountStockPosition.then((value) {
+      final accountStockPosition = InvestrendTheme.tradingHttp
+          .accountStockPosition(
+              '' /*account.brokercode*/,
+              listAccountCode,
+              context.read(dataHolderChangeNotifier).user.username!,
+              InvestrendTheme.of(context).applicationPlatform,
+              InvestrendTheme.of(context).applicationVersion);
+      accountStockPosition.then((List<AccountStockPosition>? value) {
         if (mounted) {
-          DebugWriter.information(routeName + ' Got accountStockPosition  accountStockPosition.size : ' + value.length.toString());
-          AccountStockPosition first = (value != null && value.length > 0) ? value.first : null;
+          DebugWriter.information(routeName +
+              ' Got accountStockPosition  accountStockPosition.size : ' +
+              value!.length.toString());
+          AccountStockPosition? first =
+              (value != null && value.length > 0) ? value.first : null;
           if (first != null && first.ignoreThis()) {
             // ignore in aja
-            print(routeName + ' accountStockPosition ignored.  message : ' + first.message);
+            print(routeName +
+                ' accountStockPosition ignored.  message : ' +
+                first.message);
           } else {
             context.read(accountsInfosNotifier).updateList(value);
 
-            Account activeAccount = context.read(dataHolderChangeNotifier).user.getAccount(context.read(accountChangeNotifier).index);
+            Account? activeAccount = context
+                .read(dataHolderChangeNotifier)
+                .user
+                .getAccount(context.read(accountChangeNotifier).index);
             if (activeAccount != null) {
-              AccountStockPosition accountInfo = context.read(accountsInfosNotifier).getInfo(activeAccount.accountcode);
+              AccountStockPosition? accountInfo = context
+                  .read(accountsInfosNotifier)
+                  .getInfo(activeAccount.accountcode);
               if (accountInfo != null) {
                 //context.read(buyRdnBuyingPowerChangeNotifier).update(accountInfo.outstandingLimit, accountInfo.rdnBalance);
                 //context.read(buyRdnBuyingPowerChangeNotifier).update(accountInfo.outstandingLimit, accountInfo.cashBalance);
-                context.read(buyRdnBuyingPowerChangeNotifier).update(accountInfo.outstandingLimit, accountInfo.availableCash, accountInfo.creditLimit);
+                context.read(buyRdnBuyingPowerChangeNotifier).update(
+                    accountInfo.outstandingLimit,
+                    accountInfo.availableCash,
+                    accountInfo.creditLimit);
               }
             }
           }
         } else {
-          DebugWriter.information('NOT mounted --> Got accountStockPosition  accountStockPosition.size : ' + value.length.toString());
+          DebugWriter.information(
+              'NOT mounted --> Got accountStockPosition  accountStockPosition.size : ' +
+                  value!.length.toString());
         }
       }).onError((error, stackTrace) {
-        DebugWriter.information(routeName+' accountStockPosition Exception : ' + error.toString());
+        DebugWriter.information(routeName +
+            ' accountStockPosition Exception : ' +
+            error.toString());
         handleNetworkError(context, error);
         /*
         if (error is TradingHttpException) {
@@ -993,11 +1076,13 @@ abstract class BaseStateNoTabsWithParentTab<T extends StatefulWidget> extends Vi
     }
   }
 
-  void showAlert(BuildContext context, List<Widget> childs, {String title, double childsHeight = 0}) {
+  void showAlert(BuildContext context, List<Widget> childs,
+      {String? title, double childsHeight = 0}) {
     showModalBottomSheet(
         isScrollControlled: true,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(topLeft: Radius.circular(24.0), topRight: Radius.circular(24.0)),
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(24.0), topRight: Radius.circular(24.0)),
         ),
         //backgroundColor: Colors.transparent,
         context: context,
@@ -1024,7 +1109,8 @@ abstract class BaseStateNoTabsWithParentTab<T extends StatefulWidget> extends Vi
           InvestrendTheme.of(context).showSnackBar(context, error.message());
         } else {
           String networkErrorLabel = 'network_error_label'.tr();
-          networkErrorLabel = networkErrorLabel.replaceFirst("#CODE#", error.code.toString());
+          networkErrorLabel =
+              networkErrorLabel.replaceFirst("#CODE#", error.code.toString());
           InvestrendTheme.of(context).showSnackBar(context, networkErrorLabel);
         }
       } else {
@@ -1035,9 +1121,8 @@ abstract class BaseStateNoTabsWithParentTab<T extends StatefulWidget> extends Vi
     }
   }
 
-  void setNotifierError(BaseValueNotifier notifier, var error) {
+  void setNotifierError(BaseValueNotifier? notifier, var error) {
     if (mounted && notifier != null) {
-
       String errorText = Utils.removeServerAddress(error.toString());
       // const String addr = 'buanacapital.com';
       // if(!StringUtils.isEmtpy(errorText) && errorText.toLowerCase().contains(addr)){
@@ -1045,54 +1130,55 @@ abstract class BaseStateNoTabsWithParentTab<T extends StatefulWidget> extends Vi
       // }
       notifier.setError(message: errorText);
       //notifier.setError(message: error.toString());
-
     }
   }
 
-  void setNotifierNoData(BaseValueNotifier notifier) {
+  void setNotifierNoData(BaseValueNotifier? notifier) {
     if (mounted && notifier != null) {
       notifier.setNoData();
     }
   }
 
-  void setNotifierLoading(BaseValueNotifier notifier) {
+  void setNotifierLoading(BaseValueNotifier? notifier) {
     if (mounted && notifier != null) {
       notifier.setLoading();
     }
   }
 
-  void hideKeyboard({BuildContext context}) {
+  void hideKeyboard({BuildContext? context}) {
     if (context == null) {
       context = this.context;
     }
     if (mounted && context != null) {
       FocusScope.of(context).requestFocus(new FocusNode());
     } else {
-      print(routeName + '.hideKeyboard aborted caused by -->  mounted : $mounted  context : ' + (context != null ? 'OK' : 'NULL'));
+      print(routeName +
+          '.hideKeyboard aborted caused by -->  mounted : $mounted  context : ' +
+          (context != null ? 'OK' : 'NULL'));
     }
   }
 
   // VoidCallback _pageListener;
   void onVisibilityChanged(WidgetVisibility visibility) {
-    if(visibilityNotifier != null){
-      print('*** onVisibilityChanged ignored for: ${this.routeName}  caused by override of visibilityNotifier.');
-
-    }else{
-      // TODO: Use visibility
+    if (visibilityNotifier != null) {
+      print(
+          '*** onVisibilityChanged ignored for: ${this.routeName}  caused by override of visibilityNotifier.');
+    } else {
       switch (visibility) {
         case WidgetVisibility.VISIBLE:
-        // Like Android's Activity.onResume()
+          // Like Android's Activity.onResume()
           print('*** ScreenVisibility.VISIBLE: ${this.routeName}');
           _onActiveBase(caller: 'onVisibilityChanged.VISIBLE');
           break;
         case WidgetVisibility.INVISIBLE:
-        // Like Android's Activity.onPause()
+          // Like Android's Activity.onPause()
           print('*** ScreenVisibility.INVISIBLE: ${this.routeName}');
           _onInactiveBase(caller: 'onVisibilityChanged.INVISIBLE');
           break;
         case WidgetVisibility.GONE:
-        // Like Android's Activity.onDestroy()
-          print('*** ScreenVisibility.GONE: ${this.routeName}   mounted : $mounted');
+          // Like Android's Activity.onDestroy()
+          print(
+              '*** ScreenVisibility.GONE: ${this.routeName}   mounted : $mounted');
           //_onInactiveBase(caller: 'onVisibilityChanged.GONE');
           break;
       }
@@ -1100,21 +1186,25 @@ abstract class BaseStateNoTabsWithParentTab<T extends StatefulWidget> extends Vi
     super.onVisibilityChanged(visibility);
   }
 
-  VoidCallback _visibilityListener(){
-    print(routeName+' _visibilityListener  mounted : $mounted  notifier.value : '+visibilityNotifier.value.toString()+'  current state is_active : $active');
-    if(mounted){
-      if(visibilityNotifier.value){
-        if(!active){
+  VoidCallback? _visibilityListener() {
+    print(routeName +
+        ' _visibilityListener  mounted : $mounted  notifier.value : ' +
+        visibilityNotifier!.value.toString() +
+        '  current state is_active : $active');
+    if (mounted) {
+      if (visibilityNotifier!.value) {
+        if (!active) {
           _onActiveBase(caller: 'visibilityNotifier ');
         }
-      }else{
+      } else {
         if (active) {
           _onInactiveBase(caller: 'visibilityNotifier');
         }
-
       }
     }
+    return null;
   }
+
   @override
   void initState() {
     super.initState();
@@ -1137,9 +1227,9 @@ abstract class BaseStateNoTabsWithParentTab<T extends StatefulWidget> extends Vi
     container.read(pageChangeNotifier).addListener(_pageListener);
 
      */
-    if(visibilityNotifier != null){
-      print(routeName+' visibilityNotifier.addListener');
-      visibilityNotifier.addListener(_visibilityListener);
+    if (visibilityNotifier != null) {
+      print(routeName + ' visibilityNotifier.addListener');
+      visibilityNotifier?.addListener(_visibilityListener);
     }
   }
 
@@ -1149,15 +1239,15 @@ abstract class BaseStateNoTabsWithParentTab<T extends StatefulWidget> extends Vi
     pScrollController.dispose();
     final container = ProviderContainer();
     if (_stockChangeListener != null) {
-      container.read(pageChangeNotifier).removeListener(_stockChangeListener);
+      container.read(pageChangeNotifier).removeListener(_stockChangeListener!);
     }
     if (_mainTabListener != null) {
-      container.read(mainTabNotifier).removeListener(_mainTabListener);
+      container.read(mainTabNotifier).removeListener(_mainTabListener!);
     }
 
-    if(visibilityNotifier != null){
-      print(routeName+' visibilityNotifier.removeListener');
-      visibilityNotifier.removeListener(_visibilityListener);
+    if (visibilityNotifier != null) {
+      print(routeName + ' visibilityNotifier.removeListener');
+      visibilityNotifier?.removeListener(_visibilityListener);
     }
 
     tabController?.removeListener(_tabListener);
@@ -1165,9 +1255,9 @@ abstract class BaseStateNoTabsWithParentTab<T extends StatefulWidget> extends Vi
   }
 
   void _onActiveBase({String caller = ''}) {
-    if(tabController == null){
+    if (tabController == null) {
       active = true;
-    }else{
+    } else {
       active = true && _isTabSelected();
     }
 
@@ -1185,9 +1275,9 @@ abstract class BaseStateNoTabsWithParentTab<T extends StatefulWidget> extends Vi
 
   @override
   bool _isTabSelected() {
-    if(tabController != null){
-      return tabIndex == tabController.index;
-    }else{
+    if (tabController != null) {
+      return tabIndex == tabController?.index;
+    } else {
       return false;
     }
   }
@@ -1204,16 +1294,16 @@ abstract class BaseStateNoTabsWithParentTab<T extends StatefulWidget> extends Vi
   }
 
   // harus set notifyStockChange = true saat constructor super class
-  void onStockChanged(Stock newStock) {
+  void onStockChanged(Stock? newStock) {
     pScrollController.animateTo(0,
         duration: Duration(milliseconds: 500), curve: Curves.ease);
   }
 
-  VoidCallback _stockChangeListener;
-  VoidCallback _mainTabListener;
+  VoidCallback? _stockChangeListener;
+  VoidCallback? _mainTabListener;
 
-  void _tabListener (){
-    print(routeName+' tabListener mounted : $mounted');
+  void _tabListener() {
+    print(routeName + ' tabListener mounted : $mounted');
     if (mounted) {
       if (_isTabSelected()) {
         if (!active) {
@@ -1226,6 +1316,7 @@ abstract class BaseStateNoTabsWithParentTab<T extends StatefulWidget> extends Vi
       }
     }
   }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -1233,17 +1324,21 @@ abstract class BaseStateNoTabsWithParentTab<T extends StatefulWidget> extends Vi
 
     if (notifyStockChange) {
       if (_stockChangeListener != null) {
-        context.read(primaryStockChangeNotifier).removeListener(_stockChangeListener);
+        context
+            .read(primaryStockChangeNotifier)
+            .removeListener(_stockChangeListener!);
       } else {
         _stockChangeListener = () {
           if (mounted) {
-            Stock newStock = context.read(primaryStockChangeNotifier).stock;
-            print(routeName + ' onStockChanged newStock : ' + newStock?.code);
+            Stock? newStock = context.read(primaryStockChangeNotifier).stock;
+            print(routeName + ' onStockChanged newStock : ' + newStock!.code!);
             onStockChanged(newStock);
           }
         };
       }
-      context.read(primaryStockChangeNotifier).addListener(_stockChangeListener);
+      context
+          .read(primaryStockChangeNotifier)
+          .addListener(_stockChangeListener!);
     }
     //tabController?.addListener(_tabListener);
     /*
@@ -1263,13 +1358,13 @@ abstract class BaseStateNoTabsWithParentTab<T extends StatefulWidget> extends Vi
 
      */
     if (parentTabIndex != -1) {
-      if(_mainTabListener != null ){
-        context.read(mainTabNotifier).removeListener(_mainTabListener);
-      }else{
-        _mainTabListener = (){
-          print(routeName+' _mainTabListener mounted : $mounted');
+      if (_mainTabListener != null) {
+        context.read(mainTabNotifier).removeListener(_mainTabListener!);
+      } else {
+        _mainTabListener = () {
+          print(routeName + ' _mainTabListener mounted : $mounted');
           if (mounted) {
-            int currentMainTab = context?.read(mainTabNotifier).index;
+            int? currentMainTab = context.read(mainTabNotifier).index;
             if (currentMainTab == parentTabIndex) {
               if (!active) {
                 _onActiveBase(caller: 'mainTabNotifier');
@@ -1282,7 +1377,7 @@ abstract class BaseStateNoTabsWithParentTab<T extends StatefulWidget> extends Vi
           }
         };
       }
-      context.read(mainTabNotifier).addListener(_mainTabListener);
+      context.read(mainTabNotifier).addListener(_mainTabListener!);
       /*
       context?.read(mainTabNotifier).addListener(() {
         if (mounted) {
@@ -1305,16 +1400,17 @@ abstract class BaseStateNoTabsWithParentTab<T extends StatefulWidget> extends Vi
   void onActive();
 
   void onInactive();
-  void onRefreshCheckPageStatus(){
-    if(!active){
+  void onRefreshCheckPageStatus() {
+    if (!active) {
       active = true;
-      if(visibilityNotifier != null){
-        visibilityNotifier.value = true;
-      }else{
+      if (visibilityNotifier != null) {
+        visibilityNotifier!.value = true;
+      } else {
         _onActiveBase(caller: 'onRefreshCheckPageStatus');
       }
     }
   }
+
   @override
   Widget build(BuildContext context) {
     double paddingBottom = MediaQuery.of(context).viewPadding.bottom;
@@ -1341,15 +1437,15 @@ abstract class BaseStateNoTabsWithParentTab<T extends StatefulWidget> extends Vi
     */
   }
 
-  Widget createFloatingActionButton(context) {
+  Widget? createFloatingActionButton(context) {
     return null;
   }
 
   Widget createBody(BuildContext context, double paddingBottom);
 
-  Widget createAppBar(BuildContext context);
+  PreferredSizeWidget? createAppBar(BuildContext context);
 
-  Widget createBottomSheet(BuildContext context, double paddingBottom) {
+  Widget? createBottomSheet(BuildContext context, double paddingBottom) {
     return null;
   }
 }
@@ -1358,7 +1454,9 @@ abstract class BaseStatefullWidgetChildTab extends StatefulWidget {
   final TabController tabController;
   final int tabIndex;
 
-  const BaseStatefullWidgetChildTab(this.tabIndex, this.tabController, {Key key}) : super(key: key);
+  const BaseStatefullWidgetChildTab(this.tabIndex, this.tabController,
+      {Key? key})
+      : super(key: key);
 }
 
 abstract class BaseConsumerState<T extends ConsumerWidget> extends State {
@@ -1387,13 +1485,14 @@ abstract class BaseConsumerState<T extends ConsumerWidget> extends State {
 
   int tabsLength();
 
-  Widget createTabs(BuildContext context);
+  PreferredSizeWidget createTabs(BuildContext context);
 
   Widget createBody(BuildContext context);
 
-  Widget createAppBar(BuildContext context);
+  PreferredSizeWidget createAppBar(BuildContext context);
 
-  Widget createBottomSheet(BuildContext context, double paddingBottom) {
+  PreferredSizeWidget? createBottomSheet(
+      BuildContext context, double paddingBottom) {
     return null;
   }
 }

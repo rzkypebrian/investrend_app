@@ -10,15 +10,18 @@ import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 class ScreenPortfolio extends StatefulWidget {
-  const ScreenPortfolio({Key key}) : super(key: key);
+  const ScreenPortfolio({Key? key}) : super(key: key);
 
   @override
   _ScreenPortfolioState createState() => _ScreenPortfolioState();
 }
-enum TabsPorftolio { Stocks, Cash, Realized, Summary/*, Return*/ }
+
+enum TabsPorftolio { Stocks, Cash, Realized, Summary /*, Return*/ }
+
 class _ScreenPortfolioState extends BaseStateWithTabs<ScreenPortfolio>
-    /* keep alive tabs
+/* keep alive tabs
     with AutomaticKeepAliveClientMixin<ScreenPortfolio>
     */
 {
@@ -31,41 +34,41 @@ class _ScreenPortfolioState extends BaseStateWithTabs<ScreenPortfolio>
     //'portfolio_tabs_return_title'.tr(),
   ];
 
-  _ScreenPortfolioState() : super('/portfolio');
+  _ScreenPortfolioState() : super('/portfolio', null, null);
 
-  /** keep alive tabs
+  /* keep alive tabs
   @override
   bool get wantKeepAlive => true;
   */
+
   @override
   void initState() {
     super.initState();
 
-    // TODO: implement initState
     timeCreation = DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.now());
 
     // final container = ProviderContainer();
     // initialIndex = container.read(mainMenuChangeNotifier).subTabPortfolio;
     // print(routeName+'.initState : $initialIndex');
-    pTabController.addListener(() {
-      if(mounted){
-        context.read(mainMenuChangeNotifier).setActive(Tabs.Portfolio, pTabController.index, silently: true);
+    pTabController?.addListener(() {
+      if (mounted) {
+        context
+            .read(mainMenuChangeNotifier)
+            .setActive(Tabs.Portfolio, pTabController?.index, silently: true);
       }
     });
-    pTabController.index = 0;
-
+    pTabController?.index = 0;
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       initialIndex = context.read(mainMenuChangeNotifier).subTabPortfolio;
-      print(routeName+'.initState PostFrameCallback : $initialIndex');
-      if(pTabController.index  != initialIndex){
-        pTabController.index = initialIndex;
+      print(routeName + '.initState PostFrameCallback : $initialIndex');
+      if (pTabController?.index != initialIndex) {
+        pTabController?.index = initialIndex!;
       }
-
     });
   }
 
-  Widget createAppBar(BuildContext context){
+  PreferredSizeWidget? createAppBar(BuildContext context) {
     return null;
     /*
     return PreferredSize(
@@ -84,6 +87,7 @@ class _ScreenPortfolioState extends BaseStateWithTabs<ScreenPortfolio>
     );
      */
   }
+
   /*
   Widget createAppBar2(){
     return PreferredSize(
@@ -109,22 +113,23 @@ class _ScreenPortfolioState extends BaseStateWithTabs<ScreenPortfolio>
     );
   }
    */
-  Widget createBody(BuildContext context,double paddingBottom){
+  Widget createBody(BuildContext context, double paddingBottom) {
     return TabBarView(
       controller: pTabController,
       children: List<Widget>.generate(
         tabs.length,
-            (int index) {
+        (int index) {
           print(tabs[index]);
-          bool hasAccount = context.read(dataHolderChangeNotifier).user.accountSize() > 0;
+          bool hasAccount =
+              context.read(dataHolderChangeNotifier).user.accountSize() > 0;
           if (!hasAccount) {
             return ScreenNoAccount();
           }
 
-          if(index == TabsPorftolio.Stocks.index){
+          if (index == TabsPorftolio.Stocks.index) {
             return ScreenPortfolioStocks(index, pTabController);
           }
-          if(index == TabsPorftolio.Cash.index){
+          if (index == TabsPorftolio.Cash.index) {
             return ScreenPortfolioCash(index, pTabController);
           }
           /*
@@ -132,10 +137,10 @@ class _ScreenPortfolioState extends BaseStateWithTabs<ScreenPortfolio>
             return ScreenPortfolioReturn(index, pTabController);
           }
           */
-          if(index == TabsPorftolio.Realized.index){
+          if (index == TabsPorftolio.Realized.index) {
             return ScreenPortfolioRealized(index, pTabController);
           }
-          if(index == TabsPorftolio.Summary.index){
+          if (index == TabsPorftolio.Summary.index) {
             return ScreenPortfolioSummary(index, pTabController);
           }
 
@@ -170,17 +175,17 @@ class _ScreenPortfolioState extends BaseStateWithTabs<ScreenPortfolio>
   }
   */
 
-
   @override
-  Widget createTabs(BuildContext context) {
+  PreferredSizeWidget createTabs(BuildContext context) {
     return TabBar(
       controller: pTabController,
       //indicatorSize: TabBarIndicatorSize.label,
-      labelPadding: InvestrendTheme.paddingTab, //EdgeInsets.symmetric(horizontal: 12.0),
+      labelPadding:
+          InvestrendTheme.paddingTab, //EdgeInsets.symmetric(horizontal: 12.0),
       isScrollable: true,
       tabs: List<Widget>.generate(
         tabs.length,
-            (int index) {
+        (int index) {
           print(tabs[index]);
           return new Tab(text: tabs[index]);
         },
@@ -194,60 +199,61 @@ class _ScreenPortfolioState extends BaseStateWithTabs<ScreenPortfolio>
   }
 
   @override
-  void onActive() {
-    // TODO: implement onActive
-  }
+  void onActive() {}
 
   @override
-  void onInactive() {
-    // TODO: implement onInactive
-  }
-
+  void onInactive() {}
 
   @override
   void dispose() {
     final container = ProviderContainer();
-    if(menuChangeListener != null){
-      container.read(mainMenuChangeNotifier).removeListener(menuChangeListener);
+    if (menuChangeListener != null) {
+      container
+          .read(mainMenuChangeNotifier)
+          .removeListener(menuChangeListener!);
     }
     super.dispose();
   }
 
-  int initialIndex = 0;
-  VoidCallback menuChangeListener;
+  int? initialIndex = 0;
+  VoidCallback? menuChangeListener;
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     initialIndex = context.read(mainMenuChangeNotifier).subTabPortfolio;
-    print(routeName+'.didChangeDependencies  initialIndex : $initialIndex  pTabController.index : '+pTabController.index.toString());
+    print(routeName +
+        '.didChangeDependencies  initialIndex : $initialIndex  pTabController.index : ' +
+        pTabController!.index.toString());
 
     if (menuChangeListener != null) {
-      context.read(mainMenuChangeNotifier).removeListener(menuChangeListener);
-    }else{
+      context.read(mainMenuChangeNotifier).removeListener(menuChangeListener!);
+    } else {
       //if (menuChangeListener == null) {
       menuChangeListener = () {
         if (!mounted ||
+            // ignore: unnecessary_null_comparison
             context == null
             //|| DefaultTabController.of(context) == null
             ||
             pTabController == null) {
-          print(routeName+'.menuChangeListener aborted, caused by widget mounted : ' + mounted.toString());
+          print(routeName +
+              '.menuChangeListener aborted, caused by widget mounted : ' +
+              mounted.toString());
           return;
         }
 
-
         Tabs mainTab = context.read(mainMenuChangeNotifier).mainTab;
         if (mainTab == Tabs.Portfolio) {
-
-          int subTab = context.read(mainMenuChangeNotifier).subTabPortfolio;
-          int currentTab = pTabController.index;
-          print(routeName+'.menuChangeListener Tabs.Portfolio  show subTab : $subTab  currentTab : $currentTab');
+          int? subTab = context.read(mainMenuChangeNotifier).subTabPortfolio;
+          int? currentTab = pTabController?.index;
+          print(routeName +
+              '.menuChangeListener Tabs.Portfolio  show subTab : $subTab  currentTab : $currentTab');
           if (subTab != currentTab) {
-            pTabController.index = subTab;
+            pTabController?.index = subTab!;
           }
         }
       };
     }
-    context.read(mainMenuChangeNotifier).addListener(menuChangeListener);
+    context.read(mainMenuChangeNotifier).addListener(menuChangeListener!);
   }
 }

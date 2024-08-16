@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable, non_constant_identifier_names
+
 import 'dart:async';
 
 import 'package:Investrend/component/bottom_sheet/bottom_sheet_watchlist.dart';
@@ -22,7 +24,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ScreenStockDetail extends StatefulWidget {
-  const ScreenStockDetail({Key key}) : super(key: key);
+  const ScreenStockDetail({Key? key}) : super(key: key);
 
   @override
   _ScreenStockDetailState createState() => _ScreenStockDetailState();
@@ -59,7 +61,7 @@ class _ScreenStockDetailState extends BaseStateWithTabs<ScreenStockDetail> {
     'stock_detail_tabs_news_title'.tr(),
   ];
 
-  List<ValueNotifier<bool>> _visibilityNotifiers = [
+  List<ValueNotifier<bool>>? _visibilityNotifiers = [
     ValueNotifier<bool>(false),
     ValueNotifier<bool>(false),
     ValueNotifier<bool>(false),
@@ -73,7 +75,8 @@ class _ScreenStockDetailState extends BaseStateWithTabs<ScreenStockDetail> {
   List<String> listPeoples = List<String>.empty(growable: true);
 
   _ScreenStockDetailState()
-      : super('/stock_detail', notifyStockChange: true, screenAware: true);
+      : super('/stock_detail', null, null,
+            notifyStockChange: true, screenAware: true);
 
   /* 2021-10-08 MOVING to Streaming
   void startTimer() {
@@ -123,20 +126,20 @@ class _ScreenStockDetailState extends BaseStateWithTabs<ScreenStockDetail> {
      */
   }
 
-  SubscribeAndHGET subscribeSummary;
+  SubscribeAndHGET? subscribeSummary;
 
   void unsubscribe(BuildContext context, String caller) {
     if (subscribeSummary != null) {
-      print(routeName + ' unsubscribe : ' + subscribeSummary.channel);
+      print(routeName + ' unsubscribe : ' + subscribeSummary!.channel!);
       context
           .read(managerDatafeedNotifier)
-          .unsubscribe(subscribeSummary, routeName + '.' + caller);
+          .unsubscribe(subscribeSummary!, routeName + '.' + caller);
       subscribeSummary = null;
     }
   }
 
-  void subscribe(BuildContext context, Stock stock, String caller) {
-    String codeBoard = stock.code + '.' + stock.defaultBoard;
+  void subscribe(BuildContext context, Stock? stock, String caller) {
+    String codeBoard = stock!.code! + '.' + stock.defaultBoard;
     String channel = DatafeedType.Summary.key + '.' + codeBoard;
 
     context.read(stockSummaryChangeNotifier).setStock(stock);
@@ -148,21 +151,22 @@ class _ScreenStockDetailState extends BaseStateWithTabs<ScreenStockDetail> {
       print(message);
       if (mounted) {
         StockSummary stockSummary = StockSummary.fromStreaming(message);
-        FundamentalCache cache =
-            context.read(fundamentalCacheNotifier).getCache(stockSummary.code);
+        FundamentalCache? cache =
+            context.read(fundamentalCacheNotifier).getCache(stockSummary.code!);
         stockSummary.updateCache(context, cache);
         context
             .read(stockSummaryChangeNotifier)
             .setData(stockSummary, check: true);
       }
+      return '';
     }, validator: validatorSummary);
     print(routeName + ' subscribe : $codeBoard');
     context
         .read(managerDatafeedNotifier)
-        .subscribe(subscribeSummary, routeName + '.' + caller);
+        .subscribe(subscribeSummary!, routeName + '.' + caller);
   }
 
-  bool validatorSummary(List<String> data, String channel) {
+  bool validatorSummary(List<String>? data, String channel) {
     //List<String> data = message.split('|');
     if (data != null &&
         data.length >
@@ -226,7 +230,6 @@ class _ScreenStockDetailState extends BaseStateWithTabs<ScreenStockDetail> {
   */
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     timeCreation = DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.now());
 
@@ -242,24 +245,24 @@ class _ScreenStockDetailState extends BaseStateWithTabs<ScreenStockDetail> {
     // ];
 
     _watchlistNotifier.addListener(() {
-      Watchlist active = context
+      Watchlist? active = context
           .read(watchlistChangeNotifier)
           .getWatchlist(_watchlistNotifier.value);
       if (active != null) {
-        String code = context.read(primaryStockChangeNotifier).stock.code;
+        String? code = context.read(primaryStockChangeNotifier).stock?.code;
         if (active.count() < InvestrendTheme.MAX_STOCK_PER_WATCHLIST) {
           active.addStock(code);
-          Watchlist.save(context.read(watchlistChangeNotifier).getAll())
+          Watchlist.save(context.read(watchlistChangeNotifier).getAll()!)
               .then((value) {
             InvestrendTheme.of(context).showSnackBar(
                 context,
-                context.read(primaryStockChangeNotifier).stock.code +
+                context.read(primaryStockChangeNotifier).stock!.code! +
                     'saved_in_label'.tr() +
                     active.name);
           });
         } else {
           String errorFull = 'error_add_to_watchlist_full'.tr();
-          errorFull = errorFull.replaceFirst('#CODE#', code);
+          errorFull = errorFull.replaceFirst('#CODE#', code!);
           errorFull = errorFull.replaceFirst(
               '#MAX#', InvestrendTheme.MAX_STOCK_PER_WATCHLIST.toString());
           errorFull = errorFull.replaceFirst('#WATCHLIST#', active.name);
@@ -292,10 +295,10 @@ class _ScreenStockDetailState extends BaseStateWithTabs<ScreenStockDetail> {
         }
       });
     };
-    pTabController.addListener(_tabListener);
+    pTabController?.addListener(_tabListener!);
   }
 
-  VoidCallback _tabListener;
+  VoidCallback? _tabListener;
 
   @override
   int tabsLength() {
@@ -303,8 +306,8 @@ class _ScreenStockDetailState extends BaseStateWithTabs<ScreenStockDetail> {
   }
 
   //VoidCallback stockChangeListener;
-  VoidCallback _childRefreshListener;
-  VoidCallback _mainVisibilityListener;
+  VoidCallback? _childRefreshListener;
+  VoidCallback? _mainVisibilityListener;
 
   @override
   void didChangeDependencies() {
@@ -332,7 +335,7 @@ class _ScreenStockDetailState extends BaseStateWithTabs<ScreenStockDetail> {
     if (_childRefreshListener != null) {
       context
           .read(stockDetailRefreshChangeNotifier)
-          .removeListener(_childRefreshListener);
+          .removeListener(_childRefreshListener!);
     } else {
       _childRefreshListener = () {
         if (mounted) {
@@ -344,19 +347,19 @@ class _ScreenStockDetailState extends BaseStateWithTabs<ScreenStockDetail> {
            */
 
           unsubscribe(context, '_childRefreshListener');
-          Stock stock = context.read(primaryStockChangeNotifier).stock;
+          Stock? stock = context.read(primaryStockChangeNotifier).stock;
           subscribe(context, stock, '_childRefreshListener');
         }
       };
     }
     context
         .read(stockDetailRefreshChangeNotifier)
-        .addListener(_childRefreshListener);
+        .addListener(_childRefreshListener!);
 
     if (_mainVisibilityListener != null) {
       context
           .read(stockDetailScreenVisibilityChangeNotifier)
-          .removeListener(_mainVisibilityListener);
+          .removeListener(_mainVisibilityListener!);
     } else {
       _mainVisibilityListener = () {
         if (mounted) {
@@ -370,7 +373,7 @@ class _ScreenStockDetailState extends BaseStateWithTabs<ScreenStockDetail> {
             doUpdate(pullToRefresh: true);
              */
             unsubscribe(context, '_mainVisibilityListener');
-            Stock stock = context.read(primaryStockChangeNotifier).stock;
+            Stock? stock = context.read(primaryStockChangeNotifier).stock;
             subscribe(context, stock, '_mainVisibilityListener');
           }
         }
@@ -378,7 +381,7 @@ class _ScreenStockDetailState extends BaseStateWithTabs<ScreenStockDetail> {
     }
     context
         .read(stockDetailScreenVisibilityChangeNotifier)
-        .addListener(_mainVisibilityListener);
+        .addListener(_mainVisibilityListener!);
   }
 
   // Future doUpdate({bool pullToRefresh = false}) async {
@@ -389,7 +392,7 @@ class _ScreenStockDetailState extends BaseStateWithTabs<ScreenStockDetail> {
     controller.dispose();
     _watchlistNotifier.dispose();
     if (_tabListener != null) {
-      pTabController.removeListener(_tabListener);
+      pTabController?.removeListener(_tabListener!);
     }
 
     /* 2021-10-08 MOVING to Streaming
@@ -402,31 +405,31 @@ class _ScreenStockDetailState extends BaseStateWithTabs<ScreenStockDetail> {
     if (_childRefreshListener != null) {
       container
           .read(stockDetailRefreshChangeNotifier)
-          .removeListener(_childRefreshListener);
+          .removeListener(_childRefreshListener!);
     }
     if (_mainVisibilityListener != null) {
       container
           .read(stockDetailScreenVisibilityChangeNotifier)
-          .removeListener(_mainVisibilityListener);
+          .removeListener(_mainVisibilityListener!);
     }
-    for (int i = 0; i < _visibilityNotifiers.length; i++) {
-      _visibilityNotifiers.elementAt(i).dispose();
+    for (int i = 0; i < _visibilityNotifiers!.length; i++) {
+      _visibilityNotifiers?.elementAt(i).dispose();
     }
 
     if (subscribeSummary != null) {
       container
           .read(managerDatafeedNotifier)
-          .unsubscribe(subscribeSummary, 'dispose');
+          .unsubscribe(subscribeSummary!, 'dispose');
     }
 
     super.dispose();
   }
 
-  VoidCallback onSlideRename(int index) {
+  VoidCallback? onSlideRename(int index) {
     Navigator.of(context).pop();
-    Watchlist toRename =
+    Watchlist? toRename =
         context.read(watchlistChangeNotifier).getWatchlist(index);
-    print('onSlideRename [$index] : ' + toRename.name);
+    print('onSlideRename [$index] : ' + toRename!.name);
     controller.text = toRename.name;
     String title = 'rename_watchlist_title'.tr();
     String actionSave = 'button_save'.tr();
@@ -441,7 +444,7 @@ class _ScreenStockDetailState extends BaseStateWithTabs<ScreenStockDetail> {
       print(controller.text);
 
       if (!StringUtils.equalsIgnoreCase(controller.text, toRename.name)) {
-        Watchlist existing = context
+        Watchlist? existing = context
             .read(watchlistChangeNotifier)
             .getWatchlistByName(controller.text);
         if (existing != null) {
@@ -456,7 +459,7 @@ class _ScreenStockDetailState extends BaseStateWithTabs<ScreenStockDetail> {
 
       toRename.name = controller.text;
       context.read(watchlistChangeNotifier).replaceWatchlist(index, toRename);
-      Watchlist.save(context.read(watchlistChangeNotifier).getAll())
+      Watchlist.save(context.read(watchlistChangeNotifier).getAll()!)
           .then((value) {
         showWatchlist(context);
       });
@@ -472,25 +475,27 @@ class _ScreenStockDetailState extends BaseStateWithTabs<ScreenStockDetail> {
         onPressedYes: onPressedYes,
         onPressedNo: onPressedNo,
         maxInputLength: InvestrendTheme.MAX_WATCHLIST_NAME_CHARACTER);
+
+    return null;
   }
 
-  Function onSlideDelete(int index) {
+  Function? onSlideDelete(int index) {
     //IntCallback onSlideDelete(int index){
     Navigator.of(context).pop();
     print('onSlideDelete');
-    Watchlist toDelete =
+    Watchlist? toDelete =
         context.read(watchlistChangeNotifier).getWatchlist(index);
     String title = 'watchlist_info_title'.tr();
 
     String content =
-        'confirmation_remove_label'.tr() + '\n\'' + toDelete.name + '\' ?';
+        'confirmation_remove_label'.tr() + '\n\'' + toDelete!.name + '\' ?';
     String actionSave = 'button_yes'.tr();
     String actionCancel = 'button_cancel'.tr();
 
     VoidCallback onPressedYes = () {
       Navigator.of(context).pop();
       context.read(watchlistChangeNotifier).removeWatchlist(index);
-      Watchlist.save(context.read(watchlistChangeNotifier).getAll())
+      Watchlist.save(context.read(watchlistChangeNotifier).getAll()!)
           .then((value) {
         _watchlistNotifier.value = 0;
         showWatchlist(context, onClickClose: true);
@@ -571,15 +576,16 @@ class _ScreenStockDetailState extends BaseStateWithTabs<ScreenStockDetail> {
               ));
     }
     */
+    return null;
   }
 
   TextEditingController controller = TextEditingController();
 
-  VoidCallback onTapCreate() {
+  VoidCallback? onTapCreate() {
     Navigator.of(context).pop();
     print('onTapCreate');
     controller.text = '';
-    if (context.read(watchlistChangeNotifier).count() >=
+    if (context.read(watchlistChangeNotifier).count()! >=
         InvestrendTheme.MAX_WATCHLIST) {
       String errorFull = 'error_maximum_create_watchlist'.tr();
       errorFull = errorFull.replaceFirst(
@@ -597,7 +603,7 @@ class _ScreenStockDetailState extends BaseStateWithTabs<ScreenStockDetail> {
           return;
         }
         print(controller.text);
-        Watchlist existing = context
+        Watchlist? existing = context
             .read(watchlistChangeNotifier)
             .getWatchlistByName(controller.text);
         if (existing != null) {
@@ -610,15 +616,15 @@ class _ScreenStockDetailState extends BaseStateWithTabs<ScreenStockDetail> {
 
         Watchlist newWatchlist = Watchlist(controller.text);
         newWatchlist
-            .addStock(context.read(primaryStockChangeNotifier).stock.code);
+            .addStock(context.read(primaryStockChangeNotifier).stock?.code);
         context.read(watchlistChangeNotifier).addWatchlist(newWatchlist);
         //_listWatchlist.add(Watchlist(controller.text));
-        Watchlist.save(context.read(watchlistChangeNotifier).getAll())
+        Watchlist.save(context.read(watchlistChangeNotifier).getAll()!)
             .then((value) {
           //showWatchlist(context);
           InvestrendTheme.of(context).showSnackBar(
               context,
-              context.read(primaryStockChangeNotifier).stock.code +
+              context.read(primaryStockChangeNotifier).stock!.code! +
                   'saved_in_label'.tr() +
                   controller.text);
         });
@@ -741,6 +747,7 @@ class _ScreenStockDetailState extends BaseStateWithTabs<ScreenStockDetail> {
       }
       */
     }
+    return null;
   }
 
   void showWatchlist(BuildContext context, {bool onClickClose = false}) {
@@ -823,7 +830,7 @@ class _ScreenStockDetailState extends BaseStateWithTabs<ScreenStockDetail> {
     );
   }
   */
-  Widget createTabs(BuildContext context) {
+  PreferredSizeWidget createTabs(BuildContext context) {
     return TabBar(
       labelPadding:
           InvestrendTheme.paddingTab, //EdgeInsets.symmetric(horizontal: 12.0),
@@ -840,7 +847,7 @@ class _ScreenStockDetailState extends BaseStateWithTabs<ScreenStockDetail> {
     );
   }
 
-  Widget createAppBar(BuildContext context) {
+  PreferredSizeWidget createAppBar(BuildContext context) {
     double elevation = 0.0;
     Color shadowColor = Theme.of(context).shadowColor;
     if (!InvestrendTheme.tradingHttp.is_production) {
@@ -856,11 +863,11 @@ class _ScreenStockDetailState extends BaseStateWithTabs<ScreenStockDetail> {
       //automaticallyImplyLeading: false,
       title: Consumer(builder: (context, watch, child) {
         final notifier = watch(primaryStockChangeNotifier);
-        if (notifier.stock.invalid()) {
+        if (notifier.stock!.invalid()) {
           return Center(child: CircularProgressIndicator());
         }
         return Text(
-          notifier.stock.code,
+          notifier.stock!.code!,
           style: Theme.of(context).appBarTheme.titleTextStyle,
         );
       }),
@@ -873,13 +880,13 @@ class _ScreenStockDetailState extends BaseStateWithTabs<ScreenStockDetail> {
             if (value == null) {
               print('result finder = null');
             } else if (value is Stock) {
-              print('result finder stock = ' + value.code);
+              print('result finder stock = ' + value.code!);
               //InvestrendTheme.of(context).stock = value;
               //showStockDetail(context);
               //InvestrendTheme.of(context).stockNotifier.setStock(value);
               context.read(primaryStockChangeNotifier).setStock(value);
             } else if (value is People) {
-              print('result finder people = ' + value.name);
+              print('result finder people = ' + value.name!);
             }
           }).whenComplete(() {
             Future.delayed(Duration(milliseconds: 500), () {
@@ -943,51 +950,51 @@ class _ScreenStockDetailState extends BaseStateWithTabs<ScreenStockDetail> {
           if (index == 0) {
             return ScreenStockDetailOverview(
               index,
-              pTabController,
+              pTabController!,
               key: keys.elementAt(index),
-              visibilityNotifier: _visibilityNotifiers.elementAt(index),
+              visibilityNotifier: _visibilityNotifiers?.elementAt(index),
             );
           } else if (index == 1) {
             return ScreenStockDetailAnalysis(
               index,
               pTabController,
               key: keys.elementAt(index),
-              visibilityNotifier: _visibilityNotifiers.elementAt(index),
+              visibilityNotifier: _visibilityNotifiers?.elementAt(index),
             );
           } else if (index == 2) {
             return ScreenStockDetailKeyStatistic(
               index,
               pTabController,
               key: keys.elementAt(index),
-              visibilityNotifier: _visibilityNotifiers.elementAt(index),
+              visibilityNotifier: _visibilityNotifiers?.elementAt(index),
             );
           } else if (index == 3) {
             return ScreenStockDetailFinancials(
               index,
               pTabController,
               key: keys.elementAt(index),
-              visibilityNotifier: _visibilityNotifiers.elementAt(index),
+              visibilityNotifier: _visibilityNotifiers?.elementAt(index),
             );
           } else if (index == 4) {
             return ScreenStockDetailProfiles(
               index,
               pTabController,
               key: keys.elementAt(index),
-              visibilityNotifier: _visibilityNotifiers.elementAt(index),
+              visibilityNotifier: _visibilityNotifiers?.elementAt(index),
             );
           } else if (index == 5) {
             return ScreenStockDetailCorporateAction(
               index,
               pTabController,
               key: keys.elementAt(index),
-              visibilityNotifier: _visibilityNotifiers.elementAt(index),
+              visibilityNotifier: _visibilityNotifiers?.elementAt(index),
             );
           } else if (index == 6) {
             return ScreenStockDetailNews(
               index,
               pTabController,
               key: keys.elementAt(index),
-              visibilityNotifier: _visibilityNotifiers.elementAt(index),
+              visibilityNotifier: _visibilityNotifiers?.elementAt(index),
             );
           }
           return Container(
@@ -1002,11 +1009,11 @@ class _ScreenStockDetailState extends BaseStateWithTabs<ScreenStockDetail> {
 
   Widget build2(BuildContext context) {
     final Color background = Theme.of(context).colorScheme.background;
-    final Color fill = InvestrendTheme.of(context).blackAndWhite;
+    final Color? fill = InvestrendTheme.of(context).blackAndWhite;
     final List<Color> gradient = [
       background,
       background,
-      fill,
+      fill!,
       fill,
     ];
     final double fillPercent = 56.23; // fills 56.23% for container from bottom
@@ -1141,7 +1148,7 @@ class _ScreenStockDetailState extends BaseStateWithTabs<ScreenStockDetail> {
                         return Center(child: CircularProgressIndicator());
                       }
                       return Text(
-                        notifier.stock.code,
+                        notifier.stock!.code!,
                         style: InvestrendTheme.of(context).small_w400,
                       );
                     }),
@@ -1153,7 +1160,7 @@ class _ScreenStockDetailState extends BaseStateWithTabs<ScreenStockDetail> {
                         return Center(child: CircularProgressIndicator());
                       }
                       return Text(
-                        InvestrendTheme.formatPrice(notifier.summary.close),
+                        InvestrendTheme.formatPrice(notifier.summary!.close!),
                         style: InvestrendTheme.of(context).medium_w600,
                       );
                     }),
@@ -1201,8 +1208,8 @@ class _ScreenStockDetailState extends BaseStateWithTabs<ScreenStockDetail> {
                 () {
                   //InvestrendTheme.push(context, ScreenTrade(OrderType.Buy), ScreenTransition.SlideLeft,'/trade');
 
-                  int close =
-                      context.read(stockSummaryChangeNotifier).summary.close;
+                  int? close =
+                      context.read(stockSummaryChangeNotifier).summary!.close;
 
                   bool hasAccount = context
                           .read(dataHolderChangeNotifier)
@@ -1236,8 +1243,8 @@ class _ScreenStockDetailState extends BaseStateWithTabs<ScreenStockDetail> {
               padding: const EdgeInsets.only(left: 18.0, right: 18.0),
               child: ButtonOrder(OrderType.Sell, () {
                 //InvestrendTheme.push(context, ScreenTrade(OrderType.Sell), ScreenTransition.SlideLeft,'/trade');
-                int close =
-                    context.read(stockSummaryChangeNotifier).summary.close;
+                int? close =
+                    context.read(stockSummaryChangeNotifier).summary!.close;
 
                 bool hasAccount =
                     context.read(dataHolderChangeNotifier).user.accountSize() >
@@ -1266,8 +1273,6 @@ class _ScreenStockDetailState extends BaseStateWithTabs<ScreenStockDetail> {
 
   @override
   void onActive() {
-    // TODO: implement onActive
-
     context.read(stockDetailScreenVisibilityChangeNotifier).setActiveMain(true);
     /* 2021-10-08 MOVING to Streaming
     doUpdate();
@@ -1275,16 +1280,16 @@ class _ScreenStockDetailState extends BaseStateWithTabs<ScreenStockDetail> {
 
     unsubscribe(context, 'onActive');
 
-    Stock stock = context.read(primaryStockChangeNotifier).stock;
+    Stock? stock = context.read(primaryStockChangeNotifier).stock;
     if (!StringUtils.equalsIgnoreCase(
-        stock.code, context.read(stockSummaryChangeNotifier).summary.code)) {
+        stock?.code, context.read(stockSummaryChangeNotifier).summary!.code!)) {
       context.read(stockSummaryChangeNotifier).setStock(stock);
     }
     subscribe(context, stock, 'onActive');
 
-    for (int i = 0; i < _visibilityNotifiers.length; i++) {
-      ValueNotifier childNotifier = _visibilityNotifiers.elementAt(i);
-      if (pTabController.index == i) {
+    for (int i = 0; i < _visibilityNotifiers!.length; i++) {
+      ValueNotifier? childNotifier = _visibilityNotifiers?.elementAt(i);
+      if (pTabController!.index == i) {
         if (childNotifier != null) {
           childNotifier.value = true;
         }
@@ -1308,13 +1313,12 @@ class _ScreenStockDetailState extends BaseStateWithTabs<ScreenStockDetail> {
 
   @override
   void onInactive() {
-    // TODO: implement onInactive
     context
         .read(stockDetailScreenVisibilityChangeNotifier)
         .setActiveMain(false);
 
-    for (int i = 0; i < _visibilityNotifiers.length; i++) {
-      ValueNotifier childNotifier = _visibilityNotifiers.elementAt(i);
+    for (int i = 0; i < _visibilityNotifiers!.length; i++) {
+      ValueNotifier? childNotifier = _visibilityNotifiers?.elementAt(i);
       if (childNotifier != null) {
         childNotifier.value = false;
       }
@@ -1478,7 +1482,7 @@ class SampleRiverpod extends ConsumerWidget {
     return Row(
       children: [
         Text(
-          notifier.stock.code,
+          notifier.stock!.code!,
           style: InvestrendTheme.of(context).small_w400,
         ),
         Text(

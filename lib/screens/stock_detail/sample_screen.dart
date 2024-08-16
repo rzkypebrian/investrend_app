@@ -7,29 +7,30 @@ import 'package:flutter/material.dart';
 class ScreenSampleNoTabWithParentTabs extends StatefulWidget {
   final TabController tabController;
   final int tabIndex;
-  ScreenSampleNoTabWithParentTabs(this.tabIndex, this.tabController,  {Key key}) : super( key: key);
+  ScreenSampleNoTabWithParentTabs(this.tabIndex, this.tabController, {Key? key})
+      : super(key: key);
 
   @override
-  _ScreenSampleNoTabWithParentTabsState createState() => _ScreenSampleNoTabWithParentTabsState(tabIndex, tabController);
-
+  _ScreenSampleNoTabWithParentTabsState createState() =>
+      _ScreenSampleNoTabWithParentTabsState(tabIndex, tabController);
 }
 
-class _ScreenSampleNoTabWithParentTabsState extends BaseStateNoTabsWithParentTab<ScreenSampleNoTabWithParentTabs>
-    //with AutomaticKeepAliveClientMixin<ScreenSampleNoTabWithParentTabs>
+class _ScreenSampleNoTabWithParentTabsState
+    extends BaseStateNoTabsWithParentTab<ScreenSampleNoTabWithParentTabs>
+//with AutomaticKeepAliveClientMixin<ScreenSampleNoTabWithParentTabs>
 {
+  LocalForeignNotifier? _localForeignNotifier;
+  PerformanceNotifier? _performanceNotifier;
 
-  LocalForeignNotifier _localForeignNotifier;
-  PerformanceNotifier _performanceNotifier;
-
-  _ScreenSampleNoTabWithParentTabsState(int tabIndex, TabController tabController) : super('/stock_detail_analysis', tabIndex, tabController);
+  _ScreenSampleNoTabWithParentTabsState(
+      int tabIndex, TabController tabController)
+      : super('/stock_detail_analysis', tabIndex, tabController);
 
   // @override
   // bool get wantKeepAlive => true;
 
-
-
   @override
-  Widget createAppBar(BuildContext context) {
+  PreferredSizeWidget? createAppBar(BuildContext context) {
     return null;
   }
 
@@ -49,31 +50,27 @@ class _ScreenSampleNoTabWithParentTabsState extends BaseStateNoTabsWithParentTab
 
   @override
   void onActive() {
-    print(routeName+' onActive');
+    print(routeName + ' onActive');
   }
-
 
   @override
   void initState() {
     super.initState();
 
-    _localForeignNotifier = LocalForeignNotifier(new ForeignDomestic('', '', '', '', 0, 0, 0, 0.0, 0, 0, 0, 0.0));
+    _localForeignNotifier = LocalForeignNotifier(
+        new ForeignDomestic('', '', '', '', 0, 0, 0, 0.0, 0, 0, 0, 0.0));
     _performanceNotifier = PerformanceNotifier(new PerformanceData());
-
-
   }
 
   @override
   void dispose() {
-    _localForeignNotifier.dispose();
-    _performanceNotifier.dispose();
+    _localForeignNotifier?.dispose();
+    _performanceNotifier?.dispose();
     super.dispose();
   }
 
-
-
   @override
   void onInactive() {
-    print(routeName+' onInactive');
+    print(routeName + ' onInactive');
   }
 }

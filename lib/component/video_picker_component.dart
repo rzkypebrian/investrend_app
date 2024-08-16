@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
@@ -13,21 +15,21 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class VideoPickerComponent extends StatefulWidget {
-  final VideoPickerController controller;
+  final VideoPickerController? controller;
   final BuildContext context;
   final double height;
   final double width;
   final String placeHolderImageAsset;
-  final ValueChanged<VideoPickerController> onImageLoaded;
-  final String camera;
-  final String frame;
-  final String status;
-  final String naskah;
+  final ValueChanged<VideoPickerController?>? onImageLoaded;
+  final String? camera;
+  final String? frame;
+  final String? status;
+  final String? naskah;
 
   const VideoPickerComponent({
-    Key key,
-    @required this.context,
-    @required this.controller,
+    Key? key,
+    required this.context,
+    required this.controller,
     this.height = 120,
     this.width = 120,
     this.placeHolderImageAsset = "images/icon_camera.png",
@@ -57,16 +59,16 @@ class VideoPickerComponentState extends State<VideoPickerComponent>
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<VideoPickerValue>(
-      valueListenable: widget.controller,
+      valueListenable: widget.controller!,
       builder: (context, value, child) {
-        widget.controller.value.context = context;
+        widget.controller!.value.context = context;
         return GestureDetector(
           onTap: () {
             if (value.videoPickerState == VideoPickerState.onInitUpload) return;
             if (value.videoPickerState == VideoPickerState.onUpload) return;
             print("Camera cek = ${widget.camera}");
             sendToBackGround = false;
-            widget.controller.getImages(
+            widget.controller!.getImages(
               frame: widget.frame,
               cameraCheck: widget.camera,
               naskah: widget.naskah,
@@ -80,13 +82,12 @@ class VideoPickerComponentState extends State<VideoPickerComponent>
                 Radius.circular(15),
               ),
               border: Border.all(
-                color: widget.controller.value.videoPickerState ==
+                color: widget.controller!.value.videoPickerState ==
                         VideoPickerState.empty
                     ? Colors.grey
                     : Colors.blue,
               ),
               image: DecorationImage(
-                //TODO : PERUBAHAN
                 image: widget.status == "NOT DONE"
                     ? AssetImage(
                         "images/icon_camera.png",
@@ -110,14 +111,14 @@ class VideoPickerComponentState extends State<VideoPickerComponent>
       case VideoPickerState.onUpload:
         debugPrint('state onUpload = ${VideoPickerState.onUpload}');
         return progressUpload(
-          totalSize: widget.controller.value.fileSize,
-          uploadedSize: widget.controller.value.uploadedSize ?? 0,
-          percentage: widget.controller.value.percentageUpload,
+          totalSize: widget.controller!.value.fileSize,
+          uploadedSize: widget.controller!.value.uploadedSize ?? 0,
+          percentage: widget.controller!.value.percentageUpload,
         );
       case VideoPickerState.uploaded:
         debugPrint('state uploaded = ${VideoPickerState.uploaded}');
         if (widget.onImageLoaded != null) {
-          widget.onImageLoaded(widget.controller);
+          widget.onImageLoaded!(widget.controller);
         }
         return loadedVideo();
       case VideoPickerState.uploadFiled:
@@ -126,7 +127,7 @@ class VideoPickerComponentState extends State<VideoPickerComponent>
       case VideoPickerState.loaded:
         debugPrint('state loaded = ${VideoPickerState.loaded}');
         if (widget.onImageLoaded != null) {
-          widget.onImageLoaded(widget.controller);
+          widget.onImageLoaded!(widget.controller);
         }
         return loadedVideo();
       case VideoPickerState.empty:
@@ -140,7 +141,6 @@ class VideoPickerComponentState extends State<VideoPickerComponent>
   Widget loadedVideo() {
     return Padding(
       padding: const EdgeInsets.all(30),
-      //TODO : PERUBAHAN
       child: widget.status == "NOT DONE"
           ? Image.asset(
               "images/icon_camera.png",
@@ -178,14 +178,14 @@ class VideoPickerComponentState extends State<VideoPickerComponent>
   Widget uploadedImage() {
     return Padding(
       padding: const EdgeInsets.all(3),
-      child: Image.network(widget.controller.value.uploadedUrl ?? ""),
+      child: Image.network(widget.controller!.value.uploadedUrl ?? ""),
     );
   }
 
   Widget progressUpload(
-      {@required int totalSize,
-      @required int uploadedSize,
-      @required percentage}) {
+      {required int? totalSize,
+      required int uploadedSize,
+      required percentage}) {
     return Container(
       color: Colors.transparent,
       child: Stack(
@@ -231,23 +231,23 @@ class VideoPickerComponentState extends State<VideoPickerComponent>
 }
 
 class VideoPickerController extends ValueNotifier<VideoPickerValue> {
-  VideoPickerController({VideoPickerValue value})
+  VideoPickerController({VideoPickerValue? value})
       : super(value ?? VideoPickerValue());
 
   Future<VideoPickerValue> getImages({
-    BuildContext context,
-    String cameraCheck,
+    BuildContext? context,
+    String? cameraCheck,
     bool camera = true,
     int imageQuality = 100,
     int compresedQuality = 5,
-    String frame,
-    String naskah,
+    String? frame,
+    String? naskah,
   }) async {
     try {
       File _image;
       String _valueBase64Compress = "";
-      Uint8List _uint8Listcompressed;
-      PickedFile _picker;
+      Uint8List? _uint8Listcompressed;
+      PickedFile? _picker;
       if (camera) {
         bool isFront = StringUtils.equalsIgnoreCase(cameraCheck, 'front');
         print("KAMERA TEST DEPAN BELAKANG = $isFront");
@@ -325,17 +325,18 @@ class VideoPickerController extends ValueNotifier<VideoPickerValue> {
       } else {
         _picker = await ImagePicker()
             // ignore: deprecated_member_use
-            .getImage(source: ImageSource.gallery, imageQuality: imageQuality);
+            .pickImage(
+                source: ImageSource.gallery,
+                imageQuality: imageQuality) as PickedFile;
       }
 
-      _image = File(_picker.path);
+      _image = File(_picker!.path);
 
       value.fileVideo = _image;
       value.fileBase64 = getExtension(_image.toString()) +
           base64.encode(_image.readAsBytesSync());
       notifyListeners();
 
-      //TODO : Minor change compressed
       _uint8Listcompressed = await FlutterImageCompress.compressWithFile(
         _image.absolute.path,
         quality: compresedQuality,
@@ -356,9 +357,9 @@ class VideoPickerController extends ValueNotifier<VideoPickerValue> {
   }
 
   Future<String> uploadFile({
-    @required String url,
-    String field,
-    Map<String, dynamic> header,
+    required String url,
+    String? field,
+    Map<String, dynamic>? header,
   }) async {
     if (value.fileVideo == null) {
       value.videoPickerState = VideoPickerState.error;
@@ -371,7 +372,7 @@ class VideoPickerController extends ValueNotifier<VideoPickerValue> {
     value.videoPickerState = VideoPickerState.onInitUpload;
     commit();
     return FileServiceUtil.fileUploadMultipart(
-      file: value.fileVideo,
+      file: value.fileVideo!,
       field: field,
       url: url,
       header: header,
@@ -422,12 +423,12 @@ class VideoPickerController extends ValueNotifier<VideoPickerValue> {
     return result;
   }
 
-  static Future<PickedFile> openCamera(
+  static Future<PickedFile?> openCamera(
     BuildContext context, {
-    CameraDescription cameraDescription,
-    CameraMode cameraMode,
-    String frame,
-    String naskah,
+    CameraDescription? cameraDescription,
+    CameraMode? cameraMode,
+    String? frame,
+    String? naskah,
   }) {
     CameraComponentController _cameraComponentController =
         new CameraComponentController();
@@ -444,13 +445,13 @@ class VideoPickerController extends ValueNotifier<VideoPickerValue> {
             cameraMode: cameraMode,
             naskah: naskah,
             onConfirmImage: (image) {
-              Navigator.of(ctx).pop(PickedFile(image?.path));
+              Navigator.of(ctx).pop(PickedFile(image!.path));
             },
           ),
         );
       },
     ).whenComplete(() {
-      _cameraComponentController?.value.cameraController
+      _cameraComponentController.value.cameraController
           ?.dispose()
           .then((value) => null);
     });
@@ -462,18 +463,18 @@ class VideoPickerController extends ValueNotifier<VideoPickerValue> {
 }
 
 class VideoPickerValue {
-  BuildContext context;
-  String imageHandler;
+  late BuildContext context;
+  String? imageHandler;
   VideoPickerState videoPickerState = VideoPickerState.empty;
   bool firstLoad = true;
-  File fileVideo;
-  String fileBase64;
-  String fileBase64Compresed;
-  UriData fileUri;
-  int uploadedSize;
-  int fileSize;
-  String uploadedResponse;
-  String uploadedUrl;
+  File? fileVideo;
+  String? fileBase64;
+  String? fileBase64Compresed;
+  UriData? fileUri;
+  int? uploadedSize;
+  int? fileSize;
+  String? uploadedResponse;
+  String? uploadedUrl;
 
   double get percentageUpload {
     return (fileSize == 0 ? 0 : ((uploadedSize ?? 0) / (fileSize ?? 0)) * 100)

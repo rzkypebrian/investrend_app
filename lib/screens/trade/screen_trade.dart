@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'dart:io';
 import 'dart:math';
 
@@ -42,19 +44,19 @@ import 'package:easy_localization/easy_localization.dart';
 class ScreenTrade extends StatefulWidget {
   final OrderType _orderType;
   final bool onlyFastOrder;
-  final PriceLot initialPriceLot;
+  final PriceLot? initialPriceLot;
 
   const ScreenTrade(
     this._orderType, {
     this.initialPriceLot,
-    Key key,
+    Key? key,
     this.onlyFastOrder = false,
   }) : super(key: key);
 
   @override
   _ScreenTradeState createState() =>
       _ScreenTradeState(this._orderType, this.onlyFastOrder,
-          initialPriceLot: this.initialPriceLot);
+          initialPriceLot: this.initialPriceLot!);
 }
 
 class _ScreenTradeState
@@ -71,16 +73,16 @@ class _ScreenTradeState
 
   // final int initialPrice;
   // final int initialLot;
-  final PriceLot initialPriceLot;
+  final PriceLot? initialPriceLot;
 
   _ScreenTradeState(this._initialOrderType, this._onlyFastOrder,
       {this.initialPriceLot})
-      : super('/trade');
+      : super('/trade', null, null);
 
   // Key buttonKey = UniqueKey();
   //TabController _tabController;
-  ValueNotifier<bool> _fastModeNotifier;
-  ValueNotifier<OrderType> _orderTypeNotifier;
+  ValueNotifier<bool>? _fastModeNotifier;
+  ValueNotifier<OrderType>? _orderTypeNotifier;
   OrderbookNotifier _orderbookNotifier = OrderbookNotifier(OrderbookData());
   ValueNotifier<bool> _loadingNotifier = ValueNotifier<bool>(false);
 
@@ -97,7 +99,7 @@ class _ScreenTradeState
     //_tabController = new TabController(vsync: this, length: tabs.length);
     print('ScreenTrade.initState set pTabController.index = ' +
         _initialOrderType.index.toString());
-    pTabController.index = _initialOrderType.index;
+    pTabController?.index = _initialOrderType.index;
 
     timeCreation = DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.now());
     //_fastModeNotifier = ValueNotifier<bool>(false);
@@ -111,7 +113,6 @@ class _ScreenTradeState
 
   @override
   void didChangeDependencies() {
-    // TODO: implement didChangeDependencies
     super.didChangeDependencies();
 
     bool keyboardShowed = MediaQuery.of(context).viewInsets.bottom > 0;
@@ -126,9 +127,9 @@ class _ScreenTradeState
     _bottomSheetNotifier.value = !keyboardShowed;
 
     // load froms existing
-    OrderBook currentOrderbook =
+    OrderBook? currentOrderbook =
         context.read(orderBookChangeNotifier).orderbook;
-    Stock currentStock = context.read(primaryStockChangeNotifier).stock;
+    Stock? currentStock = context.read(primaryStockChangeNotifier).stock;
     if (currentOrderbook != null &&
         currentStock != null &&
         (currentOrderbook.countBids() > 0 ||
@@ -137,7 +138,7 @@ class _ScreenTradeState
             currentOrderbook.code, currentStock.code)) {
       OrderbookData orderbookData = OrderbookData();
       orderbookData.orderbook = currentOrderbook;
-      StockSummary stockSummary =
+      StockSummary? stockSummary =
           context.read(stockSummaryChangeNotifier).summary;
       orderbookData.close = stockSummary != null ? stockSummary.close : 0;
       //orderbookData.prev = context.read(stockSummaryChangeNotifier).summary?.prev;
@@ -147,16 +148,16 @@ class _ScreenTradeState
       _orderbookNotifier.setValue(orderbookData);
     }
     print('AAAA 1');
-    pTabController.addListener(() {
+    pTabController?.addListener(() {
       print('AAAA 1 0');
-      _orderTypeNotifier.value =
-          OrderType.values.elementAt(pTabController.index);
+      _orderTypeNotifier?.value =
+          OrderType.values.elementAt(pTabController!.index);
       if (mounted) {
         FocusScope.of(context).requestFocus(new FocusNode());
       }
     });
     print('AAAA 2');
-    _fastModeNotifier.addListener(() {
+    _fastModeNotifier?.addListener(() {
       print('AAAA 2 0');
       FocusScope.of(context).requestFocus(new FocusNode());
     });
@@ -168,8 +169,8 @@ class _ScreenTradeState
   void dispose() {
     _keyboardNotifier.dispose();
     //_tabController.dispose();
-    _fastModeNotifier.dispose();
-    _orderTypeNotifier.dispose();
+    _fastModeNotifier?.dispose();
+    _orderTypeNotifier?.dispose();
     _orderbookNotifier.dispose();
     //_orderDataNotifier.dispose();
     _loadingNotifier.dispose();
@@ -217,27 +218,27 @@ class _ScreenTradeState
       // InvestrendTheme.of(context).user.accounts.forEach((account) {
       //   listAccountCode.add(account.accountcode);
       // });
-      context.read(dataHolderChangeNotifier).user.accounts.forEach((account) {
+      context.read(dataHolderChangeNotifier).user.accounts?.forEach((account) {
         listAccountCode.add(account.accountcode);
       });
       try {
         print(routeName + ' try accountStockPosition');
-        final accountStockPosition = await InvestrendTheme.tradingHttp
-            .accountStockPosition(
+        final List<AccountStockPosition>? accountStockPosition =
+            await InvestrendTheme.tradingHttp.accountStockPosition(
                 '',
                 listAccountCode,
                 context.read(dataHolderChangeNotifier).user.username,
                 InvestrendTheme.of(context).applicationPlatform,
                 InvestrendTheme.of(context).applicationVersion);
-        DebugWriter.information(routeName +
-            ' Got accountStockPosition  accountStockPosition.size : ' +
-            accountStockPosition.length.toString());
+        // DebugWriter.information(routeName +
+        //     ' Got accountStockPosition  accountStockPosition.size : ' +
+        //     accountStockPosition.length.toString());
         if (!mounted) {
           print(
               routeName + ' accountStockPosition ignored.  mounted : $mounted');
           return;
         }
-        AccountStockPosition first =
+        AccountStockPosition? first =
             (accountStockPosition != null && accountStockPosition.length > 0)
                 ? accountStockPosition.first
                 : null;
@@ -289,7 +290,7 @@ class _ScreenTradeState
       // InvestrendTheme.of(context).user.accounts.forEach((account) {
       //   listAccountCode.add(account.accountcode);
       // });
-      context.read(dataHolderChangeNotifier).user.accounts.forEach((account) {
+      context.read(dataHolderChangeNotifier).user.accounts?.forEach((account) {
         listAccountCode.add(account.accountcode);
       });
 
@@ -301,11 +302,11 @@ class _ScreenTradeState
               context.read(dataHolderChangeNotifier).user.username,
               InvestrendTheme.of(context).applicationPlatform,
               InvestrendTheme.of(context).applicationVersion);
-      accountStockPosition.then((value) {
-        DebugWriter.information(
-            'Got accountStockPosition  accountStockPosition.size : ' +
-                value.length.toString());
-        AccountStockPosition first =
+      accountStockPosition.then((List<AccountStockPosition>? value) {
+        // DebugWriter.information(
+        //     'Got accountStockPosition  accountStockPosition.size : ' +
+        //         value.length.toString());
+        AccountStockPosition? first =
             (value != null && value.length > 0) ? value.first : null;
         if (first != null && first.ignoreThis()) {
           // ignore in aja
@@ -343,8 +344,8 @@ class _ScreenTradeState
             InvestrendTheme.of(context).showSnackBar(context, error.message());
           } else {
             String networkErrorLabel = 'network_error_label'.tr();
-            networkErrorLabel = networkErrorLabel.replaceFirst(
-                "#CODE#", error.code.toString());
+            networkErrorLabel =
+                networkErrorLabel.replaceFirst("#CODE#", error.code.toString());
             InvestrendTheme.of(context)
                 .showSnackBar(context, networkErrorLabel);
             return;
@@ -359,7 +360,7 @@ class _ScreenTradeState
     }
   }
 
-  Widget createAppBar(BuildContext context) {
+  PreferredSizeWidget createAppBar(BuildContext context) {
     double elevation = 0.0;
     Color shadowColor = Theme.of(context).shadowColor;
     if (!InvestrendTheme.tradingHttp.is_production) {
@@ -376,11 +377,11 @@ class _ScreenTradeState
           if (value == null) {
             print('result finder = null');
           } else if (value is Stock) {
-            print('result finder = ' + value.code);
+            print('result finder = ' + value.code!);
             // InvestrendTheme.of(context).stockNotifier.setStock(value);
             context.read(primaryStockChangeNotifier).setStock(value);
           } else if (value is People) {
-            print('result finder = ' + value.name);
+            print('result finder = ' + value.name!);
           }
         });
       }));
@@ -422,18 +423,18 @@ class _ScreenTradeState
         }
         notation = context
             .read(remark2Notifier)
-            .getSpecialNotation(notifier.stock.code);
+            .getSpecialNotation(notifier.stock?.code);
         status = context
             .read(remark2Notifier)
-            .getSpecialNotationStatus(notifier.stock.code);
+            .getSpecialNotationStatus(notifier.stock?.code);
         suspendStock = context
             .read(suspendedStockNotifier)
-            .getSuspended(notifier.stock.code, notifier.stock.defaultBoard);
+            .getSuspended(notifier.stock?.code, notifier.stock?.defaultBoard);
         if (suspendStock != null) {
           status = StockInformationStatus.Suspended;
         }
-        VoidCallback onImportantInformation;
-        if (notation.isNotEmpty || suspendStock != null) {
+        VoidCallback? onImportantInformation;
+        if (notation!.isNotEmpty || suspendStock != null) {
           onImportantInformation = () => onPressedButtonImportantInformation(
               context, notation, suspendStock);
         }
@@ -442,15 +443,16 @@ class _ScreenTradeState
           children: [
             Column(
               children: [
-                AppBarTitleText(notifier.stock.code),
+                AppBarTitleText(notifier.stock?.code),
                 SizedBox(
                   height: 5.0,
                 ),
                 Text(
-                  InvestrendTheme.formatPrice(notifier.summary.close),
+                  InvestrendTheme.formatPrice(notifier.summary?.close),
                   style: InvestrendTheme.of(context)
                       .support_w400_compact
-                      .copyWith(color: Theme.of(context).colorScheme.secondary),
+                      ?.copyWith(
+                          color: Theme.of(context).colorScheme.secondary),
                 ),
               ],
             ),
@@ -539,8 +541,8 @@ class _ScreenTradeState
     print('onPressedButtonCorporateAction : ' + corporateAction.toString());
 
     List<Widget> childs = List.empty(growable: true);
-    if (corporateAction != null && corporateAction.isNotEmpty) {
-      corporateAction.forEach((ca) {
+    if (corporateAction != null && corporateAction!.isNotEmpty) {
+      corporateAction?.forEach((CorporateActionEvent? ca) {
         if (ca != null) {
           childs.add(Padding(
             padding: const EdgeInsets.only(bottom: 20),
@@ -556,7 +558,7 @@ class _ScreenTradeState
   }
 
   void onPressedButtonImportantInformation(BuildContext context,
-      List<Remark2Mapping> notation, SuspendStock suspendStock) {
+      List<Remark2Mapping>? notation, SuspendStock? suspendStock) {
     List<Widget> childs = List.empty(growable: true);
     int count = notation == null ? 0 : notation.length;
 
@@ -566,20 +568,20 @@ class _ScreenTradeState
 
       DateFormat dateFormatter = DateFormat('EEEE, dd/MM/yyyy', 'id');
       DateFormat dateParser = DateFormat('yyyy-MM-dd');
-      DateTime dateTime = dateParser.parseUtc(suspendStock.date);
+      DateTime dateTime = dateParser.parseUtc(suspendStock.date!);
       print('dateTime : ' + dateTime.toString());
       //print('indexSummary.date : '+data.date+' '+data.time);
       String formatedDate = dateFormatter.format(dateTime);
       //String formatedTime = timeFormatter.format(dateTime);
       //infoSuspend = infoSuspend.replaceAll('#BOARD#', suspendStock.board);
       infoSuspend = infoSuspend.replaceAll('#DATE#', formatedDate);
-      infoSuspend = infoSuspend.replaceAll('#TIME#', suspendStock.time);
+      infoSuspend = infoSuspend.replaceAll('#TIME#', suspendStock.time!);
       //displayTime = infoTime;
       height += 25.0;
       childs.add(Padding(
         padding: const EdgeInsets.only(bottom: 5.0),
         child: Text(
-          'Suspended ' + suspendStock.board,
+          'Suspended ' + suspendStock.board!,
           style: InvestrendTheme.of(context).small_w600,
         ),
       ));
@@ -602,14 +604,14 @@ class _ScreenTradeState
     }
     bool titleSpecialNotation = true;
     for (int i = 0; i < count; i++) {
-      Remark2Mapping remark2 = notation.elementAt(i);
+      Remark2Mapping? remark2 = notation?.elementAt(i);
       if (remark2 != null) {
         if (remark2.isSurveilance()) {
           height += 35.0;
           childs.add(Padding(
             padding: const EdgeInsets.only(bottom: 15.0),
             child: Text(
-              remark2.code + ' : ' + remark2.value,
+              remark2.code! + ' : ' + remark2.value!,
               style: InvestrendTheme.of(context).small_w600,
             ),
           ));
@@ -638,7 +640,7 @@ class _ScreenTradeState
                       style: InvestrendTheme.of(context).small_w600,
                     ),
                     TextSpan(
-                      text: ' : ' + remark2.value,
+                      text: ' : ' + remark2.value!,
                       style: InvestrendTheme.of(context).small_w400,
                     )
                   ]),
@@ -654,7 +656,7 @@ class _ScreenTradeState
   }
 
   void showAlert(BuildContext context, List<Widget> childs,
-      {String title, double childsHeight = 0}) {
+      {String? title, double childsHeight = 0}) {
     showModalBottomSheet(
         isScrollControlled: true,
         shape: RoundedRectangleBorder(
@@ -672,7 +674,7 @@ class _ScreenTradeState
         });
   }
 
-  Widget createAppBarNew(BuildContext context) {
+  PreferredSizeWidget createAppBarNew(BuildContext context) {
     double elevation = 0.0;
     Color shadowColor = Theme.of(context).shadowColor;
     if (!InvestrendTheme.tradingHttp.is_production) {
@@ -690,10 +692,10 @@ class _ScreenTradeState
           if (value == null) {
             print('result finder = null');
           } else if (value is Stock) {
-            print('result finder = ' + value.code);
+            print('result finder = ' + value.code!);
             context.read(primaryStockChangeNotifier).setStock(value);
           } else if (value is People) {
-            print('result finder = ' + value.name);
+            print('result finder = ' + value.name!);
           }
         });
       }));
@@ -734,50 +736,51 @@ class _ScreenTradeState
           return Center(child: CircularProgressIndicator());
         }
 
-        TextStyle styleAttention = InvestrendTheme.of(context).headline3;
+        TextStyle? styleAttention = InvestrendTheme.of(context).headline3;
         Size textSize = UIHelper.textSize('ABCD', styleAttention);
         attentionCodes = context
             .read(remark2Notifier)
-            .getSpecialNotationCodes(notifier.stock.code);
+            .getSpecialNotationCodes(notifier.stock?.code);
         notation = context
             .read(remark2Notifier)
-            .getSpecialNotation(notifier.stock.code);
+            .getSpecialNotation(notifier.stock?.code);
         status = context
             .read(remark2Notifier)
-            .getSpecialNotationStatus(notifier.stock.code);
+            .getSpecialNotationStatus(notifier.stock?.code);
         suspendStock = context
             .read(suspendedStockNotifier)
-            .getSuspended(notifier.stock.code, notifier.stock.defaultBoard);
+            .getSuspended(notifier.stock?.code, notifier.stock?.defaultBoard);
         if (suspendStock != null) {
           status = StockInformationStatus.Suspended;
         }
-        VoidCallback onImportantInformation;
-        if (notation.isNotEmpty || suspendStock != null) {
+        VoidCallback? onImportantInformation;
+        if (notation!.isNotEmpty || suspendStock != null) {
           onImportantInformation = () => onPressedButtonImportantInformation(
               context, notation, suspendStock);
         }
 
         corporateAction = context
             .read(corporateActionEventNotifier)
-            .getEvent(notifier.stock.code);
+            .getEvent(notifier.stock?.code);
         corporateActionColor = CorporateActionEvent.getColor(corporateAction);
-        VoidCallback onPressedCorporateAction;
-        if ((corporateAction != null && corporateAction.isNotEmpty)) {
+        VoidCallback? onPressedCorporateAction;
+        if ((corporateAction != null && corporateAction!.isNotEmpty)) {
           onPressedCorporateAction = () => onPressedButtonCorporateAction();
         }
 
         Widget codePriceWidget = Column(
           children: [
             Hero(
-                tag: 'trade_code', child: AppBarTitleText(notifier.stock.code)),
+                tag: 'trade_code',
+                child: AppBarTitleText(notifier.stock?.code)),
             SizedBox(
               height: 5.0,
             ),
             Text(
-              InvestrendTheme.formatPrice(notifier.summary.close),
+              InvestrendTheme.formatPrice(notifier.summary?.close),
               style: InvestrendTheme.of(context)
                   .support_w400_compact
-                  .copyWith(color: Theme.of(context).colorScheme.secondary),
+                  ?.copyWith(color: Theme.of(context).colorScheme.secondary),
             ),
           ],
         );
@@ -789,7 +792,7 @@ class _ScreenTradeState
           list.add(ButtonTextAttentionMozaic(attentionCodes,
               textSize.height - 3, status, onImportantInformation));
         }
-        if ((corporateAction != null && corporateAction.isNotEmpty)) {
+        if ((corporateAction != null && corporateAction!.isNotEmpty)) {
           list.add(ButtonCorporateAction(textSize.height, corporateActionColor,
               onPressedButtonCorporateAction));
         }
@@ -845,16 +848,16 @@ class _ScreenTradeState
     );
   }
 
-  String attentionCodes;
-  List<Remark2Mapping> notation = List.empty(growable: true);
-  StockInformationStatus status;
-  SuspendStock suspendStock;
-  List<CorporateActionEvent> corporateAction = List.empty(growable: true);
+  String? attentionCodes;
+  List<Remark2Mapping>? notation = List.empty(growable: true);
+  StockInformationStatus? status;
+  SuspendStock? suspendStock;
+  List<CorporateActionEvent>? corporateAction = List.empty(growable: true);
   Color corporateActionColor = Colors.black;
 
   //bool fastMode = false;
 
-  Widget createTabs(BuildContext context) {
+  PreferredSizeWidget createTabs(BuildContext context) {
     List<Widget> list = List.empty(growable: true);
     tabs.forEach((title) {
       list.add(new Tab(text: title));
@@ -872,13 +875,13 @@ class _ScreenTradeState
         rows.add(ButtonDropdownStock());
       } else {
         rows.add(ValueListenableBuilder(
-          valueListenable: _fastModeNotifier,
-          builder: (context, value, child) {
+          valueListenable: _fastModeNotifier!,
+          builder: (context, bool? value, child) {
             return CupertinoSwitch(
-                value: value,
+                value: value!,
                 onChanged: (newValue) {
                   print('onChanged : ' + newValue.toString());
-                  _fastModeNotifier.value = newValue;
+                  _fastModeNotifier?.value = newValue;
                 });
           },
         ));
@@ -888,7 +891,7 @@ class _ScreenTradeState
         ));
 
         rows.add(ValueListenableBuilder(
-          valueListenable: _orderTypeNotifier,
+          valueListenable: _orderTypeNotifier!,
           builder: (context, OrderType value, child) {
             String text = '';
             if (value == OrderType.Buy) {
@@ -898,7 +901,7 @@ class _ScreenTradeState
             }
             return Text(
               text,
-              style: InvestrendTheme.of(context).small_w400.copyWith(
+              style: InvestrendTheme.of(context).small_w400?.copyWith(
                   color: Theme.of(context).tabBarTheme.unselectedLabelColor,
                   height: 1.0),
             );
@@ -922,7 +925,7 @@ class _ScreenTradeState
     );
   }
 
-  Widget createTabsNew(BuildContext context) {
+  PreferredSizeWidget createTabsNew(BuildContext context) {
     List<Widget> list = List.empty(growable: true);
     tabs.forEach((title) {
       list.add(new Tab(text: title));
@@ -940,13 +943,13 @@ class _ScreenTradeState
         rows.add(ButtonDropdownStock());
       } else {
         rows.add(ValueListenableBuilder(
-          valueListenable: _fastModeNotifier,
-          builder: (context, value, child) {
+          valueListenable: _fastModeNotifier!,
+          builder: (context, bool? value, child) {
             return CupertinoSwitch(
-                value: value,
+                value: value!,
                 onChanged: (newValue) {
                   print('onChanged : ' + newValue.toString());
-                  _fastModeNotifier.value = newValue;
+                  _fastModeNotifier?.value = newValue;
                 });
           },
         ));
@@ -956,7 +959,7 @@ class _ScreenTradeState
         ));
 
         rows.add(ValueListenableBuilder(
-          valueListenable: _orderTypeNotifier,
+          valueListenable: _orderTypeNotifier!,
           builder: (context, OrderType value, child) {
             String text = '';
             if (value == OrderType.Buy) {
@@ -966,7 +969,7 @@ class _ScreenTradeState
             }
             return Text(
               text,
-              style: InvestrendTheme.of(context).small_w400.copyWith(
+              style: InvestrendTheme.of(context).small_w400?.copyWith(
                   color: Theme.of(context).tabBarTheme.unselectedLabelColor,
                   height: 1.0),
             );
@@ -1036,11 +1039,11 @@ class _ScreenTradeState
   }
 
   bool isBuy() {
-    return _orderTypeNotifier.value == OrderType.Buy;
+    return _orderTypeNotifier?.value == OrderType.Buy;
   }
 
-  bool isFastMode() {
-    return _fastModeNotifier.value;
+  bool? isFastMode() {
+    return _fastModeNotifier?.value;
   }
 
   //bool small = true;
@@ -1049,9 +1052,9 @@ class _ScreenTradeState
 
   Widget createBottomSheet(BuildContext context, double paddingBottom) {
     String tag;
-    if (_orderTypeNotifier.value == OrderType.Buy) {
+    if (_orderTypeNotifier?.value == OrderType.Buy) {
       tag = 'button_buy';
-    } else if (_orderTypeNotifier.value == OrderType.Sell) {
+    } else if (_orderTypeNotifier?.value == OrderType.Sell) {
       tag = 'button_sell';
     } else {
       tag = '???';
@@ -1093,7 +1096,7 @@ class _ScreenTradeState
 
     return ValueListenableBuilder(
       valueListenable: _bottomSheetNotifier,
-      builder: (context, value, child) {
+      builder: (context, bool value, child) {
         if (!value) {
           if (Platform.isIOS) {
             return Container(
@@ -1111,7 +1114,8 @@ class _ScreenTradeState
                     'button_done'.tr(),
                     style: InvestrendTheme.of(context)
                         .small_w500_compact
-                        .copyWith(color: Theme.of(context).colorScheme.secondary),
+                        ?.copyWith(
+                            color: Theme.of(context).colorScheme.secondary),
                   ),
                   onPressed: () {
                     _bottomSheetNotifier.value = true;
@@ -1146,7 +1150,7 @@ class _ScreenTradeState
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           ValueListenableBuilder(
-                            valueListenable: _orderTypeNotifier,
+                            valueListenable: _orderTypeNotifier!,
                             builder: (context, OrderType value, child) {
                               String text = '';
                               if (value == OrderType.Buy) {
@@ -1171,10 +1175,10 @@ class _ScreenTradeState
                             //   return Center(child: CircularProgressIndicator());
                             // }
                             BuySell data =
-                                notifier.getData(_orderTypeNotifier.value);
+                                notifier.getData(_orderTypeNotifier?.value);
 
                             int value;
-                            if (_fastModeNotifier.value) {
+                            if (_fastModeNotifier!.value) {
                               value = data.fastTotalValue;
 
                               // if(data.orderType.isBuyOrAmendBuy()){
@@ -1187,7 +1191,6 @@ class _ScreenTradeState
                               //     value = (value * (1.0 + (feeBuy / 100))).toInt();
                               //   }
                               // }
-
                             } else {
                               value = data.normalTotalValue;
                             }
@@ -1226,7 +1229,7 @@ class _ScreenTradeState
                 Padding(
                   padding: const EdgeInsets.only(left: 18.0, right: 18.0),
                   child: ValueListenableBuilder(
-                    valueListenable: _orderTypeNotifier,
+                    valueListenable: _orderTypeNotifier!,
                     builder: (context, OrderType value, child) {
                       String tag;
                       if (value == OrderType.Buy) {
@@ -1247,7 +1250,7 @@ class _ScreenTradeState
                             bool enableButton = true;
                             int selected =
                                 context.read(accountChangeNotifier).index;
-                            Account account = context
+                            Account? account = context
                                 .read(dataHolderChangeNotifier)
                                 .user
                                 .getAccount(selected);
@@ -1257,7 +1260,7 @@ class _ScreenTradeState
                             }
                             BuySell dataNotifier = context
                                 .read(buySellChangeNotifier)
-                                .getData(_orderTypeNotifier.value);
+                                .getData(_orderTypeNotifier?.value);
                             print('==== dataNotifier =====');
                             print(dataNotifier.toString());
                             BuySell data = dataNotifier.clone();
@@ -1267,7 +1270,7 @@ class _ScreenTradeState
                             // override yah, karena di irwan kejadian, bukan fast mode tapi data nya fastmode.
                             data.fastMode = isFastMode();
 
-                            if (data.fastMode) {
+                            if (data.fastMode!) {
                               if (data.fastTotalValue == 0) {
                                 //InvestrendTheme.of(context).showSnackBar(context, 'trade_validation_error_price_qty'.tr());
 
@@ -1318,7 +1321,7 @@ class _ScreenTradeState
                                               .read(accountChangeNotifier)
                                               .index;
                                           //Account account = InvestrendTheme.of(context).user.getAccount(selected);
-                                          Account account = context
+                                          Account? account = context
                                               .read(dataHolderChangeNotifier)
                                               .user
                                               .getAccount(selected);
@@ -1336,7 +1339,7 @@ class _ScreenTradeState
                                           BuySell dataNotifier = context
                                               .read(buySellChangeNotifier)
                                               .getData(
-                                                  _orderTypeNotifier.value);
+                                                  _orderTypeNotifier?.value);
                                           print('==== dataNotifier =====');
                                           print(dataNotifier.toString());
                                           BuySell data = dataNotifier.clone();
@@ -1349,7 +1352,7 @@ class _ScreenTradeState
                                           // override yah, karena di irwan kejadian, bukan fast mode tapi data nya fastmode.
                                           data.fastMode = isFastMode();
 
-                                          if (data.fastMode) {
+                                          if (data.fastMode!) {
                                             if (data.fastTotalValue == 0) {
                                               InvestrendTheme.of(context)
                                                   .showSnackBar(
@@ -1415,7 +1418,7 @@ class _ScreenTradeState
                                               context: context,
                                               builder: (context) {
                                                 return ConfirmationBottomSheet(
-                                                    _orderTypeNotifier.value,
+                                                    _orderTypeNotifier?.value,
                                                     account,
                                                     data,
                                                     reffID,
@@ -1882,14 +1885,10 @@ class _ScreenTradeState
   }
 
   @override
-  void onActive() {
-    // TODO: implement onActive
-  }
+  void onActive() {}
 
   @override
-  void onInactive() {
-    // TODO: implement onInactive
-  }
+  void onInactive() {}
 
 // @override
 // Widget build(BuildContext context) {
@@ -1917,7 +1916,6 @@ class _ScreenTradeState
 //
 //    */
 // }
-
 }
 
 class OrderFinishedFullscreenBottomSheet extends BaseTradeBottomSheet {
@@ -1969,7 +1967,7 @@ class OrderFinishedFullscreenBottomSheet extends BaseTradeBottomSheet {
                 'trade_finished_info_success_label'.tr(),
                 style: InvestrendTheme.of(context)
                     .regular_w600_compact
-                    .copyWith(color: InvestrendTheme.greenText),
+                    ?.copyWith(color: InvestrendTheme.greenText),
               ),
               SizedBox(
                 height: 8.0,
@@ -1994,7 +1992,7 @@ class OrderFinishedFullscreenBottomSheet extends BaseTradeBottomSheet {
                     'trade_finished_button_show_order'.tr(),
                     style: InvestrendTheme.of(context)
                         .small_w400_compact
-                        .copyWith(
+                        ?.copyWith(
                             color: InvestrendTheme.of(context)
                                 .greyDarkerTextColor),
                   ),
@@ -2114,7 +2112,7 @@ class OrderFinishedBottomSheet extends BaseTradeBottomSheet {
             : 'trade_finished_order_sell_sent_label'.tr()),
         style: InvestrendTheme.of(context)
             .regular_w400_compact
-            .copyWith(color: Color(0xFF25B792)),
+            ?.copyWith(color: Color(0xFF25B792)),
       )),
     );
     contentHeight += heightRowReguler;
@@ -2159,7 +2157,7 @@ class OrderFinishedBottomSheet extends BaseTradeBottomSheet {
                 : 'trade_finished_button_sell_again'.tr()),
             style: InvestrendTheme.of(context)
                 .small_w600_compact
-                .copyWith(color: Theme.of(context).buttonColor),
+                ?.copyWith(color: Theme.of(context).highlightColor),
           ),
           onPressed: () {
             print('beli lagi clicked');
@@ -2193,7 +2191,7 @@ class OrderFinishedBottomSheet extends BaseTradeBottomSheet {
 }
 
 class ConfirmationBottomSheet extends BaseTradeBottomSheet {
-  final OrderType orderType;
+  final OrderType? orderType;
   final Account account;
   final BuySell data;
   final String reff;
@@ -2205,7 +2203,7 @@ class ConfirmationBottomSheet extends BaseTradeBottomSheet {
     this.data,
     this.reff,
     this.loadingNotifier, {
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   void showNextPage(BuildContext context, Widget pageNext, String routeNext) {
@@ -2227,7 +2225,6 @@ class ConfirmationBottomSheet extends BaseTradeBottomSheet {
         // WidgetsBinding.instance.addPostFrameCallback((_) {
         //
         // });
-
       } else {
         if (value is String) {
           if (StringUtils.equalsIgnoreCase(value, 'KEEP')) {
@@ -2238,8 +2235,7 @@ class ConfirmationBottomSheet extends BaseTradeBottomSheet {
             context.read(clearOrderChangeNotifier).mustNotifyListener();
             Navigator.popUntil(context, (route) {
               print('popUntil : ' + route.toString());
-              if (StringUtils.equalsIgnoreCase(
-                  route?.settings?.name, '/main')) {
+              if (StringUtils.equalsIgnoreCase(route.settings.name, '/main')) {
                 return true;
               }
               return route.isFirst;
@@ -2252,8 +2248,7 @@ class ConfirmationBottomSheet extends BaseTradeBottomSheet {
             context.read(clearOrderChangeNotifier).mustNotifyListener();
             Navigator.popUntil(context, (route) {
               print('popUntil : ' + route.toString());
-              if (StringUtils.equalsIgnoreCase(
-                  route?.settings?.name, '/main')) {
+              if (StringUtils.equalsIgnoreCase(route.settings.name, '/main')) {
                 return true;
               }
               return route.isFirst;
@@ -2270,7 +2265,6 @@ class ConfirmationBottomSheet extends BaseTradeBottomSheet {
           //   print('Order Finished value : $value  clearData : true');
           //   context.read(clearOrderChangeNotifier).mustNotifyListener();
           // }
-
         } else {
           print('Order Finished value : [NOT a String]  clearData : true');
           context.read(clearOrderChangeNotifier).mustNotifyListener();
@@ -2284,16 +2278,16 @@ class ConfirmationBottomSheet extends BaseTradeBottomSheet {
       BuildContext context, BuySell data, String prices, String qtys) {
     //InvestrendTheme.of(context).showSnackBar(context, 'Confirm clicked');
     print('order confirm clicked AAA');
-    bool fastMode = data.fastMode;
+    bool? fastMode = data.fastMode;
     //Navigator.pop(context);
     data.setAccount(account.accountname, account.type, account.accountcode,
         account.brokercode);
 
-    int type = 0;
-    if (fastMode) {
+    int? type = 0;
+    if (fastMode!) {
       type = 3;
     } else if (data.transactionType != null) {
-      type = data.transactionType.index;
+      type = data.transactionType?.index;
     }
 
     String loadingText = 'loading_submiting_order_label'.tr();
@@ -2316,7 +2310,7 @@ class ConfirmationBottomSheet extends BaseTradeBottomSheet {
       account.brokercode,
       account.accountcode,
       context.read(dataHolderChangeNotifier).user.username,
-      data.orderType.shortSymbol,
+      data.orderType?.shortSymbol,
       data.stock_code,
       Stock.defaultBoardByCode(data.stock_code),
       prices,
@@ -2546,12 +2540,12 @@ class ConfirmationBottomSheet extends BaseTradeBottomSheet {
     print('CONFIRMATION for data --> ' + data.toString());
     String accountName = account.accountname;
     String accountType = account.accountcode;
-    String code = data.stock_code;
-    String name = data.stock_name;
-    bool fastMode = data.fastMode;
+    String? code = data.stock_code;
+    String? name = data.stock_name;
+    bool? fastMode = data.fastMode;
     int tradingLimitUsage = data.tradingLimitUsage;
-    int totalValue =
-        data.fastMode ? data.fastTotalValue : data.normalTotalValue;
+    int? totalValue =
+        data.fastMode! ? data.fastTotalValue : data.normalTotalValue;
 
     //OrderType orderType = odc.orderType;
     String orderTypeText = orderType == OrderType.Buy
@@ -2590,9 +2584,9 @@ class ConfirmationBottomSheet extends BaseTradeBottomSheet {
     String prices = '';
     String qtys = '';
 
-    if (fastMode) {
-      List<PriceLot> listPriceLot = data.listFastPriceLot;
-      int count = listPriceLot != null ? listPriceLot.length : 0;
+    if (fastMode!) {
+      List<PriceLot>? listPriceLot = data.listFastPriceLot;
+      int? count = listPriceLot != null ? listPriceLot.length : 0;
       if (count == 0) {
         list.add(TradeComponentCreator.popupRow(context,
             'trade_confirmation_fast_mode_lot_price_label'.tr(), '-  |  -'));
@@ -2600,7 +2594,7 @@ class ConfirmationBottomSheet extends BaseTradeBottomSheet {
       } else {
         bool first = true;
         for (int i = 0; i < count; i++) {
-          PriceLot pl = listPriceLot.elementAt(i);
+          PriceLot? pl = listPriceLot?.elementAt(i);
           if (pl != null) {
             if (first) {
               prices = pl.price.toString();
@@ -2632,7 +2626,7 @@ class ConfirmationBottomSheet extends BaseTradeBottomSheet {
         }
       }
     } else {
-      PriceLot pl = data.normalPriceLot;
+      PriceLot? pl = data.normalPriceLot;
       if (pl != null) {
         prices = pl.price.toString();
         qtys = pl.lot.toString();
@@ -2680,13 +2674,13 @@ class ConfirmationBottomSheet extends BaseTradeBottomSheet {
         children: [
           Text(
             'trade_confirmation_total_label'.tr(),
-            style: InvestrendTheme.of(context).regular_w600_compact.copyWith(
+            style: InvestrendTheme.of(context).regular_w600_compact?.copyWith(
                 color: InvestrendTheme.of(context).greyLighterTextColor),
           ),
           Expanded(
             child: Text(
               InvestrendTheme.formatMoney(totalValue, prefixRp: true),
-              style: InvestrendTheme.of(context).regular_w600_compact.copyWith(
+              style: InvestrendTheme.of(context).regular_w600_compact?.copyWith(
                   color: InvestrendTheme.of(context).blackAndWhiteText),
               textAlign: TextAlign.right,
             ),

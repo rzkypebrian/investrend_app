@@ -6,58 +6,60 @@ import 'package:Investrend/screens/base/base_state.dart';
 import 'package:Investrend/screens/screen_main.dart';
 import 'package:flutter/material.dart';
 
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:easy_localization/easy_localization.dart';
+// import 'package:flutter_riverpod/flutter_riverpod.dart';
+// import 'package:easy_localization/easy_localization.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
 
 class ScreenSearchCryptocurrency extends StatefulWidget {
-  final TabController tabController;
+  final TabController? tabController;
   final int tabIndex;
-  final ValueNotifier<bool> visibilityNotifier;
-  ScreenSearchCryptocurrency(this.tabIndex, this.tabController,  {Key key, this.visibilityNotifier}) : super( key: key);
+  final ValueNotifier<bool>? visibilityNotifier;
+  ScreenSearchCryptocurrency(this.tabIndex, this.tabController,
+      {Key? key, this.visibilityNotifier})
+      : super(key: key);
 
   @override
-  _ScreenSearchCryptocurrencyState createState() => _ScreenSearchCryptocurrencyState(tabIndex, tabController, visibilityNotifier: visibilityNotifier);
-
+  _ScreenSearchCryptocurrencyState createState() =>
+      _ScreenSearchCryptocurrencyState(tabIndex, tabController,
+          visibilityNotifier: visibilityNotifier);
 }
 
-class _ScreenSearchCryptocurrencyState extends BaseStateNoTabsWithParentTab<ScreenSearchCryptocurrency>
-
-{
-  GroupedNotifier _groupedNotifier = GroupedNotifier(GroupedData());
+class _ScreenSearchCryptocurrencyState
+    extends BaseStateNoTabsWithParentTab<ScreenSearchCryptocurrency> {
+  GroupedNotifier? _groupedNotifier = GroupedNotifier(GroupedData());
   //GeneralPriceNotifier _cryptoNotifier = GeneralPriceNotifier(new GeneralPriceData());
-  
-  
+
   // LabelValueNotifier _shareHolderCompositionNotifier = LabelValueNotifier(new LabelValueData());
   // LabelValueNotifier _boardOfCommisionersNotifier = LabelValueNotifier(new LabelValueData());
 
-  _ScreenSearchCryptocurrencyState(int tabIndex, TabController tabController, {ValueNotifier<bool> visibilityNotifier})
-      : super('/search_cryptocurrency', tabIndex, tabController,parentTabIndex: Tabs.Search.index, visibilityNotifier: visibilityNotifier);
+  _ScreenSearchCryptocurrencyState(int tabIndex, TabController? tabController,
+      {ValueNotifier<bool>? visibilityNotifier})
+      : super('/search_cryptocurrency', tabIndex, tabController,
+            parentTabIndex: Tabs.Search.index,
+            visibilityNotifier: visibilityNotifier);
 
   // @override
   // bool get wantKeepAlive => true;
 
-
-
-
   @override
-  Widget createAppBar(BuildContext context) {
+  PreferredSizeWidget? createAppBar(BuildContext context) {
     return null;
   }
 
   Future doUpdate({bool pullToRefresh = false}) async {
-    print(routeName+'.doUpdate '+DateTime.now().toString());
-    if(_groupedNotifier.value.isEmpty() || pullToRefresh){
+    print(routeName + '.doUpdate ' + DateTime.now().toString());
+    if (_groupedNotifier!.value!.isEmpty() || pullToRefresh) {
       setNotifierLoading(_groupedNotifier);
     }
 
     try {
-      final groupedData = await InvestrendTheme.datafeedHttp.fetchCrypto();
-      if(groupedData != null){
-        if(mounted){
-          _groupedNotifier.setValue(groupedData);
+      final GroupedData? groupedData =
+          await InvestrendTheme.datafeedHttp.fetchCrypto();
+      if (groupedData != null) {
+        if (mounted) {
+          _groupedNotifier?.setValue(groupedData);
         }
-      }else{
+      } else {
         setNotifierNoData(_groupedNotifier);
       }
     } catch (error) {
@@ -68,7 +70,7 @@ class _ScreenSearchCryptocurrencyState extends BaseStateNoTabsWithParentTab<Scre
   }
 
   Future onRefresh() {
-    if(!active){
+    if (!active) {
       active = true;
       //onActive();
     }
@@ -78,15 +80,12 @@ class _ScreenSearchCryptocurrencyState extends BaseStateNoTabsWithParentTab<Scre
 
   @override
   Widget createBody(BuildContext context, double paddingBottom) {
-
     return RefreshIndicator(
       color: InvestrendTheme.of(context).textWhite,
-      backgroundColor: Theme
-          .of(context)
-          .colorScheme.secondary,
+      backgroundColor: Theme.of(context).colorScheme.secondary,
       onRefresh: onRefresh,
-      child:ValueListenableBuilder<GroupedData>(
-          valueListenable: _groupedNotifier,
+      child: ValueListenableBuilder<GroupedData?>(
+          valueListenable: _groupedNotifier!,
           builder: (context, value, child) {
             /*
             if (_groupedNotifier.invalid()) {
@@ -100,92 +99,119 @@ class _ScreenSearchCryptocurrencyState extends BaseStateNoTabsWithParentTab<Scre
               );
             }
             */
-            Widget noWidget = _groupedNotifier.currentState.getNoWidget(onRetry: (){
+            Widget? noWidget =
+                _groupedNotifier?.currentState.getNoWidget(onRetry: () {
               doUpdate(pullToRefresh: true);
             });
-            if(noWidget != null){
+            if (noWidget != null) {
               return ListView(
                 children: [
                   Padding(
                     //padding: EdgeInsets.only(top: MediaQuery.of(context).size.width - 80.0),
-                    padding:  EdgeInsets.only(top: MediaQuery.of(context).size.width / 4),
+                    padding: EdgeInsets.only(
+                        top: MediaQuery.of(context).size.width / 4),
                     child: Center(child: noWidget),
                   ),
                 ],
               );
             }
-            print('value.datasSize : '+value.datasSize().toString());
+            print('value.datasSize : ' + value!.datasSize().toString());
             return ListView.separated(
                 shrinkWrap: false,
-                padding: const EdgeInsets.only(left:InvestrendTheme.cardPaddingGeneral , right:InvestrendTheme.cardPaddingGeneral),
+                padding: const EdgeInsets.only(
+                    left: InvestrendTheme.cardPaddingGeneral,
+                    right: InvestrendTheme.cardPaddingGeneral),
                 itemCount: value.datasSize(),
                 separatorBuilder: (context, index) {
                   StringIndex holder = value.elementAt(index);
-                  print('index : $index  '+holder.toString());
-                  if(holder.number < 0){
-                    return Divider(thickness: 1.0, color: Colors.transparent, );
-                  }else{
+                  print('index : $index  ' + holder.toString());
+                  if (holder.number! < 0) {
+                    return Divider(
+                      thickness: 1.0,
+                      color: Colors.transparent,
+                    );
+                  } else {
                     // bool last = holder.number == (value.map[holder.text].length - 1);
                     // if(last){
                     //   return Divider(thickness: 1.0, color: Colors.transparent, );
                     // }else{
                     return ComponentCreator.divider(context);
                     // }
-
                   }
                 },
                 itemBuilder: (BuildContext context, int index) {
                   StringIndex holder = value.elementAt(index);
-                  print('index : $index  '+holder.toString());
-                  if(holder.number < 0){
-                    String group = holder.text;
+                  print('index : $index  ' + holder.toString());
+                  if (holder.number! < 0) {
+                    String? group = holder.text;
                     print('group : $group');
                     return Padding(
                       padding: const EdgeInsets.only(top: 28.0),
-                      child: GroupTitle(group, color: InvestrendTheme.of(context).greyLighterTextColor),
+                      child: GroupTitle(group,
+                          color:
+                              InvestrendTheme.of(context).greyLighterTextColor),
                     );
-                  }else{
-                    CryptoPrice cp = value.map[holder.text].elementAt(holder.number);
+                  } else {
+                    CryptoPrice cp =
+                        value.map?[holder.text]?.elementAt(holder.number!);
                     //return RowGeneralPrice(gp.code, gp.price, gp.change, gp.percentChange, InvestrendTheme.changeTextColor(gp.change), name: gp.name, firstRow: (index == 0), onTap: (){},);
 
-                    Color priceColor = InvestrendTheme.changeTextColor(cp.percent_change_24h);
+                    Color priceColor =
+                        InvestrendTheme.changeTextColor(cp.percent_change_24h);
                     return ListTile(
-                      contentPadding: EdgeInsets.only(left: 0.0, right: 0.0, top: 0.0, bottom: 0.0),
+                      contentPadding: EdgeInsets.only(
+                          left: 0.0, right: 0.0, top: 0.0, bottom: 0.0),
                       //leading: Image.network(cp.icon_url, width: 40.0, height: 40.0,),
-                      leading: ComponentCreator.imageNetworkCached(cp.icon_url, width: 35.0, height: 35.0,),
+                      leading: ComponentCreator.imageNetworkCached(
+                        cp.icon_url,
+                        width: 35.0,
+                        height: 35.0,
+                      ),
                       title: Row(
                         children: [
                           Text(
-                            cp.code,
-                            style: InvestrendTheme.of(context).regular_w600_compact,
+                            cp.code!,
+                            style: InvestrendTheme.of(context)
+                                .regular_w600_compact,
                           ),
-                          Spacer(flex: 1,),
+                          Spacer(
+                            flex: 1,
+                          ),
                           Text(
                             InvestrendTheme.formatPriceDouble(cp.price),
-                            style: InvestrendTheme.of(context).regular_w600_compact.copyWith(color: priceColor),
+                            style: InvestrendTheme.of(context)
+                                .regular_w600_compact
+                                ?.copyWith(color: priceColor),
                           ),
                         ],
                       ),
                       subtitle: Row(
                         children: [
                           Text(
-                            cp.name,
-                            style:
-                            InvestrendTheme.of(context).support_w400_compact.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor),
+                            cp.name!,
+                            style: InvestrendTheme.of(context)
+                                .support_w400_compact
+                                ?.copyWith(
+                                    color: InvestrendTheme.of(context)
+                                        .greyLighterTextColor),
                           ),
-                          Spacer(flex: 1,),
+                          Spacer(
+                            flex: 1,
+                          ),
                           Text(
                             //'$change ($percentChange)',
                             //InvestrendTheme.formatChange(change)+
-                            ' ('+InvestrendTheme.formatPercentChange(cp.percent_change_24h)+')',
-                            style: InvestrendTheme.of(context).support_w400_compact.copyWith(color: priceColor),
+                            ' (' +
+                                InvestrendTheme.formatPercentChange(
+                                    cp.percent_change_24h) +
+                                ')',
+                            style: InvestrendTheme.of(context)
+                                .support_w400_compact
+                                ?.copyWith(color: priceColor),
                           )
                         ],
                       ),
-                      
-
                     );
-
                   }
                   //return EmptyLabel(text: 'Unknown',);
                 });
@@ -228,6 +254,7 @@ class _ScreenSearchCryptocurrencyState extends BaseStateNoTabsWithParentTab<Scre
     );
     */
   }
+
   /*
   @override
   Widget createBody(BuildContext context, double paddingBottom) {
@@ -273,7 +300,6 @@ class _ScreenSearchCryptocurrencyState extends BaseStateNoTabsWithParentTab<Scre
     doUpdate();
   }
 
-
   @override
   void initState() {
     super.initState();
@@ -299,17 +325,13 @@ class _ScreenSearchCryptocurrencyState extends BaseStateNoTabsWithParentTab<Scre
     */
   }
 
-
   @override
   void dispose() {
     //_cryptoNotifier.dispose();
-    _groupedNotifier.dispose();
-
+    _groupedNotifier?.dispose();
 
     super.dispose();
   }
-
-
 
   @override
   void onInactive() {

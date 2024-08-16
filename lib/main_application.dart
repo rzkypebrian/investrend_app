@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable, unused_element, non_constant_identifier_names
+
 import 'dart:io';
 import 'dart:ui';
 
@@ -17,7 +19,6 @@ import 'package:Investrend/screens/screen_agreement.dart';
 import 'package:Investrend/screens/tab_community/screen_create_post.dart';
 import 'package:Investrend/screens/screen_login.dart';
 import 'package:Investrend/screens/onboarding/screen_register.dart';
-import 'package:Investrend/screens/onboarding/screen_register_rdn.dart';
 import 'package:Investrend/screens/screen_text_sample.dart';
 import 'package:Investrend/screens/stock_detail/screen_stock_detail.dart';
 import 'package:Investrend/screens/trade/screen_amend.dart';
@@ -38,7 +39,7 @@ import 'package:firebase_core/firebase_core.dart';
 
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+// import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'component/charts/trading_view_chart.dart';
 import 'component/sosmed/leaderboards.dart';
@@ -135,7 +136,7 @@ Accent: F4F2F9
 
   static const Color textColorLightTheme = Color(0xFF010000);
   static final TextTheme textThemeLight = ThemeData.light().textTheme.copyWith(
-        headline1: ThemeData.light().textTheme.headline1.copyWith(
+        displayLarge: ThemeData.light().textTheme.displayLarge?.copyWith(
           color: textColorLightTheme,
           fontSize: 50.0,
           fontFamily: fontFamily /*'WorkSans'*/,
@@ -144,7 +145,7 @@ Accent: F4F2F9
             FontFeature.stylisticSet(2)
           ],
         ),
-        headline2: ThemeData.light().textTheme.headline2.copyWith(
+        displayMedium: ThemeData.light().textTheme.displayMedium?.copyWith(
           color: textColorLightTheme,
           fontSize: 45.0,
           fontFamily: fontFamily /*'WorkSans'*/,
@@ -154,7 +155,7 @@ Accent: F4F2F9
           ],
         ),
 
-        headline4: ThemeData.light().textTheme.headline4.copyWith(
+        headlineMedium: ThemeData.light().textTheme.headlineMedium?.copyWith(
           color: textColorLightTheme,
           fontSize: 24.0,
           fontFamily: fontFamily /*'WorkSans'*/,
@@ -163,7 +164,7 @@ Accent: F4F2F9
             FontFeature.stylisticSet(2)
           ],
         ),
-        headline5: ThemeData.light().textTheme.headline5.copyWith(
+        headlineSmall: ThemeData.light().textTheme.headlineSmall?.copyWith(
           color: textColorLightTheme,
           fontSize: 20.0,
           fontFamily: fontFamily /*'WorkSans'*/,
@@ -172,7 +173,7 @@ Accent: F4F2F9
             FontFeature.stylisticSet(2)
           ],
         ),
-        headline6: ThemeData.light().textTheme.headline6.copyWith(
+        titleLarge: ThemeData.light().textTheme.titleLarge?.copyWith(
           color: textColorLightTheme,
           fontSize: 18.0,
           fontFamily: fontFamily /*'WorkSans'*/,
@@ -182,7 +183,7 @@ Accent: F4F2F9
           ],
         ),
         //Button        font-size: 14px;    font-weight: bold;  line-height: 20px;  text-transform: capitalize;
-        button: ThemeData.light().textTheme.button.copyWith(
+        labelLarge: ThemeData.light().textTheme.labelLarge?.copyWith(
           color: textColorLightTheme,
           fontSize: 16.0,
           fontWeight: FontWeight.bold,
@@ -195,7 +196,7 @@ Accent: F4F2F9
         //, height: 1.3
 
         //H3            font-size: 40px;    fontWeigh: 700      line-height: 48px;
-        headline3: ThemeData.light().textTheme.headline3.copyWith(
+        displaySmall: ThemeData.light().textTheme.displaySmall?.copyWith(
           color: textColorLightTheme,
           fontSize: 26.0,
           fontWeight: FontWeight.w600,
@@ -208,7 +209,7 @@ Accent: F4F2F9
         ),
 
         //Regular       font-size: 16px;    fontWeight 700      line-height: 28px;
-        subtitle1: ThemeData.light().textTheme.bodyText1.copyWith(
+        titleMedium: ThemeData.light().textTheme.titleMedium?.copyWith(
           color: textColorLightTheme,
           fontSize: 18.0,
           fontWeight: FontWeight.w600,
@@ -221,7 +222,7 @@ Accent: F4F2F9
         ),
 
         //Regular       font-size: 16px;    fontWeight 400      line-height: 28px;
-        bodyText1: ThemeData.light().textTheme.bodyText1.copyWith(
+        bodyLarge: ThemeData.light().textTheme.bodyLarge?.copyWith(
           color: textColorLightTheme,
           fontSize: 18.0,
           fontWeight: FontWeight.w400,
@@ -234,7 +235,7 @@ Accent: F4F2F9
         ),
 
         //Small         font-size: 14px;    fontWeight  500     line-height: 24px;   letter-spacing: -0.002em;
-        subtitle2: ThemeData.light().textTheme.bodyText2.copyWith(
+        titleSmall: ThemeData.light().textTheme.bodyMedium?.copyWith(
           color: textColorLightTheme,
           fontSize: 16.0,
           fontWeight: FontWeight.w500,
@@ -248,7 +249,7 @@ Accent: F4F2F9
         ),
 
         //Small         font-size: 14px;    fontWeight  400      line-height: 24px;    letter-spacing: -0.002em;
-        bodyText2: ThemeData.light().textTheme.bodyText2.copyWith(
+        bodyMedium: ThemeData.light().textTheme.bodyMedium?.copyWith(
           color: textColorLightTheme,
           fontSize: 16.0,
           fontWeight: FontWeight.w400,
@@ -262,7 +263,7 @@ Accent: F4F2F9
         ),
 
         //Support       font-size: 11px;    fontWeight  400 sama 500    line-height: 14px;    letter-spacing: -0.002em;
-        caption: ThemeData.light().textTheme.caption.copyWith(
+        bodySmall: ThemeData.light().textTheme.bodySmall?.copyWith(
           color: textColorLightTheme,
           fontSize: 14.0,
           fontWeight: FontWeight.w400,
@@ -276,7 +277,7 @@ Accent: F4F2F9
         ),
 
         //More Support  font-size: 10px;    fontWeight  400             line-height: 14px;    letter-spacing: -0.002em;
-        overline: ThemeData.light().textTheme.overline.copyWith(
+        labelSmall: ThemeData.light().textTheme.labelSmall?.copyWith(
           color: textColorLightTheme,
           fontSize: 12.0,
           fontWeight: FontWeight.w400,
@@ -293,7 +294,7 @@ Accent: F4F2F9
   static const Color textColorDarkTheme = Color(0xFFEBEBEB);
 
   static final TextTheme textThemeDark = ThemeData.dark().textTheme.copyWith(
-        headline1: ThemeData.dark().textTheme.headline1.copyWith(
+        displayLarge: ThemeData.dark().textTheme.displayLarge?.copyWith(
           color: textColorDarkTheme,
           fontSize: 50.0,
           fontFamily: fontFamily /*'WorkSans'*/,
@@ -302,7 +303,7 @@ Accent: F4F2F9
             FontFeature.stylisticSet(2)
           ],
         ),
-        headline2: ThemeData.dark().textTheme.headline2.copyWith(
+        displayMedium: ThemeData.dark().textTheme.displayMedium?.copyWith(
           color: textColorDarkTheme,
           fontSize: 45.0,
           fontFamily: fontFamily /*'WorkSans'*/,
@@ -311,7 +312,7 @@ Accent: F4F2F9
             FontFeature.stylisticSet(2)
           ],
         ),
-        headline4: ThemeData.dark().textTheme.headline4.copyWith(
+        headlineMedium: ThemeData.dark().textTheme.headlineMedium?.copyWith(
           color: textColorDarkTheme,
           fontSize: 24.0,
           fontFamily: fontFamily /*'WorkSans'*/,
@@ -320,7 +321,7 @@ Accent: F4F2F9
             FontFeature.stylisticSet(2)
           ],
         ),
-        headline5: ThemeData.dark().textTheme.headline5.copyWith(
+        headlineSmall: ThemeData.dark().textTheme.headlineSmall?.copyWith(
           color: textColorDarkTheme,
           fontSize: 20.0,
           fontFamily: fontFamily /*'WorkSans'*/,
@@ -329,7 +330,7 @@ Accent: F4F2F9
             FontFeature.stylisticSet(2)
           ],
         ),
-        headline6: ThemeData.dark().textTheme.headline6.copyWith(
+        titleLarge: ThemeData.dark().textTheme.titleLarge?.copyWith(
           color: textColorDarkTheme,
           fontSize: 18.0,
           fontFamily: fontFamily /*'WorkSans'*/,
@@ -340,7 +341,7 @@ Accent: F4F2F9
         ),
 
         //Button        font-size: 14px;    font-weight: bold;  line-height: 20px;  text-transform: capitalize;
-        button: ThemeData.dark().textTheme.button.copyWith(
+        labelLarge: ThemeData.dark().textTheme.labelLarge?.copyWith(
           color: textColorDarkTheme,
           fontSize: 16.0,
           fontWeight: FontWeight.bold,
@@ -352,7 +353,7 @@ Accent: F4F2F9
         ), //, height: 1.3
 
         //H3            font-size: 40px;    fontWeigh: 700      line-height: 48px;
-        headline3: ThemeData.dark().textTheme.headline3.copyWith(
+        displaySmall: ThemeData.dark().textTheme.displaySmall?.copyWith(
           color: textColorDarkTheme,
           fontSize: 26.0,
           fontWeight: FontWeight.w600,
@@ -365,7 +366,7 @@ Accent: F4F2F9
         ),
 
         //Regular       font-size: 16px;    fontWeight 700      line-height: 28px;
-        subtitle1: ThemeData.dark().textTheme.bodyText1.copyWith(
+        titleMedium: ThemeData.dark().textTheme.bodyLarge?.copyWith(
           color: textColorDarkTheme,
           fontSize: 18.0,
           fontWeight: FontWeight.w600,
@@ -378,7 +379,7 @@ Accent: F4F2F9
         ),
 
         //Regular       font-size: 16px;    fontWeight 400      line-height: 28px;
-        bodyText1: ThemeData.dark().textTheme.bodyText1.copyWith(
+        bodyLarge: ThemeData.dark().textTheme.bodyLarge?.copyWith(
           color: textColorDarkTheme,
           fontSize: 18.0,
           fontWeight: FontWeight.w400,
@@ -391,7 +392,7 @@ Accent: F4F2F9
         ),
 
         //Small         font-size: 14px;    fontWeight  500     line-height: 24px;   letter-spacing: -0.002em;
-        subtitle2: ThemeData.dark().textTheme.bodyText2.copyWith(
+        titleSmall: ThemeData.dark().textTheme.bodyMedium?.copyWith(
           color: textColorDarkTheme,
           fontSize: 16.0,
           fontWeight: FontWeight.w500,
@@ -405,7 +406,7 @@ Accent: F4F2F9
         ),
 
         //Small         font-size: 14px;    fontWeight  400      line-height: 24px;    letter-spacing: -0.002em;
-        bodyText2: ThemeData.dark().textTheme.bodyText2.copyWith(
+        bodyMedium: ThemeData.dark().textTheme.bodyMedium?.copyWith(
           color: textColorDarkTheme,
           fontSize: 16.0,
           fontWeight: FontWeight.w400,
@@ -419,7 +420,7 @@ Accent: F4F2F9
         ),
 
         //Support       font-size: 11px;    fontWeight  400 sama 500    line-height: 14px;    letter-spacing: -0.002em;
-        caption: ThemeData.dark().textTheme.caption.copyWith(
+        bodySmall: ThemeData.dark().textTheme.bodySmall?.copyWith(
           color: textColorDarkTheme,
           fontSize: 14.0,
           fontWeight: FontWeight.w400,
@@ -433,7 +434,7 @@ Accent: F4F2F9
         ),
 
         //More Support  font-size: 10px;    fontWeight  400             line-height: 14px;    letter-spacing: -0.002em;
-        overline: ThemeData.dark().textTheme.overline.copyWith(
+        labelSmall: ThemeData.dark().textTheme.labelSmall?.copyWith(
           color: textColorDarkTheme,
           fontSize: 12.0,
           fontWeight: FontWeight.w400,
@@ -453,7 +454,6 @@ Accent: F4F2F9
     //fontFamily: 'WorkSans',
     //fontFamily: 'LobsterTwo',
 
-    brightness: Brightness.light,
     primaryColor: Color(0xFFFAFAFA),
     // splashColor: Colors.red,
     focusColor: Color(0xFF5414DB),
@@ -472,7 +472,7 @@ Accent: F4F2F9
           shape: null,
         ),
     chipTheme: ThemeData.light().chipTheme.copyWith(
-          labelStyle: ThemeData.light().textTheme.caption.copyWith(
+          labelStyle: ThemeData.light().textTheme.bodySmall?.copyWith(
               color: textColorLightTheme,
               fontSize: 14.0,
               fontWeight: FontWeight.w400,
@@ -496,7 +496,9 @@ Accent: F4F2F9
               color: Color(0xFF5414DB),
               fontWeight: FontWeight.w600,
               letterSpacing: 0.054),
-          iconTheme: IconThemeData(color: Color(0xFF5414DB)),
+          iconTheme: IconThemeData(
+            color: Color(0xFF5414DB),
+          ),
           //color: Color(0xFFFAFAFA)
         ),
     dataTableTheme:
@@ -504,10 +506,11 @@ Accent: F4F2F9
     tabBarTheme: ThemeData.light().tabBarTheme.copyWith(
           indicator: BoxDecoration(),
           labelColor: Color(0xFF010000),
-          labelStyle: textThemeLight.subtitle1,
+          labelStyle: textThemeLight.titleMedium,
           unselectedLabelColor: Color(0xFF8C979F),
-          unselectedLabelStyle:
-              textThemeLight.subtitle1.copyWith(color: Color(0xFF8C979F)),
+          unselectedLabelStyle: textThemeLight.titleMedium?.copyWith(
+            color: Color(0xFF8C979F),
+          ),
           //labelStyle: ThemeData.light().textTheme.button.copyWith(fontWeight: FontWeight.bold, color: Colors.black, fontSize: 18.0),
           // unselectedLabelStyle: ThemeData.light().textTheme.button.copyWith(
           //       fontWeight: FontWeight.bold,
@@ -517,9 +520,13 @@ Accent: F4F2F9
         ),
     //inputDecorationTheme: ThemeData.light().inputDecorationTheme,
     textTheme: textThemeLight,
-    colorScheme: ColorScheme.fromSwatch(primarySwatch: materialInvestrendPurple)
-        .copyWith(secondary: Color(0xFF5414DB))
-        .copyWith(background: Color(0xFFFAFAFA)),
+    // colorScheme: ColorScheme.fromSwatch(primarySwatch: materialInvestrendPurple)
+    //     .copyWith(secondary: Color(0xFF5414DB), brightness: Brightness.light)
+    //     .copyWith(background: Color(0xFFFAFAFA), brightness: Brightness.light),
+
+    colorScheme: ThemeData.light()
+        .colorScheme
+        .copyWith(secondary: Color(0xFF5414DB), background: Color(0xFFFAFAFA)),
   );
 
   static final ThemeData themeDark = ThemeData(
@@ -527,7 +534,6 @@ Accent: F4F2F9
     //fontFamily: 'WorkSans',
     // fontFamily: 'LobsterTwo',
 
-    brightness: Brightness.dark,
     primaryColor: Color(0xFFFAFAFA),
     // splashColor: Colors.green,
     focusColor: Color(0xFF5414DB),
@@ -547,7 +553,7 @@ Accent: F4F2F9
           shape: null,
         ),
     chipTheme: ThemeData.dark().chipTheme.copyWith(
-          labelStyle: ThemeData.dark().textTheme.caption.copyWith(
+          labelStyle: ThemeData.dark().textTheme.bodySmall?.copyWith(
               color: textColorDarkTheme,
               fontSize: 14.0,
               fontWeight: FontWeight.w400,
@@ -578,10 +584,10 @@ Accent: F4F2F9
     tabBarTheme: ThemeData.dark().tabBarTheme.copyWith(
           indicator: BoxDecoration(),
           labelColor: Color(0xFFEBEBEB),
-          labelStyle: textThemeLight.subtitle1,
+          labelStyle: textThemeLight.titleMedium,
           unselectedLabelColor: Color(0xFF8C979F),
           unselectedLabelStyle:
-              textThemeLight.subtitle1.copyWith(color: Color(0xFF8C979F)),
+              textThemeLight.titleMedium?.copyWith(color: Color(0xFF8C979F)),
 
           // labelColor: Colors.white,
           // labelStyle: ThemeData.dark().textTheme.button.copyWith(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 18.0),
@@ -593,16 +599,19 @@ Accent: F4F2F9
         ),
     //inputDecorationTheme: ThemeData.dark().inputDecorationTheme,
     textTheme: textThemeDark,
-    colorScheme: ColorScheme.fromSwatch(primarySwatch: materialInvestrendWhite)
-        .copyWith(secondary: Color(0xFF5414DB))
-        .copyWith(background: Color(0xFF141414)),
+    // colorScheme: ColorScheme.fromSwatch(primarySwatch: materialInvestrendWhite)
+    //     .copyWith(secondary: Color(0xFF5414DB), brightness: Brightness.dark)
+    //     .copyWith(background: Color(0xFF141414), brightness: Brightness.dark),
+    colorScheme: ThemeData.dark()
+        .colorScheme
+        .copyWith(secondary: Color(0xFF5414DB), background: Color(0xFF141414)),
   );
   static final RouteObserver<PageRoute> routeObserver =
       RouteObserver<PageRoute>();
 
   int savedThemeModeIndex;
   //bool firstime = true;
-  MainApplication(this.savedThemeModeIndex, {Key key}) : super(key: key) {
+  MainApplication(this.savedThemeModeIndex, {Key? key}) : super(key: key) {
     // final container = ProviderContainer();
     // container.read(themeModeNotifier).setIndex(savedThemeModeIndex);
   }
@@ -612,12 +621,12 @@ Accent: F4F2F9
 }
 
 class _MainApplicationState extends State<MainApplication> {
-  ThemeData themeCustom;
+  ThemeData? themeCustom;
 
   Key keyInvestrend = UniqueKey();
   //final Future<FirebaseApp> _initialization = Firebase.initializeApp();
 
-  ValueNotifier<String> notifierFirebase;
+  ValueNotifier<String>? notifierFirebase;
   @override
   void initState() {
     super.initState();
@@ -647,7 +656,7 @@ class _MainApplicationState extends State<MainApplication> {
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
   void enableFirebaseMessaging() async{
-    //if (!kIsWeb) {
+    //if (?kIsWeb) {
     channel = const AndroidNotificationChannel(
       'high_importance_channel', // id
       'High Importance Notifications', // title
@@ -722,8 +731,6 @@ class _MainApplicationState extends State<MainApplication> {
               channel.id,
               channel.name,
               channelDescription: channel.description,
-              // TODO add a proper drawable resource to android, for now using
-              //      one that already exists in example app.
               icon: 'launch_background',
             ),
           ),
@@ -808,7 +815,7 @@ class _MainApplicationState extends State<MainApplication> {
   @override
   void dispose() {
     if (notifierFirebase != null) {
-      notifierFirebase.dispose();
+      notifierFirebase?.dispose();
     }
 
     super.dispose();
@@ -882,7 +889,7 @@ class _MainApplicationState extends State<MainApplication> {
             Text(
               error,
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.overline,
+              style: Theme.of(context).textTheme.labelSmall,
             ),
             OutlinedButton(
               onPressed: () {
@@ -897,8 +904,8 @@ class _MainApplicationState extends State<MainApplication> {
                 textAlign: TextAlign.center,
                 style: Theme.of(context)
                     .textTheme
-                    .button
-                    .copyWith(color: Colors.red),
+                    .labelLarge
+                    ?.copyWith(color: Colors.red),
               ),
             ),
           ],
@@ -983,7 +990,7 @@ class _MainApplicationState extends State<MainApplication> {
           '/friends': (context) => ScreenFriends(),
           '/friends_contact': (context) => ScreenFriendsContact(),
           '/landing_rdn': (context) => ScreenLandingRDN(),
-          '/register_rdn': (context) => ScreenRegisterRDN(),
+          // '/register_rdn': (context) => ScreenRegisterRDN(),
           '/text_sample': (context) => ScreenTextSample(),
           '/trade': (context) => ScreenTrade(OrderType.Buy),
           '/stock_detail': (context) => ScreenStockDetail(),
@@ -1021,7 +1028,7 @@ class _MainApplicationState extends State<MainApplication> {
     });
   }
 
-  void onUserInteraction(BuildContext context, String event, e) {
+  void onUserInteraction(BuildContext? context, String event, e) {
     print('onUserInteraction $event : ' +
         DateTime.now().toString() +
         '  ' +

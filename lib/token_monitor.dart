@@ -10,17 +10,17 @@ class TokenMonitor extends StatefulWidget {
   // ignore: public_member_api_docs
   TokenMonitor(this._builder);
 
-  final Widget Function(String token) _builder;
+  final Widget Function(String? token) _builder;
 
   @override
   State<StatefulWidget> createState() => _TokenMonitor();
 }
 
 class _TokenMonitor extends State<TokenMonitor> {
-  String _token;
-  Stream<String> _tokenStream;
+  String? _token;
+  Stream<String>? _tokenStream;
 
-  void setToken(String token) {
+  void setToken(String? token) {
     print('FCM Token: $token');
     setState(() {
       _token = token;
@@ -32,11 +32,11 @@ class _TokenMonitor extends State<TokenMonitor> {
     super.initState();
     FirebaseMessaging.instance
         .getToken(
-        vapidKey:
-        'BGpdLRsMJKvFDD9odfPk92uBg-JbQbyoiZdah0XlUyrjG4SDgUsE1iC_kdRgt4Kn0CO7K3RTswPZt61NNuO0XoA')
+            vapidKey:
+                'BGpdLRsMJKvFDD9odfPk92uBg-JbQbyoiZdah0XlUyrjG4SDgUsE1iC_kdRgt4Kn0CO7K3RTswPZt61NNuO0XoA')
         .then(setToken);
     _tokenStream = FirebaseMessaging.instance.onTokenRefresh;
-    _tokenStream.listen(setToken);
+    _tokenStream?.listen(setToken);
   }
 
   @override

@@ -1,32 +1,29 @@
-
 import 'package:Investrend/utils/utils.dart';
 import 'package:flutter/material.dart';
 
 class ScreenTest extends StatelessWidget {
-  const ScreenTest({Key key}) : super(key: key);
+  const ScreenTest({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-
     String text = 'test';
-
 
     // var random = new Random();
     // String reff = (random.nextInt(900000) + 100000).toString();
 
-    for(int i = 0; i < 15; i++){
-      text += '\n'+Utils.createRefferenceID();
+    for (int i = 0; i < 15; i++) {
+      text += '\n' + Utils.createRefferenceID();
     }
 
     return Scaffold(
       body: Container(
         color: Colors.white,
         height: double.maxFinite,
-        width:  double.maxFinite,
+        width: double.maxFinite,
         child: Center(
           child: Text(
-            text
-            , style: TextStyle(color: Colors.black),
+            text,
+            style: TextStyle(color: Colors.black),
           ),
         ),
       ),

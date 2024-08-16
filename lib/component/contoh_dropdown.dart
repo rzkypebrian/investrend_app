@@ -10,8 +10,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  String _valGender;
-  String _valFriends;
+  String? _valGender;
+  String? _valFriends;
   List _listGender = ["Male", "Female"];
   List _myFriends = [
     "Clara",
@@ -43,8 +43,8 @@ class _HomeScreenState extends State<HomeScreen> {
               }).toList(),
               onChanged: (value) {
                 setState(() {
-                  _valFriends =
-                      value; //Untuk memberitahu _valFriends bahwa isi nya akan diubah sesuai dengan value yang kita pilih
+                  _valFriends = value
+                      .toString(); //Untuk memberitahu _valFriends bahwa isi nya akan diubah sesuai dengan value yang kita pilih
                 });
               },
             ),
@@ -59,8 +59,8 @@ class _HomeScreenState extends State<HomeScreen> {
               }).toList(),
               onChanged: (value) {
                 setState(() {
-                  _valGender =
-                      value; //Untuk memberitahu _valGender bahwa isi nya akan diubah sesuai dengan value yang kita pilih
+                  _valGender = value
+                      .toString(); //Untuk memberitahu _valGender bahwa isi nya akan diubah sesuai dengan value yang kita pilih
                 });
               },
             ),

@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable, non_constant_identifier_names, unused_element
+
 import 'dart:async';
 import 'dart:math';
 
@@ -25,14 +27,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ScreenListDetail extends StatefulWidget {
   //final StockThemes themes;
-  final List<Stock> list;
-  final String title;
-  final String icon;
-  final Color color;
-  final Index indexSector;
+  final List<Stock>? list;
+  final String? title;
+  final String? icon;
+  final Color? color;
+  final Index? indexSector;
 
   const ScreenListDetail(this.list,
-      {this.icon, this.title, this.color, this.indexSector, Key key})
+      {this.icon, this.title, this.color, this.indexSector, Key? key})
       : super(key: key);
 
   @override
@@ -46,8 +48,8 @@ class _ScreenListDetailState extends VisibilityAwareState<ScreenListDetail> {
   final SlidableController slidableController = SlidableController();
   bool active = false;
   bool canTapRow = true;
-  IndexSummaryNotifier _indexNotifier;
-  Timer _timer;
+  IndexSummaryNotifier? _indexNotifier;
+  Timer? _timer;
   static const Duration _durationUpdate = Duration(milliseconds: 2500);
   final ValueNotifier<int> _sortNotifier = ValueNotifier<int>(0);
   final String PROP_SELECTED_SORT = 'selectedSort';
@@ -67,9 +69,9 @@ class _ScreenListDetailState extends VisibilityAwareState<ScreenListDetail> {
     _sortNotifier.addListener(sort);
     _indexNotifier = IndexSummaryNotifier(null, widget.indexSector);
     GeneralPriceData members = GeneralPriceData();
-    widget.list.forEach((stock) {
+    widget.list?.forEach((stock) {
       //members.datas.add(GeneralPrice(stock.code, 0, 0.0, 0.0, name: stock.name));
-      members.datas.add(WatchlistPrice(stock.code, 0, 0.0, 0.0, stock.name));
+      members.datas?.add(WatchlistPrice(stock.code, 0, 0.0, 0.0, stock.name));
     });
     _watchlistDataNotifier.setValue(members);
 
@@ -106,43 +108,42 @@ class _ScreenListDetailState extends VisibilityAwareState<ScreenListDetail> {
     switch (_sortNotifier.value) {
       case 0: //a_to_z
         {
-          _watchlistDataNotifier.value.datas
-              .sort((a, b) => a.code.compareTo(b.code));
+          _watchlistDataNotifier.value?.datas
+              ?.sort((a, b) => a.code!.compareTo(b.code!));
         }
         break;
       case 1: // z_to_a
         {
-          _watchlistDataNotifier.value.datas
-              .sort((a, b) => b.code.compareTo(a.code));
+          _watchlistDataNotifier.value?.datas
+              ?.sort((a, b) => b.code!.compareTo(a.code!));
         }
         break;
       case 2: // movers_highest
         {
-          _watchlistDataNotifier.value.datas
-              .sort((a, b) => b.percent.compareTo(a.percent));
+          _watchlistDataNotifier.value?.datas
+              ?.sort((a, b) => b.percent!.compareTo(a.percent!));
         }
         break;
       case 3: // movers_lowest
         {
-          _watchlistDataNotifier.value.datas
-              .sort((a, b) => a.percent.compareTo(b.percent));
+          _watchlistDataNotifier.value?.datas
+              ?.sort((a, b) => a.percent!.compareTo(b.percent!));
         }
         break;
       case 4: // price_highest
         {
-          _watchlistDataNotifier.value.datas
-              .sort((a, b) => b.price.compareTo(a.price));
+          _watchlistDataNotifier.value?.datas
+              ?.sort((a, b) => b.price!.compareTo(a.price!));
         }
         break;
       case 5: // price_lowest
         {
-          _watchlistDataNotifier.value.datas
-              .sort((a, b) => a.price.compareTo(b.price));
+          _watchlistDataNotifier.value?.datas
+              ?.sort((a, b) => a.price!.compareTo(b.price!));
         }
         break;
-
-        break;
     }
+    // ignore: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
     _watchlistDataNotifier.notifyListeners();
     context
         .read(propertiesNotifier)
@@ -201,8 +202,9 @@ class _ScreenListDetailState extends VisibilityAwareState<ScreenListDetail> {
 
     if (widget.indexSector != null) {
       try {
-        final indexSummarys = await InvestrendTheme.datafeedHttp
-            .fetchIndices([widget.indexSector.code]);
+        final List<IndexSummary?> indexSummarys = await InvestrendTheme
+            .datafeedHttp
+            .fetchIndices([widget.indexSector?.code]);
         if (indexSummarys.length > 0) {
           print('Future DATA : ' + indexSummarys.length.toString());
           indexSummarys.forEach((indexSummary) {
@@ -210,9 +212,9 @@ class _ScreenListDetailState extends VisibilityAwareState<ScreenListDetail> {
               //print(indexSummary.toString());
 
               if (StringUtils.equalsIgnoreCase(
-                  indexSummary.code, widget.indexSector.code)) {
+                  indexSummary.code!, widget.indexSector?.code)) {
                 if (mounted) {
-                  _indexNotifier.setData(indexSummary);
+                  _indexNotifier?.setData(indexSummary);
                 }
               }
             }
@@ -222,20 +224,21 @@ class _ScreenListDetailState extends VisibilityAwareState<ScreenListDetail> {
         }
       } catch (error) {}
     }
-    if (widget.list != null && widget.list.isNotEmpty) {
+    if (widget.list != null && widget.list!.isNotEmpty) {
       try {
         print(routeName + ' try Summarys');
-        String codes;
-        widget.list.forEach((stock) {
+        String? codes;
+        widget.list?.forEach((stock) {
           if (StringUtils.isEmtpy(codes)) {
             codes = stock.code;
           } else {
-            codes = codes + '_' + stock.code;
+            codes = codes! + '_' + stock.code!;
           }
         });
 
-        final stockSummarys = await InvestrendTheme.datafeedHttp
-            .fetchStockSummaryMultiple(codes, 'RG');
+        final List<StockSummary>? stockSummarys = await InvestrendTheme
+            .datafeedHttp
+            .fetchStockSummaryMultiple(codes!, 'RG');
         if (stockSummarys != null && stockSummarys.isNotEmpty) {
           //print(routeName + ' Future Summary DATA : ' + stockSummary.code + '  prev : ' + stockSummary.prev.toString());
           //_summaryNotifier.setData(stockSummary);
@@ -260,7 +263,6 @@ class _ScreenListDetailState extends VisibilityAwareState<ScreenListDetail> {
   }
 
   void onVisibilityChanged(WidgetVisibility visibility) {
-    // TODO: Use visibility
     switch (visibility) {
       case WidgetVisibility.VISIBLE:
         // Like Android's Activity.onResume()
@@ -314,9 +316,9 @@ class _ScreenListDetailState extends VisibilityAwareState<ScreenListDetail> {
 
   void _startTimer() {
     print(routeName + '._startTimer');
-    if (_timer == null || !_timer.isActive) {
+    if (_timer == null || !_timer!.isActive) {
       _timer = Timer.periodic(_durationUpdate, (timer) {
-        print('_timer.tick : ' + _timer.tick.toString());
+        print('_timer.tick : ' + _timer!.tick.toString());
         if (active) {
           if (onProgress) {
             print(routeName +
@@ -331,8 +333,8 @@ class _ScreenListDetailState extends VisibilityAwareState<ScreenListDetail> {
 
   void _stopTimer() {
     print(routeName + '._stopTimer');
-    if (_timer != null && _timer.isActive) {
-      _timer.cancel();
+    if (_timer != null && _timer!.isActive) {
+      _timer?.cancel();
       _timer = null;
     }
   }
@@ -370,15 +372,15 @@ class _ScreenListDetailState extends VisibilityAwareState<ScreenListDetail> {
                     height: 1.0,
                   )
                 : Image.asset(
-                    widget.icon,
+                    widget.icon!,
                     color: Theme.of(context).primaryColor,
                   ),
             SizedBox(
               width: InvestrendTheme.cardPadding,
             ),
             Text(
-              widget.title,
-              style: Theme.of(context).textTheme.headline4.copyWith(
+              widget.title!,
+              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                   color: Theme.of(context).primaryColor,
                   fontWeight: FontWeight.w600),
             ),
@@ -403,7 +405,7 @@ class _ScreenListDetailState extends VisibilityAwareState<ScreenListDetail> {
   }
 
   Widget createBottomSheet(BuildContext context, double paddingBottom) {
-    TextStyle valueStyle = InvestrendTheme.of(context).small_w400_compact;
+    TextStyle? valueStyle = InvestrendTheme.of(context).small_w400_compact;
     Size size = UIHelper.textSize('Lg|', valueStyle);
     double contentHeight = (10 + 10 + size.height) * 3;
     double paddingHeight =
@@ -426,9 +428,9 @@ class _ScreenListDetailState extends VisibilityAwareState<ScreenListDetail> {
 
   Widget getTableDataNew(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: _indexNotifier,
+      valueListenable: _indexNotifier!,
       builder: (context, value, child) {
-        if (_indexNotifier.invalid()) {
+        if (_indexNotifier!.invalid()) {
           return Center(child: CircularProgressIndicator());
         }
 
@@ -440,43 +442,44 @@ class _ScreenListDetailState extends VisibilityAwareState<ScreenListDetail> {
           double widthLeftSection = availableWidth * 0.4;
           double widthRightSection = availableWidth - widthLeftSection;
 
-          TextStyle labelStyle = InvestrendTheme.of(context).textLabelStyle;
-          TextStyle valueStyle = InvestrendTheme.of(context).small_w400_compact;
+          TextStyle? labelStyle = InvestrendTheme.of(context).textLabelStyle;
+          TextStyle? valueStyle =
+              InvestrendTheme.of(context).small_w400_compact;
 
           List<LabelValueColor> listLeft = List.empty(growable: true);
           List<LabelValueColor> listRight = List.empty(growable: true);
 
           listLeft.add(LabelValueColor(
               'Open',
-              InvestrendTheme.formatPriceDouble(_indexNotifier.value.open,
+              InvestrendTheme.formatPriceDouble(_indexNotifier?.value?.open,
                   showDecimal: false),
-              color: _indexNotifier.value.openColor()));
+              color: _indexNotifier!.value?.openColor()));
           listRight.add(LabelValueColor(
             'Value',
-            InvestrendTheme.formatValue(context, _indexNotifier.value.value),
+            InvestrendTheme.formatValue(context, _indexNotifier?.value?.value),
           ));
 
           listLeft.add(LabelValueColor(
               'Low',
-              InvestrendTheme.formatPriceDouble(_indexNotifier.value.low,
+              InvestrendTheme.formatPriceDouble(_indexNotifier?.value?.low,
                   showDecimal: false),
-              color: _indexNotifier.value.lowColor()));
+              color: _indexNotifier!.value?.lowColor()));
           listRight.add(LabelValueColor(
               'Vol (Shares)',
               InvestrendTheme.formatValue(
-                  context, _indexNotifier.value.volume)));
+                  context, _indexNotifier?.value?.volume)));
 
           listLeft.add(LabelValueColor(
               'High',
-              InvestrendTheme.formatPriceDouble(_indexNotifier.value.hi,
+              InvestrendTheme.formatPriceDouble(_indexNotifier?.value?.hi,
                   showDecimal: false),
-              color: _indexNotifier.value.hiColor()));
+              color: _indexNotifier!.value?.hiColor()));
           listRight.add(LabelValueColor('Frequency (x)',
-              InvestrendTheme.formatComma(_indexNotifier.value.freq)));
+              InvestrendTheme.formatComma(_indexNotifier?.value?.freq)));
 
           int count = listLeft.length;
 
-          List<TextStyle> styles = [labelStyle, valueStyle];
+          List<TextStyle?>? styles = [labelStyle, valueStyle];
           for (int i = 0; i < count; i++) {
             LabelValueColor leftLVC = listLeft.elementAt(i);
             LabelValueColor rightLVC = listRight.elementAt(i);
@@ -485,8 +488,8 @@ class _ScreenListDetailState extends VisibilityAwareState<ScreenListDetail> {
             styles = UIHelper.calculateFontSizes(context, styles,
                 widthRightSection, [rightLVC.label, rightLVC.value]);
           }
-          labelStyle = styles.elementAt(0);
-          valueStyle = styles.elementAt(1);
+          labelStyle = styles?.elementAt(0);
+          valueStyle = styles?.elementAt(1);
 
           List<Widget> childs = List.empty(growable: true);
           for (int i = 0; i < count; i++) {
@@ -518,7 +521,7 @@ class _ScreenListDetailState extends VisibilityAwareState<ScreenListDetail> {
                           maxLines: 1,
                           style: leftLVC.color == null
                               ? valueStyle
-                              : valueStyle.copyWith(color: leftLVC.color),
+                              : valueStyle?.copyWith(color: leftLVC.color),
                           textAlign: TextAlign.right,
                         ),
                       ],
@@ -548,7 +551,7 @@ class _ScreenListDetailState extends VisibilityAwareState<ScreenListDetail> {
                           maxLines: 1,
                           style: rightLVC.color == null
                               ? valueStyle
-                              : valueStyle.copyWith(color: rightLVC.color),
+                              : valueStyle?.copyWith(color: rightLVC.color),
                           textAlign: TextAlign.right,
                         ),
                       ],
@@ -600,7 +603,7 @@ class _ScreenListDetailState extends VisibilityAwareState<ScreenListDetail> {
       onRefresh: onRefresh,
       child: ValueListenableBuilder(
           valueListenable: _watchlistDataNotifier,
-          builder: (context, GeneralPriceData data, child) {
+          builder: (context, GeneralPriceData? data, child) {
             // if(data.count() == 0){
             //   return ListView(
             //     children: [
@@ -662,8 +665,9 @@ class _ScreenListDetailState extends VisibilityAwareState<ScreenListDetail> {
                   int indexData = index - 1;
                   //GeneralPrice gp = data.datas.elementAt(indexData );
 
-                  GeneralPrice generalPrice = data.datas.elementAt(indexData);
-                  WatchlistPrice gp;
+                  GeneralPrice? generalPrice =
+                      data?.datas?.elementAt(indexData);
+                  WatchlistPrice? gp;
                   if (generalPrice is WatchlistPrice) {
                     gp = generalPrice;
                   }
@@ -680,12 +684,12 @@ class _ScreenListDetailState extends VisibilityAwareState<ScreenListDetail> {
                             'button_buy'.tr(),
                             InvestrendTheme.buyColor,
                             () {
-                              print('buy clicked code : ' + gp.code);
-                              Stock stock =
-                                  InvestrendTheme.storedData.findStock(gp.code);
+                              print('buy clicked code : ' + gp!.code!);
+                              Stock? stock = InvestrendTheme.storedData
+                                  ?.findStock(gp.code);
                               if (stock == null) {
                                 print('buy clicked code : ' +
-                                    gp.code +
+                                    gp.code! +
                                     ' aborted, not find stock on StockStorer');
                                 return;
                               }
@@ -722,12 +726,12 @@ class _ScreenListDetailState extends VisibilityAwareState<ScreenListDetail> {
                             'button_sell'.tr(),
                             InvestrendTheme.sellColor,
                             () {
-                              print('sell clicked code : ' + gp.code);
-                              Stock stock =
-                                  InvestrendTheme.storedData.findStock(gp.code);
+                              print('sell clicked code : ' + gp!.code!);
+                              Stock? stock = InvestrendTheme.storedData
+                                  ?.findStock(gp.code);
                               if (stock == null) {
                                 print('sell clicked code : ' +
-                                    gp.code +
+                                    gp.code! +
                                     ' aborted, not find stock on StockStorer');
                                 return;
                               }
@@ -765,20 +769,20 @@ class _ScreenListDetailState extends VisibilityAwareState<ScreenListDetail> {
                           */
                         ],
                         child: RowWatchlist(
-                          gp,
+                          gp!,
                           firstRow: true,
                           onTap: () {
                             print('clicked code : ' +
-                                gp.code +
+                                gp!.code! +
                                 '  canTapRow : $canTapRow');
                             if (canTapRow) {
                               canTapRow = false;
 
-                              Stock stock =
-                                  InvestrendTheme.storedData.findStock(gp.code);
+                              Stock? stock = InvestrendTheme.storedData
+                                  ?.findStock(gp.code);
                               if (stock == null) {
                                 print('clicked code : ' +
-                                    gp.code +
+                                    gp.code! +
                                     ' aborted, not find stock on StockStorer');
                                 canTapRow = true;
                                 return;
@@ -798,11 +802,11 @@ class _ScreenListDetailState extends VisibilityAwareState<ScreenListDetail> {
                           showBidOffer: false,
                           onPressedButtonCorporateAction: () =>
                               onPressedButtonCorporateAction(
-                                  context, gp.corporateAction),
+                                  context, gp!.corporateAction!),
                           //onPressedButtonSpecialNotation: ()=> onPressedButtonSpecialNotation(context, gp.notation),
                           onPressedButtonSpecialNotation: () =>
                               onPressedButtonImportantInformation(
-                                  context, gp.notation, gp.suspendStock),
+                                  context, gp!.notation!, gp.suspendStock!),
                         )),
                   );
                 });
@@ -835,7 +839,7 @@ class _ScreenListDetailState extends VisibilityAwareState<ScreenListDetail> {
   }
   */
   void onPressedButtonImportantInformation(BuildContext context,
-      List<Remark2Mapping> notation, SuspendStock suspendStock) {
+      List<Remark2Mapping>? notation, SuspendStock? suspendStock) {
     int count = notation == null ? 0 : notation.length;
     if (count == 0 && suspendStock == null) {
       print(routeName +
@@ -851,20 +855,20 @@ class _ScreenListDetailState extends VisibilityAwareState<ScreenListDetail> {
 
       DateFormat dateFormatter = DateFormat('EEEE, dd/MM/yyyy', 'id');
       DateFormat dateParser = DateFormat('yyyy-MM-dd');
-      DateTime dateTime = dateParser.parseUtc(suspendStock.date);
+      DateTime dateTime = dateParser.parseUtc(suspendStock.date!);
       print('dateTime : ' + dateTime.toString());
       //print('indexSummary.date : '+data.date+' '+data.time);
       String formatedDate = dateFormatter.format(dateTime);
       //String formatedTime = timeFormatter.format(dateTime);
       //infoSuspend = infoSuspend.replaceAll('#BOARD#', suspendStock.board);
       infoSuspend = infoSuspend.replaceAll('#DATE#', formatedDate);
-      infoSuspend = infoSuspend.replaceAll('#TIME#', suspendStock.time);
+      infoSuspend = infoSuspend.replaceAll('#TIME#', suspendStock.time!);
       //displayTime = infoTime;
       height += 25.0;
       childs.add(Padding(
         padding: const EdgeInsets.only(bottom: 5.0),
         child: Text(
-          'Suspended ' + suspendStock.board,
+          'Suspended ' + suspendStock.board!,
           style: InvestrendTheme.of(context).small_w600,
         ),
       ));
@@ -921,14 +925,14 @@ class _ScreenListDetailState extends VisibilityAwareState<ScreenListDetail> {
         }
       }
       */
-      Remark2Mapping remark2 = notation.elementAt(i);
+      Remark2Mapping? remark2 = notation?.elementAt(i);
       if (remark2 != null) {
         if (remark2.isSurveilance()) {
           height += 35.0;
           childs.add(Padding(
             padding: const EdgeInsets.only(bottom: 15.0),
             child: Text(
-              remark2.code + ' : ' + remark2.value,
+              remark2.code! + ' : ' + remark2.value!,
               style: InvestrendTheme.of(context).small_w600,
             ),
           ));
@@ -957,7 +961,7 @@ class _ScreenListDetailState extends VisibilityAwareState<ScreenListDetail> {
                       style: InvestrendTheme.of(context).small_w600,
                     ),
                     TextSpan(
-                      text: ' : ' + remark2.value,
+                      text: ' : ' + remark2.value!,
                       style: InvestrendTheme.of(context).small_w400,
                     )
                   ]),
@@ -972,12 +976,12 @@ class _ScreenListDetailState extends VisibilityAwareState<ScreenListDetail> {
   }
 
   void onPressedButtonCorporateAction(
-      BuildContext context, List<CorporateActionEvent> corporateAction) {
+      BuildContext context, List<CorporateActionEvent>? corporateAction) {
     print('onPressedButtonCorporateAction : ' + corporateAction.toString());
 
     List<Widget> childs = List.empty(growable: true);
     if (corporateAction != null && corporateAction.isNotEmpty) {
-      corporateAction.forEach((ca) {
+      corporateAction.forEach((CorporateActionEvent? ca) {
         if (ca != null) {
           childs.add(Padding(
             padding: const EdgeInsets.only(bottom: 20),
@@ -993,7 +997,7 @@ class _ScreenListDetailState extends VisibilityAwareState<ScreenListDetail> {
   }
 
   void showAlert(BuildContext context, List<Widget> childs,
-      {String title, double childsHeight = 0}) {
+      {String? title, double childsHeight = 0}) {
     showModalBottomSheet(
         isScrollControlled: true,
         shape: RoundedRectangleBorder(
@@ -1021,8 +1025,8 @@ class _ScreenListDetailState extends VisibilityAwareState<ScreenListDetail> {
         },
         elevation: 1.0,
         focusElevation: 0.1,
-        backgroundColor: InvestrendTheme.darkenColor(widget.color, 0.2),
-        splashColor: InvestrendTheme.lightenColor(widget.color, 0.2),
+        backgroundColor: InvestrendTheme.darkenColor(widget.color!, 0.2),
+        splashColor: InvestrendTheme.lightenColor(widget.color!, 0.2),
         child: Padding(
           padding: const EdgeInsets.only(right: 2.0),
           child: Image.asset(

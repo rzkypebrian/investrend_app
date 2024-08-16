@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable, unused_local_variable
+
 import 'dart:math';
 
 import 'package:Investrend/utils/investrend_theme.dart';
@@ -14,14 +16,14 @@ class RatingSlider extends StatelessWidget {
     'rating_text_3'.tr(),
     'rating_text_4'.tr()
   ];
-  final double initialValue;
+  final double? initialValue;
   static final double dotSize = 10.0;
   static final double bubleSize = 30.0;
   static final double padding = 25.0;
   static final Color grayPointColor = Color(0xFFD0D0D0);
   double halfDotSize = dotSize / 2;
-  double halfBubleSize =  bubleSize/ 2;
-  RatingSlider(this.initialValue, {Key key}) : super(key: key);
+  double halfBubleSize = bubleSize / 2;
+  RatingSlider(this.initialValue, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +64,6 @@ class RatingSlider extends StatelessWidget {
     )
       */
 
-
     return LayoutBuilder(builder: (context, constrains) {
       double minValue = 1.0;
       double maxValue = 5.0;
@@ -73,15 +74,14 @@ class RatingSlider extends StatelessWidget {
       double tileWidth = availableWidth / gridCount;
       //double valueNormalized = min(initialValue, maxValue);
       //valueNormalized = max(valueNormalized, minValue);
-      double newValue = min(initialValue, maxValue);
+      double newValue = min(initialValue!, maxValue);
       newValue = max(newValue, minValue);
       double value = newValue - 1;
 
-
-
-      double selectedPosition =   ( ( availableWidth)  / gridCount ) * value;
-      print('createCardThinks tileWidth $tileWidth  selectedPosition : $selectedPosition  value : $value');
-      bool noData = initialValue < 1.0;
+      double selectedPosition = ((availableWidth) / gridCount) * value;
+      print(
+          'createCardThinks tileWidth $tileWidth  selectedPosition : $selectedPosition  value : $value');
+      bool noData = initialValue! < 1.0;
       return Column(
         children: [
           Stack(
@@ -91,31 +91,53 @@ class RatingSlider extends StatelessWidget {
                 height: 42.0,
               ),
               Container(
-                margin: EdgeInsets.only(left: padding, right: padding, top: 4.0, bottom: 4.0),
+                margin: EdgeInsets.only(
+                    left: padding, right: padding, top: 4.0, bottom: 4.0),
                 width: double.maxFinite,
                 height: 2.0,
                 //color: Theme.of(context).dividerColor,
                 color: grayPointColor,
               ),
 
-
-              Positioned(child: _dotGrey(context), left: (padding - halfDotSize)  ),
-              Positioned(child: _dotGrey(context), left: (padding - halfDotSize)  + tileWidth * 1,) ,
-              Positioned(child: _dotGrey(context), left: (padding - halfDotSize)  + tileWidth * 2,) ,
-              Positioned(child: _dotGrey(context), left: (padding - halfDotSize)  + tileWidth * 3,) ,
-              Positioned(child: _dotGrey(context), left: (padding - halfDotSize)  + tileWidth * 4,) ,
+              Positioned(
+                  child: _dotGrey(context), left: (padding - halfDotSize)),
+              Positioned(
+                child: _dotGrey(context),
+                left: (padding - halfDotSize) + tileWidth * 1,
+              ),
+              Positioned(
+                child: _dotGrey(context),
+                left: (padding - halfDotSize) + tileWidth * 2,
+              ),
+              Positioned(
+                child: _dotGrey(context),
+                left: (padding - halfDotSize) + tileWidth * 3,
+              ),
+              Positioned(
+                child: _dotGrey(context),
+                left: (padding - halfDotSize) + tileWidth * 4,
+              ),
 
               //selectedWidget(context, value),
-              (noData ? SizedBox(width: 1.0,) : Positioned(child: _bubleText(context,newValue), left: (padding - halfBubleSize) + selectedPosition)),
+              (noData
+                  ? SizedBox(
+                      width: 1.0,
+                    )
+                  : Positioned(
+                      child: _bubleText(context, newValue),
+                      left: (padding - halfBubleSize) + selectedPosition)),
               // Padding(
               //   padding: EdgeInsets.only(left: padding, right: padding),
               //   child: rowDotsGrey(context, tileWidth),
               // ),
             ],
           ),
-          SizedBox(height: 10.0,),
+          SizedBox(
+            height: 10.0,
+          ),
           Padding(
-            padding: EdgeInsets.only(left: padding - halfDotSize , right: padding-halfDotSize),
+            padding: EdgeInsets.only(
+                left: padding - halfDotSize, right: padding - halfDotSize),
             child: rowText(context, tileWidth, availableWidth),
           ),
         ],
@@ -123,7 +145,7 @@ class RatingSlider extends StatelessWidget {
     });
   }
 
-  Widget _bubleText(BuildContext context, double value){
+  Widget _bubleText(BuildContext context, double value) {
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -139,7 +161,12 @@ class RatingSlider extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: 3.0),
               child: Text(
                 value.toString(),
-                style: InvestrendTheme.of(context).more_support_w400_compact.copyWith(color: InvestrendTheme.of(context).textWhite /*Colors.white*/, fontSize: 10.0),
+                style: InvestrendTheme.of(context)
+                    .more_support_w400_compact
+                    ?.copyWith(
+                        color: InvestrendTheme.of(context)
+                            .textWhite /*Colors.white*/,
+                        fontSize: 10.0),
               ),
             )
           ]),
@@ -169,45 +196,52 @@ class RatingSlider extends StatelessWidget {
   //   );
   // }
 
-  Widget rowText(BuildContext context, double tileWidth, double availableWidth) {
+  Widget rowText(
+      BuildContext context, double tileWidth, double availableWidth) {
     double half = availableWidth / 2;
 
     return Stack(
       children: [
         Align(
-          child: _text(context, _ratingText.elementAt(0), tileWidth, textAlign: TextAlign.left, color: Colors.orangeAccent),
+          child: _text(context, _ratingText.elementAt(0), tileWidth,
+              textAlign: TextAlign.left, color: Colors.orangeAccent),
           alignment: Alignment.topLeft,
         ),
         Align(
-          child: _text(context, _ratingText.elementAt(2), tileWidth, color: Colors.green),
+          child: _text(context, _ratingText.elementAt(2), tileWidth,
+              color: Colors.green),
           alignment: Alignment.topCenter,
         ),
         Align(
-          child: _text(context, _ratingText.elementAt(4), tileWidth, textAlign: TextAlign.right, color: Colors.purple),
+          child: _text(context, _ratingText.elementAt(4), tileWidth,
+              textAlign: TextAlign.right, color: Colors.purple),
           alignment: Alignment.topRight,
         ),
-
 
         Row(
           children: [
             Expanded(
                 flex: 1,
                 child: Padding(
-                  padding:  EdgeInsets.only(left: halfDotSize),
+                  padding: EdgeInsets.only(left: halfDotSize),
                   child: Text(
                     _ratingText.elementAt(1),
                     textAlign: TextAlign.center,
-                    style: InvestrendTheme.of(context).small_w400.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor),
+                    style: InvestrendTheme.of(context).small_w400?.copyWith(
+                        color:
+                            InvestrendTheme.of(context).greyLighterTextColor),
                   ),
                 )),
             Expanded(
                 flex: 1,
                 child: Padding(
-                  padding:  EdgeInsets.only(right: halfDotSize),
+                  padding: EdgeInsets.only(right: halfDotSize),
                   child: Text(
                     _ratingText.elementAt(3),
                     textAlign: TextAlign.center,
-                    style: InvestrendTheme.of(context).small_w400.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor),
+                    style: InvestrendTheme.of(context).small_w400?.copyWith(
+                        color:
+                            InvestrendTheme.of(context).greyLighterTextColor),
                   ),
                 )),
 
@@ -244,7 +278,10 @@ class RatingSlider extends StatelessWidget {
   }
 
   Widget _text(BuildContext context, String text, double tileWidth,
-      {TextAlign textAlign, double paddingLeft = 0.0, double paddingRight = 0.0, Color color}) {
+      {TextAlign? textAlign,
+      double paddingLeft = 0.0,
+      double paddingRight = 0.0,
+      Color? color}) {
     if (textAlign == null) {
       textAlign = TextAlign.center;
     }
@@ -257,7 +294,9 @@ class RatingSlider extends StatelessWidget {
         text,
         maxLines: 2,
         textAlign: textAlign,
-        style: InvestrendTheme.of(context).small_w400.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor),
+        style: InvestrendTheme.of(context)
+            .small_w400
+            ?.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor),
       ),
     );
   }

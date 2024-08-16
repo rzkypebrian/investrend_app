@@ -1,15 +1,18 @@
 import 'package:Investrend/component/component_creator.dart';
 import 'package:Investrend/objects/class_value_notifier.dart';
+import 'package:Investrend/objects/home_objects.dart';
 import 'package:Investrend/utils/connection_services.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:Investrend/objects/riverpod_change_notifier.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
+
 class CardNews extends StatefulWidget {
   final String title;
   final bool showAllNews;
-  const CardNews(this.title,{this.showAllNews = true, Key key}) : super(key: key);
+  const CardNews(this.title, {this.showAllNews = true, Key? key})
+      : super(key: key);
 
   @override
   _CardNewsState createState() => _CardNewsState();
@@ -20,7 +23,7 @@ class _CardNewsState extends State<CardNews> {
   //Future<List<HomeNews>> news;
 
   Key keyNews = UniqueKey();
-  HomeNewsNotifier _notifier = HomeNewsNotifier(ResultHomeNews());
+  HomeNewsNotifier? _notifier = HomeNewsNotifier(ResultHomeNews());
 
   @override
   void initState() {
@@ -31,63 +34,71 @@ class _CardNewsState extends State<CardNews> {
       doUpdate();
     });
   }
+
   Future doUpdate({bool pullToRefresh = false}) async {
-    if(_notifier.value.isEmpty() || pullToRefresh){
+    if (_notifier!.value!.isEmpty()! || pullToRefresh) {
       setNotifierLoading(_notifier);
     }
-    try{
-      String code = '';
+    try {
+      String? code = '';
       int lenght = 20;
-      if(!widget.showAllNews){
-        code = this.context.read(primaryStockChangeNotifier).stock.code;
+      if (!widget.showAllNews) {
+        code = this.context.read(primaryStockChangeNotifier).stock?.code;
         lenght = 3;
       }
-      final news = await HttpIII.fetchNewsPasarDana(code, lenght: lenght);
-      if(news != null){
+      final List<HomeNews>? news =
+          await HttpIII.fetchNewsPasarDana(code, lenght: lenght);
+      if (news != null) {
         ResultHomeNews data = ResultHomeNews();
-        data.datas.addAll(news);
-        _notifier.setValue(data);
-      }else{
+        data.datas?.addAll(news);
+        _notifier?.setValue(data);
+      } else {
         setNotifierNoData(_notifier);
       }
-    }catch(error){
+    } catch (error) {
       setNotifierError(_notifier, error);
     }
 
     print(widget.title + '.doUpdate finished. pullToRefresh : $pullToRefresh');
     return true;
   }
-  void setNotifierError(BaseValueNotifier notifier, var error){
-    if(mounted && notifier != null){
+
+  void setNotifierError(BaseValueNotifier? notifier, var error) {
+    if (mounted && notifier != null) {
       notifier.setError(message: error.toString());
     }
   }
-  void setNotifierNoData(BaseValueNotifier notifier){
-    if(mounted && notifier != null){
+
+  void setNotifierNoData(BaseValueNotifier? notifier) {
+    if (mounted && notifier != null) {
       notifier.setNoData();
     }
   }
-  void setNotifierLoading(BaseValueNotifier notifier){
-    if(mounted && notifier != null){
+
+  void setNotifierLoading(BaseValueNotifier? notifier) {
+    if (mounted && notifier != null) {
       notifier.setLoading();
     }
   }
-  VoidCallback _stockChangeListener;
+
+  VoidCallback? _stockChangeListener;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    if(_stockChangeListener != null){
-      context.read(primaryStockChangeNotifier).removeListener(_stockChangeListener);
-    }else{
-      _stockChangeListener = (){
-        if(mounted){
+    if (_stockChangeListener != null) {
+      context
+          .read(primaryStockChangeNotifier)
+          .removeListener(_stockChangeListener!);
+    } else {
+      _stockChangeListener = () {
+        if (mounted) {
           doUpdate(pullToRefresh: true);
         }
       };
     }
-    context.read(primaryStockChangeNotifier).addListener(_stockChangeListener);
+    context.read(primaryStockChangeNotifier).addListener(_stockChangeListener!);
   }
 
   @override
@@ -95,19 +106,23 @@ class _CardNewsState extends State<CardNews> {
     // _newsNotifier.dispose();
 
     final container = ProviderContainer();
-    if(_stockChangeListener != null){
-      container.read(primaryStockChangeNotifier).removeListener(_stockChangeListener);
+    if (_stockChangeListener != null) {
+      container
+          .read(primaryStockChangeNotifier)
+          .removeListener(_stockChangeListener!);
     }
 
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Card(
       key: keyNews,
-      margin: const EdgeInsets.only(left: InvestrendTheme.cardPaddingGeneral, /*top: InvestrendTheme.cardPaddingGeneral,*/ bottom: InvestrendTheme.cardPaddingVertical),
+      margin: const EdgeInsets.only(
+          left: InvestrendTheme.cardPaddingGeneral,
+          /*top: InvestrendTheme.cardPaddingGeneral,*/ bottom:
+              InvestrendTheme.cardPaddingVertical),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -123,28 +138,35 @@ class _CardNewsState extends State<CardNews> {
 
            */
           Padding(
-            padding: const EdgeInsets.only(right: InvestrendTheme.cardPaddingGeneral),
+            padding: const EdgeInsets.only(
+                right: InvestrendTheme.cardPaddingGeneral),
             child: ValueListenableBuilder(
-                valueListenable: _notifier,
-                builder: (context, ResultHomeNews value, child) {
+                valueListenable: _notifier!,
+                builder: (context, ResultHomeNews? value, child) {
                   List<Widget> list = List.empty(growable: true);
-                  Widget noWidget = _notifier.currentState.getNoWidget(onRetry: ()=>doUpdate(pullToRefresh: true));
-                  if(noWidget != null){
+                  Widget? noWidget = _notifier?.currentState.getNoWidget(
+                      onRetry: () => doUpdate(pullToRefresh: true));
+                  if (noWidget != null) {
                     double paddingEmpty = MediaQuery.of(context).size.width / 4;
                     list.add(Padding(
-                      padding:  EdgeInsets.only(top: paddingEmpty, bottom: paddingEmpty),
-                      child: Center(child: noWidget,),
+                      padding: EdgeInsets.only(
+                          top: paddingEmpty, bottom: paddingEmpty),
+                      child: Center(
+                        child: noWidget,
+                      ),
                     ));
-                  }else{
-                    int maxCount =  value.count();
-                    for (int i = 0; i < maxCount; i++) {
+                  } else {
+                    int? maxCount = value?.count();
+                    for (int i = 0; i < maxCount!; i++) {
                       //list.add(tileNews(context, snapshot.data[i]));
-                      if(list.isNotEmpty){
-                        list.add(SizedBox(height: InvestrendTheme.cardMargin,));
+                      if (list.isNotEmpty) {
+                        list.add(SizedBox(
+                          height: InvestrendTheme.cardMargin,
+                        ));
                       }
                       list.add(ComponentCreator.tileNews(
                         context,
-                        value.datas[i],
+                        value?.datas?[i],
                         commentClick: () {
                           //InvestrendTheme.of(context).showSnackBar(context, 'commentClick');
                         },
@@ -153,7 +175,9 @@ class _CardNewsState extends State<CardNews> {
                         },
                         shareClick: () {
                           //InvestrendTheme.of(context).showSnackBar(context, 'shareClick');
-                          String shareTextAndLink = value.datas[i].title+'\n'+value.datas[i].url_news;
+                          String shareTextAndLink = value!.datas![i].title +
+                              '\n' +
+                              value.datas![i].url_news;
                           Share.share(shareTextAndLink);
                           //Share.share('check out my website https://example.com');
                         },
@@ -240,4 +264,3 @@ class _CardNewsState extends State<CardNews> {
     );
   }
 }
-

@@ -1,3 +1,4 @@
+// ignore_for_file: unused_local_variable, non_constant_identifier_names
 
 import 'package:Investrend/component/component_creator.dart';
 import 'package:Investrend/objects/class_value_notifier.dart';
@@ -8,22 +9,25 @@ import 'package:Investrend/screens/tab_portfolio/component/bottom_sheet_list.dar
 import 'package:Investrend/screens/tab_portfolio/screen_portfolio_detail.dart';
 import 'package:flutter/material.dart';
 
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+// import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
+// import 'package:flutter_slidable/flutter_slidable.dart';
 
 class ScreenPortfolioReturn extends StatefulWidget {
   final TabController tabController;
   final int tabIndex;
 
-  ScreenPortfolioReturn(this.tabIndex, this.tabController, {Key key}) : super(key: key);
+  ScreenPortfolioReturn(this.tabIndex, this.tabController, {Key? key})
+      : super(key: key);
 
   @override
-  _ScreenPortfolioReturnState createState() => _ScreenPortfolioReturnState(tabIndex, tabController);
+  _ScreenPortfolioReturnState createState() =>
+      _ScreenPortfolioReturnState(tabIndex, tabController);
 }
 
-class _ScreenPortfolioReturnState extends BaseStateNoTabsWithParentTab<ScreenPortfolioReturn> {
+class _ScreenPortfolioReturnState
+    extends BaseStateNoTabsWithParentTab<ScreenPortfolioReturn> {
   final ReturnNotifier _returnDataNotifier = ReturnNotifier(new ReturnData());
 
   final ValueNotifier _rangeNotifier = ValueNotifier<int>(0);
@@ -32,7 +36,8 @@ class _ScreenPortfolioReturnState extends BaseStateNoTabsWithParentTab<ScreenPor
   // LabelValueNotifier _boardOfCommisionersNotifier = LabelValueNotifier(new LabelValueData());
 
   _ScreenPortfolioReturnState(int tabIndex, TabController tabController)
-      : super('/portfolio_return', tabIndex, tabController, parentTabIndex: Tabs.Portfolio.index);
+      : super('/portfolio_return', tabIndex, tabController,
+            parentTabIndex: Tabs.Portfolio.index);
 
   // @override
   // bool get wantKeepAlive => true;
@@ -46,7 +51,10 @@ class _ScreenPortfolioReturnState extends BaseStateNoTabsWithParentTab<ScreenPor
 
   Widget _options(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8.0, left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral),
+      padding: const EdgeInsets.only(
+          bottom: 8.0,
+          left: InvestrendTheme.cardPaddingGeneral,
+          right: InvestrendTheme.cardPaddingGeneral),
       child: Column(
         children: [
           Row(
@@ -64,7 +72,8 @@ class _ScreenPortfolioReturnState extends BaseStateNoTabsWithParentTab<ScreenPor
                       ),
                       Text(
                         'button_filter'.tr(),
-                        style: InvestrendTheme.of(context).more_support_w400_compact,
+                        style: InvestrendTheme.of(context)
+                            .more_support_w400_compact,
                       ),
                     ],
                   )),
@@ -74,7 +83,7 @@ class _ScreenPortfolioReturnState extends BaseStateNoTabsWithParentTab<ScreenPor
               ValueListenableBuilder(
                 valueListenable: _rangeNotifier,
                 builder: (context, index, child) {
-                  String activeCA = _range_options.elementAt(index);
+                  String? activeCA = _range_options.elementAt(index as int);
 
                   return MaterialButton(
                       elevation: 0.0,
@@ -90,7 +99,9 @@ class _ScreenPortfolioReturnState extends BaseStateNoTabsWithParentTab<ScreenPor
                             activeCA,
                             style: InvestrendTheme.of(context)
                                 .more_support_w400_compact
-                                .copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor),
+                                ?.copyWith(
+                                    color: InvestrendTheme.of(context)
+                                        .greyDarkerTextColor),
                           ),
                           Icon(
                             Icons.arrow_drop_down,
@@ -104,12 +115,15 @@ class _ScreenPortfolioReturnState extends BaseStateNoTabsWithParentTab<ScreenPor
                         showModalBottomSheet(
                             isScrollControlled: true,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(topLeft: Radius.circular(24.0), topRight: Radius.circular(24.0)),
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(24.0),
+                                  topRight: Radius.circular(24.0)),
                             ),
                             //backgroundColor: Colors.transparent,
                             context: context,
                             builder: (context) {
-                              return ListBottomSheet(_rangeNotifier, _range_options);
+                              return ListBottomSheet(
+                                  _rangeNotifier, _range_options);
                             });
                       });
                 },
@@ -122,7 +136,7 @@ class _ScreenPortfolioReturnState extends BaseStateNoTabsWithParentTab<ScreenPor
   }
 
   @override
-  Widget createAppBar(BuildContext context) {
+  PreferredSizeWidget? createAppBar(BuildContext context) {
     return null;
   }
 
@@ -144,7 +158,7 @@ class _ScreenPortfolioReturnState extends BaseStateNoTabsWithParentTab<ScreenPor
     );
     childs.add(ValueListenableBuilder(
       valueListenable: _returnDataNotifier,
-      builder: (context, ReturnData data, child) {
+      builder: (context, ReturnData? data, child) {
         if (_returnDataNotifier.invalid()) {
           return Center(child: CircularProgressIndicator());
         }
@@ -162,6 +176,7 @@ class _ScreenPortfolioReturnState extends BaseStateNoTabsWithParentTab<ScreenPor
       ),
     );
   }
+
   /*
   @override
   Widget createBody(BuildContext context, double paddingBottom) {
@@ -205,16 +220,16 @@ class _ScreenPortfolioReturnState extends BaseStateNoTabsWithParentTab<ScreenPor
 
     Future.delayed(Duration(milliseconds: 500), () {
       ReturnData dataMovers = ReturnData();
-      dataMovers.datas.add(Return('28/01/2021', 3000000, 1.96));
-      dataMovers.datas.add(Return('27/01/2021', -3000000, -1.96));
-      dataMovers.datas.add(Return('26/01/2021', 3000000, 1.96));
-      dataMovers.datas.add(Return('25/01/2021', -3000000, -1.96));
-      dataMovers.datas.add(Return('24/01/2021', 3000000, 1.96));
-      dataMovers.datas.add(Return('23/01/2021', -3000000, -1.96));
-      dataMovers.datas.add(Return('22/01/2021', 3000000, 1.96));
-      dataMovers.datas.add(Return('21/01/2021', -3000000, -1.96));
-      dataMovers.datas.add(Return('20/01/2021', -3000000, -1.96));
-      dataMovers.datas.add(Return('19/01/2021', 3000000, 1.96));
+      dataMovers.datas?.add(Return('28/01/2021', 3000000, 1.96));
+      dataMovers.datas?.add(Return('27/01/2021', -3000000, -1.96));
+      dataMovers.datas?.add(Return('26/01/2021', 3000000, 1.96));
+      dataMovers.datas?.add(Return('25/01/2021', -3000000, -1.96));
+      dataMovers.datas?.add(Return('24/01/2021', 3000000, 1.96));
+      dataMovers.datas?.add(Return('23/01/2021', -3000000, -1.96));
+      dataMovers.datas?.add(Return('22/01/2021', 3000000, 1.96));
+      dataMovers.datas?.add(Return('21/01/2021', -3000000, -1.96));
+      dataMovers.datas?.add(Return('20/01/2021', -3000000, -1.96));
+      dataMovers.datas?.add(Return('19/01/2021', 3000000, 1.96));
       _returnDataNotifier.setValue(dataMovers);
     });
   }
@@ -232,27 +247,33 @@ class _ScreenPortfolioReturnState extends BaseStateNoTabsWithParentTab<ScreenPor
     //print(routeName + ' onInactive');
   }
 
-  Widget tableReturn(BuildContext context, ReturnData data) {
-    TextStyle small500 = InvestrendTheme.of(context).small_w500;
-    TextStyle small400 = InvestrendTheme.of(context).small_w400;
-    TextStyle smallLighter400 = small400.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor);
-    TextStyle smallDarker400 = small400.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor);
-    TextStyle reguler700 = InvestrendTheme.of(context).regular_w600;
+  Widget tableReturn(BuildContext context, ReturnData? data) {
+    TextStyle? small500 = InvestrendTheme.of(context).small_w500;
+    TextStyle? small400 = InvestrendTheme.of(context).small_w400;
+    TextStyle? smallLighter400 = small400?.copyWith(
+        color: InvestrendTheme.of(context).greyLighterTextColor);
+    TextStyle? smallDarker400 = small400?.copyWith(
+        color: InvestrendTheme.of(context).greyDarkerTextColor);
+    TextStyle? reguler700 = InvestrendTheme.of(context).regular_w600;
 
     const double paddingTopBottom = 15.0;
     const double paddingHeaderTopBottom = 10.0;
     List<TableRow> list = List.empty(growable: true);
     list.add(TableRow(children: [
       Padding(
-        padding: const EdgeInsets.only(top: paddingHeaderTopBottom, bottom: paddingHeaderTopBottom),
+        padding: const EdgeInsets.only(
+            top: paddingHeaderTopBottom, bottom: paddingHeaderTopBottom),
         child: Text('date_label'.tr(), style: small500),
       ),
       Padding(
-        padding: const EdgeInsets.only(top: paddingHeaderTopBottom, bottom: paddingHeaderTopBottom),
-        child: Text('value_label'.tr(), style: small500, textAlign: TextAlign.left),
+        padding: const EdgeInsets.only(
+            top: paddingHeaderTopBottom, bottom: paddingHeaderTopBottom),
+        child: Text('value_label'.tr(),
+            style: small500, textAlign: TextAlign.left),
       ),
       Padding(
-        padding: const EdgeInsets.only(top: paddingHeaderTopBottom, bottom: paddingHeaderTopBottom),
+        padding: const EdgeInsets.only(
+            top: paddingHeaderTopBottom, bottom: paddingHeaderTopBottom),
         child: Text(
           'yield_percent_label'.tr(),
           style: small500,
@@ -272,9 +293,9 @@ class _ScreenPortfolioReturnState extends BaseStateNoTabsWithParentTab<ScreenPor
     //   SizedBox(height: paddingTopBottom,),
     // ]));
 
-    if (data.count() > 0) {
+    if (data!.count()! > 0) {
       bool first = true;
-      data.datas.forEach((rdn) {
+      data.datas?.forEach((rdn) {
         if (!first) {
           list.add(TableRow(children: [
             ComponentCreator.divider(context),
@@ -306,9 +327,16 @@ class _ScreenPortfolioReturnState extends BaseStateNoTabsWithParentTab<ScreenPor
               'portfolio_detail_withdraw_label'.tr(),
               withdraw == 0 ? 'N/A' : InvestrendTheme.formatMoney(withdraw),
             ),
-            LabelValueColor('portfolio_detail_change_label'.tr(), InvestrendTheme.formatMoney(change, prefixRp: true, prefixPlus: true)),
-            LabelValueColor('portfolio_detail_end_asset_value_label'.tr(), InvestrendTheme.formatMoney(endAssetValue)),
-            LabelValueColor('portfolio_detail_gain_loss_label'.tr(), InvestrendTheme.formatMoney(gainLoss, prefixPlus: true, prefixRp: true),
+            LabelValueColor(
+                'portfolio_detail_change_label'.tr(),
+                InvestrendTheme.formatMoney(change,
+                    prefixRp: true, prefixPlus: true)),
+            LabelValueColor('portfolio_detail_end_asset_value_label'.tr(),
+                InvestrendTheme.formatMoney(endAssetValue)),
+            LabelValueColor(
+                'portfolio_detail_gain_loss_label'.tr(),
+                InvestrendTheme.formatMoney(gainLoss,
+                    prefixPlus: true, prefixRp: true),
                 color: InvestrendTheme.priceTextColor(30000000)),
             LabelValueColor(
               'portfolio_detail_yield_label'.tr(),
@@ -321,25 +349,27 @@ class _ScreenPortfolioReturnState extends BaseStateNoTabsWithParentTab<ScreenPor
           */
         };
 
-        Color colorValue = InvestrendTheme.priceTextColor(rdn.value);
+        Color? colorValue = InvestrendTheme.priceTextColor(rdn.value);
         list.add(TableRow(children: [
           TableRowInkWell(
             onTap: onTap,
             child: Padding(
-              padding: const EdgeInsets.only(top: paddingTopBottom, bottom: paddingTopBottom),
+              padding: const EdgeInsets.only(
+                  top: paddingTopBottom, bottom: paddingTopBottom),
               child: Text(rdn.date, style: smallDarker400),
             ),
           ),
           TableRowInkWell(
             onTap: onTap,
             child: Padding(
-              padding: const EdgeInsets.only(top: paddingTopBottom, bottom: paddingTopBottom),
+              padding: const EdgeInsets.only(
+                  top: paddingTopBottom, bottom: paddingTopBottom),
               child: FittedBox(
                   alignment: Alignment.centerLeft,
                   fit: BoxFit.scaleDown,
                   child: Text(
                     InvestrendTheme.formatMoney(rdn.value, prefixRp: true),
-                    style: reguler700.copyWith(color: colorValue),
+                    style: reguler700?.copyWith(color: colorValue),
                     textAlign: TextAlign.left,
                   )),
             ),
@@ -347,9 +377,11 @@ class _ScreenPortfolioReturnState extends BaseStateNoTabsWithParentTab<ScreenPor
           TableRowInkWell(
             onTap: onTap,
             child: Padding(
-              padding: const EdgeInsets.only(top: paddingTopBottom, bottom: paddingTopBottom),
+              padding: const EdgeInsets.only(
+                  top: paddingTopBottom, bottom: paddingTopBottom),
               child: Text(
-                InvestrendTheme.formatPercentChange(rdn.yield, sufixPercent: false),
+                InvestrendTheme.formatPercentChange(rdn.yield,
+                    sufixPercent: false),
                 style: smallLighter400,
                 textAlign: TextAlign.right,
               ),
@@ -360,7 +392,9 @@ class _ScreenPortfolioReturnState extends BaseStateNoTabsWithParentTab<ScreenPor
     }
 
     return Padding(
-      padding: const EdgeInsets.only(left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral),
+      padding: const EdgeInsets.only(
+          left: InvestrendTheme.cardPaddingGeneral,
+          right: InvestrendTheme.cardPaddingGeneral),
       child: Table(
         columnWidths: {
           0: FractionColumnWidth(.30),

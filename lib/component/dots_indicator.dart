@@ -1,8 +1,9 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
 
-
 class DotsIndicator extends StatefulWidget {
-  int defaultSelectedIndex = 0;
+  int? defaultSelectedIndex = 0;
   int size = 0;
   DotsIndicator(this.size, {this.defaultSelectedIndex});
   @override
@@ -10,12 +11,8 @@ class DotsIndicator extends StatefulWidget {
 }
 
 class _DotsIndicatorState extends State<DotsIndicator> {
-
-
   @override
   Widget build(BuildContext context) {
-
     return Container();
   }
 }
-

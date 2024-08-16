@@ -5,56 +5,69 @@ import 'package:Investrend/screens/base/base_state.dart';
 import 'package:Investrend/screens/screen_main.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:easy_localization/easy_localization.dart';
+// import 'package:easy_localization/easy_localization.dart';
 
 class ScreenCommunityCompetitions extends StatefulWidget {
-
   final TabController tabController;
   final int tabIndex;
-  ScreenCommunityCompetitions(this.tabIndex, this.tabController,  {Key key}) : super( key: key);
+  ScreenCommunityCompetitions(this.tabIndex, this.tabController, {Key? key})
+      : super(key: key);
 
   @override
-  _ScreenCommunityCompetitionsState createState() => _ScreenCommunityCompetitionsState(tabIndex, tabController);
-
+  _ScreenCommunityCompetitionsState createState() =>
+      _ScreenCommunityCompetitionsState(tabIndex, tabController);
 }
 
-class _ScreenCommunityCompetitionsState extends BaseStateNoTabsWithParentTab<ScreenCommunityCompetitions> {
-
-  _ScreenCommunityCompetitionsState(int tabIndex, TabController tabController) : super('/community_competitions', tabIndex, tabController,parentTabIndex: Tabs.Community.index);
-
+class _ScreenCommunityCompetitionsState
+    extends BaseStateNoTabsWithParentTab<ScreenCommunityCompetitions> {
+  _ScreenCommunityCompetitionsState(int tabIndex, TabController tabController)
+      : super('/community_competitions', tabIndex, tabController,
+            parentTabIndex: Tabs.Community.index);
 
   @override
-  Widget createAppBar(BuildContext context) {
-
+  PreferredSizeWidget? createAppBar(BuildContext context) {
     return null;
   }
+
   List<HomeProfiles> listProfiles = <HomeProfiles>[
-    HomeProfiles('Belvin Tannadi', 'Owner @belvinvvip, komunitas saham retail terbesar di indonesia',
+    HomeProfiles(
+        'Belvin Tannadi',
+        'Owner @belvinvvip, komunitas saham retail terbesar di indonesia',
         'https://www.investrend.co.id/mobile/assets/profiles/profile_1.png'),
-    HomeProfiles('Lo Kheng Hong', 'Lo Kheng Hong sebagai investor saham disebut sebut sebagai Warren Buffet-nya Indonesia.',
+    HomeProfiles(
+        'Lo Kheng Hong',
+        'Lo Kheng Hong sebagai investor saham disebut sebut sebagai Warren Buffet-nya Indonesia.',
         'https://www.investrend.co.id/mobile/assets/profiles/profile_2.png'),
   ];
 
   List<HomeCompetition> listCompetition = <HomeCompetition>[
-    HomeCompetition('Kompetisi Keren', 4, 12, 'https://www.investrend.co.id/mobile/assets/competition/background_1.png', <String>[
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmJaEK71AwtaHZvhvBQioHWW2MGi4ukH1_9w&usqp=CAU',
-      'https://cdn130.picsart.com/309744679150201.jpg?to=crop&r=256&q=70',
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQhMUJGKzrxVoM2r8dLjVenLwcP-idh11n5Fw&usqp=CAU',
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHWL4kom23RBdd0GP-xLOsFu-7t-bRAtSGEA&usqp=CAU',
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStgx25x3vrWgwCRz0buSYNf7lII-0TWtcFXg&usqp=CAU',
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSiJinli8IBVIpd5Un3l2uUuMb9iIXihrGobg&usqp=CAU',
-    ]),
-    HomeCompetition('Best of the Best', 3, 15, 'https://www.investrend.co.id/mobile/assets/competition/background_2.png', <String>[
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStgx25x3vrWgwCRz0buSYNf7lII-0TWtcFXg&usqp=CAU',
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStgx25x3vrWgwCRz0buSYNf7lII-0TWtcFXg&usqp=CAU',
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHWL4kom23RBdd0GP-xLOsFu-7t-bRAtSGEA&usqp=CAU',
-      'https://cdn130.picsart.com/309744679150201.jpg?to=crop&r=256&q=70',
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmJaEK71AwtaHZvhvBQioHWW2MGi4ukH1_9w&usqp=CAU',
-      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQhMUJGKzrxVoM2r8dLjVenLwcP-idh11n5Fw&usqp=CAU',
-    ]),
+    HomeCompetition(
+        'Kompetisi Keren',
+        4,
+        12,
+        'https://www.investrend.co.id/mobile/assets/competition/background_1.png',
+        <String>[
+          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmJaEK71AwtaHZvhvBQioHWW2MGi4ukH1_9w&usqp=CAU',
+          'https://cdn130.picsart.com/309744679150201.jpg?to=crop&r=256&q=70',
+          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQhMUJGKzrxVoM2r8dLjVenLwcP-idh11n5Fw&usqp=CAU',
+          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHWL4kom23RBdd0GP-xLOsFu-7t-bRAtSGEA&usqp=CAU',
+          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStgx25x3vrWgwCRz0buSYNf7lII-0TWtcFXg&usqp=CAU',
+          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSiJinli8IBVIpd5Un3l2uUuMb9iIXihrGobg&usqp=CAU',
+        ]),
+    HomeCompetition(
+        'Best of the Best',
+        3,
+        15,
+        'https://www.investrend.co.id/mobile/assets/competition/background_2.png',
+        <String>[
+          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStgx25x3vrWgwCRz0buSYNf7lII-0TWtcFXg&usqp=CAU',
+          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStgx25x3vrWgwCRz0buSYNf7lII-0TWtcFXg&usqp=CAU',
+          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHWL4kom23RBdd0GP-xLOsFu-7t-bRAtSGEA&usqp=CAU',
+          'https://cdn130.picsart.com/309744679150201.jpg?to=crop&r=256&q=70',
+          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTmJaEK71AwtaHZvhvBQioHWW2MGi4ukH1_9w&usqp=CAU',
+          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQhMUJGKzrxVoM2r8dLjVenLwcP-idh11n5Fw&usqp=CAU',
+        ]),
   ];
-
-
 
   Future doUpdate({bool pullToRefresh = false}) async {
     print(routeName + '.doUpdate finished. pullToRefresh : $pullToRefresh');
@@ -62,7 +75,7 @@ class _ScreenCommunityCompetitionsState extends BaseStateNoTabsWithParentTab<Scr
   }
 
   Future onRefresh() {
-    if(!active){
+    if (!active) {
       active = true;
       onActive();
     }
@@ -94,7 +107,6 @@ class _ScreenCommunityCompetitionsState extends BaseStateNoTabsWithParentTab<Scr
   /*
   @override
   Widget createBody(BuildContext context, double paddingBottom) {
-    // TODO: implement createBody
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(InvestrendTheme.cardMargin),
@@ -131,12 +143,8 @@ class _ScreenCommunityCompetitionsState extends BaseStateNoTabsWithParentTab<Scr
   }
   */
   @override
-  void onActive() {
-    // TODO: implement onActive
-  }
+  void onActive() {}
 
   @override
-  void onInactive() {
-    // TODO: implement onInactive
-  }
+  void onInactive() {}
 }

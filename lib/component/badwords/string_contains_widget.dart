@@ -13,77 +13,77 @@ typedef OnTapCallBack = void Function(StringContainsElement);
 
 class StringContainsWidget extends StatelessWidget {
   /// source is the text to be cleaned.
-  final String source;
+  final String? source;
 
   /// [style] is the [TextStyle] to be used for the [Text] widget.
-  final TextStyle style;
+  final TextStyle? style;
 
   /// [linkStyle] is the [TextStyle] to be used for the [Text] widget.
   /// if null, the default style will be used.
   /// by default, the [linkStyle] is set normal [TextStyle] with [color] as [primaryColor].
 
-  final TextStyle linkStyle;
+  final TextStyle? linkStyle;
 
   /// [strustStyle] is the [StrutStyle] to be used for the [Text] widget.
-  final StrutStyle strutStyle;
+  final StrutStyle? strutStyle;
 
   /// [textAlign] is the [TextAlign] to be used for the [Text] widget.
-  final TextAlign textAlign;
+  final TextAlign? textAlign;
 
   /// [textDirection] is the [TextDirection] to be used for the [Text] widget.
   /// This is useful for languages that read right-to-left.
-  final TextDirection textDirection;
+  final TextDirection? textDirection;
 
   /// [locale] is the [Locale] to be used for the [Text] widget.
-  final Locale locale;
+  final Locale? locale;
 
   /// [softWrap] is the [bool] to be used for the [Text] widget.
-  final bool softWrap;
+  final bool? softWrap;
 
   /// [overflow] is the [TextOverflow] to be used for the [Text] widget.
-  final TextOverflow overflow;
+  final TextOverflow? overflow;
 
   /// [textScaleFactor] is the [double] to be used for the [Text] widget.
   /// This can be used to increase or decrease the size of the text.
-  final double textScaleFactor;
+  final double? textScaleFactor;
 
   /// [maxLines] is the [int] to be used for the [Text] widget.
   /// This can be used to limit the number of lines in the text.
-  final int maxLines;
+  final int? maxLines;
 
   /// [semanticsLabel] is the [String] to be used for the [Text] widget.
-  final String semanticsLabel;
+  final String? semanticsLabel;
 
   /// [textWidthBasis] is the [TextWidthBasis] to be used for the [Text] widget.
   /// The different ways of measuring the width of one or more lines of text.
-  final TextWidthBasis textWidthBasis;
+  final TextWidthBasis? textWidthBasis;
 
   /// [textHeightBehavior] is the [TextHeightBehavior] to be used for the [Text] widget.
-  final TextHeightBehavior textHeightBehavior;
+  final TextHeightBehavior? textHeightBehavior;
 
   /// [isSelectable] is the [bool] to be used for the [Text] widget.
   /// This can be used to make the text selectable.
-  final bool isSelecatable;
+  final bool? isSelecatable;
 
   /// [onTap] is the [OnTapCallBack] to be used for the [Text] widget.
   /// This can be used to handle the tap event.
   /// The callback will be called with the [StringContainsElement] that is
   /// detected.
-  final OnTapCallBack onTap;
+  final OnTapCallBack? onTap;
 
   /// [highLightWords] is the [List] of [String]s to be used for the [Text] widget.
   /// This can be used to highlight certain words in the text.
   /// The words will be highlighted with the [highlightWordsStyle].
   /// if [highLightWords] is provided, and not added [StringContainsElementType.words] in [types],
   /// then [StringContainsElementType.words] will be added to [types] automatically.
-  final List<String> highLightWords;
+  final List<String>? highLightWords;
 
   /// [highlightWordsStyle] is the [TextStyle] to be used for the [Text] widget.
   /// This can be used to highlight certain words in the text.
   /// by default, the [highlightWordsStyle] is set normal [TextStyle] with [color] as [primaryColorDark].
   /// if [highLightWords] is provided, and not added [StringContainsElementType.words] in [types],
   /// then [StringContainsElementType.words] will be added to [types] automatically.
-  final TextStyle highlightWordsStyle;
+  final TextStyle? highlightWordsStyle;
 
   /// [types] is the [List] of [StringContainsElementType]s to be used for the [Text] widget.
   /// this is used to identify the type of the [StringContainsElement]
@@ -91,10 +91,10 @@ class StringContainsWidget extends StatelessWidget {
   /// if [types] is not provided, then [StringContainsElementType.url] will be used by default.
   /// if [types] is provided empty or only [StringContainsElementType.none] is provided, then
   /// only [Text] will be displayed.
-  final List<StringContainsElementType> types;
+  final List<StringContainsElementType>? types;
 
   const StringContainsWidget({
-    Key key,
+    Key? key,
     @required this.source,
     this.style,
     this.linkStyle,
@@ -118,9 +118,9 @@ class StringContainsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (isSelecatable) {
+    if (isSelecatable!) {
       return SelectableText.rich(
-        _textSpan(source, onTap, context),
+        _textSpan(source!, onTap!, context),
         style: style,
         strutStyle: strutStyle,
         textAlign: textAlign,
@@ -132,7 +132,7 @@ class StringContainsWidget extends StatelessWidget {
       );
     }
     return Text.rich(
-      _textSpan(source, onTap, context),
+      _textSpan(source!, onTap!, context),
       style: style,
       strutStyle: strutStyle,
       textAlign: textAlign,
@@ -154,17 +154,17 @@ class StringContainsWidget extends StatelessWidget {
   /// that need to be detected.
   List<StringContainsElementType> _getAllFilterTypes() {
     final List<StringContainsElementType> filterTypes = [];
-    if (types.isEmpty && highLightWords.isEmpty) {
+    if (types!.isEmpty && highLightWords!.isEmpty) {
       return filterTypes;
-    } else if (types.isEmpty && highLightWords.isNotEmpty) {
+    } else if (types!.isEmpty && highLightWords!.isNotEmpty) {
       return [StringContainsElementType.words];
-    } else if (types.isNotEmpty && highLightWords.isNotEmpty) {
-      filterTypes.addAll(types);
+    } else if (types!.isNotEmpty && highLightWords!.isNotEmpty) {
+      filterTypes.addAll(types!);
       filterTypes.remove(StringContainsElementType.none);
       filterTypes.add(StringContainsElementType.words);
       return filterTypes.toSet().toList();
-    } else if (types.isNotEmpty && highLightWords.isEmpty) {
-      filterTypes.addAll(types);
+    } else if (types!.isNotEmpty && highLightWords!.isEmpty) {
+      filterTypes.addAll(types!);
       filterTypes.remove(StringContainsElementType.none);
       filterTypes.remove(StringContainsElementType.words);
       return filterTypes.toSet().toList();
@@ -198,7 +198,7 @@ class StringContainsWidget extends StatelessWidget {
     final textSpans = <TextSpan>[];
     final regExp = createRegExpFromTypes(
       filterTypes,
-      words: highLightWords,
+      words: highLightWords!,
     );
     source.splitMapJoin(
       regExp,
@@ -234,7 +234,7 @@ class StringContainsWidget extends StatelessWidget {
             semanticsLabel: semanticsLabel,
             recognizer: TapGestureRecognizer()
               ..onTap = () {
-                onTap?.call(stringContainsElement);
+                onTap.call(stringContainsElement);
               },
           ),
         );

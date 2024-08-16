@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_null_comparison
+
 import 'package:Investrend/component/avatar.dart';
 import 'package:Investrend/component/badwords/clean_widget.dart';
 import 'package:Investrend/component/badwords/constant.dart';
@@ -10,7 +12,7 @@ import 'package:Investrend/component/badwords/string_contains.dart';
 import 'dart:math' as math;
 
 class Leaderboards extends StatefulWidget {
-  const Leaderboards({Key key}) : super(key: key);
+  const Leaderboards({Key? key}) : super(key: key);
 
   @override
   _LeaderboardsState createState() => _LeaderboardsState();
@@ -74,7 +76,7 @@ class _LeaderboardsState extends State<Leaderboards> {
               source:
                   "rizkypebrian@gmail.com\nrizkypeb@gmail.com\nbitch\n082112929097",
               keepFirstLastLetters: true,
-              style: Theme.of(context).textTheme.headline6?.copyWith(
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     color: Colors.black,
                   ),
             ),
@@ -133,7 +135,7 @@ class _LeaderboardsState extends State<Leaderboards> {
                 ),
                 CleanWidget(
                   source: displayText,
-                  style: Theme.of(context).textTheme.headline6?.copyWith(
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         color: Colors.black,
                       ),
                 ),
@@ -323,12 +325,12 @@ class _LeaderboardsState extends State<Leaderboards> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          listDummy[index]?.name != null
-                              ? listDummy[index]?.name
+                          listDummy[index].name != null
+                              ? listDummy[index].name!
                               : '',
                           style: InvestrendTheme.of(context)
                               .regular_w500_greyDarker
-                              .copyWith(
+                              ?.copyWith(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -337,7 +339,7 @@ class _LeaderboardsState extends State<Leaderboards> {
                         SizedBox(
                           width: 3.6,
                         ),
-                        listDummy[index]?.verified == true
+                        listDummy[index].verified == true
                             ? Container(
                                 margin: EdgeInsets.only(top: 6),
                                 height: 14,
@@ -349,12 +351,12 @@ class _LeaderboardsState extends State<Leaderboards> {
                       ],
                     ),
                     Text(
-                      listDummy[index]?.username != null
-                          ? listDummy[index]?.username
+                      listDummy[index].username != null
+                          ? listDummy[index].username!
                           : '',
                       style: InvestrendTheme.of(context)
                           .regular_w500_greyDarker
-                          .copyWith(
+                          ?.copyWith(
                             fontSize: 13,
                             color: Color(0xff666666),
                           ),
@@ -367,7 +369,7 @@ class _LeaderboardsState extends State<Leaderboards> {
                           ('${(index + 1).toString()}st'),
                           style: InvestrendTheme.of(context)
                               .regular_w500_greyDarker
-                              .copyWith(
+                              ?.copyWith(
                                 fontSize: 18,
                               ),
                         ),
@@ -384,12 +386,12 @@ class _LeaderboardsState extends State<Leaderboards> {
                           width: 10,
                         ),
                         Text(
-                          listDummy[index]?.points != null
-                              ? listDummy[index]?.points
+                          listDummy[index].points != null
+                              ? listDummy[index].points!
                               : '',
                           style: InvestrendTheme.of(context)
                               .regular_w500_greyDarker
-                              .copyWith(
+                              ?.copyWith(
                                 fontSize: 18,
                               ),
                         ),
@@ -421,7 +423,7 @@ class _LeaderboardsState extends State<Leaderboards> {
                                 (index + 1).toString(),
                                 style: InvestrendTheme.of(context)
                                     .regular_w500_greyDarker
-                                    .copyWith(
+                                    ?.copyWith(
                                       fontSize: 12,
                                       color: Colors.black,
                                     ),
@@ -447,12 +449,12 @@ class _LeaderboardsState extends State<Leaderboards> {
                                 Row(
                                   children: [
                                     Text(
-                                      listDummy[index]?.name != null
-                                          ? listDummy[index]?.name
+                                      listDummy[index].name != null
+                                          ? listDummy[index].name!
                                           : '',
                                       style: InvestrendTheme.of(context)
                                           .regular_w500_greyDarker
-                                          .copyWith(
+                                          ?.copyWith(
                                             fontSize: 14,
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -461,7 +463,7 @@ class _LeaderboardsState extends State<Leaderboards> {
                                     SizedBox(
                                       width: 3.6,
                                     ),
-                                    listDummy[index]?.verified == true
+                                    listDummy[index].verified == true
                                         ? Container(
                                             margin: EdgeInsets.only(top: 6),
                                             height: 14,
@@ -476,12 +478,12 @@ class _LeaderboardsState extends State<Leaderboards> {
                                   height: 2,
                                 ),
                                 Text(
-                                  listDummy[index]?.username != null
-                                      ? listDummy[index]?.username
+                                  listDummy[index].username != null
+                                      ? listDummy[index].username!
                                       : '',
                                   style: InvestrendTheme.of(context)
                                       .regular_w500_greyDarker
-                                      .copyWith(
+                                      ?.copyWith(
                                         fontSize: 13,
                                         color: Color(0xff666666),
                                       ),
@@ -491,12 +493,12 @@ class _LeaderboardsState extends State<Leaderboards> {
                             ),
                           ),
                           Text(
-                            listDummy[index]?.points != null
-                                ? listDummy[index]?.points
+                            listDummy[index].points != null
+                                ? listDummy[index].points!
                                 : '',
                             style: InvestrendTheme.of(context)
                                 .regular_w500_greyDarker
-                                .copyWith(
+                                ?.copyWith(
                                   fontSize: 13,
                                 ),
                           ),
@@ -625,7 +627,7 @@ class _LeaderboardsState extends State<Leaderboards> {
 }
 
 class LeaderboardsTransaction extends StatefulWidget {
-  const LeaderboardsTransaction({Key key}) : super(key: key);
+  const LeaderboardsTransaction({Key? key}) : super(key: key);
 
   @override
   _LeaderboardsTransactionState createState() =>
@@ -698,7 +700,7 @@ class _LeaderboardsTransactionState extends State<LeaderboardsTransaction> {
                       '2000',
                       style: InvestrendTheme.of(context)
                           .regular_w500_greyDarker
-                          .copyWith(
+                          ?.copyWith(
                             fontSize: 12,
                             color: Colors.black,
                           ),
@@ -735,7 +737,7 @@ class _LeaderboardsTransactionState extends State<LeaderboardsTransaction> {
                             'Lo Kheng Hong',
                             style: InvestrendTheme.of(context)
                                 .regular_w500_greyDarker
-                                .copyWith(
+                                ?.copyWith(
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -759,7 +761,7 @@ class _LeaderboardsTransactionState extends State<LeaderboardsTransaction> {
                         '@kenghong',
                         style: InvestrendTheme.of(context)
                             .regular_w500_greyDarker
-                            .copyWith(
+                            ?.copyWith(
                               fontSize: 13,
                               color: Color(0xff666666),
                             ),
@@ -771,7 +773,7 @@ class _LeaderboardsTransactionState extends State<LeaderboardsTransaction> {
                   '1.172pts',
                   style: InvestrendTheme.of(context)
                       .regular_w500_greyDarker
-                      .copyWith(
+                      ?.copyWith(
                         fontSize: 13,
                       ),
                 ),
@@ -829,7 +831,7 @@ class _LeaderboardsTransactionState extends State<LeaderboardsTransaction> {
                   'Transaction',
                   style: InvestrendTheme.of(context)
                       .regular_w500_greyDarker
-                      .copyWith(
+                      ?.copyWith(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
@@ -841,7 +843,7 @@ class _LeaderboardsTransactionState extends State<LeaderboardsTransaction> {
                   'Transaction will be only tracked if the user post the transaction',
                   style: InvestrendTheme.of(context)
                       .regular_w500_greyDarker
-                      .copyWith(
+                      ?.copyWith(
                         fontSize: 13,
                         color: Colors.black,
                       ),
@@ -868,7 +870,7 @@ class _LeaderboardsTransactionState extends State<LeaderboardsTransaction> {
                         'Lihat detail perhitungan',
                         style: InvestrendTheme.of(context)
                             .regular_w500_greyDarker
-                            .copyWith(
+                            ?.copyWith(
                               fontSize: 13,
                               color: Color(0xff4462A8),
                             ),
@@ -1041,12 +1043,12 @@ class _LeaderboardsTransactionState extends State<LeaderboardsTransaction> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          listDummy[index]?.name != null
-                              ? listDummy[index]?.name
+                          listDummy[index].name != null
+                              ? listDummy[index].name!
                               : '',
                           style: InvestrendTheme.of(context)
                               .regular_w500_greyDarker
-                              .copyWith(
+                              ?.copyWith(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
                                 overflow: TextOverflow.ellipsis,
@@ -1055,7 +1057,7 @@ class _LeaderboardsTransactionState extends State<LeaderboardsTransaction> {
                         SizedBox(
                           width: 3.6,
                         ),
-                        listDummy[index]?.verified == true
+                        listDummy[index].verified == true
                             ? Container(
                                 margin: EdgeInsets.only(top: 6),
                                 height: 14,
@@ -1067,12 +1069,12 @@ class _LeaderboardsTransactionState extends State<LeaderboardsTransaction> {
                       ],
                     ),
                     Text(
-                      listDummy[index]?.username != null
-                          ? listDummy[index]?.username
+                      listDummy[index].username != null
+                          ? listDummy[index].username!
                           : '',
                       style: InvestrendTheme.of(context)
                           .regular_w500_greyDarker
-                          .copyWith(
+                          ?.copyWith(
                             fontSize: 13,
                             color: Color(0xff666666),
                           ),
@@ -1085,7 +1087,7 @@ class _LeaderboardsTransactionState extends State<LeaderboardsTransaction> {
                           ('${(index + 1).toString()}st'),
                           style: InvestrendTheme.of(context)
                               .regular_w500_greyDarker
-                              .copyWith(
+                              ?.copyWith(
                                 fontSize: 18,
                               ),
                         ),
@@ -1102,12 +1104,12 @@ class _LeaderboardsTransactionState extends State<LeaderboardsTransaction> {
                           width: 10,
                         ),
                         Text(
-                          listDummy[index]?.points != null
-                              ? listDummy[index]?.points
+                          listDummy[index].points != null
+                              ? listDummy[index].points!
                               : '',
                           style: InvestrendTheme.of(context)
                               .regular_w500_greyDarker
-                              .copyWith(
+                              ?.copyWith(
                                 fontSize: 18,
                               ),
                         ),
@@ -1139,7 +1141,7 @@ class _LeaderboardsTransactionState extends State<LeaderboardsTransaction> {
                                 (index + 1).toString(),
                                 style: InvestrendTheme.of(context)
                                     .regular_w500_greyDarker
-                                    .copyWith(
+                                    ?.copyWith(
                                       fontSize: 12,
                                       color: Colors.black,
                                     ),
@@ -1165,12 +1167,12 @@ class _LeaderboardsTransactionState extends State<LeaderboardsTransaction> {
                                 Row(
                                   children: [
                                     Text(
-                                      listDummy[index]?.name != null
-                                          ? listDummy[index]?.name
+                                      listDummy[index].name != null
+                                          ? listDummy[index].name!
                                           : '',
                                       style: InvestrendTheme.of(context)
                                           .regular_w500_greyDarker
-                                          .copyWith(
+                                          ?.copyWith(
                                             fontSize: 14,
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -1179,7 +1181,7 @@ class _LeaderboardsTransactionState extends State<LeaderboardsTransaction> {
                                     SizedBox(
                                       width: 3.6,
                                     ),
-                                    listDummy[index]?.verified == true
+                                    listDummy[index].verified == true
                                         ? Container(
                                             margin: EdgeInsets.only(top: 6),
                                             height: 14,
@@ -1194,12 +1196,12 @@ class _LeaderboardsTransactionState extends State<LeaderboardsTransaction> {
                                   height: 2,
                                 ),
                                 Text(
-                                  listDummy[index]?.username != null
-                                      ? listDummy[index]?.username
+                                  listDummy[index].username != null
+                                      ? listDummy[index].username!
                                       : '',
                                   style: InvestrendTheme.of(context)
                                       .regular_w500_greyDarker
-                                      .copyWith(
+                                      ?.copyWith(
                                         fontSize: 13,
                                         color: Color(0xff666666),
                                       ),
@@ -1209,12 +1211,12 @@ class _LeaderboardsTransactionState extends State<LeaderboardsTransaction> {
                             ),
                           ),
                           Text(
-                            listDummy[index]?.points != null
-                                ? listDummy[index]?.points
+                            listDummy[index].points != null
+                                ? listDummy[index].points!
                                 : '',
                             style: InvestrendTheme.of(context)
                                 .regular_w500_greyDarker
-                                .copyWith(
+                                ?.copyWith(
                                   fontSize: 13,
                                 ),
                           ),
@@ -1343,14 +1345,14 @@ class _LeaderboardsTransactionState extends State<LeaderboardsTransaction> {
 }
 
 class LeaderboardsPrediction extends StatefulWidget {
-  const LeaderboardsPrediction({Key key}) : super(key: key);
+  const LeaderboardsPrediction({Key? key}) : super(key: key);
 
   @override
   _LeaderboardsPredictionState createState() => _LeaderboardsPredictionState();
 }
 
 class _LeaderboardsPredictionState extends State<LeaderboardsPrediction> {
-  GlobalKey globalKey;
+  GlobalKey? globalKey;
   String selectedValue = "This Week";
   List<LeaderboardsTransactionDummy> listDummy =
       LeaderboardsTransactionDummy.dummy;
@@ -1393,7 +1395,7 @@ class _LeaderboardsPredictionState extends State<LeaderboardsPrediction> {
                       '2000',
                       style: InvestrendTheme.of(context)
                           .regular_w500_greyDarker
-                          .copyWith(
+                          ?.copyWith(
                             fontSize: 12,
                             color: Colors.black,
                           ),
@@ -1430,7 +1432,7 @@ class _LeaderboardsPredictionState extends State<LeaderboardsPrediction> {
                             'Lo Kheng Hong',
                             style: InvestrendTheme.of(context)
                                 .regular_w500_greyDarker
-                                .copyWith(
+                                ?.copyWith(
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -1454,7 +1456,7 @@ class _LeaderboardsPredictionState extends State<LeaderboardsPrediction> {
                         '@kenghong',
                         style: InvestrendTheme.of(context)
                             .regular_w500_greyDarker
-                            .copyWith(
+                            ?.copyWith(
                               fontSize: 13,
                               color: Color(0xff666666),
                             ),
@@ -1466,7 +1468,7 @@ class _LeaderboardsPredictionState extends State<LeaderboardsPrediction> {
                   '1.172pts',
                   style: InvestrendTheme.of(context)
                       .regular_w500_greyDarker
-                      .copyWith(
+                      ?.copyWith(
                         fontSize: 13,
                       ),
                 ),
@@ -1524,7 +1526,7 @@ class _LeaderboardsPredictionState extends State<LeaderboardsPrediction> {
                   'Prediction',
                   style: InvestrendTheme.of(context)
                       .regular_w500_greyDarker
-                      .copyWith(
+                      ?.copyWith(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
@@ -1536,7 +1538,7 @@ class _LeaderboardsPredictionState extends State<LeaderboardsPrediction> {
                   'Transaction will be only tracked if the user post the transaction',
                   style: InvestrendTheme.of(context)
                       .regular_w500_greyDarker
-                      .copyWith(
+                      ?.copyWith(
                         fontSize: 13,
                         color: Colors.black,
                       ),
@@ -1563,7 +1565,7 @@ class _LeaderboardsPredictionState extends State<LeaderboardsPrediction> {
                         'Lihat detail perhitungan',
                         style: InvestrendTheme.of(context)
                             .regular_w500_greyDarker
-                            .copyWith(
+                            ?.copyWith(
                               fontSize: 13,
                               color: Color(0xff4462A8),
                             ),
@@ -1582,7 +1584,7 @@ class _LeaderboardsPredictionState extends State<LeaderboardsPrediction> {
                             : selectedValue,
                         style: InvestrendTheme.of(context)
                             .regular_w500_greyDarker
-                            .copyWith(
+                            ?.copyWith(
                               fontSize: 14,
                               color: Colors.black,
                               fontWeight: FontWeight.bold,
@@ -1608,13 +1610,13 @@ class _LeaderboardsPredictionState extends State<LeaderboardsPrediction> {
                           key: globalKey,
                           style: InvestrendTheme.of(context)
                               .regular_w500_greyDarker
-                              .copyWith(
+                              ?.copyWith(
                                 fontSize: 12,
                                 color: Colors.black,
                               ),
-                          onChanged: (String newValue) {
+                          onChanged: (String? newValue) {
                             setState(() {
-                              selectedValue = newValue;
+                              selectedValue = newValue!;
                             });
                           },
                           onTap: () {
@@ -1681,12 +1683,12 @@ class _LeaderboardsPredictionState extends State<LeaderboardsPrediction> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          listDummy[index]?.name != null
-                              ? listDummy[index]?.name
+                          listDummy[index].name != null
+                              ? listDummy[index].name!
                               : '',
                           style: InvestrendTheme.of(context)
                               .regular_w500_greyDarker
-                              .copyWith(
+                              ?.copyWith(
                                 fontSize: 14,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -1695,7 +1697,7 @@ class _LeaderboardsPredictionState extends State<LeaderboardsPrediction> {
                         SizedBox(
                           width: 3.6,
                         ),
-                        listDummy[index]?.verified == true
+                        listDummy[index].verified == true
                             ? Container(
                                 margin: EdgeInsets.only(top: 6),
                                 height: 14,
@@ -1707,12 +1709,12 @@ class _LeaderboardsPredictionState extends State<LeaderboardsPrediction> {
                       ],
                     ),
                     Text(
-                      listDummy[index]?.username != null
-                          ? listDummy[index]?.username
+                      listDummy[index].username != null
+                          ? listDummy[index].username!
                           : '',
                       style: InvestrendTheme.of(context)
                           .regular_w500_greyDarker
-                          .copyWith(
+                          ?.copyWith(
                             fontSize: 13,
                             color: Color(0xff666666),
                           ),
@@ -1725,7 +1727,7 @@ class _LeaderboardsPredictionState extends State<LeaderboardsPrediction> {
                           ('${(index + 1).toString()}st'),
                           style: InvestrendTheme.of(context)
                               .regular_w500_greyDarker
-                              .copyWith(
+                              ?.copyWith(
                                 fontSize: 18,
                               ),
                         ),
@@ -1742,12 +1744,12 @@ class _LeaderboardsPredictionState extends State<LeaderboardsPrediction> {
                           width: 10,
                         ),
                         Text(
-                          listDummy[index]?.points != null
-                              ? listDummy[index]?.points
+                          listDummy[index].points != null
+                              ? listDummy[index].points!
                               : '',
                           style: InvestrendTheme.of(context)
                               .regular_w500_greyDarker
-                              .copyWith(
+                              ?.copyWith(
                                 fontSize: 18,
                               ),
                         ),
@@ -1779,7 +1781,7 @@ class _LeaderboardsPredictionState extends State<LeaderboardsPrediction> {
                                 (index + 1).toString(),
                                 style: InvestrendTheme.of(context)
                                     .regular_w500_greyDarker
-                                    .copyWith(
+                                    ?.copyWith(
                                       fontSize: 12,
                                       color: Colors.black,
                                     ),
@@ -1805,12 +1807,12 @@ class _LeaderboardsPredictionState extends State<LeaderboardsPrediction> {
                                 Row(
                                   children: [
                                     Text(
-                                      listDummy[index]?.name != null
-                                          ? listDummy[index]?.name
+                                      listDummy[index].name != null
+                                          ? listDummy[index].name!
                                           : '',
                                       style: InvestrendTheme.of(context)
                                           .regular_w500_greyDarker
-                                          .copyWith(
+                                          ?.copyWith(
                                             fontSize: 14,
                                             fontWeight: FontWeight.bold,
                                           ),
@@ -1819,7 +1821,7 @@ class _LeaderboardsPredictionState extends State<LeaderboardsPrediction> {
                                     SizedBox(
                                       width: 3.6,
                                     ),
-                                    listDummy[index]?.verified == true
+                                    listDummy[index].verified == true
                                         ? Container(
                                             margin: EdgeInsets.only(top: 6),
                                             height: 14,
@@ -1834,12 +1836,12 @@ class _LeaderboardsPredictionState extends State<LeaderboardsPrediction> {
                                   height: 2,
                                 ),
                                 Text(
-                                  listDummy[index]?.username != null
-                                      ? listDummy[index]?.username
+                                  listDummy[index].username != null
+                                      ? listDummy[index].username!
                                       : '',
                                   style: InvestrendTheme.of(context)
                                       .regular_w500_greyDarker
-                                      .copyWith(
+                                      ?.copyWith(
                                         fontSize: 13,
                                         color: Color(0xff666666),
                                       ),
@@ -1849,12 +1851,12 @@ class _LeaderboardsPredictionState extends State<LeaderboardsPrediction> {
                             ),
                           ),
                           Text(
-                            listDummy[index]?.points != null
-                                ? listDummy[index]?.points
+                            listDummy[index].points != null
+                                ? listDummy[index].points!
                                 : '',
                             style: InvestrendTheme.of(context)
                                 .regular_w500_greyDarker
-                                .copyWith(
+                                ?.copyWith(
                                   fontSize: 13,
                                 ),
                           ),
@@ -1993,13 +1995,13 @@ class _LeaderboardsPredictionState extends State<LeaderboardsPrediction> {
 }
 
 class LeaderboardsTransactionDummy {
-  String image;
-  String fullname;
-  String name;
-  bool verified;
-  String points;
-  String rank;
-  String username;
+  String? image;
+  String? fullname;
+  String? name;
+  bool? verified;
+  String? points;
+  String? rank;
+  String? username;
 
   LeaderboardsTransactionDummy({
     this.image,
@@ -2186,7 +2188,8 @@ class LeaderboardsTransactionDummy {
 
   int get splitPoints {
     if (points != null && points != "") {
-      return Utils.safeInt(points.split("pts")[0]);
+      return Utils.safeInt(points!.split("pts")[0]);
     }
+    throw '';
   }
 }

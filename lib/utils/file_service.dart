@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/material.dart';
+// import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 typedef OnUploadProgressCallback = void Function(int sentBytes, int totalBytes);
@@ -10,11 +10,11 @@ typedef OnUploadProgressCallback = void Function(int sentBytes, int totalBytes);
 class FileServiceUtil {
   // static String baseUrl = ;
   static Future<String> fileUploadMultipart({
-    @required File file,
-    @required String url,
-    String field,
-    Map<String, dynamic> header,
-    OnUploadProgressCallback onUploadProgress,
+    required File? file,
+    required String? url,
+    String? field,
+    Map<String, dynamic>? header,
+    OnUploadProgressCallback? onUploadProgress,
   }) async {
     assert(file != null);
 
@@ -22,13 +22,13 @@ class FileServiceUtil {
       ..connectionTimeout = const Duration(seconds: 10);
 
     final request = await httpClient.postUrl(
-      Uri.parse(url),
+      Uri.parse(url!),
     );
 
     int byteCount = 0;
 
     var multipart =
-        await http.MultipartFile.fromPath(field ?? "media", file.path);
+        await http.MultipartFile.fromPath(field ?? "media", file!.path);
 
     var requestMultipart = http.MultipartRequest(
       "POST",
@@ -44,7 +44,7 @@ class FileServiceUtil {
     request.contentLength = totalByteLength;
 
     request.headers.set(HttpHeaders.contentTypeHeader,
-        requestMultipart.headers[HttpHeaders.contentTypeHeader]);
+        requestMultipart.headers[HttpHeaders.contentTypeHeader]!);
 
     header?.forEach((key, value) {
       request.headers.set(key, value);

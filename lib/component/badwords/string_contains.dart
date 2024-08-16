@@ -127,7 +127,7 @@ extension StringContains on String {
   /// 'Please visit our website : https://betterx.io/'.containsUrl() // returns true
   /// ```
 
-  bool containsUrl({RegExp customRegExp}) {
+  bool containsUrl({RegExp? customRegExp}) {
     if (isNotEmpty) {
       // final RegExp regExp = RegExp(
       //   r'(?:(?:https?|ftp):\/\/)?[\w/\-?=%.]+\.[\w/\-?=%.]+',
@@ -159,7 +159,7 @@ extension StringContains on String {
   /// ```
 
   List<String> getUrls({
-    RegExp customRegExp,
+    RegExp? customRegExp,
   }) {
     if (isNotEmpty) {
       try {
@@ -191,7 +191,7 @@ extension StringContains on String {
   /// ```
 
   bool containsEmail({
-    RegExp customRegExp,
+    RegExp? customRegExp,
   }) {
     if (isNotEmpty) {
       try {
@@ -219,7 +219,7 @@ extension StringContains on String {
   /// ```
 
   List<String> getEmails({
-    RegExp customRegExp,
+    RegExp? customRegExp,
   }) {
     if (isNotEmpty) {
       try {
@@ -253,7 +253,7 @@ extension StringContains on String {
   /// betterx.io".hideEmails() // returns "BetterX.io : Let's build something Better, User-centered & beautiful together\n for more info contact us at : in**@betterx.io
   /// ```
 
-  String hideEmails({String obscuringCharacter = '*', RegExp customRegExp}) {
+  String hideEmails({String obscuringCharacter = '*', RegExp? customRegExp}) {
     if (isNotEmpty) {
       try {
         final regExp = customRegExp ?? emailRegExp;
@@ -299,7 +299,7 @@ extension StringContains on String {
   /// ```
 
   bool containsPhoneNumber({
-    RegExp customRegExp,
+    RegExp? customRegExp,
   }) {
     if (isNotEmpty) {
       try {
@@ -328,7 +328,7 @@ extension StringContains on String {
   /// ```
 
   List<String> getPhoneNumbers({
-    RegExp customRegExp,
+    RegExp? customRegExp,
   }) {
     if (isNotEmpty) {
       try {
@@ -367,7 +367,7 @@ extension StringContains on String {
   String hidePhoneNumbers({
     String obscuringCharacter = '*',
     bool showFirstLastTwoDigits = true,
-    RegExp customRegExp,
+    RegExp? customRegExp,
   }) {
     if (isNotEmpty) {
       try {
@@ -539,7 +539,7 @@ extension StringContains on String {
   /// ```
 
   bool containsHashtag({
-    RegExp customRegExp,
+    RegExp? customRegExp,
   }) {
     if (isNotEmpty) {
       try {
@@ -569,7 +569,7 @@ extension StringContains on String {
   /// ```
 
   List<String> getHashtags({
-    RegExp customRegExp,
+    RegExp? customRegExp,
   }) {
     if (isNotEmpty) {
       try {
@@ -606,7 +606,7 @@ extension StringContains on String {
   /// ```
 
   bool containsMention({
-    RegExp customRegExp,
+    RegExp? customRegExp,
   }) {
     if (isNotEmpty) {
       try {
@@ -636,7 +636,7 @@ extension StringContains on String {
   /// ```
 
   List<String> getMentions({
-    RegExp customRegExp,
+    RegExp? customRegExp,
   }) {
     if (isNotEmpty) {
       try {

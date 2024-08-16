@@ -1,10 +1,10 @@
 import 'package:Investrend/utils/string_utils.dart';
 
 class OhlcModel {
-  String open;
-  String high;
-  String close;
-  String low;
+  String? open;
+  String? high;
+  String? close;
+  String? low;
   dynamic dateTrade;
 
   OhlcModel({
@@ -15,7 +15,7 @@ class OhlcModel {
     this.dateTrade,
   });
 
-  factory OhlcModel.fromJson(Map<String, dynamic> parsedJson) {
+  static OhlcModel? fromJson(Map<String, dynamic>? parsedJson) {
     if (parsedJson == null) {
       return null;
     }

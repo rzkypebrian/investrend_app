@@ -1,4 +1,4 @@
-
+// ignore_for_file: unused_local_variable
 
 import 'package:Investrend/component/cards/card_activity_rdn.dart';
 import 'package:Investrend/component/component_creator.dart';
@@ -18,17 +18,21 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
 
 class ScreenPortfolioCash extends StatefulWidget {
-  final TabController tabController;
+  final TabController? tabController;
   final int tabIndex;
 
-  ScreenPortfolioCash(this.tabIndex, this.tabController, {Key key}) : super(key: key);
+  ScreenPortfolioCash(this.tabIndex, this.tabController, {Key? key})
+      : super(key: key);
 
   @override
-  _ScreenPortfolioCashState createState() => _ScreenPortfolioCashState(tabIndex, tabController);
+  _ScreenPortfolioCashState createState() =>
+      _ScreenPortfolioCashState(tabIndex, tabController!);
 }
 
-class _ScreenPortfolioCashState extends BaseStateNoTabsWithParentTab<ScreenPortfolioCash> {
-  CashPositionNotifier _cashNotifier = CashPositionNotifier(CashPosition.createBasic());
+class _ScreenPortfolioCashState
+    extends BaseStateNoTabsWithParentTab<ScreenPortfolioCash> {
+  CashPositionNotifier? _cashNotifier =
+      CashPositionNotifier(CashPosition.createBasic());
   MutasiNotifier _mutasiNotifier = MutasiNotifier(ResultMutasi());
 
   GroupedNotifier _groupedNotifier = GroupedNotifier(GroupedData());
@@ -40,24 +44,29 @@ class _ScreenPortfolioCashState extends BaseStateNoTabsWithParentTab<ScreenPortf
   // LabelValueNotifier _boardOfCommisionersNotifier = LabelValueNotifier(new LabelValueData());
 
   _ScreenPortfolioCashState(int tabIndex, TabController tabController)
-      : super('/portfolio_cash', tabIndex, tabController, parentTabIndex: Tabs.Portfolio.index);
+      : super('/portfolio_cash', tabIndex, tabController,
+            parentTabIndex: Tabs.Portfolio.index);
 
   // @override
   // bool get wantKeepAlive => true;
 
   @override
-  Widget createAppBar(BuildContext context) {
+  PreferredSizeWidget? createAppBar(BuildContext context) {
     return null;
   }
 
-  Widget rdnBalance(BuildContext context, {double additionalPaddingLeftRight = 0.0}) {
+  Widget rdnBalance(BuildContext context,
+      {double additionalPaddingLeftRight = 0.0}) {
     // int rdnBalance = 200000000;
     // int tradingLimit = 50000000;
 
-    TextStyle support400 = InvestrendTheme.of(context).support_w400_compact.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor);
-    TextStyle reguler700 = InvestrendTheme.of(context).regular_w600_compact;
+    TextStyle? support400 = InvestrendTheme.of(context)
+        .support_w400_compact
+        ?.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor);
+    TextStyle? reguler700 = InvestrendTheme.of(context).regular_w600_compact;
 
-    double paddingLeftRight = /*additionalPaddingLeftRight +*/ InvestrendTheme.cardPaddingGeneral;
+    double paddingLeftRight = /*additionalPaddingLeftRight +*/
+        InvestrendTheme.cardPaddingGeneral;
     return Padding(
       padding: EdgeInsets.only(left: paddingLeftRight, right: paddingLeftRight),
       child: Table(
@@ -66,13 +75,12 @@ class _ScreenPortfolioCashState extends BaseStateNoTabsWithParentTab<ScreenPortf
           1: FractionColumnWidth(.6),
         },
         children: [
-          TableRow(
-              children: [
+          TableRow(children: [
             Container(
               //color: Colors.red,
-              margin: EdgeInsets.only(bottom: InvestrendTheme.cardPaddingGeneral),
+              margin:
+                  EdgeInsets.only(bottom: InvestrendTheme.cardPaddingGeneral),
               child: Row(
-
                 children: [
                   Text(
                     'cash_available_label'.tr(),
@@ -83,9 +91,11 @@ class _ScreenPortfolioCashState extends BaseStateNoTabsWithParentTab<ScreenPortf
                   ),
                   //Icon(Icons.info_outline,size: 15.0,color: Theme.of(context).accentColor,),
                   TapableWidget(
-                    onTap: (){
-
-                      InvestrendTheme.of(context).showDialogTooltips(context, 'cash_available_label'.tr(), 'cash_available_info'.tr());
+                    onTap: () {
+                      InvestrendTheme.of(context).showDialogTooltips(
+                          context,
+                          'cash_available_label'.tr(),
+                          'cash_available_info'.tr());
                     },
                     child: Image.asset(
                       'images/icons/information.png',
@@ -103,9 +113,10 @@ class _ScreenPortfolioCashState extends BaseStateNoTabsWithParentTab<ScreenPortf
             Container(
               // color: Colors.green,
               child: ValueListenableBuilder(
-                valueListenable: _cashNotifier,
-                builder: (context, CashPosition data, child) {
-                  Widget noWidget = _cashNotifier.currentState.getNoWidget(onRetry: () => doUpdate(pullToRefresh: true));
+                valueListenable: _cashNotifier!,
+                builder: (context, CashPosition? data, child) {
+                  Widget? noWidget = _cashNotifier?.currentState.getNoWidget(
+                      onRetry: () => doUpdate(pullToRefresh: true));
                   if (noWidget != null) {
                     return Center(
                       child: noWidget,
@@ -113,17 +124,14 @@ class _ScreenPortfolioCashState extends BaseStateNoTabsWithParentTab<ScreenPortf
                   }
 
                   return Text(
-                    InvestrendTheme.formatMoneyDouble(data.availableCash, prefixRp: true),
+                    InvestrendTheme.formatMoneyDouble(data?.availableCash,
+                        prefixRp: true),
                     style: reguler700,
                   );
                 },
               ),
             ),
-
-
           ]),
-
-
           TableRow(children: [
             Row(
               children: [
@@ -137,11 +145,15 @@ class _ScreenPortfolioCashState extends BaseStateNoTabsWithParentTab<ScreenPortf
                 //Icon(Icons.info_outline,size: 15.0,color: Theme.of(context).accentColor,),
 
                 TapableWidget(
-                  onTap: (){
-                    VoidCallback onPressedYes = (){
+                  onTap: () {
+                    VoidCallback onPressedYes = () {
                       Navigator.of(context).pop();
                     };
-                    InvestrendTheme.of(context).showDialogTooltips(context, 'credit_limit_label'.tr(), 'credit_limit_info'.tr(),);
+                    InvestrendTheme.of(context).showDialogTooltips(
+                      context,
+                      'credit_limit_label'.tr(),
+                      'credit_limit_info'.tr(),
+                    );
                   },
                   child: Image.asset(
                     'images/icons/information.png',
@@ -156,25 +168,26 @@ class _ScreenPortfolioCashState extends BaseStateNoTabsWithParentTab<ScreenPortf
               ],
             ),
             ValueListenableBuilder(
-              valueListenable: _cashNotifier,
-              builder: (context, CashPosition data, child) {
-                Widget noWidget = _cashNotifier.currentState.getNoWidget(onRetry: () => doUpdate(pullToRefresh: true));
+              valueListenable: _cashNotifier!,
+              builder: (context, CashPosition? data, child) {
+                Widget? noWidget = _cashNotifier?.currentState
+                    .getNoWidget(onRetry: () => doUpdate(pullToRefresh: true));
                 if (noWidget != null) {
                   return Center(
                     child: noWidget,
                   );
                 }
 
-                String tradingLimitText = InvestrendTheme.formatMoneyDouble(data.creditLimit, prefixRp: true) ;
+                String tradingLimitText = InvestrendTheme.formatMoneyDouble(
+                    data?.creditLimit,
+                    prefixRp: true);
                 return Text(
                   tradingLimitText,
                   style: reguler700,
                 );
               },
             ),
-
           ]),
-
         ],
       ),
     );
@@ -222,12 +235,15 @@ class _ScreenPortfolioCashState extends BaseStateNoTabsWithParentTab<ScreenPortf
   */
 
   Future doUpdate({bool pullToRefresh = false}) async {
-    print(routeName + '.doUpdate : ' + DateTime.now().toString() + "  active : $active  pullToRefresh : $pullToRefresh");
+    print(routeName +
+        '.doUpdate : ' +
+        DateTime.now().toString() +
+        "  active : $active  pullToRefresh : $pullToRefresh");
 
     final notifier = context.read(accountChangeNotifier);
 
     User user = context.read(dataHolderChangeNotifier).user;
-    Account activeAccount = user.getAccount(notifier.index);
+    Account? activeAccount = user.getAccount(notifier.index);
     if (activeAccount == null) {
       print(routeName + '  active Account is NULL');
       return false;
@@ -235,15 +251,21 @@ class _ScreenPortfolioCashState extends BaseStateNoTabsWithParentTab<ScreenPortf
     //updateAccountCashPosition(context);
 
     try {
-      if (_cashNotifier.value.isEmpty() || pullToRefresh) {
+      if (_cashNotifier!.value!.isEmpty() || pullToRefresh) {
         setNotifierLoading(_cashNotifier);
       }
-      final result = await InvestrendTheme.tradingHttp.cashPosition(activeAccount.brokercode, activeAccount.accountcode, user.username,
-          InvestrendTheme.of(context).applicationPlatform, InvestrendTheme.of(context).applicationVersion);
+      final CashPosition? result = await InvestrendTheme.tradingHttp
+          .cashPosition(
+              activeAccount.brokercode,
+              activeAccount.accountcode,
+              user.username,
+              InvestrendTheme.of(context).applicationPlatform,
+              InvestrendTheme.of(context).applicationVersion);
       if (result != null) {
-        DebugWriter.info(routeName + ' Future cash DATA : ' + result.toString());
+        DebugWriter.info(
+            routeName + ' Future cash DATA : ' + result.toString());
         if (mounted) {
-          _cashNotifier.setValue(result);
+          _cashNotifier?.setValue(result);
         }
       } else {
         print(routeName + ' Future cash NO DATA');
@@ -279,11 +301,15 @@ class _ScreenPortfolioCashState extends BaseStateNoTabsWithParentTab<ScreenPortf
     }
     */
     try {
-      if (_groupedNotifier.value.isEmpty() || pullToRefresh) {
+      if (_groupedNotifier.value!.isEmpty() || pullToRefresh) {
         setNotifierLoading(_groupedNotifier);
       }
-      final result = await InvestrendTheme.tradingHttp.riwayatRDN(activeAccount.brokercode, activeAccount.accountcode, user.username,
-          InvestrendTheme.of(context).applicationPlatform, InvestrendTheme.of(context).applicationVersion);
+      final GroupedData? result = await InvestrendTheme.tradingHttp.riwayatRDN(
+          activeAccount.brokercode,
+          activeAccount.accountcode,
+          user.username,
+          InvestrendTheme.of(context).applicationPlatform,
+          InvestrendTheme.of(context).applicationVersion);
       if (result != null) {
         print(routeName + ' Future riwayatRDN DATA : ' + result.toString());
         if (mounted) {
@@ -324,13 +350,16 @@ class _ScreenPortfolioCashState extends BaseStateNoTabsWithParentTab<ScreenPortf
     List<Widget> preWidget = List.empty(growable: true);
 
     preWidget.add(Padding(
-      padding: const EdgeInsets.only(left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral),
+      padding: const EdgeInsets.only(
+          left: InvestrendTheme.cardPaddingGeneral,
+          right: InvestrendTheme.cardPaddingGeneral),
       child: WidgetBuyingPower(),
     ));
     preWidget.add(SizedBox(
       height: 15.0,
     ));
-    preWidget.add(rdnBalance(context, additionalPaddingLeftRight: InvestrendTheme.cardPaddingGeneral));
+    preWidget.add(rdnBalance(context,
+        additionalPaddingLeftRight: InvestrendTheme.cardPaddingGeneral));
     preWidget.add(SizedBox(
       height: InvestrendTheme.cardPaddingVertical,
     ));
@@ -361,7 +390,9 @@ class _ScreenPortfolioCashState extends BaseStateNoTabsWithParentTab<ScreenPortf
       onRefresh: onRefresh,
       child: ListView.builder(
           shrinkWrap: false,
-          padding: const EdgeInsets.only(top: InvestrendTheme.cardPaddingGeneral, bottom: InvestrendTheme.cardPaddingGeneral),
+          padding: const EdgeInsets.only(
+              top: InvestrendTheme.cardPaddingGeneral,
+              bottom: InvestrendTheme.cardPaddingGeneral),
           itemCount: preWidget.length,
           itemBuilder: (BuildContext context, int index) {
             return preWidget.elementAt(index);
@@ -431,21 +462,23 @@ class _ScreenPortfolioCashState extends BaseStateNoTabsWithParentTab<ScreenPortf
       _mutasiNotifier.setValue(dataMutasi);
     });
     */
-
   }
 
-  VoidCallback _activeAccountChangedListener;
+  VoidCallback? _activeAccountChangedListener;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
     if (_activeAccountChangedListener != null) {
-      context.read(accountChangeNotifier).removeListener(_activeAccountChangedListener);
+      context
+          .read(accountChangeNotifier)
+          .removeListener(_activeAccountChangedListener!);
     } else {
       _activeAccountChangedListener = () {
         if (mounted) {
-          bool hasAccount = context.read(dataHolderChangeNotifier).user.accountSize() > 0;
+          bool hasAccount =
+              context.read(dataHolderChangeNotifier).user.accountSize() > 0;
           if (hasAccount) {
             _accountNotifier.value = !_accountNotifier.value;
             doUpdate(pullToRefresh: true);
@@ -453,7 +486,9 @@ class _ScreenPortfolioCashState extends BaseStateNoTabsWithParentTab<ScreenPortf
         }
       };
     }
-    context.read(accountChangeNotifier).addListener(_activeAccountChangedListener);
+    context
+        .read(accountChangeNotifier)
+        .addListener(_activeAccountChangedListener!);
     /*
     context.read(accountChangeNotifier).addListener(() {
       if (mounted) {
@@ -471,13 +506,15 @@ class _ScreenPortfolioCashState extends BaseStateNoTabsWithParentTab<ScreenPortf
 
   @override
   void dispose() {
-    _cashNotifier.dispose();
+    _cashNotifier?.dispose();
     _mutasiNotifier.dispose();
     _accountNotifier.dispose();
     _groupedNotifier.dispose();
     final container = ProviderContainer();
     if (_activeAccountChangedListener != null) {
-      container.read(accountChangeNotifier).removeListener(_activeAccountChangedListener);
+      container
+          .read(accountChangeNotifier)
+          .removeListener(_activeAccountChangedListener!);
     }
 
     super.dispose();

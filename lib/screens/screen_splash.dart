@@ -30,7 +30,7 @@ class _ScreenSplashState
   // AnimationController _controller;
   // Animation<Offset> _offsetAnimation;
 
-  Future<StoredData> futuretoredData;
+  Future<StoredData>? futuretoredData;
 
   /*
   /// Create a [AndroidNotificationChannel] for heads up notifications
@@ -116,8 +116,6 @@ class _ScreenSplashState
               channel.id,
               channel.name,
               channelDescription: channel.description,
-              // TODO add a proper drawable resource to android, for now using
-              //      one that already exists in example app.
               icon: 'launch_background',
             ),
           ),
@@ -177,7 +175,6 @@ class _ScreenSplashState
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     //enableFirebaseMessaging();
@@ -192,11 +189,11 @@ class _ScreenSplashState
     });
 
     futuretoredData = StoredData.load();
-    futuretoredData.then((snapshot) {
+    futuretoredData?.then((snapshot) {
       DebugWriter.info('futuretoredData then');
       InvestrendTheme.storedData = snapshot;
-      Stock stock =
-          snapshot.listStock.isEmpty ? null : snapshot.listStock.first;
+      Stock? stock =
+          snapshot.listStock!.isEmpty ? null : snapshot.listStock?.first;
       //InvestrendTheme.of(context).stockNotifier.setStock(stock);
       context.read(primaryStockChangeNotifier).setStock(stock);
     }).onError((error, stackTrace) {
@@ -270,21 +267,25 @@ class _ScreenSplashState
       });
     } else {
       Token token = Token('', '');
-      token.load().then((value) {
-        bool hasToken = !StringUtils.isEmtpy(token.access_token) &&
-            !StringUtils.isEmtpy(token.refresh_token);
-        DebugWriter.info('hasToken : $hasToken');
-        if (hasToken) {
-          InvestrendTheme.pushReplacement(
-              context, ScreenLogin(), ScreenTransition.Fade, '/login');
-        } else {
+      token.load().then(
+        (value) {
+          bool hasToken = !StringUtils.isEmtpy(token.access_token) &&
+              !StringUtils.isEmtpy(token.refresh_token);
+          DebugWriter.info('hasToken : $hasToken');
+          if (hasToken) {
+            InvestrendTheme.pushReplacement(
+                context, ScreenLogin(), ScreenTransition.Fade, '/login');
+          } else {
+            InvestrendTheme.pushReplacement(
+                context, ScreenLanding(), ScreenTransition.Fade, '/landing');
+          }
+        },
+      ).onError(
+        (error, stackTrace) {
           InvestrendTheme.pushReplacement(
               context, ScreenLanding(), ScreenTransition.Fade, '/landing');
-        }
-      }).onError((error, stackTrace) {
-        InvestrendTheme.pushReplacement(
-            context, ScreenLanding(), ScreenTransition.Fade, '/landing');
-      });
+        },
+      );
     }
 
     /*
@@ -365,7 +366,7 @@ class _ScreenSplashState
                 languageCode +
                 ']');
             EasyLocalization.of(context)
-                .setLocale(Locale(languageCode))
+                ?.setLocale(Locale(languageCode))
                 .whenComplete(() {
               Timer(new Duration(milliseconds: 300), animateSplash);
             });
@@ -381,7 +382,7 @@ class _ScreenSplashState
               languageCode +
               ']');
           EasyLocalization.of(context)
-              .setLocale(Locale(languageCode))
+              ?.setLocale(Locale(languageCode))
               .whenComplete(() {
             Timer(new Duration(milliseconds: 300), animateSplash);
           });

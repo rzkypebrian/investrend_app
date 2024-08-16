@@ -8,15 +8,16 @@ import 'package:flutter/material.dart';
 //import 'package:easy_localization/easy_localization.dart';
 
 class CardGeneralPrice extends StatelessWidget {
-  final String title;
-  final GeneralPriceNotifier notifier;
+  final String? title;
+  final GeneralPriceNotifier? notifier;
 
-  const CardGeneralPrice(this.title, this.notifier,{Key key}) : super(key: key);
+  const CardGeneralPrice(this.title, this.notifier, {Key? key})
+      : super(key: key);
 
-  Widget subtitle(BuildContext context, String text, {Color color}) {
-    TextStyle style = InvestrendTheme.of(context).support_w600_compact;
+  Widget subtitle(BuildContext context, String text, {Color? color}) {
+    TextStyle? style = InvestrendTheme.of(context).support_w600_compact;
     if (color != null) {
-      style = style.copyWith(color: color);
+      style = style?.copyWith(color: color);
     }
     return Text(
       text,
@@ -24,6 +25,7 @@ class CardGeneralPrice extends StatelessWidget {
       style: style,
     );
   }
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -37,23 +39,31 @@ class CardGeneralPrice extends StatelessWidget {
             SizedBox(
               height: InvestrendTheme.cardPaddingGeneral,
             ),
-            subtitle(context, title, color: InvestrendTheme.of(context).greyLighterTextColor),
+            subtitle(context, title!,
+                color: InvestrendTheme.of(context).greyLighterTextColor),
             SizedBox(
               height: InvestrendTheme.cardPadding,
             ),
             ValueListenableBuilder(
-              valueListenable: this.notifier,
-              builder: (context, GeneralPriceData data, child) {
-                if (notifier.invalid()) {
+              valueListenable: this.notifier!,
+              builder: (context, GeneralPriceData? data, child) {
+                if (notifier!.invalid()) {
                   return Center(child: CircularProgressIndicator());
                 }
                 return Column(
                   children: List<Widget>.generate(
-                    data.count(),
-                        (int index) {
-                      GeneralPrice gp = data.datas.elementAt(index);
-                      return RowGeneralPrice(gp.code, gp.price, gp.change, gp.percent, gp.priceColor, name: gp.name, firstRow: (index == 0),);
-
+                    data!.count(),
+                    (int index) {
+                      GeneralPrice gp = data.datas!.elementAt(index);
+                      return RowGeneralPrice(
+                        gp.code,
+                        gp.price,
+                        gp.change,
+                        gp.percent,
+                        gp.priceColor,
+                        name: gp.name,
+                        firstRow: (index == 0),
+                      );
                     },
                   ),
                 );

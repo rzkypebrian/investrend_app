@@ -2,12 +2,12 @@ import 'package:Investrend/component/component_creator.dart';
 import 'package:Investrend/objects/home_objects.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:flutter/material.dart';
-import 'package:easy_localization/easy_localization.dart';
+// import 'package:easy_localization/easy_localization.dart';
 
 class CardProfiles extends StatelessWidget {
   final List<HomeProfiles> listProfiles;
   final String title;
-  CardProfiles(this.title, this.listProfiles, {Key key}) : super(key: key);
+  CardProfiles(this.title, this.listProfiles, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -136,10 +136,13 @@ class CardProfiles extends StatelessWidget {
                         width: widthTile / 2,
                         child: Text(
                           profile.name,
-                          style: Theme.of(context).textTheme.headline4.copyWith(
-                              color: InvestrendTheme.of(context).textWhite,
-                              fontWeight: FontWeight.w600,
-                              height: 1.23),
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineMedium!
+                              .copyWith(
+                                  color: InvestrendTheme.of(context).textWhite,
+                                  fontWeight: FontWeight.w600,
+                                  height: 1.23),
                         ),
                       ),
                       // SizedBox(
@@ -157,7 +160,7 @@ class CardProfiles extends StatelessWidget {
                           //style: Theme.of(context).textTheme.bodyText2.copyWith(color: Colors.white),
                           style: InvestrendTheme.of(context)
                               .more_support_w400
-                              .copyWith(
+                              ?.copyWith(
                                   color: InvestrendTheme.of(context).textWhite,
                                   height: 1.272),
                         ),

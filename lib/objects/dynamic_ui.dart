@@ -1,3 +1,4 @@
+// ignore_for_file: unnecessary_null_comparison
 
 import 'package:Investrend/component/image_picker_component.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
@@ -6,19 +7,19 @@ import 'package:Investrend/utils/utils.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:Investrend/component/video_picker_component.dart';
-import 'package:form_field_validator/form_field_validator.dart';
-import 'package:search_choices/search_choices.dart';
+// import 'package:form_field_validator/form_field_validator.dart';
+// import 'package:search_choices/search_choices.dart';
 
 class DynamicUi {
-  String userid; //": "",
-  int oaid; //": "201",
-  String oatoken; //": "be4067d952bc5447998dcdf3d446fd0c",
-  String oastatus; //": "ONREGISTER",
-  String oamessage; //": "",
-  int lastpage;
-  int backfrompage;
-  int minpage; //": "1",
-  List<DynamicUIPage> pages;
+  String? userid; //": "",
+  int? oaid; //": "201",
+  String? oatoken; //": "be4067d952bc5447998dcdf3d446fd0c",
+  String? oastatus; //": "ONREGISTER",
+  String? oamessage; //": "",
+  int? lastpage;
+  int? backfrompage;
+  int? minpage; //": "1",
+  List<DynamicUIPage>? pages;
 
   DynamicUi({
     this.userid,
@@ -33,27 +34,27 @@ class DynamicUi {
   });
 
   factory DynamicUi.fromJson(Map<String, dynamic> jsonData,
-      {ValueChanged<DynamicUIField> onChanged}) {
+      {ValueChanged<DynamicUIField>? onChanged}) {
     return DynamicUi(
-      userid: jsonData["userid"] == null ? null : jsonData["userid"] as String,
-      oaid: StringUtils.isNullOrEmpty((jsonData["oaid"] as String))
+      userid: jsonData["userid"] == null ? null : jsonData["userid"] as String?,
+      oaid: StringUtils.isNullOrEmpty((jsonData["oaid"] as String?))
           ? null
           : int.parse((jsonData["oaid"] as String)),
       oatoken:
-          jsonData["oatoken"] == null ? null : jsonData["oatoken"] as String,
+          jsonData["oatoken"] == null ? null : jsonData["oatoken"] as String?,
       oastatus:
-          jsonData["oastatus"] == null ? null : jsonData["oastatus"] as String,
+          jsonData["oastatus"] == null ? null : jsonData["oastatus"] as String?,
       oamessage: jsonData["oamessage"] == null
           ? null
-          : jsonData["oamessage"] as String,
-      lastpage: StringUtils.isNullOrEmpty((jsonData["lastpage"] as String))
+          : jsonData["oamessage"] as String?,
+      lastpage: StringUtils.isNullOrEmpty((jsonData["lastpage"] as String?))
           ? null
           : int.parse((jsonData["lastpage"] as String)),
       backfrompage:
-          StringUtils.isNullOrEmpty((jsonData["backfrompage"] as String))
+          StringUtils.isNullOrEmpty((jsonData["backfrompage"] as String?))
               ? null
               : int.parse((jsonData["backfrompage"] as String)),
-      minpage: StringUtils.isNullOrEmpty((jsonData["minpage"] as String))
+      minpage: StringUtils.isNullOrEmpty((jsonData["minpage"] as String?))
           ? null
           : int.parse((jsonData["minpage"] as String)),
       pages: (jsonData["pages"] as List)
@@ -66,11 +67,11 @@ class DynamicUi {
 }
 
 class DynamicUIPage {
-  int page; //": "1",
-  String title; //": "BUAT AKUN RDN (1/7)",
-  bool withNext;
-  bool withClose;
-  List<DynamicUIField> form;
+  int? page; //": "1",
+  String? title; //": "BUAT AKUN RDN (1/7)",
+  bool? withNext;
+  bool? withClose;
+  List<DynamicUIField>? form;
 
   DynamicUIPage({
     this.page,
@@ -81,16 +82,16 @@ class DynamicUIPage {
   }); //":
 
   factory DynamicUIPage.fromJson(Map<String, dynamic> jsonData,
-      {ValueChanged<DynamicUIField> onChanged}) {
+      {ValueChanged<DynamicUIField>? onChanged}) {
     return DynamicUIPage(
-      page: StringUtils.isNullOrEmpty(jsonData["page"] as String)
+      page: StringUtils.isNullOrEmpty(jsonData["page"] as String?)
           ? null
           : int.parse(jsonData["page"] as String),
       withNext: Utils.safeBool(jsonData["withnext"]),
       withClose: Utils.safeBool(jsonData["withclose"]),
-      title: jsonData["title"] as String,
+      title: jsonData["title"] as String?,
       form: (jsonData["form"] as List)
-          .map((e) => DynamicUIField.fromJson(e, onChanged: onChanged))
+          .map((e) => DynamicUIField.fromJson(e, onChanged: onChanged)!)
           .toList(),
     );
   }
@@ -132,20 +133,20 @@ class DynamicUIKeyboardType {
 }
 
 class DynamicUIField {
-  String ui;
-  String id;
-  bool mandatory;
+  String? ui;
+  String? id;
+  bool? mandatory;
   dynamic content;
   dynamic controller;
-  ValueChanged<DynamicUIField> onChanged;
-  String showif;
+  ValueChanged<DynamicUIField>? onChanged;
+  String? showif;
   bool isError;
-  bool checked;
-  FocusNode focusNode;
-  FocusNode nextFocusNode;
-  GlobalKey globalKey;
-  String status;
-  String mandatoryIf;
+  bool? checked;
+  FocusNode? focusNode;
+  FocusNode? nextFocusNode;
+  GlobalKey? globalKey;
+  String? status;
+  String? mandatoryIf;
 
   DynamicUIField({
     this.ui,
@@ -168,45 +169,37 @@ class DynamicUIField {
     return this.content;
   }
 
-  factory DynamicUIField.fromJson(
-    Map<String, dynamic> parsedJson, {
-    ValueChanged<DynamicUIField> onChanged,
+  static DynamicUIField? fromJson(
+    Map<String, dynamic>? parsedJson, {
+    ValueChanged<DynamicUIField>? onChanged,
   }) {
     if (parsedJson == null) {
       return null;
     }
-    String ui = StringUtils.noNullString(parsedJson['ui']);
+    String? ui = StringUtils.noNullString(parsedJson['ui']);
 
     switch (ui) {
       case DynamicUIType.text:
-        return TextUI.fromJson(parsedJson)..onChanged = onChanged;
-        break;
+        return TextUI.fromJson(parsedJson)?..onChanged = onChanged;
       case DynamicUIType.textField:
-        return TextFieldUI.fromJson(parsedJson)..onChanged = onChanged;
-        break;
+        return TextFieldUI.fromJson(parsedJson)?..onChanged = onChanged;
       case DynamicUIType.textArea:
-        return TextAreaUI.fromJson(parsedJson)..onChanged = onChanged;
+        return TextAreaUI.fromJson(parsedJson)?..onChanged = onChanged;
       case DynamicUIType.checkBox:
-        return CheckBoxUI.fromJson(parsedJson)..onChanged = onChanged;
-        break;
+        return CheckBoxUI.fromJson(parsedJson)?..onChanged = onChanged;
       case DynamicUIType.datePicker:
-        return DatePickerUI.fromJson(parsedJson)..onChanged = onChanged;
-        break;
+        return DatePickerUI.fromJson(parsedJson)?..onChanged = onChanged;
       case DynamicUIType.dropDown:
-        return DropDownUI.fromJson(parsedJson)..onChanged = onChanged;
-        break;
+        return DropDownUI.fromJson(parsedJson)?..onChanged = onChanged;
       case DynamicUIType.sizedBox:
-        return SizeBoxUI.fromJson(parsedJson)..onChanged = onChanged;
-        break;
+        return SizeBoxUI.fromJson(parsedJson)?..onChanged = onChanged;
       case DynamicUIType.upload:
-        return UploadUI.fromJson(parsedJson)..onChanged = onChanged;
-        break;
+        return UploadUI.fromJson(parsedJson)?..onChanged = onChanged;
       default:
         return DynamicUIField(
-          id: parsedJson["id"] as String,
-          ui: parsedJson["ui"] as String,
+          id: parsedJson["id"] as String?,
+          ui: parsedJson["ui"] as String?,
         );
-        break;
     }
   }
 
@@ -221,7 +214,7 @@ class DynamicUIField {
   List<DynamicCondition> get mandatoryCondition {
     List<DynamicCondition> condition = [];
     if (mandatoryIf != null && mandatoryIf != "") {
-      mandatoryIf.split("|").forEach((e) {
+      mandatoryIf!.split("|").forEach((e) {
         condition.add(DynamicCondition(
           dynamicId: e.split("=").first,
           value: e.split("=").last,
@@ -231,13 +224,13 @@ class DynamicUIField {
     return condition;
   }
 
-  bool isMandatory(DynamicUIPage page) {
-    bool _mandatory = mandatory;
-    String val = "";
+  bool? isMandatory(DynamicUIPage? page) {
+    bool? _mandatory = mandatory;
+    String? val = "";
     if (page != null) {
       if (mandatoryCondition != null && mandatoryCondition.isNotEmpty) {
         mandatoryCondition.forEach((c) {
-          val = page.form.where((e) => e.id == c.dynamicId).first.content;
+          val = page.form!.where((e) => e.id == c.dynamicId).first.content;
           _mandatory = c.value == val ? false : _mandatory;
         });
       }
@@ -247,7 +240,7 @@ class DynamicUIField {
 
   Widget printUi(
     BuildContext context, {
-    DynamicUIPage page,
+    DynamicUIPage? page,
   }) {
     return !isShowUi(page)
         ? SizedBox()
@@ -269,7 +262,7 @@ class DynamicUIField {
   List<DynamicCondition> get showIfCondition {
     List<DynamicCondition> condition = [];
     if (showif != null && showif != "") {
-      showif.split("|").forEach((e) {
+      showif!.split("|").forEach((e) {
         condition.add(DynamicCondition(
           dynamicId: e.split("=").first,
           value: e.split("=").last,
@@ -279,13 +272,13 @@ class DynamicUIField {
     return condition;
   }
 
-  bool isShowUi(DynamicUIPage page) {
+  bool isShowUi(DynamicUIPage? page) {
     bool showUi = false;
-    String val = "";
+    String? val = "";
     if (page != null) {
       if (showIfCondition != null && showIfCondition.isNotEmpty) {
         showIfCondition.forEach((c) {
-          val = page.form.where((e) => e.id == c.dynamicId).first.content;
+          val = page.form!.where((e) => e.id == c.dynamicId).first.content;
           showUi = c.value == val ? true : showUi;
         });
       } else {
@@ -297,7 +290,7 @@ class DynamicUIField {
 
   DynamicUIField onRecreate(
     VoidCallback onRecreate, {
-    DynamicUIField previousField,
+    DynamicUIField? previousField,
   }) {
     // this.focusNode = new FocusNode();
     if (previousField != null) previousField.nextFocusNode = this.focusNode;
@@ -308,16 +301,16 @@ class DynamicUIField {
 class CheckBoxUI extends DynamicUIField {
   //"ui": "CHECKBOX",
   //"id": "tnc",
-  bool checked; //": false,
-  String label; //": "Dengan ini saya menyatakan menteujui",
-  String error; //": "Anda harus menyetujui apapun yang ada disini"
+  bool? checked; //": false,
+  String? label; //": "Dengan ini saya menyatakan menteujui",
+  String? error; //": "Anda harus menyetujui apapun yang ada disini"
 
   CheckBoxUI({
-    String ui,
-    String id,
+    String? ui,
+    String? id,
     dynamic content,
-    bool mandatory,
-    String showif,
+    bool? mandatory,
+    String? showif,
     this.checked,
     this.label,
     this.error,
@@ -329,7 +322,7 @@ class CheckBoxUI extends DynamicUIField {
           showif: showif,
         );
 
-  factory CheckBoxUI.fromJson(Map<String, dynamic> parsedJson) {
+  static CheckBoxUI? fromJson(Map<String, dynamic> parsedJson) {
     if (parsedJson == null) {
       return null;
     }
@@ -356,7 +349,7 @@ class CheckBoxUI extends DynamicUIField {
   }
 
   @override
-  Widget printUi(BuildContext context, {DynamicUIPage page, Controller}) {
+  Widget printUi(BuildContext context, {DynamicUIPage? page, controller}) {
     return !isShowUi(page)
         ? SizedBox()
         : Column(
@@ -388,7 +381,7 @@ class CheckBoxUI extends DynamicUIField {
                                 onChanged: (val) {
                                   content = val;
                                   checked = val;
-                                  onChanged(this);
+                                  onChanged!(this);
                                 },
                               ),
                               SizedBox(
@@ -443,21 +436,21 @@ class CheckBoxUI extends DynamicUIField {
 
 class DropDownUI extends DynamicUIField {
   //": true,
-  String label; //": "Ya/Tidak",
-  String hint; //": "Pilih Jawaban",
-  String error;
-  List<String> optionsId;
-  List<String> optionsLabel;
-  bool searchable;
+  String? label; //": "Ya/Tidak",
+  String? hint; //": "Pilih Jawaban",
+  String? error;
+  List<String>? optionsId;
+  List<String>? optionsLabel;
+  bool? searchable;
   List<Option> options;
 
   DropDownUI({
-    String id,
-    String ui,
+    String? id,
+    String? ui,
     dynamic content,
-    bool mandatory,
-    String showif,
-    String mandatoryIf,
+    bool? mandatory,
+    String? showif,
+    String? mandatoryIf,
     this.label,
     this.hint,
     this.error,
@@ -478,21 +471,21 @@ class DropDownUI extends DynamicUIField {
 
   List<Option> get getOptions {
     List<Option> data = [];
-    for (int i = 0; i < optionsId.length; i++) {
+    for (int i = 0; i < optionsId!.length; i++) {
       data.add(new Option(
-        key: optionsId[i],
-        value: optionsLabel[i],
+        key: optionsId![i],
+        value: optionsLabel![i],
       ));
     }
     return data;
   }
 
-  Option get selected {
+  Option? get selected {
     if (content == null || content == "") {
       print("SELECTED MODE 1 = ${options.first.value} || $content");
       return null;
     } else {
-      List<Option> found = options.where((e) => e.key == content)?.toList();
+      List<Option>? found = options.where((e) => e.key == content).toList();
       print("FOUND LENGTH = ${found.length}");
       if (found.length > 0) {
         print("SELECTED MODE 2 = ${found.first.value} || $content ");
@@ -504,7 +497,7 @@ class DropDownUI extends DynamicUIField {
     }
   }
 
-  factory DropDownUI.fromJson(Map<String, dynamic> parsedJson) {
+  static DropDownUI? fromJson(Map<String, dynamic> parsedJson) {
     if (parsedJson == null) {
       return null;
     }
@@ -527,7 +520,7 @@ class DropDownUI extends DynamicUIField {
       mandatoryIf: StringUtils.noNullString(parsedJson["mandatoryif"]),
       searchable: Utils.safeBool(parsedJson["searchable"]),
     );
-    if (!data.optionsId.contains(data.content as String)) {
+    if (!data.optionsId!.contains(data.content as String?)) {
       data.content = "";
     }
     return data;
@@ -536,7 +529,7 @@ class DropDownUI extends DynamicUIField {
   @override
   Widget printUi(
     BuildContext context, {
-    DynamicUIPage page,
+    DynamicUIPage? page,
   }) {
     // print(
     //     "showif DROPDOWN $id ==================== ${isShowUi(page)}\n searchable = $searchable");
@@ -563,6 +556,7 @@ class DropDownUI extends DynamicUIField {
                 searchable == true
                     ? Stack(
                         children: [
+                          /*
                           SearchChoices<Option>.single(
                             key: globalKey,
                             value: selected,
@@ -635,6 +629,7 @@ class DropDownUI extends DynamicUIField {
                               ),
                             ),
                           ),
+                         */
                           isError == true
                               ? Container(
                                   margin: EdgeInsets.only(bottom: 15, top: 34),
@@ -663,12 +658,13 @@ class DropDownUI extends DynamicUIField {
                               borderRadius:
                                   BorderRadius.all(Radius.circular(20)),
                               value:
-                                  optionsId.contains(content) ? content : null,
+                                  optionsId!.contains(content) ? content : null,
                               isExpanded: true,
                               selectedItemBuilder: (BuildContext context) {
-                                return List.generate(optionsId.length, (index) {
+                                return List.generate(optionsId!.length,
+                                    (index) {
                                   return Text(
-                                    optionsLabel[index],
+                                    optionsLabel![index],
                                     style: InvestrendTheme.of(context)
                                         .regular_w400_greyDarker,
                                     overflow: TextOverflow.ellipsis,
@@ -676,20 +672,20 @@ class DropDownUI extends DynamicUIField {
                                 });
                               },
                               items: List.generate(
-                                optionsId.length,
+                                optionsId!.length,
                                 (index) {
                                   return DropdownMenuItem<String>(
                                     child: Padding(
                                       padding:
                                           EdgeInsets.only(bottom: 10, top: 10),
                                       child: Text(
-                                        optionsLabel[index],
+                                        optionsLabel![index],
                                         textAlign: TextAlign.justify,
                                         style: InvestrendTheme.of(context)
                                             .regular_w400_greyDarker,
                                       ),
                                     ),
-                                    value: optionsId[index],
+                                    value: optionsId![index],
                                   );
                                 },
                               ),
@@ -698,7 +694,7 @@ class DropDownUI extends DynamicUIField {
                                 child: Icon(Icons.arrow_drop_down_sharp),
                               ),
                               hint: Text(
-                                hint,
+                                hint!,
                                 style: TextStyle(
                                   fontWeight: FontWeight.normal,
                                   overflow: TextOverflow.ellipsis,
@@ -706,7 +702,7 @@ class DropDownUI extends DynamicUIField {
                               ),
                               onChanged: (val) {
                                 content = val;
-                                onChanged(this);
+                                onChanged!(this);
                               },
                               underline: Container(
                                 alignment: Alignment.bottomCenter,
@@ -743,16 +739,16 @@ class DropDownUI extends DynamicUIField {
 }
 
 class DatePickerUI extends DynamicUIField {
-  String label; //": "Tanggal Lahir",
-  String hint; //": "Masukan tanggal lahir sesuai KTP",
-  String error; //": "Harap isi tanggal lahir sesuai KTP"
+  String? label; //": "Tanggal Lahir",
+  String? hint; //": "Masukan tanggal lahir sesuai KTP",
+  String? error; //": "Harap isi tanggal lahir sesuai KTP"
 
   DatePickerUI({
-    String ui,
-    String id,
+    String? ui,
+    String? id,
     dynamic content,
-    bool mandatory,
-    String showif,
+    bool? mandatory,
+    String? showif,
     this.label,
     this.hint,
     this.error,
@@ -764,7 +760,7 @@ class DatePickerUI extends DynamicUIField {
           showif: showif,
         );
 
-  factory DatePickerUI.fromJson(Map<String, dynamic> parsedJson) {
+  static DatePickerUI? fromJson(Map<String, dynamic> parsedJson) {
     if (parsedJson == null) {
       return null;
     }
@@ -786,7 +782,7 @@ class DatePickerUI extends DynamicUIField {
   @override
   Widget printUi(
     BuildContext context, {
-    DynamicUIPage page,
+    DynamicUIPage? page,
   }) {
     controller = controller ?? TextEditingController();
     if (content != null && content != "") {
@@ -846,7 +842,7 @@ class DatePickerUI extends DynamicUIField {
                       ),
                       onChanged: (val) {
                         content = val;
-                        onChanged(this);
+                        onChanged!(this);
                       },
                     ),
                     isError == true
@@ -868,7 +864,7 @@ class DatePickerUI extends DynamicUIField {
           );
   }
 
-  Future<DateTime> getDate(BuildContext context) {
+  Future<DateTime?> getDate(BuildContext context) {
     return showDatePicker(
       context: context,
       initialDate: content != null && content != "" ? content : DateTime.now(),
@@ -881,20 +877,20 @@ class DatePickerUI extends DynamicUIField {
 class TextFieldUI extends DynamicUIField {
   //"ui": "TEXTFIELD",
   //"id": "nik",
-  String label; //": "NIK",
-  String hint; //": "Masukan nomor NIK KTP",
-  String error; //": "Harap isi NIK sesuai KTP anda",
-  String keyboard; //": "number",
-  String action; //": "next"
-  String length; //": "10-20 / 3"
+  String? label; //": "NIK",
+  String? hint; //": "Masukan nomor NIK KTP",
+  String? error; //": "Harap isi NIK sesuai KTP anda",
+  String? keyboard; //": "number",
+  String? action; //": "next"
+  String? length; //": "10-20 / 3"
 
   TextFieldUI({
-    String ui,
-    String id,
+    String? ui,
+    String? id,
     dynamic content,
-    bool mandatory,
-    String showif,
-    String mandatoryIf,
+    bool? mandatory,
+    String? showif,
+    String? mandatoryIf,
     this.label,
     this.hint,
     this.error,
@@ -910,7 +906,7 @@ class TextFieldUI extends DynamicUIField {
           mandatoryIf: mandatoryIf,
         );
 
-  factory TextFieldUI.fromJson(Map<String, dynamic> parsedJson) {
+  static TextFieldUI? fromJson(Map<String, dynamic> parsedJson) {
     if (parsedJson == null) {
       return null;
     }
@@ -932,7 +928,7 @@ class TextFieldUI extends DynamicUIField {
 
   int get maxLength {
     if (length != null && length != "") {
-      return Utils.safeInt(length.split("-")[1]);
+      return Utils.safeInt(length!.split("-")[1]);
     } else {
       return 1000;
     }
@@ -940,7 +936,7 @@ class TextFieldUI extends DynamicUIField {
 
   int get minLength {
     if (length != null && length != "") {
-      return Utils.safeInt(length.split("-")[0]);
+      return Utils.safeInt(length!.split("-")[0]);
     } else {
       return 0;
     }
@@ -968,7 +964,7 @@ class TextFieldUI extends DynamicUIField {
   @override
   Widget printUi(
     BuildContext context, {
-    DynamicUIPage page,
+    DynamicUIPage? page,
   }) {
     // print("length = $length");
     // String maxLengthChar = "";
@@ -1047,7 +1043,7 @@ class TextFieldUI extends DynamicUIField {
                     onSubmitted: (val) {
                       print("MASUK SINI SUBMITTED TEXTFIELD");
                       content = val.trim();
-                      onChanged(this);
+                      onChanged!(this);
                     },
                   ),
                 ),
@@ -1060,24 +1056,21 @@ class TextFieldUI extends DynamicUIField {
     switch (keyboard) {
       case DynamicUIKeyboardType.number:
         return TextInputType.number;
-        break;
       default:
         return TextInputType.text;
-        break;
     }
   }
 }
 
-//TODO : textboxui
 class TextAreaUI extends DynamicUIField {
-  String style;
-  double size;
+  String? style;
+  double? size;
 
   TextAreaUI({
-    String id,
-    String ui,
+    String? id,
+    String? ui,
     dynamic content,
-    String showif,
+    String? showif,
     this.style,
     this.size,
   }) : super(
@@ -1087,28 +1080,29 @@ class TextAreaUI extends DynamicUIField {
           showif: showif,
         );
 
-  factory TextAreaUI.fromJson(Map<String, dynamic> parsedJson) {
+  static TextAreaUI? fromJson(Map<String, dynamic> parsedJson) {
     if (parsedJson == null) {
       return null;
     }
     return TextAreaUI(
-      ui: parsedJson["ui"] as String,
-      id: parsedJson["id"] as String,
-      content: parsedJson["content"] as String,
-      style: StringUtils.isNullOrEmpty(parsedJson["style"] as String)
+      ui: parsedJson["ui"] as String?,
+      id: parsedJson["id"] as String?,
+      content: parsedJson["content"] as String?,
+      style: StringUtils.isNullOrEmpty(parsedJson["style"] as String?)
           ? "normal"
-          : (parsedJson["style"] as String),
+          : (parsedJson["style"] as String?),
       size: parsedJson['size'] == ""
           ? null
           : Utils.safeDouble(parsedJson['size']),
-      showif: parsedJson["showif"] as String,
+      showif: parsedJson["showif"] as String?,
     );
   }
+
   @override
   Widget printUi(
     BuildContext context, {
-    ScrollController scrollController,
-    DynamicUIPage page,
+    ScrollController? scrollController,
+    DynamicUIPage? page,
   }) {
     return !isShowUi(page)
         ? SizedBox()
@@ -1121,7 +1115,7 @@ class TextAreaUI extends DynamicUIField {
                 child: Text(
                   this.content,
                   textAlign: TextAlign.justify,
-                  style: InvestrendTheme.of(context).regular_w400.copyWith(
+                  style: InvestrendTheme.of(context).regular_w400!.copyWith(
                         fontWeight: style == "bold"
                             ? FontWeight.bold
                             : FontWeight.normal,
@@ -1135,14 +1129,14 @@ class TextAreaUI extends DynamicUIField {
 }
 
 class TextUI extends DynamicUIField {
-  String style;
-  double size;
+  String? style;
+  double? size;
 
   TextUI({
-    String id,
-    String ui,
+    String? id,
+    String? ui,
     dynamic content,
-    String showif,
+    String? showif,
     this.style,
     this.size,
   }) : super(
@@ -1152,28 +1146,28 @@ class TextUI extends DynamicUIField {
           showif: showif,
         );
 
-  factory TextUI.fromJson(Map<String, dynamic> parsedJson) {
+  static TextUI? fromJson(Map<String, dynamic> parsedJson) {
     if (parsedJson == null) {
       return null;
     }
     return TextUI(
-      ui: parsedJson["ui"] as String,
-      id: parsedJson["id"] as String,
-      content: parsedJson["content"] as String,
-      style: StringUtils.isNullOrEmpty(parsedJson["style"] as String)
+      ui: parsedJson["ui"] as String?,
+      id: parsedJson["id"] as String?,
+      content: parsedJson["content"] as String?,
+      style: StringUtils.isNullOrEmpty(parsedJson["style"] as String?)
           ? "normal"
-          : (parsedJson["style"] as String),
+          : (parsedJson["style"] as String?),
       size: parsedJson['size'] == ""
           ? null
           : Utils.safeDouble(parsedJson['size']),
-      showif: parsedJson["showif"] as String,
+      showif: parsedJson["showif"] as String?,
     );
   }
 
   @override
   Widget printUi(
     BuildContext context, {
-    DynamicUIPage page,
+    DynamicUIPage? page,
   }) {
     return !isShowUi(page)
         ? SizedBox()
@@ -1181,7 +1175,7 @@ class TextUI extends DynamicUIField {
             padding: const EdgeInsets.only(bottom: 10),
             child: Text(
               this.content,
-              style: InvestrendTheme.of(context).regular_w400.copyWith(
+              style: InvestrendTheme.of(context).regular_w400!.copyWith(
                     fontWeight:
                         style == "bold" ? FontWeight.bold : FontWeight.normal,
                     fontSize: size,
@@ -1192,13 +1186,13 @@ class TextUI extends DynamicUIField {
 }
 
 class SizeBoxUI extends DynamicUIField {
-  double width;
-  double height;
+  double? width;
+  double? height;
 
   SizeBoxUI({
-    String ui,
-    String id,
-    String showif,
+    String? ui,
+    String? id,
+    String? showif,
     this.width,
     this.height,
   }) : super(
@@ -1207,7 +1201,7 @@ class SizeBoxUI extends DynamicUIField {
           showif: showif,
         );
 
-  factory SizeBoxUI.fromJson(Map<String, dynamic> parsedJson) {
+  static SizeBoxUI? fromJson(Map<String, dynamic> parsedJson) {
     if (parsedJson == null) {
       return null;
     }
@@ -1223,7 +1217,7 @@ class SizeBoxUI extends DynamicUIField {
   @override
   Widget printUi(
     BuildContext context, {
-    DynamicUIPage page,
+    DynamicUIPage? page,
   }) {
     return !isShowUi(page)
         ? SizedBox()
@@ -1235,22 +1229,22 @@ class SizeBoxUI extends DynamicUIField {
 }
 
 class UploadUI extends DynamicUIField {
-  String label; //": "Upload KTP",
-  String hint; //": "Upload KTP",
-  String error; //": "Harap Upload KTP",
-  String filetype; //": "image",
-  String status;
-  String camera;
-  String frame;
-  String naskah;
+  String? label; //": "Upload KTP",
+  String? hint; //": "Upload KTP",
+  String? error; //": "Harap Upload KTP",
+  String? filetype; //": "image",
+  String? status;
+  String? camera;
+  String? frame;
+  String? naskah;
 
   UploadUI({
-    String ui,
-    String id,
-    bool mandatory,
+    String? ui,
+    String? id,
+    bool? mandatory,
     dynamic content,
-    String showif,
-    String mandatoryIf,
+    String? showif,
+    String? mandatoryIf,
     this.label,
     this.hint,
     this.error,
@@ -1268,12 +1262,12 @@ class UploadUI extends DynamicUIField {
           mandatoryIf: mandatoryIf,
         ); //": "NOT DONE"
 
-  factory UploadUI.fromJson(Map<String, dynamic> parsedJson) {
+  static UploadUI? fromJson(Map<String, dynamic> parsedJson) {
     return UploadUI(
       ui: StringUtils.noNullString(parsedJson["ui"]),
       id: StringUtils.noNullString(parsedJson["id"]),
       mandatory: Utils.safeBool(parsedJson["mandatory"]),
-      content: parsedJson["content"] as String,
+      content: parsedJson["content"] as String?,
       label: StringUtils.noNullString(parsedJson["label"]),
       hint: StringUtils.noNullString(parsedJson["hint"]),
       error: StringUtils.noNullString(parsedJson["error"]),
@@ -1288,7 +1282,7 @@ class UploadUI extends DynamicUIField {
   }
 
   @override
-  String get getContent {
+  String? get getContent {
     if (status == "DONE") {
       return "DONE";
     } else {
@@ -1299,7 +1293,7 @@ class UploadUI extends DynamicUIField {
   @override
   Widget printUi(
     BuildContext context, {
-    DynamicUIPage page,
+    DynamicUIPage? page,
   }) {
     return !isShowUi(page)
         ? SizedBox()
@@ -1307,7 +1301,6 @@ class UploadUI extends DynamicUIField {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              //TODO : ASD
               RichText(
                 text: TextSpan(
                   text: label,
@@ -1350,13 +1343,10 @@ class UploadUI extends DynamicUIField {
     switch (filetype) {
       case DynamicUIfileType.image:
         return imagePicker(context);
-        break;
       case DynamicUIfileType.video:
         return videoPicker(context);
-        break;
       default:
         return super.printUi(context);
-        break;
     }
   }
 
@@ -1370,12 +1360,12 @@ class UploadUI extends DynamicUIField {
       status: status,
       width: double.infinity,
       onImageLoaded: (ctrl) {
-        content = ctrl.value.fileImage.path;
+        content = ctrl?.value.fileImage!.path;
 
-        if (ctrl.value.imagePickerState == ImagePickerState.loaded &&
-            ctrl.value.firstLoad == true) {
-          ctrl.value.firstLoad = false;
-          onChanged(this);
+        if (ctrl?.value.imagePickerState == ImagePickerState.loaded &&
+            ctrl?.value.firstLoad == true) {
+          ctrl?.value.firstLoad = false;
+          onChanged!(this);
         }
       },
     );
@@ -1392,18 +1382,18 @@ class UploadUI extends DynamicUIField {
       naskah: naskah,
       width: double.infinity,
       onImageLoaded: (ctrl) {
-        if (content == null && ctrl.value.firstLoad == true) {
-          content = ctrl.value.fileVideo.path;
-        } else if (content == null && ctrl.value.firstLoad == false) {
-          content = ctrl.value.fileVideo.path;
+        if (content == null && ctrl?.value.firstLoad == true) {
+          content = ctrl?.value.fileVideo!.path;
+        } else if (content == null && ctrl?.value.firstLoad == false) {
+          content = ctrl?.value.fileVideo!.path;
         } else {
           return null;
         }
 
-        if (ctrl.value.videoPickerState == VideoPickerState.loaded &&
-            ctrl.value.firstLoad == true) {
-          ctrl.value.firstLoad = false;
-          onChanged(this);
+        if (ctrl?.value.videoPickerState == VideoPickerState.loaded &&
+            ctrl?.value.firstLoad == true) {
+          ctrl?.value.firstLoad = false;
+          onChanged!(this);
         }
       },
     );
@@ -1411,8 +1401,8 @@ class UploadUI extends DynamicUIField {
 }
 
 class Option {
-  String key;
-  String value;
+  String? key;
+  String? value;
 
   Option({
     this.key,
@@ -1421,8 +1411,8 @@ class Option {
 }
 
 class DynamicCondition {
-  String dynamicId;
-  String value;
+  String? dynamicId;
+  String? value;
 
   DynamicCondition({
     this.dynamicId,

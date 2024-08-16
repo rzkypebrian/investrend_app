@@ -14,7 +14,7 @@ class ScreenFriends extends BaseStatelessWidget {
   @override
   Widget build(BuildContext context) {
     //bool lightTheme = MediaQuery.of(context).platformBrightness == Brightness.light;
-    bool lightTheme = Theme.of(context).brightness == Brightness.light;
+    // bool lightTheme = Theme.of(context).brightness == Brightness.light;
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
@@ -25,7 +25,7 @@ class ScreenFriends extends BaseStatelessWidget {
           TextButton(
             child: Text(
               'friends_button_skip'.tr(),
-              style: Theme.of(context).textTheme.button.copyWith(
+              style: Theme.of(context).textTheme.labelLarge?.copyWith(
                     fontWeight: FontWeight.normal,
                     //color: InvestrendCustomTheme.textfield_labelTextColor( lightTheme)
                   ),

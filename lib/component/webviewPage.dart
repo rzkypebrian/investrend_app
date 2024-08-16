@@ -1,10 +1,12 @@
+// // import 'dart:async';
+// // import 'dart:convert';
+
 // import 'dart:async';
-// import 'dart:convert';
 
 // import 'package:Investrend/utils/investrend_theme.dart';
 // import 'package:flutter/material.dart';
-// import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
-// // import 'package:webview_flutter/webview_flutter.dart';
+// // import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
+// import 'package:webview_flutter/webview_flutter.dart';
 
 // class WebViewPage extends StatefulWidget {
 //   @override
@@ -15,11 +17,11 @@
 //   // final Completer<WebViewController> _controller =
 //   //     Completer<WebViewController>();
 //   // WebViewController _con;
-//   final flutterWebviewPlugin = new FlutterWebviewPlugin();
+//   // final flutterWebviewPlugin = new FlutterWebviewPlugin();
 
 //   @override
 //   dispose() {
-//     flutterWebviewPlugin.dispose();
+//     // flutterWebviewPlugin.dispose();
 //     super.dispose();
 //   }
 
@@ -51,10 +53,17 @@
 //   Widget build(BuildContext context) {
 //     return SafeArea(
 //       child: WillPopScope(
-//         onWillPop: () {
-//           return flutterWebviewPlugin.close().whenComplete(
-//                 () => Navigator.of(context).pop(),
-//               );
+//         onWillPop: () async {
+//           final completer = Completer<bool>();
+//           flutterWebviewPlugin.close().whenComplete(() {
+//             Navigator.of(context).pop();
+//             completer.complete(true); // Indicate that it's safe to pop
+//           });
+//           return completer.future;
+
+//           // return flutterWebviewPlugin.close().whenComplete(
+//           //       () => Navigator.of(context).pop(),
+//           //     );
 //         },
 //         child: WebviewScaffold(
 //           url: new Uri.dataFromString(

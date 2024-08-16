@@ -7,14 +7,14 @@ import 'package:Investrend/utils/string_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+// import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class CardStockThemes extends StatelessWidget {
   final String title;
-  final StockThemeNotifier notifier;
+  final StockThemeNotifier? notifier;
   final List<int> pattern = [0, 1, 1, 1, 0];
-  final VoidCallback onRetry;
-  CardStockThemes(this.title, this.notifier, {Key key, this.onRetry})
+  final VoidCallback? onRetry;
+  CardStockThemes(this.title, this.notifier, {Key? key, this.onRetry})
       : super(key: key);
 
   @override
@@ -29,8 +29,8 @@ class CardStockThemes extends StatelessWidget {
       // list.add(SizedBox(height: InvestrendTheme.cardPadding));
     }
     list.add(ValueListenableBuilder(
-      valueListenable: this.notifier,
-      builder: (context, StockThemesData data, child) {
+      valueListenable: this.notifier!,
+      builder: (context, StockThemesData? data, child) {
         /*
         if(this.notifier.currentState.notFinished()){
           if (this.notifier.currentState.isError()) {
@@ -48,8 +48,8 @@ class CardStockThemes extends StatelessWidget {
           }
         }
         */
-        Widget noWidget =
-            this.notifier.currentState.getNoWidget(onRetry: onRetry);
+        Widget? noWidget =
+            this.notifier?.currentState.getNoWidget(onRetry: onRetry!);
         if (noWidget != null) {
           return Padding(
             padding:
@@ -104,7 +104,7 @@ class CardStockThemes extends StatelessWidget {
     );
   }
 
-  Widget gridThemes(BuildContext context, StockThemesData data) {
+  Widget gridThemes(BuildContext context, StockThemesData? data) {
     return LayoutBuilder(builder: (context, constrains) {
       print('constrains ' + constrains.maxWidth.toString());
       const int gridCount = 2;
@@ -113,7 +113,7 @@ class CardStockThemes extends StatelessWidget {
       double height1 = tileWidth * 1.28;
       double height2 = tileWidth * 1.5;
 
-      if (data.count() == 0) {
+      if (data?.count() == 0) {
         return Text('No Data');
       }
 
@@ -121,7 +121,7 @@ class CardStockThemes extends StatelessWidget {
       List<Widget> rightContent = List.empty(growable: true);
 
       int indexPattern = 0;
-      for (int i = 0; i < data.count(); i++) {
+      for (int i = 0; i < data!.count(); i++) {
         bool left = (i % 2) == 0;
         if (indexPattern >= pattern.length) {
           indexPattern = 0;
@@ -134,7 +134,7 @@ class CardStockThemes extends StatelessWidget {
           }
           leftContent.add(
             tileThemesNew(
-                context, data.datas.elementAt(i), tileWidth, height, 0),
+                context, data.datas!.elementAt(i), tileWidth, height, 0),
           );
         } else {
           if (rightContent.isNotEmpty) {
@@ -142,7 +142,7 @@ class CardStockThemes extends StatelessWidget {
           }
           rightContent.add(
             tileThemesNew(
-                context, data.datas.elementAt(i), tileWidth, height, 0),
+                context, data.datas!.elementAt(i), tileWidth, height, 0),
           );
         }
         indexPattern++;
@@ -228,7 +228,7 @@ class CardStockThemes extends StatelessWidget {
             shape: RoundedRectangleBorder(
               borderRadius: new BorderRadius.circular(10.0),
               side: BorderSide(
-                color: InvestrendTheme.of(context).tileBackground,
+                color: InvestrendTheme.of(context).tileBackground!,
                 width: 0.0,
               ),
             ),
@@ -274,11 +274,11 @@ class CardStockThemes extends StatelessWidget {
                       ),
                       Text(
                         themes.getName(
-                            language: EasyLocalization.of(context)
+                            language: EasyLocalization.of(context)!
                                 .locale
-                                .languageCode),
+                                .languageCode)!,
                         style: InvestrendTheme.of(context)
-                            .regular_w600
+                            .regular_w600!
                             .copyWith(
                                 color: InvestrendTheme.of(context)
                                     .textWhite /*Colors.white*/,
@@ -289,10 +289,10 @@ class CardStockThemes extends StatelessWidget {
                       ),
                       Text(
                         themes.getDescription(
-                            language: EasyLocalization.of(context)
+                            language: EasyLocalization.of(context)!
                                 .locale
-                                .languageCode),
-                        style: InvestrendTheme.of(context).small_w400.copyWith(
+                                .languageCode)!,
+                        style: InvestrendTheme.of(context).small_w400?.copyWith(
                             color: InvestrendTheme.of(context)
                                 .textWhite /*Colors.white*/,
                             height: 1.235),
@@ -373,12 +373,12 @@ class CardStockThemes extends StatelessWidget {
                       ),
                       Text(
                         themes.getName(
-                            language: EasyLocalization.of(context)
+                            language: EasyLocalization.of(context)!
                                 .locale
-                                .languageCode),
+                                .languageCode)!,
                         style: InvestrendTheme.of(context)
                             .regular_w600
-                            .copyWith(
+                            ?.copyWith(
                                 color: InvestrendTheme.of(context)
                                     .textWhite /*Colors.white*/,
                                 height: 1.231),
@@ -388,10 +388,10 @@ class CardStockThemes extends StatelessWidget {
                       ),
                       Text(
                         themes.getDescription(
-                            language: EasyLocalization.of(context)
+                            language: EasyLocalization.of(context)!
                                 .locale
-                                .languageCode),
-                        style: InvestrendTheme.of(context).small_w400.copyWith(
+                                .languageCode)!,
+                        style: InvestrendTheme.of(context).small_w400?.copyWith(
                             color: InvestrendTheme.of(context)
                                 .textWhite /*Colors.white*/,
                             height: 1.235),

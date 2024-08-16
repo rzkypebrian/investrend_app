@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 class KeyboardKey extends StatefulWidget {
   final dynamic label;
   final dynamic value;
-  final ValueSetter<dynamic> onTap;
+  final ValueSetter<dynamic>? onTap;
 
   const KeyboardKey({
-    Key key,
+    Key? key,
     this.label,
     this.value,
     this.onTap,
@@ -35,7 +35,7 @@ class _KeyboardKeyState extends State<KeyboardKey> {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        widget.onTap(widget.value);
+        widget.onTap!(widget.value);
       },
       child: AspectRatio(
         aspectRatio: 2,

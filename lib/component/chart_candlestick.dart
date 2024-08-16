@@ -1,3 +1,4 @@
+// ignore_for_file: must_be_immutable, unused_local_variable
 
 import 'package:Investrend/objects/data_object.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
@@ -6,17 +7,19 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:intl/intl.dart';
 
 class CandlestickChart extends StatefulWidget {
-  List<Ohlcv> chartData;
-  ChartOhlcvData data;
-  double minimumData;
-  double maximumData;
-  DateTime time;
+  List<Ohlcv>? chartData;
+  ChartOhlcvData? data;
+  double? minimumData;
+  double? maximumData;
+  DateTime? time;
 
   CandlestickChart({
-    Key key,
+    Key? key,
     this.chartData,
     this.minimumData,
     this.maximumData,
+    this.data,
+    this.time,
   }) : super(key: key);
 
   @override
@@ -26,8 +29,8 @@ class CandlestickChart extends StatefulWidget {
 }
 
 class _CandlestickChartState extends State<CandlestickChart> {
-  CrosshairBehavior _crosshairBehavior;
-  TrackballBehavior _trackballBehavior;
+  CrosshairBehavior? _crosshairBehavior;
+  TrackballBehavior? _trackballBehavior;
   final dateFormat = new DateFormat('yyyy-MM-dd');
   final formatString = NumberFormat('#,###');
 
@@ -56,7 +59,7 @@ class _CandlestickChartState extends State<CandlestickChart> {
               children: [
                 Container(
                   child: Text(
-                    dateFormat.format(trackballDetails.point.x),
+                    dateFormat.format(trackballDetails.point!.x),
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 12,
@@ -74,8 +77,8 @@ class _CandlestickChartState extends State<CandlestickChart> {
                         left: 10,
                       ),
                       decoration: BoxDecoration(
-                        color: trackballDetails.point.open >
-                                trackballDetails.point.close
+                        color: trackballDetails.point!.open >
+                                trackballDetails.point!.close
                             ? Colors.red
                             : Colors.green,
                         shape: BoxShape.circle,
@@ -98,7 +101,7 @@ class _CandlestickChartState extends State<CandlestickChart> {
                               ),
                               Text(
                                 formatString
-                                    .format(trackballDetails.point.high),
+                                    .format(trackballDetails.point!.high),
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 12,
@@ -120,7 +123,8 @@ class _CandlestickChartState extends State<CandlestickChart> {
                                 ),
                               ),
                               Text(
-                                formatString.format(trackballDetails.point.low),
+                                formatString
+                                    .format(trackballDetails.point!.low),
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 12,
@@ -143,7 +147,7 @@ class _CandlestickChartState extends State<CandlestickChart> {
                               ),
                               Text(
                                 formatString
-                                    .format(trackballDetails.point.open),
+                                    .format(trackballDetails.point!.open),
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 12,
@@ -170,7 +174,7 @@ class _CandlestickChartState extends State<CandlestickChart> {
                               ),
                               Text(
                                 formatString
-                                    .format(trackballDetails.point.close),
+                                    .format(trackballDetails.point!.close),
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 12,
@@ -197,8 +201,8 @@ class _CandlestickChartState extends State<CandlestickChart> {
     //     InvestrendTheme.of(context).more_support_w400_compact.copyWith(
     //           color: InvestrendTheme.of(context).greyDarkerTextColor,
     //         );
-    TextStyle styleBottom =
-        InvestrendTheme.of(context).more_support_w400_compact.copyWith(
+    TextStyle? styleBottom =
+        InvestrendTheme.of(context).more_support_w400_compact?.copyWith(
               color: InvestrendTheme.of(context).greyDarkerTextColor,
             );
 
@@ -219,7 +223,7 @@ class _CandlestickChartState extends State<CandlestickChart> {
           bearColor: Colors.red,
           bullColor: Colors.green,
           enableSolidCandles: true,
-          dataSource: widget.chartData,
+          dataSource: widget.chartData!,
           xValueMapper: (Ohlcv sales, _) => sales.time,
           lowValueMapper: (Ohlcv sales, _) => sales.low,
           highValueMapper: (Ohlcv sales, _) => sales.hi,

@@ -13,16 +13,17 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class WidgetBuyingPower extends StatefulWidget {
-  final ValueNotifier<bool> hideNotifier;
-  const WidgetBuyingPower({this.hideNotifier, Key key}) : super(key: key);
+  final ValueNotifier<bool>? hideNotifier;
+  const WidgetBuyingPower({this.hideNotifier, Key? key}) : super(key: key);
 
   @override
-  _WidgetBuyingPowerState createState() => _WidgetBuyingPowerState(hideNotifier: hideNotifier);
+  _WidgetBuyingPowerState createState() =>
+      _WidgetBuyingPowerState(hideNotifier: hideNotifier!);
 }
 
 class _WidgetBuyingPowerState extends State<WidgetBuyingPower> {
   final ValueNotifier<bool> _accountNotifier = ValueNotifier<bool>(false);
-  final ValueNotifier<bool> hideNotifier;
+  final ValueNotifier<bool>? hideNotifier;
 
   _WidgetBuyingPowerState({this.hideNotifier});
 
@@ -31,12 +32,13 @@ class _WidgetBuyingPowerState extends State<WidgetBuyingPower> {
     _accountNotifier.dispose();
     super.dispose();
   }
+
   @override
   void initState() {
     super.initState();
 
-    if(hideNotifier != null){
-      hideNotifier.addListener(() {
+    if (hideNotifier != null) {
+      hideNotifier?.addListener(() {
         _accountNotifier.value = !_accountNotifier.value;
       });
     }
@@ -76,13 +78,13 @@ class _WidgetBuyingPowerState extends State<WidgetBuyingPower> {
       shape: RoundedRectangleBorder(
         borderRadius: new BorderRadius.circular(10.0),
         side: BorderSide(
-          color: InvestrendTheme.of(context).tileBackground,
+          color: InvestrendTheme.of(context).tileBackground!,
           width: 0.0,
         ),
       ),
       onPressed: () {
-        InvestrendTheme.backToScreenMainAndShowTabScreen(context, Tabs.Portfolio, TabsPorftolio.Cash.index);
-
+        InvestrendTheme.backToScreenMainAndShowTabScreen(
+            context, Tabs.Portfolio, TabsPorftolio.Cash.index);
       },
       child: Row(
         children: [
@@ -92,7 +94,11 @@ class _WidgetBuyingPowerState extends State<WidgetBuyingPower> {
               children: [
                 Text(
                   'buying_power_label'.tr(),
-                  style: InvestrendTheme.of(context).more_support_w400_compact.copyWith(color: InvestrendTheme.of(context).textWhite /*Colors.white*/),
+                  style: InvestrendTheme.of(context)
+                      .more_support_w400_compact
+                      ?.copyWith(
+                          color: InvestrendTheme.of(context)
+                              .textWhite /*Colors.white*/),
                 ),
                 SizedBox(
                   height: 10.0,
@@ -101,37 +107,52 @@ class _WidgetBuyingPowerState extends State<WidgetBuyingPower> {
                   valueListenable: _accountNotifier,
                   builder: (context, data, child) {
                     double buyingPower = 0.0;
-                    Account activeAccount = context.read(dataHolderChangeNotifier).user.getAccount(context.read(accountChangeNotifier).index);
+                    Account? activeAccount = context
+                        .read(dataHolderChangeNotifier)
+                        .user
+                        .getAccount(context.read(accountChangeNotifier).index);
                     if (activeAccount != null) {
-                      AccountStockPosition accountInfo = context.read(accountsInfosNotifier).getInfo(activeAccount.accountcode);
+                      AccountStockPosition? accountInfo = context
+                          .read(accountsInfosNotifier)
+                          .getInfo(activeAccount.accountcode);
                       if (accountInfo != null) {
                         buyingPower = accountInfo.outstandingLimit;
                         //context.read(buyRdnBuyingPowerChangeNotifier).update(accountInfo.outstandingLimit, 0/*cashPosition.rdnBalance*/);
                       }
                     }
 
-                    String buyingPowerText = InvestrendTheme.formatMoneyDouble(buyingPower, prefixRp: true);
-                    bool hidePortfolio = hideNotifier != null ? hideNotifier.value : false;
-                    if(hidePortfolio){
+                    String buyingPowerText = InvestrendTheme.formatMoneyDouble(
+                        buyingPower,
+                        prefixRp: true);
+                    bool hidePortfolio =
+                        hideNotifier != null ? hideNotifier!.value : false;
+                    if (hidePortfolio) {
                       buyingPowerText = '* * * * * * *';
                     }
                     return AutoSizeText(
                       buyingPowerText,
                       minFontSize: 8.0,
                       maxLines: 1,
-                      style: InvestrendTheme.of(context).regular_w600_compact.copyWith(color: InvestrendTheme.of(context).textWhite /*Colors.white*/, fontWeight: FontWeight.bold),
+                      style: InvestrendTheme.of(context)
+                          .regular_w600_compact
+                          ?.copyWith(
+                              color: InvestrendTheme.of(context)
+                                  .textWhite /*Colors.white*/,
+                              fontWeight: FontWeight.bold),
                     );
                   },
                 ),
               ],
             ),
           ),
-
           SizedBox(
             width: 10.0,
           ),
-          getButtonIconVertical(context, 'images/icons/plus_circle.png', 'buying_power_top_up_label'.tr(), InvestrendTheme.of(context).textWhite/*Colors.white*/, () {
-
+          getButtonIconVertical(
+              context,
+              'images/icons/plus_circle.png',
+              'buying_power_top_up_label'.tr(),
+              InvestrendTheme.of(context).textWhite /*Colors.white*/, () {
             // Navigator.push(
             //     context,
             //     CupertinoPageRoute(
@@ -145,13 +166,15 @@ class _WidgetBuyingPowerState extends State<WidgetBuyingPower> {
                   builder: (_) => ScreenTopUpHowTo(),
                   settings: RouteSettings(name: '/topup_how_to'),
                 ));
-
           }),
           SizedBox(
             width: 10.0,
           ),
-          getButtonIconVertical(context, 'images/icons/arrow_circle.png', 'buying_power_transfer_label'.tr(), InvestrendTheme.of(context).textWhite /*Colors.white*/ , () {
-
+          getButtonIconVertical(
+              context,
+              'images/icons/arrow_circle.png',
+              'buying_power_transfer_label'.tr(),
+              InvestrendTheme.of(context).textWhite /*Colors.white*/, () {
             Navigator.push(
                 context,
                 CupertinoPageRoute(
@@ -164,7 +187,6 @@ class _WidgetBuyingPowerState extends State<WidgetBuyingPower> {
     );
   }
 
-  @override
   Widget buildOld(BuildContext context) {
     return Container(
       width: double.maxFinite,
@@ -186,7 +208,9 @@ class _WidgetBuyingPowerState extends State<WidgetBuyingPower> {
               children: [
                 Text(
                   'buying_power_label'.tr(),
-                  style: InvestrendTheme.of(context).more_support_w400_compact.copyWith(color: Colors.white),
+                  style: InvestrendTheme.of(context)
+                      .more_support_w400_compact
+                      ?.copyWith(color: Colors.white),
                 ),
                 SizedBox(
                   height: 10.0,
@@ -195,9 +219,14 @@ class _WidgetBuyingPowerState extends State<WidgetBuyingPower> {
                   valueListenable: _accountNotifier,
                   builder: (context, data, child) {
                     double buyingPower = 0.0;
-                    Account activeAccount = context.read(dataHolderChangeNotifier).user.getAccount(context.read(accountChangeNotifier).index);
+                    Account? activeAccount = context
+                        .read(dataHolderChangeNotifier)
+                        .user
+                        .getAccount(context.read(accountChangeNotifier).index);
                     if (activeAccount != null) {
-                      AccountStockPosition accountInfo = context.read(accountsInfosNotifier).getInfo(activeAccount.accountcode);
+                      AccountStockPosition? accountInfo = context
+                          .read(accountsInfosNotifier)
+                          .getInfo(activeAccount.accountcode);
                       if (accountInfo != null) {
                         buyingPower = accountInfo.outstandingLimit;
                         //context.read(buyRdnBuyingPowerChangeNotifier).update(accountInfo.outstandingLimit, 0/*cashPosition.rdnBalance*/);
@@ -207,8 +236,12 @@ class _WidgetBuyingPowerState extends State<WidgetBuyingPower> {
                     //   buyingPower = context.read(buyRdnBuyingPowerChangeNotifier).buyingPower;
                     // }
                     return Text(
-                      InvestrendTheme.formatMoneyDouble(buyingPower, prefixRp: true),
-                      style: InvestrendTheme.of(context).regular_w600_compact.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
+                      InvestrendTheme.formatMoneyDouble(buyingPower,
+                          prefixRp: true),
+                      style: InvestrendTheme.of(context)
+                          .regular_w600_compact
+                          ?.copyWith(
+                              color: Colors.white, fontWeight: FontWeight.bold),
                     );
                   },
                 ),
@@ -241,7 +274,8 @@ class _WidgetBuyingPowerState extends State<WidgetBuyingPower> {
           SizedBox(
             width: 10.0,
           ),
-          getButtonIconVertical(context, 'images/icons/plus_circle.png', 'buying_power_top_up_label'.tr(), Colors.white, () {
+          getButtonIconVertical(context, 'images/icons/plus_circle.png',
+              'buying_power_top_up_label'.tr(), Colors.white, () {
             //final snackBar = SnackBar(content: Text('Action Top-Up'));
             //ScaffoldMessenger.of(context).showSnackBar(snackBar);
             Navigator.push(
@@ -254,7 +288,8 @@ class _WidgetBuyingPowerState extends State<WidgetBuyingPower> {
           SizedBox(
             width: 10.0,
           ),
-          getButtonIconVertical(context, 'images/icons/arrow_circle.png', 'buying_power_transfer_label'.tr(), Colors.white, () {
+          getButtonIconVertical(context, 'images/icons/arrow_circle.png',
+              'buying_power_transfer_label'.tr(), Colors.white, () {
             // final snackBar = SnackBar(content: Text('Action Transfer'));
             // ScaffoldMessenger.of(context).showSnackBar(snackBar);
 
@@ -270,7 +305,8 @@ class _WidgetBuyingPowerState extends State<WidgetBuyingPower> {
     );
   }
 
-  Widget getButtonIconVertical(BuildContext context, String image, String text, Color textColor, VoidCallback onPressed) {
+  Widget getButtonIconVertical(BuildContext context, String image, String text,
+      Color? textColor, VoidCallback onPressed) {
     return SizedBox(
       width: 55,
       height: 55,
@@ -304,7 +340,9 @@ class _WidgetBuyingPowerState extends State<WidgetBuyingPower> {
                     fit: BoxFit.scaleDown,
                     child: Text(
                       text,
-                      style: InvestrendTheme.of(context).more_support_w400_compact.copyWith(color: textColor),
+                      style: InvestrendTheme.of(context)
+                          .more_support_w400_compact
+                          ?.copyWith(color: textColor),
                       //style: TextStyle(fontSize: 13.0, color: textColor, fontWeight: FontWeight.normal),
                     ),
                   ),

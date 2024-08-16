@@ -1,10 +1,10 @@
-
+// ignore_for_file: unused_field, unnecessary_null_comparison, non_constant_identifier_names
 
 import 'package:Investrend/component/button_rounded.dart';
 import 'package:Investrend/component/cards/card_local_foreign.dart';
 import 'package:Investrend/component/cards/card_performance.dart';
-import 'package:Investrend/component/charts/chart_dual_bar.dart';
-import 'package:Investrend/component/charts/chart_single_bar.dart';
+// import 'package:Investrend/component/charts/chart_dual_bar.dart';
+// import 'package:Investrend/component/charts/chart_single_bar.dart';
 import 'package:Investrend/component/charts/year_value.dart';
 import 'package:Investrend/component/chips_range.dart';
 import 'package:Investrend/component/component_creator.dart';
@@ -15,66 +15,99 @@ import 'package:Investrend/objects/iii_objects.dart';
 import 'package:Investrend/screens/base/base_state.dart';
 import 'package:Investrend/screens/stock_detail/screen_netbs_summary.dart';
 import 'package:Investrend/utils/string_utils.dart';
-import 'package:auto_size_text/auto_size_text.dart';
+// import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+// import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
 
 class ScreenStockDetailAnalysis extends StatefulWidget {
-  final TabController tabController;
+  final TabController? tabController;
   final int tabIndex;
-  final ValueNotifier<bool> visibilityNotifier;
+  final ValueNotifier<bool>? visibilityNotifier;
 
-  ScreenStockDetailAnalysis(this.tabIndex, this.tabController, {Key key, this.visibilityNotifier}) : super(key: key);
+  ScreenStockDetailAnalysis(this.tabIndex, this.tabController,
+      {Key? key, this.visibilityNotifier})
+      : super(key: key);
 
   @override
   _ScreenStockDetailAnalysisState createState() =>
-      _ScreenStockDetailAnalysisState(tabIndex, tabController, visibilityNotifier: visibilityNotifier);
+      _ScreenStockDetailAnalysisState(tabIndex, tabController!,
+          visibilityNotifier: visibilityNotifier!);
 }
 
-class _ScreenStockDetailAnalysisState extends BaseStateNoTabsWithParentTab<ScreenStockDetailAnalysis> {
-  LocalForeignNotifier _foreignDomesticNotifier = LocalForeignNotifier(new ForeignDomestic('', '', '', '', 0, 0, 0, 0.0, 0, 0, 0, 0.0));
+class _ScreenStockDetailAnalysisState
+    extends BaseStateNoTabsWithParentTab<ScreenStockDetailAnalysis> {
+  LocalForeignNotifier _foreignDomesticNotifier = LocalForeignNotifier(
+      new ForeignDomestic('', '', '', '', 0, 0, 0, 0.0, 0, 0, 0, 0.0));
   ValueNotifier<int> _boardForeignDomesticNotifier = ValueNotifier<int>(0);
-  PerformanceNotifier _performanceNotifier = PerformanceNotifier(new PerformanceData());
+  PerformanceNotifier _performanceNotifier =
+      PerformanceNotifier(new PerformanceData());
 
   // _localForeignNotifier = LocalForeignNotifier(new LocalForeignData());
   // _performanceNotifier = PerformanceNotifier(new PerformanceData());
-  List<String> _listChipRange = <String>['1D', '1W', '1M', '3M', '6M', '1Y', '5Y', 'CR'];
-  List<bool> _listChipRangeEnabled = <bool>[true, true, true, true, false, false, false, true];
+  List<String> _listChipRange = <String>[
+    '1D',
+    '1W',
+    '1M',
+    '3M',
+    '6M',
+    '1Y',
+    '5Y',
+    'CR'
+  ];
+  List<bool> _listChipRangeEnabled = <bool>[
+    true,
+    true,
+    true,
+    true,
+    false,
+    false,
+    false,
+    true
+  ];
 
   //List<String> _movers_ranges = <String>['INTRADAY', '1_WEEK', '1_MONTH', '3_MONTH', '6_MONTH', '1_YEAR', 'CUSTOM'];
-  ChartTopBrokerNotifier _topBuyerNotifier = ChartTopBrokerNotifier(DataChartTopBroker.createBasic());
-  ChartTopBrokerNotifier _topSellerNotifier = ChartTopBrokerNotifier(DataChartTopBroker.createBasic());
-  ChartTopBrokerNetNotifier _topNetBuyerNotifier = ChartTopBrokerNetNotifier(DataChartTopBrokerNet.createBasic());
-  ChartTopBrokerNetNotifier _topNetSellerNotifier = ChartTopBrokerNetNotifier(DataChartTopBrokerNet.createBasic());
+  ChartTopBrokerNotifier? _topBuyerNotifier =
+      ChartTopBrokerNotifier(DataChartTopBroker.createBasic());
+  ChartTopBrokerNotifier? _topSellerNotifier =
+      ChartTopBrokerNotifier(DataChartTopBroker.createBasic());
+  ChartTopBrokerNetNotifier? _topNetBuyerNotifier =
+      ChartTopBrokerNetNotifier(DataChartTopBrokerNet.createBasic());
+  ChartTopBrokerNetNotifier? _topNetSellerNotifier =
+      ChartTopBrokerNetNotifier(DataChartTopBrokerNet.createBasic());
   // final ValueNotifier<bool> _customRangeNotifier = ValueNotifier(false);
   // final ValueNotifier<String> _customFromNotifier = ValueNotifier<String>('From');
   // final ValueNotifier<String> _customToNotifier = ValueNotifier<String>('To');
-  final ValueNotifier<String> _lastDataDateNotifier = ValueNotifier<String>('');
+  final ValueNotifier<String?> _lastDataDateNotifier =
+      ValueNotifier<String>('');
   //final ValueNotifier<int> _rangeTopBrokerNotifier = ValueNotifier<int>(0);
-  final RangeNotifier _rangeTopBrokerNotifier = RangeNotifier(Range.createBasic());
-  final RangeNotifier _rangeForeignDomesticNotifier = RangeNotifier(Range.createBasic());
+  final RangeNotifier _rangeTopBrokerNotifier =
+      RangeNotifier(Range.createBasic());
+  final RangeNotifier _rangeForeignDomesticNotifier =
+      RangeNotifier(Range.createBasic());
   final ValueNotifier<int> marketNotifier = ValueNotifier<int>(0);
   List<String> _market_options = [
     'card_local_foreign_button_all_market'.tr(),
     'card_local_foreign_button_rg_market'.tr(),
   ];
 
-  _ScreenStockDetailAnalysisState(int tabIndex, TabController tabController, {ValueNotifier<bool> visibilityNotifier})
-      : super('/stock_detail_analysis', tabIndex, tabController, notifyStockChange: true, visibilityNotifier: visibilityNotifier);
+  _ScreenStockDetailAnalysisState(int tabIndex, TabController tabController,
+      {ValueNotifier<bool>? visibilityNotifier})
+      : super('/stock_detail_analysis', tabIndex, tabController,
+            notifyStockChange: true, visibilityNotifier: visibilityNotifier);
 
   @override
-  void onStockChanged(Stock newStock) {
+  void onStockChanged(Stock? newStock) {
     super.onStockChanged(newStock);
     doUpdate(pullToRefresh: true);
   } // @override
   // bool get wantKeepAlive => true;
 
   @override
-  Widget createAppBar(BuildContext context) {
+  PreferredSizeWidget? createAppBar(BuildContext context) {
     return null;
   }
 
@@ -85,10 +118,12 @@ class _ScreenStockDetailAnalysisState extends BaseStateNoTabsWithParentTab<Scree
       return;
     }
 
-    Stock stock = context.read(primaryStockChangeNotifier).stock;
+    Stock? stock = context.read(primaryStockChangeNotifier).stock;
     if (stock == null || !stock.isValid()) {
-      Stock stockDefault = InvestrendTheme.storedData.listStock.isEmpty ? null : InvestrendTheme.storedData.listStock.first;
-      context.read(primaryStockChangeNotifier).setStock(stockDefault);
+      Stock? stockDefault = InvestrendTheme.storedData!.listStock!.isEmpty
+          ? null
+          : InvestrendTheme.storedData?.listStock?.first;
+      context.read(primaryStockChangeNotifier).setStock(stockDefault!);
       stock = context.read(primaryStockChangeNotifier).stock;
     }
 
@@ -98,8 +133,9 @@ class _ScreenStockDetailAnalysisState extends BaseStateNoTabsWithParentTab<Scree
 
     try {
       String board = _boardForeignDomesticNotifier.value == 0 ? '*' : 'RG';
-      if(_rangeForeignDomesticNotifier.value.index == 0){
-        final stockFD = await InvestrendTheme.datafeedHttp.fetchStockFD(stock.code, board);
+      if (_rangeForeignDomesticNotifier.value?.index == 0) {
+        final stockFD =
+            await InvestrendTheme.datafeedHttp.fetchStockFD(stock?.code, board);
         if (stockFD != null) {
           if (mounted) {
             _foreignDomesticNotifier.setValue(stockFD);
@@ -107,10 +143,11 @@ class _ScreenStockDetailAnalysisState extends BaseStateNoTabsWithParentTab<Scree
         } else {
           setNotifierNoData(_foreignDomesticNotifier);
         }
-      }else{
-        MyRange range  = _rangeForeignDomesticNotifier.getRange();
-        if(range.valid()){
-          final stockFD = await InvestrendTheme.datafeedHttp.fetchStockFDHistorical(stock.code, board, range.from, range.to);
+      } else {
+        MyRange range = _rangeForeignDomesticNotifier.getRange();
+        if (range.valid()) {
+          final stockFD = await InvestrendTheme.datafeedHttp
+              .fetchStockFDHistorical(stock?.code, board, range.from, range.to);
           if (stockFD != null) {
             if (mounted) {
               _foreignDomesticNotifier.setValue(stockFD);
@@ -119,15 +156,15 @@ class _ScreenStockDetailAnalysisState extends BaseStateNoTabsWithParentTab<Scree
             setNotifierNoData(_foreignDomesticNotifier);
           }
         }
-
       }
-
     } catch (error) {
       setNotifierError(_foreignDomesticNotifier, error);
     }
 
     try {
-      final performanceData = await InvestrendTheme.datafeedHttp.fetchPerformance('STOCK', stock.code);
+      final PerformanceData? performanceData = await InvestrendTheme
+          .datafeedHttp
+          .fetchPerformance('STOCK', stock?.code);
       if (performanceData != null) {
         if (mounted) {
           _performanceNotifier.setValue(performanceData);
@@ -139,77 +176,74 @@ class _ScreenStockDetailAnalysisState extends BaseStateNoTabsWithParentTab<Scree
       setNotifierError(_performanceNotifier, error);
     }
 
-    String lastDate = '';
+    String? lastDate = '';
     try {
       String board = marketNotifier.value == 0 ? '*' : 'RG';
       //MyRange range = getRange();
       MyRange range = _rangeTopBrokerNotifier.getRange();
       // String from = '2021-12-09';
       // String to = '2021-12-09';
-      final stockTopBroker = await InvestrendTheme.datafeedHttp.fetchStockTopBroker(stock.code, board, range.from, range.to);
+      final stockTopBroker = await InvestrendTheme.datafeedHttp
+          .fetchStockTopBroker(stock?.code, board, range.from, range.to);
 
       if (stockTopBroker != null) {
         lastDate = stockTopBroker.last_date;
         if (mounted) {
-
-          if (stockTopBroker.topBuyer.isEmpty) {
-            _topBuyerNotifier.setNoData();
+          if (stockTopBroker.topBuyer!.isEmpty) {
+            _topBuyerNotifier?.setNoData();
           } else {
             DataChartTopBroker buyer = DataChartTopBroker.createBasic();
-            stockTopBroker.topBuyer.forEach((b) {
-              buyer.buyData.add(YearValue(b.BrokerCode, b.BValue));
-              buyer.sellData.add(YearValue(b.BrokerCode, b.SValue));
+            stockTopBroker.topBuyer?.forEach((b) {
+              buyer.buyData?.add(YearValue(b.BrokerCode, b.BValue));
+              buyer.sellData?.add(YearValue(b.BrokerCode, b.SValue));
             });
-            _topBuyerNotifier.setValue(buyer);
+            _topBuyerNotifier?.setValue(buyer);
           }
 
-          if (stockTopBroker.topSeller.isEmpty) {
-            _topSellerNotifier.setNoData();
+          if (stockTopBroker.topSeller!.isEmpty) {
+            _topSellerNotifier?.setNoData();
           } else {
             DataChartTopBroker seller = DataChartTopBroker.createBasic();
-            stockTopBroker.topSeller.forEach((b) {
-              seller.buyData.add(YearValue(b.BrokerCode, b.BValue));
-              seller.sellData.add(YearValue(b.BrokerCode, b.SValue));
+            stockTopBroker.topSeller?.forEach((b) {
+              seller.buyData?.add(YearValue(b.BrokerCode, b.BValue));
+              seller.sellData?.add(YearValue(b.BrokerCode, b.SValue));
             });
-            _topSellerNotifier.setValue(seller);
+            _topSellerNotifier?.setValue(seller);
           }
 
-          if (stockTopBroker.topNetBuyer.isEmpty) {
-            _topNetBuyerNotifier.setNoData();
+          if (stockTopBroker.topNetBuyer!.isEmpty) {
+            _topNetBuyerNotifier?.setNoData();
           } else {
             DataChartTopBrokerNet net = DataChartTopBrokerNet.createBasic();
-            stockTopBroker.topNetBuyer.forEach((b) {
+            stockTopBroker.topNetBuyer?.forEach((b) {
               if (b.NValue > 0) {
-                net.netData.add(YearValue(b.BrokerCode, b.NValue));
+                net.netData?.add(YearValue(b.BrokerCode, b.NValue));
               }
             });
-            _topNetBuyerNotifier.setValue(net);
+            _topNetBuyerNotifier?.setValue(net);
           }
 
-          if (stockTopBroker.topNetSeller.isEmpty) {
-            _topNetSellerNotifier.setNoData();
+          if (stockTopBroker.topNetSeller!.isEmpty) {
+            _topNetSellerNotifier?.setNoData();
           } else {
             DataChartTopBrokerNet net = DataChartTopBrokerNet.createBasic();
-            stockTopBroker.topNetSeller.forEach((b) {
+            stockTopBroker.topNetSeller?.forEach((b) {
               if (b.NValue > 0) {
-                net.netData.add(YearValue(b.BrokerCode, b.NValue));
+                net.netData?.add(YearValue(b.BrokerCode, b.NValue));
               }
             });
-            _topNetSellerNotifier.setValue(net);
+            _topNetSellerNotifier?.setValue(net);
           }
-
-
         }
       } else {
         setNotifierNoData(_topBuyerNotifier);
         setNotifierNoData(_topSellerNotifier);
-
       }
     } catch (error) {
       setNotifierError(_topBuyerNotifier, error);
       setNotifierError(_topSellerNotifier, error);
     }
-    if(mounted){
+    if (mounted) {
       _lastDataDateNotifier.value = lastDate;
     }
 
@@ -237,7 +271,9 @@ class _ScreenStockDetailAnalysisState extends BaseStateNoTabsWithParentTab<Scree
     if (!active) {
       active = true;
       //onActive();
-      context.read(stockDetailScreenVisibilityChangeNotifier).setActive(tabIndex, true);
+      context
+          .read(stockDetailScreenVisibilityChangeNotifier)
+          .setActive(tabIndex, true);
     }
     return doUpdate(pullToRefresh: true);
     // return Future.delayed(Duration(seconds: 3));
@@ -269,7 +305,7 @@ class _ScreenStockDetailAnalysisState extends BaseStateNoTabsWithParentTab<Scree
   Widget _infoTopBrokerTransaction(BuildContext context) {
     return ValueListenableBuilder(
       valueListenable: _lastDataDateNotifier,
-      builder: (context, String date, child) {
+      builder: (context, String? date, child) {
         if (StringUtils.isEmtpy(date)) {
           return SizedBox(
             width: 1.0,
@@ -280,16 +316,16 @@ class _ScreenStockDetailAnalysisState extends BaseStateNoTabsWithParentTab<Scree
         //String info = 'last_data_date_info_label'.tr();
         //info = info.replaceAll('#DATE#', date);
 
-        String displayTime = date;
-        if( !StringUtils.isEmtpy(date)){
+        String? displayTime = date;
+        if (!StringUtils.isEmtpy(date)) {
           String infoTime = 'last_data_date_info_label'.tr();
 
           DateFormat dateFormatter = DateFormat('EEEE, dd/MM/yyyy', 'id');
           //DateFormat timeFormatter = DateFormat('HH:mm:ss');
           DateFormat dateParser = DateFormat('yyyy-MM-dd');
-          DateTime dateTime = dateParser.parseUtc(date);
-          print('dateTime : '+dateTime.toString());
-          print('stock_top_broker.last_date : '+date);
+          DateTime? dateTime = dateParser.parseUtc(date!);
+          print('dateTime : ' + dateTime.toString());
+          print('stock_top_broker.last_date : ' + date);
           String formatedDate = dateFormatter.format(dateTime);
           //String formatedTime = timeFormatter.format(dateTime);
           infoTime = infoTime.replaceAll('#DATE#', formatedDate);
@@ -303,10 +339,15 @@ class _ScreenStockDetailAnalysisState extends BaseStateNoTabsWithParentTab<Scree
             Center(
               child: Padding(
                 padding: const EdgeInsets.only(
-                    left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral, /*top: InvestrendTheme.cardPaddingGeneral, */ /*bottom: InvestrendTheme.cardPaddingVertical*/ bottom: InvestrendTheme.cardPaddingGeneral),
+                    left: InvestrendTheme.cardPaddingGeneral,
+                    right: InvestrendTheme.cardPaddingGeneral,
+                    /*top: InvestrendTheme.cardPaddingGeneral, */ /*bottom: InvestrendTheme.cardPaddingVertical*/ bottom:
+                        InvestrendTheme.cardPaddingGeneral),
                 child: Text(
-                  displayTime,
-                  style: InvestrendTheme.of(context).more_support_w400_compact.copyWith(
+                  displayTime!,
+                  style: InvestrendTheme.of(context)
+                      .more_support_w400_compact
+                      ?.copyWith(
                         fontWeight: FontWeight.w500,
                         color: InvestrendTheme.of(context).greyDarkerTextColor,
                         fontStyle: FontStyle.italic,
@@ -315,44 +356,54 @@ class _ScreenStockDetailAnalysisState extends BaseStateNoTabsWithParentTab<Scree
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral),
+              padding: const EdgeInsets.only(
+                  left: InvestrendTheme.cardPaddingGeneral,
+                  right: InvestrendTheme.cardPaddingGeneral),
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(
                   onTap: () {
-                    Stock stock = context.read(primaryStockChangeNotifier).stock;
+                    Stock? stock =
+                        context.read(primaryStockChangeNotifier).stock;
                     //String board = marketNotifier.value == 0 ? '*' : 'RG';
                     MyRange range = _rangeTopBrokerNotifier.getRange();
                     Navigator.push(
                         context,
                         CupertinoPageRoute(
-                          builder: (_) => ScreenNetBuySellSummary(stock.code, marketNotifier.value, init_data_by: 'value', init_type: '*', init_range: range, ),
+                          builder: (_) => ScreenNetBuySellSummary(
+                            stock?.code,
+                            marketNotifier.value,
+                            init_data_by: 'value',
+                            init_type: '*',
+                            init_range: range,
+                          ),
                           settings: RouteSettings(name: '/netbs_summary'),
                         ));
                   },
                   child: Text(
-                    "button_show_more".tr() ,
+                    "button_show_more".tr(),
                     textAlign: TextAlign.end,
-                    style: InvestrendTheme.of(context)
-                        .small_w600
-                        .copyWith(color: InvestrendTheme.of(context).investrendPurple/*, fontWeight: FontWeight.bold*/),
+                    style: InvestrendTheme.of(context).small_w600?.copyWith(
+                        color: InvestrendTheme.of(context)
+                            .investrendPurple /*, fontWeight: FontWeight.bold*/),
                   ),
                 ),
               ),
             ),
-            SizedBox(height: InvestrendTheme.cardPaddingVertical,),
+            SizedBox(
+              height: InvestrendTheme.cardPaddingVertical,
+            ),
           ],
         );
       },
     );
   }
 
-  
-
   @override
   Widget createBody(BuildContext context, double paddingBottom) {
     List<Widget> childs = [
-      CardLocalForeign(_foreignDomesticNotifier, _boardForeignDomesticNotifier,_rangeForeignDomesticNotifier),
+      CardLocalForeign(_foreignDomesticNotifier, _boardForeignDomesticNotifier,
+          _rangeForeignDomesticNotifier),
       // SizedBox(height: 16.0,),
       // SizedBox(height: 16.0,),
       ComponentCreator.divider(context, thickness: 2.0),
@@ -372,7 +423,11 @@ class _ScreenStockDetailAnalysisState extends BaseStateNoTabsWithParentTab<Scree
       ),
       */
       _titleTopBrokerTransaction(context),
-      ChipsRangeCustom(_rangeTopBrokerNotifier, paddingLeftRight: InvestrendTheme.cardPaddingGeneral, paddingBottom: InvestrendTheme.cardPaddingVertical,),
+      ChipsRangeCustom(
+        _rangeTopBrokerNotifier,
+        paddingLeftRight: InvestrendTheme.cardPaddingGeneral,
+        paddingBottom: InvestrendTheme.cardPaddingVertical,
+      ),
       /*
       ChipsRange(_listChipRange, _rangeTopBrokerNotifier, paddingLeftRight: InvestrendTheme.cardPaddingGeneral, enable: _listChipRangeEnabled,),
       ValueListenableBuilder(
@@ -420,7 +475,7 @@ class _ScreenStockDetailAnalysisState extends BaseStateNoTabsWithParentTab<Scree
       //SizedBox(height: 8.0),
       */
       Padding(
-        padding: const  EdgeInsets.only(
+        padding: const EdgeInsets.only(
           left: InvestrendTheme.cardPaddingGeneral,
           right: InvestrendTheme.cardPaddingGeneral,
           //top: InvestrendTheme.cardPaddingVertical,
@@ -443,21 +498,24 @@ class _ScreenStockDetailAnalysisState extends BaseStateNoTabsWithParentTab<Scree
           height: 300.0,
           //child: ChartBarLine.withSampleData(),
           child: ValueListenableBuilder(
-              valueListenable: _topBuyerNotifier,
-              builder: (context, DataChartTopBroker value, child) {
-                Widget noWidget = _topBuyerNotifier.currentState.getNoWidget(onRetry: () => doUpdate(pullToRefresh: true));
+              valueListenable: _topBuyerNotifier!,
+              builder: (context, DataChartTopBroker? value, child) {
+                Widget? noWidget = _topBuyerNotifier?.currentState
+                    .getNoWidget(onRetry: () => doUpdate(pullToRefresh: true));
                 if (noWidget != null) {
                   return Center(child: noWidget);
                 }
-                return ChartDualBar(
-                  value.buyData,
-                  value.sellData,
-                  'buy_value_label'.tr(),
-                  'sell_value_label'.tr(),
-                  Theme.of(context).colorScheme.secondary,
-                  InvestrendTheme.redText,
-                  animate: true,
-                );
+                //TODO: chart_dual_bar.dart saya comment karena charts_flutter belum ada pengganti nya.
+                return Container();
+                // return ChartDualBar(
+                //   value.buyData,
+                //   value.sellData,
+                //   'buy_value_label'.tr(),
+                //   'sell_value_label'.tr(),
+                //   Theme.of(context).colorScheme.secondary,
+                //   InvestrendTheme.redText,
+                //   animate: true,
+                // );
               }),
         ),
       ),
@@ -494,21 +552,24 @@ class _ScreenStockDetailAnalysisState extends BaseStateNoTabsWithParentTab<Scree
           height: 300.0,
           //child: ChartBarLine.withSampleData(),
           child: ValueListenableBuilder(
-              valueListenable: _topSellerNotifier,
-              builder: (context, DataChartTopBroker value, child) {
-                Widget noWidget = _topSellerNotifier.currentState.getNoWidget(onRetry: () => doUpdate(pullToRefresh: true));
+              valueListenable: _topSellerNotifier!,
+              builder: (context, DataChartTopBroker? value, child) {
+                Widget? noWidget = _topSellerNotifier?.currentState
+                    .getNoWidget(onRetry: () => doUpdate(pullToRefresh: true));
                 if (noWidget != null) {
                   return Center(child: noWidget);
                 }
-                return ChartDualBar(
-                  value.buyData,
-                  value.sellData,
-                  'buy_value_label'.tr(),
-                  'sell_value_label'.tr(),
-                  Theme.of(context).colorScheme.secondary,
-                  InvestrendTheme.redText,
-                  animate: true,
-                );
+                //TODO: chart_dual_bar.dart saya comment karena charts_flutter belum ada pengganti nya.
+                return Container();
+                // return ChartDualBar(
+                //   value.buyData,
+                //   value.sellData,
+                //   'buy_value_label'.tr(),
+                //   'sell_value_label'.tr(),
+                //   Theme.of(context).colorScheme.secondary,
+                //   InvestrendTheme.redText,
+                //   animate: true,
+                // );
               }),
         ),
       ),
@@ -543,18 +604,21 @@ class _ScreenStockDetailAnalysisState extends BaseStateNoTabsWithParentTab<Scree
           height: 300.0,
           //child: ChartBarLine.withSampleData(),
           child: ValueListenableBuilder(
-              valueListenable: _topNetBuyerNotifier,
-              builder: (context, DataChartTopBrokerNet value, child) {
-                Widget noWidget = _topNetBuyerNotifier.currentState.getNoWidget(onRetry: () => doUpdate(pullToRefresh: true));
+              valueListenable: _topNetBuyerNotifier!,
+              builder: (context, DataChartTopBrokerNet? value, child) {
+                Widget? noWidget = _topNetBuyerNotifier?.currentState
+                    .getNoWidget(onRetry: () => doUpdate(pullToRefresh: true));
                 if (noWidget != null) {
                   return Center(child: noWidget);
                 }
-                return ChartSingleBar(
-                  value.netData,
-                  'net_buy_value_label'.tr(),
-                  Theme.of(context).colorScheme.secondary,
-                  animate: true,
-                );
+                //TODO: char_single_bar.dart saya comment karena charts_flutter belum ada pengganti nya.
+                return Container();
+                // return ChartSingleBar(
+                //   value.netData,
+                //   'net_buy_value_label'.tr(),
+                //   Theme.of(context).colorScheme.secondary,
+                //   animate: true,
+                // );
               }),
         ),
       ),
@@ -590,25 +654,28 @@ class _ScreenStockDetailAnalysisState extends BaseStateNoTabsWithParentTab<Scree
           height: 300.0,
           //child: ChartBarLine.withSampleData(),
           child: ValueListenableBuilder(
-              valueListenable: _topNetSellerNotifier,
-              builder: (context, DataChartTopBrokerNet value, child) {
-                Widget noWidget = _topNetSellerNotifier.currentState.getNoWidget(onRetry: () => doUpdate(pullToRefresh: true));
+              valueListenable: _topNetSellerNotifier!,
+              builder: (context, DataChartTopBrokerNet? value, child) {
+                Widget? noWidget = _topNetSellerNotifier?.currentState
+                    .getNoWidget(onRetry: () => doUpdate(pullToRefresh: true));
                 if (noWidget != null) {
                   return Center(child: noWidget);
                 }
-                return ChartSingleBar(
-                  value.netData,
-                  'net_sell_value_label'.tr(),
-                  InvestrendTheme.redText,
-                  animate: true,
-                );
+                //TODO: char_single_bar.dart saya comment karena charts_flutter belum ada pengganti nya.
+                return Container();
+                // return ChartSingleBar(
+                //   value.netData,
+                //   'net_sell_value_label'.tr(),
+                //   InvestrendTheme.redText,
+                //   animate: true,
+                // );
               }),
         ),
       ),
 
       _infoTopBrokerTransaction(context),
       // SizedBox(height: 10.0),
-      ComponentCreator.divider(context,thickness: 2.0),
+      ComponentCreator.divider(context, thickness: 2.0),
 
       SizedBox(
         height: paddingBottom + 80,
@@ -655,7 +722,9 @@ class _ScreenStockDetailAnalysisState extends BaseStateNoTabsWithParentTab<Scree
     // });
 
     // runPostFrame(doUpdate);
-    context.read(stockDetailScreenVisibilityChangeNotifier).setActive(tabIndex, true);
+    context
+        .read(stockDetailScreenVisibilityChangeNotifier)
+        .setActive(tabIndex, true);
     doUpdate(pullToRefresh: true);
   }
 
@@ -682,13 +751,16 @@ class _ScreenStockDetailAnalysisState extends BaseStateNoTabsWithParentTab<Scree
        */
     });
     _rangeForeignDomesticNotifier.addListener(() {
-      print(routeName+'._rangeForeignDomesticNotifier event   '+_rangeForeignDomesticNotifier.value.toString());
+      print(routeName +
+          '._rangeForeignDomesticNotifier event   ' +
+          _rangeForeignDomesticNotifier.value.toString());
       doUpdate();
     });
     marketNotifier.addListener(() {
       doUpdate();
     });
   }
+
   /*
   void selectFrom(BuildContext context) {
     DatePicker.showDatePicker(context, showTitleActions: true, minTime: DateTime(2021, 9, 1), maxTime: DateTime.now(), onChanged: (date) {
@@ -795,13 +867,15 @@ class _ScreenStockDetailAnalysisState extends BaseStateNoTabsWithParentTab<Scree
   void onSummaryChanged() {
     bool notMounted = !mounted;
     if (notMounted) {
-      print(routeName + ' stockSummaryChangeNotifier aborted -->  notMounted : $notMounted');
+      print(routeName +
+          ' stockSummaryChangeNotifier aborted -->  notMounted : $notMounted');
       return;
     }
 
-    bool contexIsNull = context == null;
+    bool? contexIsNull = context == null;
     if (contexIsNull) {
-      print(routeName + ' stockSummaryChangeNotifier aborted -->  contexIsNull : $contexIsNull');
+      print(routeName +
+          ' stockSummaryChangeNotifier aborted -->  contexIsNull : $contexIsNull');
       return;
     }
 
@@ -858,17 +932,19 @@ class _ScreenStockDetailAnalysisState extends BaseStateNoTabsWithParentTab<Scree
     _boardForeignDomesticNotifier.dispose();
     _foreignDomesticNotifier.dispose();
     _performanceNotifier.dispose();
-    _topBuyerNotifier.dispose();
-    _topSellerNotifier.dispose();
-    _topNetBuyerNotifier.dispose();
-    _topNetSellerNotifier.dispose();
+    _topBuyerNotifier?.dispose();
+    _topSellerNotifier?.dispose();
+    _topNetBuyerNotifier?.dispose();
+    _topNetSellerNotifier?.dispose();
     _rangeTopBrokerNotifier.dispose();
     marketNotifier.dispose();
     _lastDataDateNotifier.dispose();
     // _customRangeNotifier.dispose();
     _rangeForeignDomesticNotifier.dispose();
     final container = ProviderContainer();
-    container.read(stockDetailScreenVisibilityChangeNotifier).setActive(tabIndex, false);
+    container
+        .read(stockDetailScreenVisibilityChangeNotifier)
+        .setActive(tabIndex, false);
     // if(stockChangeListener != null){
     //   container.read(primaryStockChangeNotifier).removeListener(stockChangeListener);
     // }
@@ -878,16 +954,18 @@ class _ScreenStockDetailAnalysisState extends BaseStateNoTabsWithParentTab<Scree
 
   @override
   void onInactive() {
-    context.read(stockDetailScreenVisibilityChangeNotifier).setActive(tabIndex, false);
+    context
+        .read(stockDetailScreenVisibilityChangeNotifier)
+        .setActive(tabIndex, false);
     //print(routeName+' onInactive');
   }
 }
 
 class MyRange {
-  String from = '';
-  String to = '';
-  int index = 0;
-  bool valid(){
+  String? from = '';
+  String? to = '';
+  int? index = 0;
+  bool valid() {
     return !StringUtils.isEmtpy(from) && !StringUtils.isEmtpy(to);
   }
 }

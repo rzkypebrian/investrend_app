@@ -16,12 +16,12 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class LocalForeignNotifier extends BaseValueNotifier<ForeignDomestic> {
+class LocalForeignNotifier extends BaseValueNotifier<ForeignDomestic?> {
   LocalForeignNotifier(ForeignDomestic value) : super(value);
 
-  void setValue(ForeignDomestic newValue) {
-    this.value.copyValueFrom(newValue);
-    if (this.value == null || this.value.isEmpty()) {
+  void setValue(ForeignDomestic? newValue) {
+    this.value?.copyValueFrom(newValue);
+    if (this.value == null || this.value!.isEmpty()) {
       setNoData();
     } else {
       setFinished();
@@ -30,7 +30,7 @@ class LocalForeignNotifier extends BaseValueNotifier<ForeignDomestic> {
   }
 
   bool valid() {
-    return value != null && value.loaded;
+    return value != null && value!.loaded;
   }
 
   bool invalid() {
@@ -43,7 +43,7 @@ class ForeignDomesticNotifier extends ValueNotifier<ForeignDomestic>{
   ForeignDomesticNotifier(ForeignDomestic value) : super(value);
 
   void setValue(ForeignDomestic newValue){
-    this.value.copyValueFrom(newValue);
+    this.value?.copyValueFrom(newValue);
     notifyListeners();
   }
 
@@ -56,13 +56,13 @@ class ForeignDomesticNotifier extends ValueNotifier<ForeignDomestic>{
   }
 }
 */
-class PerformanceNotifier extends BaseValueNotifier<PerformanceData> {
+class PerformanceNotifier extends BaseValueNotifier<PerformanceData?> {
   PerformanceNotifier(PerformanceData value) : super(value);
 
   void setValue(PerformanceData newValue) {
-    this.value.copyValueFrom(newValue);
+    this.value?.copyValueFrom(newValue);
     //notifyListeners();
-    if (this.value.isEmpty()) {
+    if (this.value!.isEmpty()) {
       setNoData();
     } else {
       setFinished();
@@ -70,7 +70,7 @@ class PerformanceNotifier extends BaseValueNotifier<PerformanceData> {
   }
 
   bool valid() {
-    return value != null && value.loaded;
+    return value != null && value!.loaded!;
   }
 
   bool invalid() {
@@ -78,12 +78,12 @@ class PerformanceNotifier extends BaseValueNotifier<PerformanceData> {
   }
 }
 
-class ChartOhlcvNotifier extends BaseValueNotifier<ChartOhlcvData> {
+class ChartOhlcvNotifier extends BaseValueNotifier<ChartOhlcvData?> {
   ChartOhlcvNotifier(ChartOhlcvData value) : super(value);
 
-  void setValue(ChartOhlcvData newValue) {
-    this.value.copyValueFrom(newValue);
-    if (this.value.isEmpty()) {
+  void setValue(ChartOhlcvData? newValue) {
+    this.value?.copyValueFrom(newValue);
+    if (this.value!.isEmpty()) {
       setNoData();
     } else {
       setFinished();
@@ -91,7 +91,7 @@ class ChartOhlcvNotifier extends BaseValueNotifier<ChartOhlcvData> {
   }
 
   bool valid() {
-    return value != null && value.loaded;
+    return value != null && value!.loaded;
   }
 
   bool invalid() {
@@ -99,12 +99,12 @@ class ChartOhlcvNotifier extends BaseValueNotifier<ChartOhlcvData> {
   }
 }
 
-class ChartNotifier extends BaseValueNotifier<ChartLineData> {
+class ChartNotifier extends BaseValueNotifier<ChartLineData?> {
   ChartNotifier(ChartLineData value) : super(value);
 
-  void setValue(ChartLineData newValue) {
-    this.value.copyValueFrom(newValue);
-    if (this.value.isEmpty()) {
+  void setValue(ChartLineData? newValue) {
+    this.value?.copyValueFrom(newValue!);
+    if (this.value!.isEmpty()) {
       setNoData();
     } else {
       setFinished();
@@ -113,7 +113,7 @@ class ChartNotifier extends BaseValueNotifier<ChartLineData> {
   }
 
   bool valid() {
-    return value != null && value.loaded;
+    return value != null && value!.loaded;
   }
 
   bool invalid() {
@@ -121,12 +121,12 @@ class ChartNotifier extends BaseValueNotifier<ChartLineData> {
   }
 }
 
-class GroupedNotifier extends BaseValueNotifier<GroupedData> {
+class GroupedNotifier extends BaseValueNotifier<GroupedData?> {
   GroupedNotifier(GroupedData value) : super(value);
 
   void setValue(GroupedData newValue) {
-    this.value.copyValueFrom(newValue);
-    if (this.value.isEmpty()) {
+    this.value?.copyValueFrom(newValue);
+    if (this.value!.isEmpty()) {
       setNoData();
     } else {
       setFinished();
@@ -135,7 +135,7 @@ class GroupedNotifier extends BaseValueNotifier<GroupedData> {
   }
 
   bool valid() {
-    return value != null && value.loaded;
+    return value != null && value!.loaded;
   }
 
   bool invalid() {
@@ -143,12 +143,12 @@ class GroupedNotifier extends BaseValueNotifier<GroupedData> {
   }
 }
 
-class YourPositionNotifer extends BaseValueNotifier<YourPosition> {
+class YourPositionNotifer extends BaseValueNotifier<YourPosition?> {
   YourPositionNotifer(YourPosition value) : super(value);
 
-  void setValue(YourPosition newValue) {
-    this.value.copyValueFrom(newValue);
-    if (this.value.isEmpty()) {
+  void setValue(YourPosition? newValue) {
+    this.value?.copyValueFrom(newValue!);
+    if (this.value!.isEmpty()) {
       setNoData();
     } else {
       setFinished();
@@ -157,12 +157,12 @@ class YourPositionNotifer extends BaseValueNotifier<YourPosition> {
   }
 }
 
-class GeneralPriceNotifier extends BaseValueNotifier<GeneralPriceData> {
+class GeneralPriceNotifier extends BaseValueNotifier<GeneralPriceData?> {
   GeneralPriceNotifier(GeneralPriceData value) : super(value);
 
   void setValue(GeneralPriceData newValue) {
-    this.value.copyValueFrom(newValue);
-    if (this.value.isEmpty()) {
+    this.value?.copyValueFrom(newValue);
+    if (this.value!.isEmpty()) {
       setNoData();
     } else {
       setFinished();
@@ -171,22 +171,22 @@ class GeneralPriceNotifier extends BaseValueNotifier<GeneralPriceData> {
   }
 
   double widthRight = 0;
-  void updateBySummarys(List<StockSummary> summarys, {BuildContext context}) {
+  void updateBySummarys(List<StockSummary>? summarys, {BuildContext? context}) {
     int countSummarys = summarys != null ? summarys.length : 0;
-    int countData = value.datas != null ? value.datas.length : 0;
+    int? countData = value?.datas != null ? value?.datas?.length : 0;
     bool changed = false;
 
-    if (countSummarys > 0 && countData > 0) {
-      summarys.forEach((summary) {
+    if (countSummarys > 0 && countData! > 0) {
+      summarys?.forEach((summary) {
         for (int i = 0; i < countData; i++) {
-          GeneralPrice gp = value.datas.elementAt(i);
-          if (StringUtils.equalsIgnoreCase(gp.code, summary.code)) {
-            gp.price = summary.close.toDouble();
-            gp.change = summary.change;
-            gp.percent = summary.percentChange;
+          GeneralPrice? gp = value?.datas?.elementAt(i);
+          if (StringUtils.equalsIgnoreCase(gp?.code, summary.code!)) {
+            gp?.price = summary.close?.toDouble();
+            gp?.change = summary.change;
+            gp?.percent = summary.percentChange;
 
             if (gp is WatchlistPrice) {
-              double widthRightData = RowWatchlist.calculateWidthRight(
+              double? widthRightData = RowWatchlist.calculateWidthRight(
                   context, gp.price, gp.change, gp.percent);
               widthRight = max(widthRight, widthRightData);
               gp.prevPrice = summary.prev;
@@ -215,7 +215,7 @@ class GeneralPriceNotifier extends BaseValueNotifier<GeneralPriceData> {
                       .read(corporateActionEventNotifier)
                       .getEvent(gp.code);
                   gp.corporateActionColor =
-                      CorporateActionEvent.getColor(gp.corporateAction);
+                      CorporateActionEvent.getColor(gp.corporateAction!);
                   String attentionCodes = context
                       .read(remark2Notifier)
                       .getSpecialNotationCodes(gp.code);
@@ -242,7 +242,7 @@ class GeneralPriceNotifier extends BaseValueNotifier<GeneralPriceData> {
   }
 
   bool valid() {
-    return value != null && value.loaded;
+    return value != null && value!.loaded;
   }
 
   bool invalid() {
@@ -250,12 +250,12 @@ class GeneralPriceNotifier extends BaseValueNotifier<GeneralPriceData> {
   }
 }
 
-class WatclistPriceNotifier extends BaseValueNotifier<WatchlistPriceData> {
+class WatclistPriceNotifier extends BaseValueNotifier<WatchlistPriceData?> {
   WatclistPriceNotifier(WatchlistPriceData value) : super(value);
 
-  void setValue(WatchlistPriceData newValue) {
-    this.value.copyValueFrom(newValue);
-    if (this.value.isEmpty()) {
+  void setValue(WatchlistPriceData? newValue) {
+    this.value?.copyValueFrom(newValue);
+    if (this.value!.isEmpty()) {
       setNoData();
     } else {
       setFinished();
@@ -264,56 +264,56 @@ class WatclistPriceNotifier extends BaseValueNotifier<WatchlistPriceData> {
   }
 
   double widthRight = 0;
-  void updateBySummarys(List<StockSummary> summarys, {BuildContext context}) {
+  void updateBySummarys(List<StockSummary>? summarys, {BuildContext? context}) {
     int countSummarys = summarys != null ? summarys.length : 0;
-    int countData = value.datas != null ? value.datas.length : 0;
+    int? countData = value?.datas != null ? value?.datas?.length : 0;
     bool changed = false;
 
-    if (countSummarys > 0 && countData > 0) {
-      summarys.forEach((summary) {
+    if (countSummarys > 0 && countData! > 0) {
+      summarys?.forEach((summary) {
         for (int i = 0; i < countData; i++) {
-          WatchlistPrice gp = value.datas.elementAt(i);
-          if (StringUtils.equalsIgnoreCase(gp.code, summary.code)) {
-            gp.price = summary.close.toDouble();
-            gp.change = summary.change;
-            gp.percent = summary.percentChange;
+          WatchlistPrice? gp = value?.datas?.elementAt(i);
+          if (StringUtils.equalsIgnoreCase(gp?.code, summary.code!)) {
+            gp?.price = summary.close?.toDouble();
+            gp?.change = summary.change;
+            gp?.percent = summary.percentChange;
 
             // if(gp is WatchlistPrice){
 
             double widthRightData = RowWatchlist.calculateWidthRight(
-                context, gp.price, gp.change, gp.percent);
+                context, gp?.price, gp?.change, gp?.percent);
             widthRight = max(widthRight, widthRightData);
-            gp.prevPrice = summary.prev;
+            gp?.prevPrice = summary.prev;
 
-            gp.bestBidPrice = summary.bestBidPrice;
-            gp.bestBidVolume = summary.bestBidVolume;
+            gp?.bestBidPrice = summary.bestBidPrice;
+            gp?.bestBidVolume = summary.bestBidVolume;
 
-            gp.bestOfferPrice = summary.bestOfferPrice;
-            gp.bestOfferVolume = summary.bestOfferVolume;
-            gp.value = summary.value;
+            gp?.bestOfferPrice = summary.bestOfferPrice;
+            gp?.bestOfferVolume = summary.bestOfferVolume;
+            gp?.value = summary.value;
 
             if (context != null) {
               try {
-                gp.notation =
+                gp?.notation =
                     context.read(remark2Notifier).getSpecialNotation(gp.code);
-                gp.status = context
+                gp?.status = context
                     .read(remark2Notifier)
                     .getSpecialNotationStatus(gp.code);
-                gp.suspendStock = context
+                gp?.suspendStock = context
                     .read(suspendedStockNotifier)
                     .getSuspended(gp.code, Stock.defaultBoardByCode(gp.code));
-                if (gp.suspendStock != null) {
-                  gp.status = StockInformationStatus.Suspended;
+                if (gp?.suspendStock != null) {
+                  gp?.status = StockInformationStatus.Suspended;
                 }
-                gp.corporateAction = context
+                gp?.corporateAction = context
                     .read(corporateActionEventNotifier)
                     .getEvent(gp.code);
-                gp.corporateActionColor =
-                    CorporateActionEvent.getColor(gp.corporateAction);
+                gp?.corporateActionColor =
+                    CorporateActionEvent.getColor(gp.corporateAction!);
                 String attentionCodes = context
                     .read(remark2Notifier)
-                    .getSpecialNotationCodes(gp.code);
-                gp.attentionCodes = attentionCodes;
+                    .getSpecialNotationCodes(gp?.code);
+                gp?.attentionCodes = attentionCodes;
               } catch (e) {
                 print(e);
               }
@@ -336,7 +336,7 @@ class WatclistPriceNotifier extends BaseValueNotifier<WatchlistPriceData> {
   }
 
   bool valid() {
-    return value != null && value.loaded;
+    return value != null && value!.loaded;
   }
 
   bool invalid() {
@@ -344,12 +344,12 @@ class WatclistPriceNotifier extends BaseValueNotifier<WatchlistPriceData> {
   }
 }
 
-class OrderbookNotifier extends BaseValueNotifier<OrderbookData> {
+class OrderbookNotifier extends BaseValueNotifier<OrderbookData?> {
   OrderbookNotifier(OrderbookData value) : super(value);
 
-  void setValue(OrderbookData newValue) {
-    this.value.copyValueFrom(newValue);
-    if (this.value.isEmpty()) {
+  void setValue(OrderbookData? newValue) {
+    this.value?.copyValueFrom(newValue);
+    if (this.value!.isEmpty()) {
       print('OrderbookNotifier isEmpty');
       setNoData();
     } else {
@@ -360,7 +360,7 @@ class OrderbookNotifier extends BaseValueNotifier<OrderbookData> {
   }
 
   bool valid() {
-    return value != null && value.loaded;
+    return value != null && value!.loaded;
   }
 
   bool invalid() {
@@ -368,12 +368,12 @@ class OrderbookNotifier extends BaseValueNotifier<OrderbookData> {
   }
 }
 
-class OrderQueueNotifier extends BaseValueNotifier<OrderQueueData> {
+class OrderQueueNotifier extends BaseValueNotifier<OrderQueueData?> {
   OrderQueueNotifier(OrderQueueData value) : super(value);
 
-  void setValue(OrderQueueData newValue) {
-    this.value.copyValueFrom(newValue);
-    if (this.value.isEmpty()) {
+  void setValue(OrderQueueData? newValue) {
+    this.value?.copyValueFrom(newValue);
+    if (this.value!.isEmpty()!) {
       print('OrderQueueNotifier isEmpty');
       setNoData();
     } else {
@@ -384,7 +384,7 @@ class OrderQueueNotifier extends BaseValueNotifier<OrderQueueData> {
   }
 
   bool valid() {
-    return value != null && value.loaded;
+    return value != null && value!.loaded;
   }
 
   bool invalid() {
@@ -392,16 +392,16 @@ class OrderQueueNotifier extends BaseValueNotifier<OrderQueueData> {
   }
 }
 
-class ActivityRDNNotifier extends ValueNotifier<ActivityRDNData> {
-  ActivityRDNNotifier(ActivityRDNData value) : super(value);
+class ActivityRDNNotifier extends ValueNotifier<ActivityRDNData?> {
+  ActivityRDNNotifier(ActivityRDNData? value) : super(value);
 
   void setValue(ActivityRDNData newValue) {
-    this.value.copyValueFrom(newValue);
+    this.value?.copyValueFrom(newValue);
     notifyListeners();
   }
 
   bool valid() {
-    return value != null && value.loaded;
+    return value != null && value!.loaded;
   }
 
   bool invalid() {
@@ -409,16 +409,16 @@ class ActivityRDNNotifier extends ValueNotifier<ActivityRDNData> {
   }
 }
 
-class ReturnNotifier extends ValueNotifier<ReturnData> {
-  ReturnNotifier(ReturnData value) : super(value);
+class ReturnNotifier extends ValueNotifier<ReturnData?> {
+  ReturnNotifier(ReturnData? value) : super(value);
 
   void setValue(ReturnData newValue) {
-    this.value.copyValueFrom(newValue);
+    this.value?.copyValueFrom(newValue);
     notifyListeners();
   }
 
   bool valid() {
-    return value != null && value.loaded;
+    return value != null && value!.loaded;
   }
 
   bool invalid() {
@@ -426,13 +426,13 @@ class ReturnNotifier extends ValueNotifier<ReturnData> {
   }
 }
 
-class RealizedNotifier extends BaseValueNotifier<RealizedStockData> {
+class RealizedNotifier extends BaseValueNotifier<RealizedStockData?> {
   RealizedNotifier(RealizedStockData value) : super(value);
 
   void setValue(RealizedStockData newValue) {
-    this.value.copyValueFrom(newValue);
+    this.value?.copyValueFrom(newValue);
     //notifyListeners();
-    if (this.value.isEmpty()) {
+    if (this.value!.isEmpty()) {
       print('OrderQueueNotifier isEmpty');
       setNoData();
     } else {
@@ -446,7 +446,7 @@ class RealizedNotifier extends BaseValueNotifier<RealizedStockData> {
   }
 
   bool valid() {
-    return value != null && value.loaded;
+    return value != null && value!.loaded;
   }
 
   bool invalid() {
@@ -454,16 +454,16 @@ class RealizedNotifier extends BaseValueNotifier<RealizedStockData> {
   }
 }
 
-class PortfolioNotifier extends ValueNotifier<PortfolioData> {
-  PortfolioNotifier(PortfolioData value) : super(value);
+class PortfolioNotifier extends ValueNotifier<PortfolioData?> {
+  PortfolioNotifier(PortfolioData? value) : super(value);
 
   void setValue(PortfolioData newValue) {
-    this.value.copyValueFrom(newValue);
+    this.value?.copyValueFrom(newValue);
     notifyListeners();
   }
 
   bool valid() {
-    return value != null && value.loaded;
+    return value != null && value!.loaded;
   }
 
   bool invalid() {
@@ -471,12 +471,12 @@ class PortfolioNotifier extends ValueNotifier<PortfolioData> {
   }
 }
 
-class StockPositionNotifier extends BaseValueNotifier<StockPosition> {
+class StockPositionNotifier extends BaseValueNotifier<StockPosition?> {
   StockPositionNotifier(StockPosition value) : super(value);
 
-  void setValue(StockPosition newValue) {
-    this.value.copyValueFrom(newValue);
-    if (this.value.isEmpty()) {
+  void setValue(StockPosition? newValue) {
+    this.value?.copyValueFrom(newValue);
+    if (this.value!.isEmpty()) {
       setNoData();
     } else {
       setFinished();
@@ -484,13 +484,13 @@ class StockPositionNotifier extends BaseValueNotifier<StockPosition> {
     //notifyListeners();
   }
 
-  String joinCode(String delimiter) {
-    String joined = this.value != null ? this.value.joinCode(delimiter) : '';
+  String? joinCode(String delimiter) {
+    String? joined = this.value != null ? this.value?.joinCode(delimiter) : '';
     return joined;
   }
 
   bool valid() {
-    return value != null && value.loaded;
+    return value != null && value!.loaded;
   }
 
   bool invalid() {
@@ -498,12 +498,13 @@ class StockPositionNotifier extends BaseValueNotifier<StockPosition> {
   }
 }
 
-class PortfolioSummaryNotifier extends BaseValueNotifier<PortfolioSummaryData> {
+class PortfolioSummaryNotifier
+    extends BaseValueNotifier<PortfolioSummaryData?> {
   PortfolioSummaryNotifier(PortfolioSummaryData value) : super(value);
 
   void setValue(PortfolioSummaryData newValue) {
-    this.value.copyValueFrom(newValue);
-    if (this.value.isEmpty()) {
+    this.value?.copyValueFrom(newValue);
+    if (this.value!.isEmpty()) {
       setNoData();
     } else {
       setFinished();
@@ -512,7 +513,7 @@ class PortfolioSummaryNotifier extends BaseValueNotifier<PortfolioSummaryData> {
   }
 
   bool valid() {
-    return value != null && value.loaded;
+    return value != null && value!.loaded;
   }
 
   bool invalid() {
@@ -520,12 +521,12 @@ class PortfolioSummaryNotifier extends BaseValueNotifier<PortfolioSummaryData> {
   }
 }
 
-class ContentEIPONotifier extends BaseValueNotifier<ContentEIPO> {
+class ContentEIPONotifier extends BaseValueNotifier<ContentEIPO?> {
   ContentEIPONotifier(ContentEIPO value) : super(value);
 
   void setValue(ContentEIPO newValue) {
-    this.value.copyValueFrom(newValue);
-    if (this.value.isEmpty()) {
+    this.value?.copyValueFrom(newValue);
+    if (this.value!.isEmpty()) {
       setNoData();
     } else {
       setFinished();
@@ -534,7 +535,7 @@ class ContentEIPONotifier extends BaseValueNotifier<ContentEIPO> {
   }
 
   bool valid() {
-    return value != null && value.loaded;
+    return value != null && value!.loaded;
   }
 
   bool invalid() {
@@ -542,12 +543,12 @@ class ContentEIPONotifier extends BaseValueNotifier<ContentEIPO> {
   }
 }
 
-class ProfileNotifier extends BaseValueNotifier<Profile> {
+class ProfileNotifier extends BaseValueNotifier<Profile?> {
   ProfileNotifier(Profile value) : super(value);
 
   void setValue(Profile newValue) {
-    this.value.copyValueFrom(newValue);
-    if (this.value.isEmpty()) {
+    this.value?.copyValueFrom(newValue);
+    if (this.value!.isEmpty()) {
       setNoData();
     } else {
       setFinished();
@@ -556,7 +557,7 @@ class ProfileNotifier extends BaseValueNotifier<Profile> {
   }
 
   bool valid() {
-    return value != null && value.loaded;
+    return value != null && value!.loaded;
   }
 
   bool invalid() {
@@ -564,13 +565,13 @@ class ProfileNotifier extends BaseValueNotifier<Profile> {
   }
 }
 
-class StockThemeNotifier extends BaseValueNotifier<StockThemesData> {
+class StockThemeNotifier extends BaseValueNotifier<StockThemesData?> {
   StockThemeNotifier(StockThemesData value) : super(value);
 
   void setValue(StockThemesData newValue) {
     //this.error = '';
-    this.value.copyValueFrom(newValue);
-    if (this.value.isEmpty()) {
+    this.value!.copyValueFrom(newValue);
+    if (this.value!.isEmpty()) {
       setNoData();
     } else {
       setFinished();
@@ -596,13 +597,13 @@ class StockThemeNotifier extends BaseValueNotifier<StockThemesData> {
   // }
 }
 
-class HomeCurrenciesNotifier extends BaseValueNotifier<HomeCurrenciesData> {
+class HomeCurrenciesNotifier extends BaseValueNotifier<HomeCurrenciesData?> {
   HomeCurrenciesNotifier(HomeCurrenciesData value) : super(value);
 
   void setValue(HomeCurrenciesData newValue) {
     //this.error = '';
-    this.value.copyValueFrom(newValue);
-    if (this.value.isEmpty()) {
+    this.value?.copyValueFrom(newValue);
+    if (this.value!.isEmpty()) {
       setNoData();
     } else {
       setFinished();
@@ -628,13 +629,13 @@ class HomeCurrenciesNotifier extends BaseValueNotifier<HomeCurrenciesData> {
   // }
 }
 
-class HomeCryptoNotifier extends BaseValueNotifier<HomeCryptoData> {
+class HomeCryptoNotifier extends BaseValueNotifier<HomeCryptoData?> {
   HomeCryptoNotifier(HomeCryptoData value) : super(value);
 
   void setValue(HomeCryptoData newValue) {
     // this.error = '';
-    this.value.copyValueFrom(newValue);
-    if (this.value.isEmpty()) {
+    this.value?.copyValueFrom(newValue);
+    if (this.value!.isEmpty()) {
       setNoData();
     } else {
       setFinished();
@@ -659,13 +660,13 @@ class HomeCryptoNotifier extends BaseValueNotifier<HomeCryptoData> {
   // }
 }
 
-class HomeCommoditiesNotifier extends BaseValueNotifier<HomeCommoditiesData> {
+class HomeCommoditiesNotifier extends BaseValueNotifier<HomeCommoditiesData?> {
   HomeCommoditiesNotifier(HomeCommoditiesData value) : super(value);
 
   void setValue(HomeCommoditiesData newValue) {
     // this.error = '';
-    this.value.copyValueFrom(newValue);
-    if (this.value.isEmpty()) {
+    this.value?.copyValueFrom(newValue);
+    if (this.value!.isEmpty()) {
       setNoData();
     } else {
       setFinished();
@@ -709,8 +710,8 @@ extension NotifierStateExtension on NotifierState {
     }
   }
 
-  Widget getNoWidget({VoidCallback onRetry}) {
-    Widget noWidget;
+  Widget? getNoWidget({VoidCallback? onRetry}) {
+    Widget? noWidget;
     if (this.notFinished()) {
       if (this.isError()) {
         noWidget = TextButtonRetry(
@@ -747,7 +748,7 @@ extension NotifierStateExtension on NotifierState {
 }
 
 class BaseValueNotifier<T> extends ChangeNotifier
-    implements ValueListenable<T> {
+    implements ValueListenable<T?> {
   /// Creates a [ChangeNotifier] that wraps this value.
   BaseValueNotifier(this._value);
 
@@ -757,9 +758,9 @@ class BaseValueNotifier<T> extends ChangeNotifier
   /// value as evaluated by the equality operator ==, this class notifies its
   /// listeners.
   @override
-  T get value => _value;
-  T _value;
-  set value(T newValue) {
+  T? get value => _value;
+  T? _value;
+  set value(T? newValue) {
     if (_value == newValue) return;
     _value = newValue;
     notifyListeners();
@@ -780,7 +781,7 @@ class BaseValueNotifier<T> extends ChangeNotifier
 
   NotifierState currentState = NotifierState.Loading;
   String currentMessage = '';
-  void setState(NotifierState newState, {String message}) {
+  void setState(NotifierState newState, {String? message}) {
     this.currentState = newState;
     if (message != null) {
       this.currentMessage = message;
@@ -804,7 +805,7 @@ class BaseValueNotifier<T> extends ChangeNotifier
     setState(NotifierState.Finished, message: '');
   }
 
-  void setError({String message}) {
+  void setError({String? message}) {
     setState(NotifierState.Error, message: message);
   }
 }
@@ -814,8 +815,8 @@ class HomeIndicesNotifier extends BaseValueNotifier<HomeIndicesData> {
 
   void setValue(HomeIndicesData newValue) {
     // this.error = '';
-    this.value.copyValueFrom(newValue);
-    if (this.value.isEmpty()) {
+    this.value?.copyValueFrom(newValue);
+    if (this.value!.isEmpty()) {
       setNoData();
     } else {
       setFinished();
@@ -845,8 +846,8 @@ class BriefingNotifier extends BaseValueNotifier<Briefing> {
   BriefingNotifier(Briefing value) : super(value);
 
   void setValue(Briefing newValue) {
-    this.value.copyValueFrom(newValue);
-    if (this.value.isEmpty()) {
+    this.value?.copyValueFrom(newValue);
+    if (this.value!.isEmpty()) {
       setNoData();
     } else {
       setFinished();
@@ -866,8 +867,8 @@ class ReportStockHistNotifier extends BaseValueNotifier<ReportStockHistData> {
   ReportStockHistNotifier(ReportStockHistData value) : super(value);
 
   void setValue(ReportStockHistData newValue) {
-    this.value.copyValueFrom(newValue);
-    if (this.value.isEmpty()) {
+    this.value?.copyValueFrom(newValue);
+    if (this.value!.isEmpty()) {
       setNoData();
     } else {
       setFinished();
@@ -879,8 +880,8 @@ class OrderStatusNotifier extends BaseValueNotifier<OrderStatusData> {
   OrderStatusNotifier(OrderStatusData value) : super(value);
 
   void setValue(OrderStatusData newValue) {
-    this.value.copyValueFrom(newValue);
-    if (this.value.isEmpty()) {
+    this.value?.copyValueFrom(newValue);
+    if (this.value!.isEmpty()) {
       setNoData();
     } else {
       setFinished();
@@ -891,9 +892,9 @@ class OrderStatusNotifier extends BaseValueNotifier<OrderStatusData> {
 class SinglePortfolioNotifier extends BaseValueNotifier<StockPositionDetail> {
   SinglePortfolioNotifier(StockPositionDetail value) : super(value);
 
-  void setValue(StockPositionDetail newValue) {
-    this.value.copyValueFrom(newValue);
-    if (this.value.isEmpty()) {
+  void setValue(StockPositionDetail? newValue) {
+    this.value?.copyValueFrom(newValue);
+    if (this.value!.isEmpty()) {
       setNoData();
     } else {
       setFinished();
@@ -905,57 +906,58 @@ class SingleWatchlistPriceNotifier extends BaseValueNotifier<WatchlistPrice> {
   SingleWatchlistPriceNotifier(WatchlistPrice value) : super(value);
   double widthRight = 0;
   void setValue(WatchlistPrice newValue, BuildContext context) {
-    this.value.copyValueFrom(newValue);
-    if (this.value.isEmpty()) {
+    this.value?.copyValueFrom(newValue);
+    if (this.value!.isEmpty()) {
       setNoData();
     } else {
       double widthRightData = RowWatchlist.calculateWidthRight(
-          context, this.value.price, this.value.change, this.value.percent);
+          context, this.value?.price, this.value?.change, this.value?.percent);
       widthRight = widthRightData; //max(widthRight, widthRightData);
       setFinished();
     }
   }
 
-  void updateFromSummary(StockSummary summary, BuildContext context) {
-    if (StringUtils.equalsIgnoreCase(value.code, summary.code)) {
-      value.price = summary.close.toDouble();
-      value.change = summary.change;
-      value.percent = summary.percentChange;
+  void updateFromSummary(StockSummary summary, BuildContext? context) {
+    if (StringUtils.equalsIgnoreCase(value?.code, summary.code)) {
+      value?.price = summary.close!.toDouble();
+      value?.change = summary.change!;
+      value?.percent = summary.percentChange!;
 
       // if(gp is WatchlistPrice){
 
       double widthRightData = RowWatchlist.calculateWidthRight(
-          context, value.price, value.change, value.percent);
+          context, value?.price, value?.change, value?.percent);
       widthRight = max(widthRight, widthRightData);
-      value.prevPrice = summary.prev;
+      value?.prevPrice = summary.prev;
 
-      value.bestBidPrice = summary.bestBidPrice;
-      value.bestBidVolume = summary.bestBidVolume;
+      value?.bestBidPrice = summary.bestBidPrice;
+      value?.bestBidVolume = summary.bestBidVolume;
 
-      value.bestOfferPrice = summary.bestOfferPrice;
-      value.bestOfferVolume = summary.bestOfferVolume;
-      value.value = summary.value;
+      value?.bestOfferPrice = summary.bestOfferPrice;
+      value?.bestOfferVolume = summary.bestOfferVolume;
+      value?.value = summary.value;
 
       if (context != null) {
         try {
-          value.notation =
-              context.read(remark2Notifier).getSpecialNotation(value.code);
-          value.status = context
+          value?.notation =
+              context.read(remark2Notifier).getSpecialNotation(value?.code);
+          value?.status = context
               .read(remark2Notifier)
-              .getSpecialNotationStatus(value.code);
-          value.suspendStock = context
+              .getSpecialNotationStatus(value?.code);
+          value?.suspendStock = context
               .read(suspendedStockNotifier)
-              .getSuspended(value.code, Stock.defaultBoardByCode(value.code));
-          if (value.suspendStock != null) {
-            value.status = StockInformationStatus.Suspended;
+              .getSuspended(value?.code, Stock.defaultBoardByCode(value?.code));
+          if (value?.suspendStock != null) {
+            value?.status = StockInformationStatus.Suspended;
           }
-          value.corporateAction =
-              context.read(corporateActionEventNotifier).getEvent(value.code);
-          value.corporateActionColor =
-              CorporateActionEvent.getColor(value.corporateAction);
-          String attentionCodes =
-              context.read(remark2Notifier).getSpecialNotationCodes(value.code);
-          value.attentionCodes = attentionCodes;
+          value?.corporateAction =
+              context.read(corporateActionEventNotifier).getEvent(value?.code);
+          value?.corporateActionColor =
+              CorporateActionEvent.getColor(value?.corporateAction);
+          String attentionCodes = context
+              .read(remark2Notifier)
+              .getSpecialNotationCodes(value?.code);
+          value?.attentionCodes = attentionCodes;
         } catch (e) {
           print(e);
         }
@@ -968,9 +970,9 @@ class SingleWatchlistPriceNotifier extends BaseValueNotifier<WatchlistPrice> {
 class ResearchRankNotifier extends BaseValueNotifier<ResearchRank> {
   ResearchRankNotifier(ResearchRank value) : super(value);
 
-  void setValue(ResearchRank newValue) {
-    this.value.copyValueFrom(newValue);
-    if (this.value.isEmpty()) {
+  void setValue(ResearchRank? newValue) {
+    this.value?.copyValueFrom(newValue!);
+    if (this.value!.isEmpty()) {
       setNoData();
     } else {
       setFinished();
@@ -983,8 +985,8 @@ class NetBuySellSummaryNotifier
   NetBuySellSummaryNotifier(NetBuySellSummaryData value) : super(value);
 
   void setValue(NetBuySellSummaryData newValue) {
-    this.value.copyValueFrom(newValue);
-    if (this.value.isEmpty()) {
+    this.value?.copyValueFrom(newValue);
+    if (this.value!.isEmpty()) {
       setNoData();
     } else {
       setFinished();
@@ -996,8 +998,8 @@ class ChartTopBrokerNotifier extends BaseValueNotifier<DataChartTopBroker> {
   ChartTopBrokerNotifier(DataChartTopBroker value) : super(value);
 
   void setValue(DataChartTopBroker newValue) {
-    this.value.copyValueFrom(newValue);
-    if (this.value.isEmpty()) {
+    this.value?.copyValueFrom(newValue);
+    if (this.value!.isEmpty()!) {
       setNoData();
     } else {
       setFinished();
@@ -1010,8 +1012,8 @@ class ChartTopBrokerNetNotifier
   ChartTopBrokerNetNotifier(DataChartTopBrokerNet value) : super(value);
 
   void setValue(DataChartTopBrokerNet newValue) {
-    this.value.copyValueFrom(newValue);
-    if (this.value.isEmpty()) {
+    this.value?.copyValueFrom(newValue);
+    if (this.value!.isEmpty()!) {
       setNoData();
     } else {
       setFinished();
@@ -1024,8 +1026,8 @@ class ChartIncomeStatementNotifier
   ChartIncomeStatementNotifier(DataChartIncomeStatement value) : super(value);
 
   void setValue(DataChartIncomeStatement newValue) {
-    this.value.copyValueFrom(newValue);
-    if (this.value.isEmpty()) {
+    this.value?.copyValueFrom(newValue);
+    if (this.value!.isEmpty()) {
       setNoData();
     } else {
       setFinished();
@@ -1038,8 +1040,8 @@ class ChartBalanceSheetNotifier
   ChartBalanceSheetNotifier(DataChartBalanceSheet value) : super(value);
 
   void setValue(DataChartBalanceSheet newValue) {
-    this.value.copyValueFrom(newValue);
-    if (this.value.isEmpty()) {
+    this.value?.copyValueFrom(newValue);
+    if (this.value!.isEmpty()) {
       setNoData();
     } else {
       setFinished();
@@ -1051,8 +1053,8 @@ class ChartCashFlowNotifier extends BaseValueNotifier<DataChartCashFlow> {
   ChartCashFlowNotifier(DataChartCashFlow value) : super(value);
 
   void setValue(DataChartCashFlow newValue) {
-    this.value.copyValueFrom(newValue);
-    if (this.value.isEmpty()) {
+    this.value?.copyValueFrom(newValue);
+    if (this.value!.isEmpty()) {
       setNoData();
     } else {
       setFinished();
@@ -1064,8 +1066,8 @@ class CompanyProfileNotifier extends BaseValueNotifier<DataCompanyProfile> {
   CompanyProfileNotifier(DataCompanyProfile value) : super(value);
 
   void setValue(DataCompanyProfile newValue) {
-    this.value.copyValueFrom(newValue);
-    if (this.value.isEmpty()) {
+    this.value?.copyValueFrom(newValue);
+    if (this.value!.isEmpty()!) {
       setNoData();
     } else {
       setFinished();
@@ -1074,26 +1076,26 @@ class CompanyProfileNotifier extends BaseValueNotifier<DataCompanyProfile> {
 }
 
 class ResultHomeNews {
-  List<HomeNews> datas = List.empty(growable: true);
+  List<HomeNews>? datas = List.empty(growable: true);
   bool loaded = false;
-  void copyValueFrom(ResultHomeNews newValue) {
+  void copyValueFrom(ResultHomeNews? newValue) {
     if (newValue != null) {
       this.loaded = true;
-      this.datas.clear();
+      this.datas?.clear();
       if (newValue.datas != null) {
-        this.datas.addAll(newValue.datas);
+        this.datas?.addAll(newValue.datas!);
       }
     } else {
-      this.datas.clear();
+      this.datas?.clear();
     }
   }
 
-  bool isEmpty() {
-    return this.datas != null ? this.datas.isEmpty : true;
+  bool? isEmpty() {
+    return this.datas != null ? this.datas?.isEmpty : true;
   }
 
-  int count() {
-    return this.datas != null ? this.datas.length : 0;
+  int? count() {
+    return this.datas != null ? this.datas?.length : 0;
   }
 }
 
@@ -1101,8 +1103,8 @@ class HomeNewsNotifier extends BaseValueNotifier<ResultHomeNews> {
   HomeNewsNotifier(ResultHomeNews value) : super(value);
 
   void setValue(ResultHomeNews newValue) {
-    this.value.copyValueFrom(newValue);
-    if (this.value.isEmpty()) {
+    this.value?.copyValueFrom(newValue);
+    if (this.value!.isEmpty()!) {
       setNoData();
     } else {
       setFinished();
@@ -1114,8 +1116,8 @@ class TopUpBanksNotifier extends BaseValueNotifier<ResultTopUpBank> {
   TopUpBanksNotifier(ResultTopUpBank value) : super(value);
 
   void setValue(ResultTopUpBank newValue) {
-    this.value.copyValueFrom(newValue);
-    if (this.value.isEmpty()) {
+    this.value?.copyValueFrom(newValue);
+    if (this.value!.isEmpty()!) {
       setNoData();
     } else {
       setFinished();
@@ -1127,8 +1129,8 @@ class MutasiNotifier extends BaseValueNotifier<ResultMutasi> {
   MutasiNotifier(ResultMutasi value) : super(value);
 
   void setValue(ResultMutasi newValue) {
-    this.value.copyValueFrom(newValue);
-    if (this.value.isEmpty()) {
+    this.value?.copyValueFrom(newValue);
+    if (this.value!.isEmpty()) {
       setNoData();
     } else {
       setFinished();
@@ -1140,8 +1142,8 @@ class BankRDNNotifier extends BaseValueNotifier<BankRDN> {
   BankRDNNotifier(BankRDN value) : super(value);
 
   void setValue(BankRDN newValue) {
-    this.value.copyValueFrom(newValue);
-    if (this.value.isEmpty()) {
+    this.value?.copyValueFrom(newValue);
+    if (this.value!.isEmpty()) {
       setNoData();
     } else {
       setFinished();
@@ -1153,8 +1155,8 @@ class CashPositionNotifier extends BaseValueNotifier<CashPosition> {
   CashPositionNotifier(CashPosition value) : super(value);
 
   void setValue(CashPosition newValue) {
-    this.value.copyValueFrom(newValue);
-    if (this.value.isEmpty()) {
+    this.value?.copyValueFrom(newValue);
+    if (this.value!.isEmpty()) {
       setNoData();
     } else {
       setFinished();
@@ -1166,8 +1168,8 @@ class FundOutTermNotifier extends BaseValueNotifier<ResultFundOutTerm> {
   FundOutTermNotifier(ResultFundOutTerm value) : super(value);
 
   void setValue(ResultFundOutTerm newValue) {
-    this.value.copyValueFrom(newValue);
-    if (this.value.isEmpty()) {
+    this.value?.copyValueFrom(newValue);
+    if (this.value!.isEmpty()) {
       setNoData();
     } else {
       setFinished();
@@ -1179,8 +1181,8 @@ class BankAccountNotifier extends BaseValueNotifier<BankAccount> {
   BankAccountNotifier(BankAccount value) : super(value);
 
   void setValue(BankAccount newValue) {
-    this.value.copyValueFrom(newValue);
-    if (this.value.isEmpty()) {
+    this.value?.copyValueFrom(newValue);
+    if (this.value!.isEmpty()) {
       setNoData();
     } else {
       setFinished();
@@ -1193,8 +1195,8 @@ class ChartEarningPerShareNotifier
   ChartEarningPerShareNotifier(DataChartEarningPerShare value) : super(value);
 
   void setValue(DataChartEarningPerShare newValue) {
-    this.value.copyValueFrom(newValue);
-    if (this.value.isEmpty()) {
+    this.value?.copyValueFrom(newValue);
+    if (this.value!.isEmpty()) {
       setNoData();
     } else {
       setFinished();
@@ -1207,8 +1209,8 @@ class ChartEarningPerShareNotifier
 //
 //   void setValue(OfferingEIPOData newValue){
 //
-//     this.value.copyValueFrom(newValue);
-//     if(this.value.isEmpty()){
+//     this.value?.copyValueFrom(newValue);
+//     if(this.value!.isEmpty()){
 //       setNoData();
 //     }else{
 //       setFinished();
@@ -1221,8 +1223,8 @@ class NewsNotifier extends BaseValueNotifier<NewsData> {
 
   void setValue(NewsData newValue) {
     //this.error = '';
-    this.value.copyValueFrom(newValue);
-    if (this.value.isEmpty()) {
+    this.value?.copyValueFrom(newValue);
+    if (this.value!.isEmpty()!) {
       setNoData();
     } else {
       setFinished();
@@ -1247,18 +1249,18 @@ class NewsNotifier extends BaseValueNotifier<NewsData> {
   // }
 }
 
-class LoadingNotifier extends ValueNotifier<LoadingData> {
-  LoadingNotifier(LoadingData value) : super(value);
+class LoadingNotifier extends ValueNotifier<LoadingData?> {
+  LoadingNotifier(LoadingData? value) : super(value);
 
   void setValue(bool showLoading, String textLoading) {
-    this.value.showLoading = showLoading;
-    this.value.textLoading = textLoading;
+    this.value?.showLoading = showLoading;
+    this.value?.textLoading = textLoading;
     notifyListeners();
   }
 
   void closeLoading() {
-    if (this.value.showLoading) {
-      this.value.showLoading = false;
+    if (this.value!.showLoading) {
+      this.value?.showLoading = false;
       //this.value.textLoading = textLoading;
       notifyListeners();
     }
@@ -1273,16 +1275,16 @@ class LoadingNotifier extends ValueNotifier<LoadingData> {
   }
 }
 
-class StringColorFontNotifier extends ValueNotifier<StringColorFont> {
-  StringColorFontNotifier(StringColorFont value) : super(value);
+class StringColorFontNotifier extends ValueNotifier<StringColorFont?> {
+  StringColorFontNotifier(StringColorFont? value) : super(value);
 
-  void setValue(String newValue, {Color newColor, double fontSize = 0.0}) {
-    this.value.value = newValue;
+  void setValue(String newValue, {Color? newColor, double? fontSize = 0.0}) {
+    this.value?.value = newValue;
     if (newColor != null) {
-      this.value.color = newColor;
+      this.value?.color = newColor;
     }
-    if (fontSize > 0.0) {
-      this.value.fontSize = fontSize;
+    if (fontSize! > 0.0) {
+      this.value?.fontSize = fontSize;
     }
     notifyListeners();
   }
@@ -1296,20 +1298,20 @@ class StringColorFontNotifier extends ValueNotifier<StringColorFont> {
   }
 }
 
-class StringColorFontBoolNotifier extends ValueNotifier<StringColorFontBool> {
-  StringColorFontBoolNotifier(StringColorFontBool value) : super(value);
+class StringColorFontBoolNotifier extends ValueNotifier<StringColorFontBool?> {
+  StringColorFontBoolNotifier(StringColorFontBool? value) : super(value);
 
   void setValue(String newValue,
-      {Color newColor, double fontSize = 0.0, bool boolFlag}) {
-    this.value.value = newValue;
+      {Color? newColor, double? fontSize = 0.0, bool? boolFlag}) {
+    this.value?.value = newValue;
     if (newColor != null) {
-      this.value.color = newColor;
+      this.value?.color = newColor;
     }
-    if (fontSize > 0.0) {
-      this.value.fontSize = fontSize;
+    if (fontSize! > 0.0) {
+      this.value?.fontSize = fontSize;
     }
     if (boolFlag != null) {
-      this.value.flag = boolFlag;
+      this.value?.flag = boolFlag;
     }
     notifyListeners();
   }
@@ -1322,24 +1324,24 @@ class StringColorFontBoolNotifier extends ValueNotifier<StringColorFontBool> {
     return !valid();
   }
 
-  void setFlag(bool flag) {
-    if (flag != null && flag != this.value.flag) {
-      this.value.flag = flag;
+  void setFlag(bool? flag) {
+    if (flag != null && flag != this.value?.flag) {
+      this.value?.flag = flag;
       notifyListeners();
     }
   }
 }
 
-class IntColorFontNotifier extends ValueNotifier<IntColorFont> {
-  IntColorFontNotifier(IntColorFont value) : super(value);
+class IntColorFontNotifier extends ValueNotifier<IntColorFont?> {
+  IntColorFontNotifier(IntColorFont? value) : super(value);
 
-  void setValue(int newValue, {Color newColor, double fontSize = 0.0}) {
-    this.value.value = newValue;
+  void setValue(int newValue, {Color? newColor, double fontSize = 0.0}) {
+    this.value?.value = newValue;
     if (newColor != null) {
-      this.value.color = newColor;
+      this.value?.color = newColor;
     }
     if (fontSize > 0.0) {
-      this.value.fontSize = fontSize;
+      this.value?.fontSize = fontSize;
     }
     notifyListeners();
   }
@@ -1356,9 +1358,9 @@ class IntColorFontNotifier extends ValueNotifier<IntColorFont> {
 class CorporateActionNotifier extends BaseValueNotifier<CorporateActionData> {
   CorporateActionNotifier(CorporateActionData value) : super(value);
 
-  void setValue(CorporateActionData newValue) {
-    this.value.copyValueFrom(newValue);
-    if (this.value.isEmpty()) {
+  void setValue(CorporateActionData? newValue) {
+    this.value?.copyValueFrom(newValue!);
+    if (this.value!.isEmpty()) {
       setNoData();
     } else {
       setFinished();
@@ -1367,7 +1369,7 @@ class CorporateActionNotifier extends BaseValueNotifier<CorporateActionData> {
   }
 
   bool valid() {
-    return value != null && value.loaded;
+    return value != null && value!.loaded;
   }
 
   bool invalid() {
@@ -1379,8 +1381,8 @@ class LabelValueNotifier extends BaseValueNotifier<LabelValueData> {
   LabelValueNotifier(LabelValueData value) : super(value);
 
   void setValue(LabelValueData newValue) {
-    this.value.copyValueFrom(newValue);
-    if (this.value.isEmpty()) {
+    this.value?.copyValueFrom(newValue);
+    if (this.value!.isEmpty()) {
       setNoData();
     } else {
       setFinished();
@@ -1389,7 +1391,7 @@ class LabelValueNotifier extends BaseValueNotifier<LabelValueData> {
   }
 
   bool valid() {
-    return value != null && value.loaded;
+    return value != null && value!.loaded;
   }
 
   bool invalid() {
@@ -1401,9 +1403,9 @@ class EarningPerShareNotifier extends BaseValueNotifier<EarningPerShareData> {
   EarningPerShareNotifier(EarningPerShareData value) : super(value);
 
   void setValue(EarningPerShareData newValue) {
-    this.value.copyValueFrom(newValue);
+    this.value?.copyValueFrom(newValue);
     //notifyListeners();
-    if (this.value.isEmpty()) {
+    if (this.value!.isEmpty()) {
       setNoData();
     } else {
       setFinished();
@@ -1411,7 +1413,7 @@ class EarningPerShareNotifier extends BaseValueNotifier<EarningPerShareData> {
   }
 
   bool valid() {
-    return value != null && value.loaded;
+    return value != null && value!.loaded;
   }
 
   bool invalid() {
@@ -1419,16 +1421,16 @@ class EarningPerShareNotifier extends BaseValueNotifier<EarningPerShareData> {
   }
 }
 
-class IndexSummaryNotifier extends ValueNotifier<IndexSummary> {
-  Index index;
+class IndexSummaryNotifier extends ValueNotifier<IndexSummary?> {
+  Index? index;
 
-  IndexSummaryNotifier(IndexSummary value, this.index) : super(value);
+  IndexSummaryNotifier(IndexSummary? value, this.index) : super(value);
 
   void setIndex(Index newIndex) {
     if (this.index == null) {
       this.index = newIndex;
     } else {
-      this.index.copyValueFrom(newIndex);
+      this.index!.copyValueFrom(newIndex);
     }
 
     notifyListeners();
@@ -1452,15 +1454,15 @@ class IndexSummaryNotifier extends ValueNotifier<IndexSummary> {
     if (this.value == null) {
       this.value = newValue;
     } else {
-      this.value.copyValueFrom(newValue);
+      this.value?.copyValueFrom(newValue);
     }
 
     notifyListeners();
   }
 }
 
-class StockSummaryNotifier extends ValueNotifier<StockSummary> {
-  Stock stock;
+class StockSummaryNotifier extends ValueNotifier<StockSummary?> {
+  Stock? stock;
 
   StockSummaryNotifier(StockSummary value, this.stock) : super(value);
 
@@ -1492,15 +1494,15 @@ class StockSummaryNotifier extends ValueNotifier<StockSummary> {
     if (this.value == null) {
       this.value = newValue;
     } else {
-      this.value.copyValueFrom(newValue);
+      this.value?.copyValueFrom(newValue);
     }
 
     notifyListeners();
   }
 }
 
-class OrderBookNotifier extends ValueNotifier<OrderBook> {
-  Stock stock;
+class OrderBookNotifier extends ValueNotifier<OrderBook?> {
+  Stock? stock;
 
   OrderBookNotifier(OrderBook value, this.stock) : super(value);
 
@@ -1532,14 +1534,14 @@ class OrderBookNotifier extends ValueNotifier<OrderBook> {
     if (this.value == null) {
       this.value = newValue;
     } else {
-      this.value.copyValueFrom(newValue);
+      this.value?.copyValueFrom(newValue);
     }
 
     notifyListeners();
   }
 }
 
-class RangeNotifier extends ValueNotifier<Range> {
+class RangeNotifier extends ValueNotifier<Range?> {
   RangeNotifier(Range value) : super(value);
 
   void setRange(Range newRange) {
@@ -1547,7 +1549,7 @@ class RangeNotifier extends ValueNotifier<Range> {
     print('RangeNotifier setRange = ' + newRange.index.toString());
     this.value = newRange;
     // } else {
-    //   this.value.copyValueFrom(newStock);
+    //   this.value?.copyValueFrom(newStock);
     // }
 
     notifyListeners();
@@ -1557,7 +1559,7 @@ class RangeNotifier extends ValueNotifier<Range> {
     if (this.value == null) {
       this.value = Range.createBasic();
     }
-    this.value.index = index;
+    this.value?.index = index;
     notifyListeners();
   }
 
@@ -1565,7 +1567,7 @@ class RangeNotifier extends ValueNotifier<Range> {
     if (this.value == null) {
       this.value = Range.createBasic();
     }
-    this.value.from = from;
+    this.value?.from = from;
     if (customRangeIsValid()) {
       notifyListeners();
     }
@@ -1575,7 +1577,7 @@ class RangeNotifier extends ValueNotifier<Range> {
     if (this.value == null) {
       this.value = Range.createBasic();
     }
-    this.value.to = to;
+    this.value?.to = to;
     if (customRangeIsValid()) {
       notifyListeners();
     }
@@ -1583,29 +1585,29 @@ class RangeNotifier extends ValueNotifier<Range> {
 
   final DateFormat _dateFormat = DateFormat('yyyy-MM-dd');
   MyRange getRange() {
-    DateTime from;
-    DateTime to;
+    DateTime? from;
+    DateTime? to;
     //widget.callbackRange(_listChipRange[_selectedRange]);
     //  0      1    2     3      4     5    6      7
     //['1D', '1W', '1M', '3M', '6M', '1Y', '5Y', 'All'];
-    if (value.index == 0) {
+    if (value?.index == 0) {
       MyRange range = MyRange();
       range.from = 'LD';
       range.to = 'LD';
-      range.index = value.index;
+      range.index = value?.index;
       return range;
-    } else if (value.index == 7) {
-      MyRange range = MyRange();
-      range.from = StringUtils.equalsIgnoreCase(value.from, 'from_label'.tr())
+    } else if (value?.index == 7) {
+      MyRange? range = MyRange();
+      range.from = StringUtils.equalsIgnoreCase(value?.from, 'from_label'.tr())
           ? ''
-          : value.from;
-      range.to = StringUtils.equalsIgnoreCase(value.to, 'to_label'.tr())
+          : value?.from;
+      range.to = StringUtils.equalsIgnoreCase(value?.to, 'to_label'.tr())
           ? ''
-          : value.to;
-      range.index = value.index;
+          : value?.to;
+      range.index = value!.index;
       return range;
     }
-    switch (value.index) {
+    switch (value?.index) {
       case 0:
         {
           to = DateTime.now();
@@ -1658,7 +1660,7 @@ class RangeNotifier extends ValueNotifier<Range> {
     MyRange range = MyRange();
     range.from = from == null ? '' : _dateFormat.format(from);
     range.to = to == null ? '' : _dateFormat.format(to);
-    range.index = value.index;
+    range.index = value?.index;
     return range;
   }
 
@@ -1667,8 +1669,8 @@ class RangeNotifier extends ValueNotifier<Range> {
   }
 
   bool customRangeIsValid() {
-    return !StringUtils.equalsIgnoreCase(this.value.from, 'from_label'.tr()) &&
-        !StringUtils.equalsIgnoreCase(this.value.to, 'to_label'.tr());
+    return !StringUtils.equalsIgnoreCase(this.value?.from, 'from_label'.tr()) &&
+        !StringUtils.equalsIgnoreCase(this.value?.to, 'to_label'.tr());
   }
 
   bool invalid() {
@@ -1676,15 +1678,15 @@ class RangeNotifier extends ValueNotifier<Range> {
   }
 }
 
-class StockNotifier extends ValueNotifier<Stock> {
-  StockNotifier(Stock value) : super(value);
+class StockNotifier extends ValueNotifier<Stock?> {
+  StockNotifier(Stock? value) : super(value);
 
   void setStock(Stock newStock) {
     //if (this.value == null) {
-    print('StockNotifier setStock = ' + newStock.code);
+    print('StockNotifier setStock = ' + newStock.code!);
     this.value = newStock;
     // } else {
-    //   this.value.copyValueFrom(newStock);
+    //   this.value?.copyValueFrom(newStock);
     // }
 
     notifyListeners();
@@ -1708,7 +1710,7 @@ class OrderDataNotifier extends ValueNotifier<OrderData> {
     //if (this.value == null) {
     this.value = newValue;
     // } else {
-    //   this.value.copyValueFrom(newStock);
+    //   this.value?.copyValueFrom(newStock);
     // }
 
     notifyListeners();
@@ -1748,8 +1750,8 @@ class OrderDataNotifier extends ValueNotifier<OrderData> {
   }
 }
 */
-class TradeBookNotifier extends ValueNotifier<TradeBook> {
-  Stock stock;
+class TradeBookNotifier extends ValueNotifier<TradeBook?> {
+  Stock? stock;
 
   TradeBookNotifier(TradeBook value, this.stock) : super(value);
 
@@ -1781,7 +1783,7 @@ class TradeBookNotifier extends ValueNotifier<TradeBook> {
     if (this.value == null) {
       this.value = newValue;
     } else {
-      this.value.copyValueFrom(newValue);
+      this.value?.copyValueFrom(newValue);
     }
 
     notifyListeners();

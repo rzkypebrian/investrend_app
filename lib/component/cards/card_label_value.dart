@@ -5,14 +5,16 @@ import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:Investrend/utils/string_utils.dart';
 import 'package:Investrend/utils/ui_helper.dart';
 import 'package:flutter/material.dart';
-import 'package:easy_localization/easy_localization.dart';
+// import 'package:easy_localization/easy_localization.dart';
 
 class CardLabelValue extends StatefulWidget {
-  final String title;
-  final LabelValueData datas;
-  final double paddingTop;
+  final String? title;
+  final LabelValueData? datas;
+  final double? paddingTop;
 
-  CardLabelValue(this.title, this.datas, {Key key, this.paddingTop = InvestrendTheme.cardPaddingVertical}) : super(key: key);
+  CardLabelValue(this.title, this.datas,
+      {Key? key, this.paddingTop = InvestrendTheme.cardPaddingVertical})
+      : super(key: key);
 
   @override
   _CardLabelValueState createState() => _CardLabelValueState();
@@ -23,16 +25,19 @@ class _CardLabelValueState extends State<CardLabelValue> {
   Widget build(BuildContext context) {
     return Container(
       //color: Colors.lightBlueAccent,
-      margin: EdgeInsets.only(left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral, top: widget.paddingTop),
+      margin: EdgeInsets.only(
+          left: InvestrendTheme.cardPaddingGeneral,
+          right: InvestrendTheme.cardPaddingGeneral,
+          top: widget.paddingTop!),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           //SizedBox(height: InvestrendTheme.cardPaddingPlusMargin,),
-          ComponentCreator.subtitle(context, widget.title),
+          ComponentCreator.subtitle(context, widget.title!),
           SizedBox(
             height: InvestrendTheme.cardPaddingGeneral,
           ),
-          createContent(context, widget.datas),
+          createContent(context, widget.datas!),
           //SizedBox(height: 10.0,),
         ],
       ),
@@ -41,9 +46,9 @@ class _CardLabelValueState extends State<CardLabelValue> {
 
   Widget row(BuildContext context, LabelValue labelValue) {
     //TextStyle valueStyle = InvestrendTheme.of(context).small_w400_compact.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor);
-    TextStyle valueStyle = InvestrendTheme.of(context).small_w400_compact;
+    TextStyle? valueStyle = InvestrendTheme.of(context).small_w400_compact;
     if (labelValue.valueColor != null) {
-      valueStyle = valueStyle.copyWith(color: labelValue.valueColor);
+      valueStyle = valueStyle?.copyWith(color: labelValue.valueColor);
     }
 
     return Padding(
@@ -52,13 +57,14 @@ class _CardLabelValueState extends State<CardLabelValue> {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Text(
-            labelValue.label,
-            style: InvestrendTheme.of(context).support_w400_compact.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor),
+            labelValue.label!,
+            style: InvestrendTheme.of(context).support_w400_compact?.copyWith(
+                color: InvestrendTheme.of(context).greyDarkerTextColor),
           ),
           Expanded(
             flex: 1,
             child: Text(
-              labelValue.value,
+              labelValue.value!,
               style: valueStyle,
               textAlign: TextAlign.right,
             ),
@@ -70,8 +76,10 @@ class _CardLabelValueState extends State<CardLabelValue> {
 
   Widget rowContentPlace(BuildContext context, ContentPlaceInfo labelValue) {
     //TextStyle valueStyle = InvestrendTheme.of(context).small_w400_compact.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor);
-    TextStyle typeStyle = InvestrendTheme.of(context).small_w400_compact;
-    TextStyle infoStyle = InvestrendTheme.of(context).more_support_w400_compact.copyWith(height: 1.25);
+    TextStyle? typeStyle = InvestrendTheme.of(context).small_w400_compact;
+    TextStyle? infoStyle = InvestrendTheme.of(context)
+        .more_support_w400_compact
+        ?.copyWith(height: 1.25);
     return Padding(
       padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
       child: Column(
@@ -124,7 +132,7 @@ class _CardLabelValueState extends State<CardLabelValue> {
         data.count(),
         (int index) {
           //print(_listChipRange[index]);
-          LabelValueDivider labelValueDivider = data.datas.elementAt(index);
+          LabelValueDivider labelValueDivider = data.datas!.elementAt(index);
           if (labelValueDivider is LabelValue) {
             return row(context, labelValueDivider);
           } else if (labelValueDivider is ContentPlaceInfo) {
@@ -143,18 +151,20 @@ class _CardLabelValueState extends State<CardLabelValue> {
 }
 
 class CardLabelValueNotifier extends StatelessWidget {
-  final LabelValueNotifier notifier;
-  final String title;
-  final String additionalTitleInfo;
-  final VoidCallback onRetry;
+  final LabelValueNotifier? notifier;
+  final String? title;
+  final String? additionalTitleInfo;
+  final VoidCallback? onRetry;
 
-  const CardLabelValueNotifier(this.title, this.notifier, {this.onRetry, this.additionalTitleInfo, Key key}) : super(key: key);
+  const CardLabelValueNotifier(this.title, this.notifier,
+      {this.onRetry, this.additionalTitleInfo, Key? key})
+      : super(key: key);
 
-  Widget createAdditionalTitleInfo(BuildContext context, String _titleInfo) {
+  Widget createAdditionalTitleInfo(BuildContext context, String? _titleInfo) {
     return Padding(
       padding: const EdgeInsets.only(top: 5.0),
       child: Text(
-        _titleInfo,
+        _titleInfo!,
         style: InvestrendTheme.of(context).support_w400_compact,
       ),
     );
@@ -163,21 +173,22 @@ class CardLabelValueNotifier extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget titleInfo;
-    if (!StringUtils.isEmtpy(additionalTitleInfo)) {
-      titleInfo = createAdditionalTitleInfo(context, additionalTitleInfo);
+    if (!StringUtils.isEmtpy(additionalTitleInfo!)) {
+      titleInfo = createAdditionalTitleInfo(context, additionalTitleInfo!);
     } else {
       titleInfo = ValueListenableBuilder(
-        valueListenable: notifier,
-        builder: (context, LabelValueData data, child) {
-          Widget noWidget = notifier.currentState.getNoWidget(onRetry: onRetry);
+        valueListenable: notifier!,
+        builder: (context, LabelValueData? data, child) {
+          Widget? noWidget =
+              notifier?.currentState.getNoWidget(onRetry: onRetry!);
 
           //if (notifier.invalid() || StringUtils.isEmtpy(data.additionalInfo)) {
-          if (noWidget != null || StringUtils.isEmtpy(data.additionalInfo)) {
+          if (noWidget != null || StringUtils.isEmtpy(data?.additionalInfo)) {
             return SizedBox(
               width: 1.0,
             );
           }
-          return createAdditionalTitleInfo(context, data.additionalInfo);
+          return createAdditionalTitleInfo(context, data?.additionalInfo);
         },
       );
     }
@@ -195,23 +206,27 @@ class CardLabelValueNotifier extends StatelessWidget {
           // SizedBox(
           //   height: InvestrendTheme.cardPaddingGeneral,
           // ),
-          ComponentCreator.subtitle(context, title),
+          ComponentCreator.subtitle(context, title!),
           //(StringUtils.isEmtpy(additionalTitleInfo) ? SizedBox(width: 1,) : createAdditionalTitleInfo(context)),
           titleInfo,
           SizedBox(
             height: InvestrendTheme.cardPaddingGeneral,
           ),
           ValueListenableBuilder(
-            valueListenable: notifier,
-            builder: (context, LabelValueData data, child) {
+            valueListenable: notifier!,
+            builder: (context, LabelValueData? data, child) {
               /*
               if (notifier.invalid()) {
                 return Center(child: CircularProgressIndicator());
               }
               */
-              Widget noWidget = notifier.currentState.getNoWidget(onRetry: onRetry);
+              Widget? noWidget =
+                  notifier?.currentState.getNoWidget(onRetry: onRetry!);
               if (noWidget != null) {
-                return Container(width: double.maxFinite, height: MediaQuery.of(context).size.width / 3, child: Center(child: noWidget));
+                return Container(
+                    width: double.maxFinite,
+                    height: MediaQuery.of(context).size.width / 3,
+                    child: Center(child: noWidget));
               }
               return createContent(context, data);
             },
@@ -221,15 +236,15 @@ class CardLabelValueNotifier extends StatelessWidget {
     );
   }
 
-  Widget createContent(BuildContext context, LabelValueData data) {
+  Widget createContent(BuildContext context, LabelValueData? data) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: List<Widget>.generate(
-        data.count(),
+        data!.count(),
         (int index) {
           //print(_listChipRange[index]);
           //double paddingTop = index == 0 ? 0 : 10.0;
-          LabelValueDivider labelValueDivider = data.datas.elementAt(index);
+          LabelValueDivider labelValueDivider = data.datas!.elementAt(index);
           if (labelValueDivider is LabelValuePercent) {
             return rowPercent(context, labelValueDivider);
           } else if (labelValueDivider is LabelValue) {
@@ -242,10 +257,13 @@ class CardLabelValueNotifier extends StatelessWidget {
               //padding: EdgeInsets.only(top: paddingTop,),
               child: ComponentCreator.divider(context),
             );
+            /*
             return Padding(
-              padding: const EdgeInsets.only(top: InvestrendTheme.cardPaddingVertical),
+              padding: const EdgeInsets.only(
+                  top: InvestrendTheme.cardPaddingVertical),
               child: ComponentCreator.divider(context),
             );
+            */
           }
         },
       ),
@@ -266,9 +284,9 @@ class CardLabelValueNotifier extends StatelessWidget {
 
   Widget row(BuildContext context, LabelValue labelValue) {
     //TextStyle valueStyle = InvestrendTheme.of(context).small_w400_compact.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor);
-    TextStyle valueStyle = InvestrendTheme.of(context).small_w400_compact;
+    TextStyle? valueStyle = InvestrendTheme.of(context).small_w400_compact;
     if (labelValue.valueColor != null) {
-      valueStyle = valueStyle.copyWith(color: labelValue.valueColor);
+      valueStyle = valueStyle?.copyWith(color: labelValue.valueColor);
     }
     return Padding(
       padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
@@ -276,50 +294,59 @@ class CardLabelValueNotifier extends StatelessWidget {
         builder: (BuildContext context, BoxConstraints constraints) {
           double availableWidth = constraints.maxWidth - 10.0;
 
-          TextStyle labelStyle = InvestrendTheme.of(context).support_w400.copyWith(
-            color: InvestrendTheme.of(context).greyDarkerTextColor,
-          );
-          double widthLabel = UIHelper.textSize(labelValue.label, labelStyle).width;
-          double widthValue = UIHelper.textSize(labelValue.value, valueStyle).width;
+          TextStyle? labelStyle =
+              InvestrendTheme.of(context).support_w400?.copyWith(
+                    color: InvestrendTheme.of(context).greyDarkerTextColor,
+                  );
+          double widthLabel =
+              UIHelper.textSize(labelValue.label!, labelStyle).width;
+          double widthValue =
+              UIHelper.textSize(labelValue.value!, valueStyle).width;
 
           double totalContentWidth = widthLabel + widthValue;
-          if(totalContentWidth > availableWidth){
-            if(widthLabel > widthValue){
+          if (totalContentWidth > availableWidth) {
+            if (widthLabel > widthValue) {
               return Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(
                     flex: 1,
                     child: Text(
-                      labelValue.label,
+                      labelValue.label!,
                       maxLines: 5,
                       softWrap: true,
                       style: labelStyle,
-                      textHeightBehavior: TextHeightBehavior(applyHeightToFirstAscent: false),
+                      textHeightBehavior:
+                          TextHeightBehavior(applyHeightToFirstAscent: false),
                     ),
                   ),
-                  SizedBox(width: 10.0,),
+                  SizedBox(
+                    width: 10.0,
+                  ),
                   Text(
-                    labelValue.value,
+                    labelValue.value!,
                     style: valueStyle,
                     textAlign: TextAlign.right,
                   ),
                 ],
               );
-            }else{
+            } else {
               return Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    labelValue.label,
+                    labelValue.label!,
                     style: labelStyle,
-                    textHeightBehavior: TextHeightBehavior(applyHeightToFirstAscent: false),
+                    textHeightBehavior:
+                        TextHeightBehavior(applyHeightToFirstAscent: false),
                   ),
-                  SizedBox(width: 10.0,),
+                  SizedBox(
+                    width: 10.0,
+                  ),
                   Expanded(
                     flex: 1,
                     child: Text(
-                      labelValue.value,
+                      labelValue.value!,
                       style: valueStyle,
                       textAlign: TextAlign.right,
                       maxLines: 5,
@@ -337,14 +364,17 @@ class CardLabelValueNotifier extends StatelessWidget {
               Expanded(
                 flex: 1,
                 child: Text(
-                  labelValue.label,
+                  labelValue.label!,
                   style: labelStyle,
-                  textHeightBehavior: TextHeightBehavior(applyHeightToFirstAscent: false),
+                  textHeightBehavior:
+                      TextHeightBehavior(applyHeightToFirstAscent: false),
                 ),
               ),
-              SizedBox(width: 10.0,),
+              SizedBox(
+                width: 10.0,
+              ),
               Text(
-                labelValue.value,
+                labelValue.value!,
                 style: valueStyle,
                 textAlign: TextAlign.right,
               ),
@@ -397,14 +427,16 @@ class CardLabelValueNotifier extends StatelessWidget {
   }
 
   Widget rowPercent(BuildContext context, LabelValuePercent labelValue) {
-    TextStyle valueStyle = InvestrendTheme.of(context).small_w400_compact;
-    TextStyle valuePercentStyle =
-        InvestrendTheme.of(context).support_w400_compact.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor);
+    TextStyle? valueStyle = InvestrendTheme.of(context).small_w400_compact;
+    TextStyle? valuePercentStyle = InvestrendTheme.of(context)
+        .support_w400_compact
+        ?.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor);
     if (labelValue.valueColor != null) {
-      valueStyle = valueStyle.copyWith(color: labelValue.valueColor);
+      valueStyle = valueStyle?.copyWith(color: labelValue.valueColor);
     }
     if (labelValue.valuePercentColor != null) {
-      valuePercentStyle = valuePercentStyle.copyWith(color: labelValue.valuePercentColor);
+      valuePercentStyle =
+          valuePercentStyle?.copyWith(color: labelValue.valuePercentColor);
     }
     /*
     return Padding(
@@ -446,9 +478,11 @@ class CardLabelValueNotifier extends StatelessWidget {
           Expanded(
               flex: 1,
               child: Text(
-                labelValue.label,
-                style: InvestrendTheme.of(context).support_w400.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor),
-                textHeightBehavior: TextHeightBehavior(applyHeightToFirstAscent: false),
+                labelValue.label!,
+                style: InvestrendTheme.of(context).support_w400?.copyWith(
+                    color: InvestrendTheme.of(context).greyDarkerTextColor),
+                textHeightBehavior:
+                    TextHeightBehavior(applyHeightToFirstAscent: false),
               )),
           SizedBox(
             width: InvestrendTheme.cardMargin,
@@ -457,7 +491,7 @@ class CardLabelValueNotifier extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                labelValue.value,
+                labelValue.value!,
                 style: valueStyle,
                 textAlign: TextAlign.right,
               ),
@@ -465,7 +499,7 @@ class CardLabelValueNotifier extends StatelessWidget {
                 height: 4.0,
               ),
               Text(
-                labelValue.valuePercent,
+                labelValue.valuePercent!,
                 style: valuePercentStyle,
                 textAlign: TextAlign.right,
               )

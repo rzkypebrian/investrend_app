@@ -1,0 +1,699 @@
+
+CLASS SosMedHttp
+
+/*
+class SosMedHttp{
+  static String _sosmedBaseUrl = 'investrend-prod.teltics.in'; // http://investrend.teltics.in/api/
+  static int sosmed_timeout_in_seconds = 30;
+
+  static Future<FetchComment> sosmedFetchComment(String filter_post_id, String access_token, String platform, String version,{int page, String language=''}) async {
+
+    String path = 'api/post-comments';
+    DebugWriter.info('path = $_sosmedBaseUrl/$path');
+    var parameters;
+    if(page != null ){
+      parameters = {
+        'access_token': access_token,
+        'filter_post_id': filter_post_id,
+        'page': page.toString(),
+
+        'language' : language,
+        'platform' : platform,
+        'version' : version,
+      };
+    }else{
+      parameters = {
+        'access_token': access_token,
+        'filter_post_id': filter_post_id,
+
+        'language' : language,
+        'platform' : platform,
+        'version' : version,
+      };
+    }
+
+    final response = await http.get(Uri.http(_sosmedBaseUrl, path, parameters)).timeout(Duration(seconds: sosmed_timeout_in_seconds));
+
+    if (response.statusCode == 200) {
+      // If the server did return a 200 OK response,
+      // then parse the JSON.
+      //listWorldIndices.clear();
+      DebugWriter.info('fetch_comment --> '+response.body);
+
+      FetchComment fetchComment = FetchComment.fromJson(jsonDecode(response.body));
+
+      DebugWriter.info('fetch_comment --> \n'+fetchComment.toString());
+      // String _access_token = user.token!.access_token;
+      // String _refresh_token = user.token.refresh_token;
+      // token.update(_access_token, _refresh_token);
+      // token.save();
+      return fetchComment;
+
+      // return document.findAllElements('a')
+      //     .map((element) => new HomeWorldIndices.fromXml(element)).toList();
+    } else {
+      // If the server did not return a 200 OK response,
+      throw Exception('Error : ' + response.statusCode.toString() + '  ' + response.reasonPhrase);
+    }
+  }
+
+  static Future<FetchPost> sosmedFetchPost(String access_token, String platform, String version,{int page, String language=''}) async {
+
+    String path = 'api/posts';
+    DebugWriter.info('path = $_sosmedBaseUrl/$path');
+    var parameters;
+    if(page != null ){
+      parameters = {
+        'access_token': access_token,
+        'page': page.toString(),
+
+        'language' : language,
+        'platform' : platform,
+        'version' : version,
+      };
+    }else{
+      parameters = {
+        'access_token': access_token,
+
+        'language' : language,
+        'platform' : platform,
+        'version' : version,
+      };
+    }
+
+    final response = await http.get(Uri.http(_sosmedBaseUrl, path, parameters)).timeout(Duration(seconds: sosmed_timeout_in_seconds));
+
+    if (response.statusCode == 200) {
+      // If the server did return a 200 OK response,
+      // then parse the JSON.
+      //listWorldIndices.clear();
+      DebugWriter.info('fetch_post --> '+response.body);
+
+      FetchPost fetchPost = FetchPost.fromJson(jsonDecode(response.body));
+
+      DebugWriter.info('fetch_post --> \n'+fetchPost.toString());
+      // String _access_token = user.token!.access_token;
+      // String _refresh_token = user.token.refresh_token;
+      // token.update(_access_token, _refresh_token);
+      // token.save();
+      return fetchPost;
+
+      // return document.findAllElements('a')
+      //     .map((element) => new HomeWorldIndices.fromXml(element)).toList();
+    } else {
+      // If the server did not return a 200 OK response,
+      throw Exception('Error : ' + response.statusCode.toString() + '  ' + response.reasonPhrase);
+    }
+  }
+
+  static Future<SubmitLike> sosmedLike(bool flag,String access_token, int post_id, String platform, String version,{String language=''}) async {
+
+    String path = 'api/posts/like';
+    DebugWriter.info('path = $_sosmedBaseUrl/$path');
+
+    var parameters = {
+      'access_token': access_token,
+      'post_id': post_id.toString(),
+      //'flag': flag.toString(),
+      'state': flag ? '1' : '0',
+
+      'language' : language,
+      'platform' : platform,
+      'version' : version,
+    };
+    DebugWriter.info(parameters);
+    final response = await http.post(Uri.http(_sosmedBaseUrl, path, parameters)).timeout(Duration(seconds: sosmed_timeout_in_seconds));
+    //{"status":200,"message":"Like created!","result":{"user_id":1,"post_id":"24","updated_at":"2021-07-27T05:15:02.000000Z","created_at":"2021-07-27T05:15:02.000000Z","id":9}}
+    if (response.statusCode == 200) {
+      // If the server did return a 200 OK response,
+      // then parse the JSON.
+      //listWorldIndices.clear();
+      DebugWriter.info('like --> '+response.body);
+
+      SubmitLike result = SubmitLike.fromJson(jsonDecode(response.body));
+
+      //print('fetch_post --> \n'+fetchPost.toString());
+      // String _access_token = user.token!.access_token;
+      // String _refresh_token = user.token.refresh_token;
+      // token.update(_access_token, _refresh_token);
+      // token.save();
+      //return fetchPost;
+      return result;
+
+      // return document.findAllElements('a')
+      //     .map((element) => new HomeWorldIndices.fromXml(element)).toList();
+    } else {
+      // If the server did not return a 200 OK response,
+      throw Exception('Error : ' + response.statusCode.toString() + '  ' + response.reasonPhrase);
+    }
+  }
+
+  static Future<SubmitVote> sosmedVote(String access_token, int poll_id, String platform, String version,{String language=''}) async {
+
+    String path = 'api/posts/vote';
+    DebugWriter.info('path = $_sosmedBaseUrl/$path');
+
+    var parameters = {
+      'access_token': access_token,
+      'post_poll_id': poll_id.toString(),
+
+      'language' : language,
+      'platform' : platform,
+      'version' : version,
+    };
+    final response = await http.post(Uri.http(_sosmedBaseUrl, path, parameters)).timeout(Duration(seconds: sosmed_timeout_in_seconds));
+    //{"status":200,"message":"Like created!","result":{"user_id":1,"post_id":"24","updated_at":"2021-07-27T05:15:02.000000Z","created_at":"2021-07-27T05:15:02.000000Z","id":9}}
+    /*
+    {
+      "status": 200,
+      "message": "Poll created!",
+      "result": {
+        "user_id": 1,
+        "post_poll_id": "1",
+        "updated_at": "2021-07-27T15:35:36.000000Z",
+        "created_at": "2021-07-27T15:35:36.000000Z",
+        "id": 8
+      }
+    }
+    */
+    if (response.statusCode == 200) {
+      // If the server did return a 200 OK response,
+      // then parse the JSON.
+      //listWorldIndices.clear();
+      DebugWriter.info('vote --> '+response.body);
+
+      SubmitVote result = SubmitVote.fromJson(jsonDecode(response.body));
+
+      //print('fetch_post --> \n'+fetchPost.toString());
+      // String _access_token = user.token!.access_token;
+      // String _refresh_token = user.token.refresh_token;
+      // token.update(_access_token, _refresh_token);
+      // token.save();
+      //return fetchPost;
+      return result;
+
+      // return document.findAllElements('a')
+      //     .map((element) => new HomeWorldIndices.fromXml(element)).toList();
+    } else {
+      // If the server did not return a 200 OK response,
+      throw Exception('Error : ' + response.statusCode.toString() + '  ' + response.reasonPhrase);
+    }
+  }
+
+  static Future<SubmitCreateComment> sosmedCreateComment(String access_token, int post_id, String text, String platform, String version,{String language=''}) async {
+
+    String path = 'api/post-comments/create';
+    DebugWriter.info('path = $_sosmedBaseUrl/$path');
+
+    var parameters = {
+      'access_token': access_token,
+      'post_id': post_id.toString(),
+      'text': text,
+      'language' : language,
+      'platform' : platform,
+      'version' : version,
+    };
+    final response = await http.post(Uri.http(_sosmedBaseUrl, path, parameters)).timeout(Duration(seconds: sosmed_timeout_in_seconds));
+    //{"status":200,"message":"Like created!","result":{"user_id":1,"post_id":"24","updated_at":"2021-07-27T05:15:02.000000Z","created_at":"2021-07-27T05:15:02.000000Z","id":9}}
+    /*
+    {
+      "status": 200,
+      "message": "Poll created!",
+      "result": {
+        "user_id": 1,
+        "post_poll_id": "1",
+        "updated_at": "2021-07-27T15:35:36.000000Z",
+        "created_at": "2021-07-27T15:35:36.000000Z",
+        "id": 8
+      }
+    }
+    */
+    if (response.statusCode == 200) {
+      // If the server did return a 200 OK response,
+      // then parse the JSON.
+      //listWorldIndices.clear();
+      DebugWriter.info('create_comment --> '+response.body);
+
+      SubmitCreateComment result = SubmitCreateComment.fromJson(jsonDecode(response.body));
+
+      //print('fetch_post --> \n'+fetchPost.toString());
+      // String _access_token = user.token!.access_token;
+      // String _refresh_token = user.token.refresh_token;
+      // token.update(_access_token, _refresh_token);
+      // token.save();
+      //return fetchPost;
+      return result;
+
+      // return document.findAllElements('a')
+      //     .map((element) => new HomeWorldIndices.fromXml(element)).toList();
+    } else {
+      // If the server did not return a 200 OK response,
+      throw Exception('Error : ' + response.statusCode.toString() + '  ' + response.reasonPhrase);
+    }
+  }
+
+  static Future<SubmitCreateText> createPostTextWithAttachments(String text, List<String> attachments, String access_token, String platform, String version,{String language=''}) async {
+
+    String path = 'api/posts/create';
+    DebugWriter.info('path = $_sosmedBaseUrl/$path');
+
+    var parameters = {
+      'access_token': access_token,
+      'type': 'TEXT',
+      'text': text,
+
+      'language' : language,
+      'platform' : platform,
+      'version' : version,
+    };
+
+    DebugWriter.info(parameters);
+    var uri = Uri.http(_sosmedBaseUrl, path, parameters);
+    var request = new http.MultipartRequest("POST", uri);
+
+    int countAttachments = Utils.safeLenght(attachments);
+    for(int i=0 ; i < countAttachments ; i++){
+      //final File file = File(pickedFile.path);
+      File imageFile = File(attachments.elementAt(i));
+      if(imageFile != null){
+        bool exist = imageFile.existsSync();
+        if(exist){
+          var stream = new http.ByteStream(DelegatingStream.typed(imageFile.openRead()));
+          var length = await imageFile.length();
+          var multipartFile = new http.MultipartFile('attachments[]', stream, length, filename: basename(imageFile.path));
+          request.files.add(multipartFile);
+          DebugWriter.info('create_text_attachments adding imageFile : '+imageFile.path+'  length : $length');
+        }else{
+          DebugWriter.info('create_text_attachments NOT adding imageFile[$i] existsSync : $exist');
+        }
+      }else{
+        DebugWriter.info('create_text_attachments NOT adding imageFile[$i] file is NULL');
+      }
+    }
+
+
+    //var msStream = request.finalize();
+    var totalByteLength = request.contentLength;
+    //request.contentLength = totalByteLength;
+
+    //request.headers.set(HttpHeaders.contentTypeHeader, requestMultipart.headers[HttpHeaders.contentTypeHeader]);
+    int byteCount = 0;
+    // Stream<List<int>> streamUpload = msStream.transform(
+    //   new StreamTransformer.fromHandlers(
+    //     handleData: (data, sink) {
+    //       sink.add(data);
+    //
+    //       byteCount += data.length;
+    //       DebugWriter.info('onUploadProgress : $byteCount / $totalByteLength');
+    //       // if (onUploadProgress != null) {
+    //       //   onUploadProgress(byteCount, totalByteLength);
+    //       //   // CALL STATUS CALLBACK;
+    //       // }
+    //     },
+    //     handleError: (error, stack, sink) {
+    //       throw error;
+    //     },
+    //     handleDone: (sink) {
+    //       sink.close();
+    //       // UPLOAD DONE;
+    //     },
+    //   ),
+    // );
+
+    //await request.addStream(streamUpload);
+    //request.headers.addAll(headers);
+
+    // asli
+    var response = await request.send();
+
+    // coba progress upload
+    /*
+    var response = request.send();
+    await response.asStream().transform(new StreamTransformer.fromHandlers(
+      handleData: (data, sink) {
+        sink.add(data);
+
+        byteCount += data.contentLength;
+        DebugWriter.info('onUploadProgress : $byteCount / $totalByteLength');
+        // if (onUploadProgress != null) {
+        //   onUploadProgress(byteCount, totalByteLength);
+        //   // CALL STATUS CALLBACK;
+        // }
+      },
+      handleError: (error, stack, sink) {
+        throw error;
+      },
+      handleDone: (sink) {
+        sink.close();
+        // UPLOAD DONE;
+      },
+    ));
+    */
+    DebugWriter.info('create_text_attachments --> response.statusCode : ' + response.statusCode.toString());
+    if (response.statusCode == 200) {
+      // await for (var value in response.stream) {
+      //   sum += value;
+      // }
+
+       final body = await response.stream.bytesToString();
+      //var body = await http.Response.fromStream(response);
+
+      SubmitCreateText result = SubmitCreateText.fromJson(jsonDecode(body));
+
+      return result;
+
+      /*
+      response.stream.transform(utf8.decoder).listen((body) {
+        DebugWriter.info('create_text_attachments --> ' + body);
+
+        SubmitCreateText result = SubmitCreateText.fromJson(jsonDecode(body));
+
+        return result;
+      });
+      */
+    } else {
+      throw Exception('Error : ' + response.statusCode.toString() + '  ' + response.reasonPhrase);
+    }
+
+
+
+    /*
+    final response = await http.post(uri).timeout(Duration(seconds: timeout_in_seconds));
+
+    if (response.statusCode == 200) {
+      DebugWriter.info('create_text --> '+response.body);
+
+      SubmitCreateText result = SubmitCreateText.fromJson(jsonDecode(response.body));
+
+      return result;
+    } else {
+      throw Exception('Error : ' + response.statusCode.toString() + '  ' + response.reasonPhrase);
+    }
+     */
+  }
+
+  static Future<SubmitCreateText> createPostText(String text,String access_token, String platform, String version,{String language=''}) async {
+
+    // if(Utils.safeLenght(attachments) > 0){
+    //   return await _createPostTextWithAttachments(text, attachments, access_token, platform, version);
+    // }
+    String path = 'api/posts/create';
+    DebugWriter.info('path = $_sosmedBaseUrl/$path');
+
+    var parameters = {
+      'access_token': access_token,
+      'type': 'TEXT',
+      'text': text,
+
+      'language' : language,
+      'platform' : platform,
+      'version' : version,
+    };
+    var uri = Uri.http(_sosmedBaseUrl, path, parameters);
+    final response = await http.post(uri).timeout(Duration(seconds: sosmed_timeout_in_seconds));
+
+    /*
+    {
+      "status": 200,
+      "message": "Poll created!",
+      "result": {
+        "user_id": 1,
+        "post_poll_id": "1",
+        "updated_at": "2021-07-27T15:35:36.000000Z",
+        "created_at": "2021-07-27T15:35:36.000000Z",
+        "id": 8
+      }
+    }
+    */
+    if (response.statusCode == 200) {
+      DebugWriter.info('create_text --> '+response.body);
+
+      SubmitCreateText result = SubmitCreateText.fromJson(jsonDecode(response.body));
+
+      return result;
+    } else {
+      throw Exception('Error : ' + response.statusCode.toString() + '  ' + response.reasonPhrase);
+    }
+  }
+
+  static Future<SubmitCreateTransaction> createPostTransaction(
+      String code, String transaction_type, int buy_price, int sell_price,
+      String text, String order_id, String publish_time, String order_date,
+      String access_token, String platform, String version,
+      {String language=''}) async {
+
+    String path = 'api/posts/create';
+    DebugWriter.info('path = $_sosmedBaseUrl/$path');
+
+    var parameters = {
+      'access_token': access_token,
+      'type': 'TRANSACTION',
+      'code': code,
+      'start_price': buy_price.toString(),
+      'transaction_type': transaction_type, // BUY  or SELL
+      'text': text,
+      'sell_price': sell_price.toString(),
+
+      'publish_time' : publish_time, // NOW  or PENDING
+      'order_id' : order_id,
+      'order_date' : order_date,
+
+
+      'language' : language,
+      'platform' : platform,
+      'version' : version,
+    };
+
+    DebugWriter.info(parameters);
+    final response = await http.post(Uri.http(_sosmedBaseUrl, path, parameters)).timeout(Duration(seconds: sosmed_timeout_in_seconds));
+    /*
+    {
+        "status": 200,
+        "message": "Post created!",
+        "result": {
+            "slug": "TRANSACTION-1627543115-3919",
+            "user_id": 1,
+            "type": "TRANSACTION",
+            "text": "Coba beli",
+            "code": "BBCA",
+            "start_price": "32500",
+            "transaction_type": "BUY",
+            "sell_price": 0,
+            "updated_at": "2021-07-29T07:18:35.000000Z",
+            "created_at": "2021-07-29T07:18:35.000000Z",
+            "id": 55,
+            "polls": [],
+            "top_comments": [],
+            "liked": false,
+            "voted": false
+        }
+    }
+    */
+    if (response.statusCode == 200) {
+      // If the server did return a 200 OK response,
+      // then parse the JSON.
+      DebugWriter.info('create_transaction --> '+response.body);
+
+      SubmitCreateTransaction result = SubmitCreateTransaction.fromJson(jsonDecode(response.body));
+
+      return result;
+    } else {
+      // If the server did not return a 200 OK response,
+      throw Exception('Error : ' + response.statusCode.toString() + '  ' + response.reasonPhrase);
+    }
+  }
+
+  static Future<SubmitCreatePolls> createPostPoll(String text,List<String> polls, String expire_at, String access_token, String platform, String version,{String language=''}) async {
+
+    String path = 'api/posts/create';
+    DebugWriter.info('path = $_sosmedBaseUrl/$path');
+
+    var parameters = {
+      'access_token': access_token,
+      'type': 'POLL',
+      'text': text,
+      'expired_at': expire_at,
+      'polls': polls.join(','),
+
+
+      'language' : language,
+      'platform' : platform,
+      'version' : version,
+    };
+    DebugWriter.info(parameters);
+    final response = await http.post(Uri.http(_sosmedBaseUrl, path, parameters)).timeout(Duration(seconds: sosmed_timeout_in_seconds));
+    /*
+    {
+      "status": 200,
+      "message": "200_post_created",
+      "result": {
+          "slug": "POLL-1627488135-805",
+          "user_id": 1,
+          "type": "POLL",
+          "text": "Pada dapat BBCA gk?",
+          "updated_at": "2021-07-28T16:02:15.000000Z",
+          "created_at": "2021-07-28T16:02:15.000000Z",
+          "id": 15,
+          "polls": [
+              {
+                  "id": 7,
+                  "post_id": 15,
+                  "text": "YA",
+                  "count": 0,
+                  "created_at": "2021-07-28T16:02:15.000000Z",
+                  "updated_at": "2021-07-28T16:02:15.000000Z"
+              },
+              {
+                  "id": 8,
+                  "post_id": 15,
+                  "text": "TIDAK",
+                  "count": 0,
+                  "created_at": "2021-07-28T16:02:15.000000Z",
+                  "updated_at": "2021-07-28T16:02:15.000000Z"
+              }
+          ],
+          "top_comments": []
+      }
+    }
+    */
+    if (response.statusCode == 200) {
+      // If the server did return a 200 OK response,
+      // then parse the JSON.
+      DebugWriter.info('create_polls --> '+response.body);
+
+      SubmitCreatePolls result = SubmitCreatePolls.fromJson(jsonDecode(response.body));
+
+      return result;
+    } else {
+      // If the server did not return a 200 OK response,
+      throw Exception('Error : ' + response.statusCode.toString() + '  ' + response.reasonPhrase);
+    }
+  }
+  static Future<SubmitCreatePrediction> createPostPrediction(String transaction_type,
+      String text, String code, int start_price, int target_price,  String expire_at, String access_token,
+      String platform, String version,{String language=''}) async {
+
+    String path = 'api/posts/create';
+    DebugWriter.info('path = $_sosmedBaseUrl/$path');
+
+    var parameters = {
+      'access_token': access_token,
+      'type': 'PREDICTION',
+      'text': text,
+      'code': code,
+      'transaction_type': transaction_type,
+      'target_price': target_price.toString(),
+      'start_price': start_price.toString(),
+      'expired_at': expire_at,
+
+
+
+      'language' : language,
+      'platform' : platform,
+      'version' : version,
+    };
+    DebugWriter.info(parameters);
+    final response = await http.post(Uri.http(_sosmedBaseUrl, path, parameters)).timeout(Duration(seconds: sosmed_timeout_in_seconds));
+    /*
+    {
+      "status": 200,
+      "message": "200_post_created",
+      "result": {
+          "slug": "POLL-1627488135-805",
+          "user_id": 1,
+          "type": "POLL",
+          "text": "Pada dapat BBCA gk?",
+          "updated_at": "2021-07-28T16:02:15.000000Z",
+          "created_at": "2021-07-28T16:02:15.000000Z",
+          "id": 15,
+          "polls": [
+              {
+                  "id": 7,
+                  "post_id": 15,
+                  "text": "YA",
+                  "count": 0,
+                  "created_at": "2021-07-28T16:02:15.000000Z",
+                  "updated_at": "2021-07-28T16:02:15.000000Z"
+              },
+              {
+                  "id": 8,
+                  "post_id": 15,
+                  "text": "TIDAK",
+                  "count": 0,
+                  "created_at": "2021-07-28T16:02:15.000000Z",
+                  "updated_at": "2021-07-28T16:02:15.000000Z"
+              }
+          ],
+          "top_comments": []
+      }
+    }
+    */
+    if (response.statusCode == 200) {
+      // If the server did return a 200 OK response,
+      // then parse the JSON.
+      DebugWriter.info('create_prediction --> '+response.body);
+
+      SubmitCreatePrediction result = SubmitCreatePrediction.fromJson(jsonDecode(response.body));
+
+      return result;
+    } else {
+      // If the server did not return a 200 OK response,
+      throw Exception('Error : ' + response.statusCode.toString() + '  ' + response.reasonPhrase);
+    }
+  }
+}
+*/
+
+
+
+Future<List<HomeWorldIndices>>
+
+ /*
+  static Future<List<HomeWorldIndices>> fetchWorldIndices() async {
+    final response = await http.get(Uri.http('domain.com', 'm_world_indices.php'));
+
+    if (response.statusCode == 200) {
+      // If the server did return a 200 OK response,
+      // then parse the JSON.
+      //listWorldIndices.clear();
+      DebugWriter.info(response.body);
+      final document = XmlDocument.parse(response.body);
+
+      // List<HomeWorldIndices> list = List<HomeWorldIndices>.empty(growable: true);
+      // if(document != null){
+      //   document.findAllElements('a').forEach((element) {
+      //     list.add(HomeWorldIndices.fromXml(element));
+      //   });
+      // }
+      // return list;
+
+      return document.findAllElements('a')
+          .map((element) => new HomeWorldIndices.fromXml(element)).toList();
+
+      /*
+      return spacecrafts
+          .map((spacecraft) => new Spacecraft.fromJson(spacecraft))
+          .toList();
+      //document.findElements(name)
+
+      final x = document.findAllElements('a');
+      x.forEach((element) {
+        DebugWriter.info('code : '+element.getAttribute('code'));
+        HomeWorldIndices data = HomeWorldIndices(element.getAttribute('last'), element.getAttribute('code'), double.parse(element.getAttribute('change')), double.parse(element.getAttribute('percentChange')));
+        listWorldIndices.add(data);
+      });
+
+      setState(() {
+
+      });
+
+       */
+      //return Album.fromJson(jsonDecode(response.body));
+      return null;
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load World Indices');
+    }
+  }
+*/

@@ -1,3 +1,4 @@
+// ignore_for_file: unused_local_variable
 
 import 'package:Investrend/objects/data_object.dart';
 import 'package:Investrend/objects/persistent_data.dart';
@@ -14,27 +15,24 @@ import 'dart:async';
 import 'onboarding/screen_landing.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-
 // // ignore: import_of_legacy_library_into_null_safe
 // import 'package:firebase_messaging/firebase_messaging.dart';
 // import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-
 
 class ScreenSplash extends StatefulWidget {
   @override
   _ScreenSplashState createState() => _ScreenSplashState();
 }
 
-class _ScreenSplashState extends State<ScreenSplash> // with SingleTickerProviderStateMixin
+class _ScreenSplashState
+    extends State<ScreenSplash> // with SingleTickerProviderStateMixin
 {
   var animate = false;
 
   // AnimationController _controller;
   // Animation<Offset> _offsetAnimation;
 
-  Future<StoredData> futuretoredData;
-
-
+  Future<StoredData>? futuretoredData;
 
   /*
   /// Create a [AndroidNotificationChannel] for heads up notifications
@@ -120,8 +118,6 @@ class _ScreenSplashState extends State<ScreenSplash> // with SingleTickerProvide
               channel.id,
               channel.name,
               channelDescription: channel.description,
-              // TODO add a proper drawable resource to android, for now using
-              //      one that already exists in example app.
               icon: 'launch_background',
             ),
           ),
@@ -179,27 +175,22 @@ class _ScreenSplashState extends State<ScreenSplash> // with SingleTickerProvide
   }
   */
 
-
-
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     //enableFirebaseMessaging();
 
-
-
-
     futuretoredData = StoredData.load();
-    futuretoredData.then((snapshot) {
+    futuretoredData?.then((snapshot) {
       DebugWriter.info('futuretoredData then');
       InvestrendTheme.storedData = snapshot;
-      Stock stock = snapshot.listStock.isEmpty ? null : snapshot.listStock.first;
+      Stock? stock =
+          snapshot.listStock!.isEmpty ? null : snapshot.listStock?.first;
       //InvestrendTheme.of(context).stockNotifier.setStock(stock);
-      context.read(primaryStockChangeNotifier).setStock(stock);
+      context.read(primaryStockChangeNotifier).setStock(stock!);
     }).onError((error, stackTrace) {
-      DebugWriter.info('futuretoredData onError : '+error.toString());
+      DebugWriter.info('futuretoredData onError : ' + error.toString());
     }).whenComplete(() {
       DebugWriter.info('futuretoredData whenComplete');
     });
@@ -236,47 +227,52 @@ class _ScreenSplashState extends State<ScreenSplash> // with SingleTickerProvide
     //InvestrendTheme.pushReplacement(context,  ScreenLogin(), ScreenTransition.Fade,'/login');
     //InvestrendTheme.pushReplacement(context,  ScreenMain(), ScreenTransition.Fade,'/main');
 
-
-
-    if(InvestrendTheme.CHECK_INVITATION){
+    if (InvestrendTheme.CHECK_INVITATION) {
       Invitation invitation = Invitation('', false);
       invitation.load().then((value) {
-        if(invitation.invitation_status){
+        if (invitation.invitation_status) {
           Token token = Token('', '');
           token.load().then((value) {
-            bool hasToken = !StringUtils.isEmtpy(token.access_token) && !StringUtils.isEmtpy(token.refresh_token);
+            bool hasToken = !StringUtils.isEmtpy(token.access_token) &&
+                !StringUtils.isEmtpy(token.refresh_token);
             DebugWriter.info('hasToken : $hasToken');
-            if(hasToken){
-              InvestrendTheme.pushReplacement(context,  ScreenLogin(), ScreenTransition.Fade,'/login');
-            }else{
-              InvestrendTheme.pushReplacement(context,  ScreenLanding(), ScreenTransition.Fade,'/landing');
+            if (hasToken) {
+              InvestrendTheme.pushReplacement(
+                  context, ScreenLogin(), ScreenTransition.Fade, '/login');
+            } else {
+              InvestrendTheme.pushReplacement(
+                  context, ScreenLanding(), ScreenTransition.Fade, '/landing');
             }
           }).onError((error, stackTrace) {
-            InvestrendTheme.pushReplacement(context,  ScreenLanding(), ScreenTransition.Fade,'/landing');
+            InvestrendTheme.pushReplacement(
+                context, ScreenLanding(), ScreenTransition.Fade, '/landing');
           });
-
-        }else{
-          InvestrendTheme.pushReplacement(context,  ScreenInvitation(invitation), ScreenTransition.Fade,'/invitation');
+        } else {
+          InvestrendTheme.pushReplacement(context, ScreenInvitation(invitation),
+              ScreenTransition.Fade, '/invitation');
         }
-
       }).onError((error, stackTrace) {
-        InvestrendTheme.pushReplacement(context,  ScreenInvitation(invitation), ScreenTransition.Fade,'/invitation');
+        InvestrendTheme.pushReplacement(context, ScreenInvitation(invitation),
+            ScreenTransition.Fade, '/invitation');
       });
-    }else{
+    } else {
       Token token = Token('', '');
       token.load().then((value) {
-        bool hasToken = !StringUtils.isEmtpy(token.access_token) && !StringUtils.isEmtpy(token.refresh_token);
+        bool hasToken = !StringUtils.isEmtpy(token.access_token) &&
+            !StringUtils.isEmtpy(token.refresh_token);
         DebugWriter.info('hasToken : $hasToken');
-        if(hasToken){
-          InvestrendTheme.pushReplacement(context,  ScreenLogin(), ScreenTransition.Fade,'/login');
-        }else{
-          InvestrendTheme.pushReplacement(context,  ScreenLanding(), ScreenTransition.Fade,'/landing');
+        if (hasToken) {
+          InvestrendTheme.pushReplacement(
+              context, ScreenLogin(), ScreenTransition.Fade, '/login');
+        } else {
+          InvestrendTheme.pushReplacement(
+              context, ScreenLanding(), ScreenTransition.Fade, '/landing');
         }
       }).onError((error, stackTrace) {
-        InvestrendTheme.pushReplacement(context,  ScreenLanding(), ScreenTransition.Fade,'/landing');
+        InvestrendTheme.pushReplacement(
+            context, ScreenLanding(), ScreenTransition.Fade, '/landing');
       });
     }
-
 
     /*
     Token token = Token('', '');
@@ -303,7 +299,6 @@ class _ScreenSplashState extends State<ScreenSplash> // with SingleTickerProvide
     //   InvestrendTheme.pushReplacement(context,  ScreenLanding(), ScreenTransition.Fade,'/landing');
     // }
 
-
     //InvestrendTheme.pushReplacement(context,  ScreenRegisterPin('username'), ScreenTransition.Fade,'/landing');
 
     /*
@@ -321,18 +316,20 @@ class _ScreenSplashState extends State<ScreenSplash> // with SingleTickerProvide
     );
      */
   }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     DebugWriter.info('ScreenSplash didChangeDependencies');
-    EasyLocalization.of(context).setLocale(Locale('id'));
-    TextStyle tst = InvestrendTheme.of(context).regular_w500;
-    DebugWriter.info('ScreenSplash didChangeDependencies datafeedHttp.isLoaded : ' + InvestrendTheme.datafeedHttp.isLoaded.toString() );
+    EasyLocalization.of(context)?.setLocale(Locale('id'));
+    TextStyle? tst = InvestrendTheme.of(context).regular_w500;
+    DebugWriter.info(
+        'ScreenSplash didChangeDependencies datafeedHttp.isLoaded : ' +
+            InvestrendTheme.datafeedHttp.isLoaded.toString());
   }
 
   @override
   Widget build(BuildContext context) {
-
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     //Image icon = Image.asset('images/icons/ic_launcher_white.png');
@@ -344,9 +341,8 @@ class _ScreenSplashState extends State<ScreenSplash> // with SingleTickerProvide
     double leftBadge2 = leftPadding + 60;
     double leftBadge3 = width;
 
-
     double topBuana = height;
-    double leftBuana = (width - 112 ) / 2;
+    double leftBuana = (width - 112) / 2;
 
     if (animate) {
       top = height * 0.07;
@@ -355,7 +351,6 @@ class _ScreenSplashState extends State<ScreenSplash> // with SingleTickerProvide
       leftBadge3 = leftPadding + (60 * 2) + 30;
 
       topBuana = topBadge - 40;
-
     }
     return Stack(
       children: [
@@ -374,7 +369,11 @@ class _ScreenSplashState extends State<ScreenSplash> // with SingleTickerProvide
           child: Center(child: Image.asset("images/splash_3_person.png")),
           onEnd: () {
             if (animate) {
-              context.read(propertiesNotifier).properties.load().whenComplete(() {
+              context
+                  .read(propertiesNotifier)
+                  .properties
+                  .load()
+                  .whenComplete(() {
                 Timer(new Duration(milliseconds: 1000), showNextPage);
               });
               //Timer(new Duration(milliseconds: 1000), showNextPage);
@@ -405,15 +404,14 @@ class _ScreenSplashState extends State<ScreenSplash> // with SingleTickerProvide
             top: topBuana,
             left: leftBuana,
             curve: Curves.decelerate,
-            child: Image.asset('images/icons/buana_icon_name_white.png') ),
-
+            child: Image.asset('images/icons/buana_icon_name_white.png')),
 
         AnimatedPositioned(
             duration: Duration(milliseconds: 800),
             top: top,
             left: left,
             curve: Curves.decelerate,
-            child: Image.asset('images/icons/icon_name_white.png') ),
+            child: Image.asset('images/icons/icon_name_white.png')),
         AnimatedPositioned(
             duration: Duration(milliseconds: 1500),
             top: topBadge,
@@ -440,15 +438,19 @@ class _ScreenSplashState extends State<ScreenSplash> // with SingleTickerProvide
             FutureBuilder<StoredData>(
               future: futuretoredData,
               builder: (context, snapshot) {
-                if(snapshot.hasData){
-                  InvestrendTheme.storedData = snapshot.data;
+                if (snapshot.hasData) {
+                  InvestrendTheme.storedData = snapshot.data!;
                   //Stock stock = snapshot.data.listStock.isEmpty ? null : snapshot.data.listStock.first;
                   //InvestrendTheme.of(context).stockNotifier.setStock(stock);
                   //context.read(primaryStockChangeNotifier).setStock(stock);
                   //return Center(child: Text('Loaded stored data last updated :\n'+snapshot.data.updated,style: Theme.of(context).textTheme.caption.copyWith(color: Colors.white,), textAlign: TextAlign.center,));
-                  return SizedBox(width: 1.0, height: 1.0,);
-                }else if(snapshot.hasError){
-                  return Text('Loading stored data error '+snapshot.error.toString());
+                  return SizedBox(
+                    width: 1.0,
+                    height: 1.0,
+                  );
+                } else if (snapshot.hasError) {
+                  return Text(
+                      'Loading stored data error ' + snapshot.error.toString());
                 }
                 return Text('Loading stored data...');
               },

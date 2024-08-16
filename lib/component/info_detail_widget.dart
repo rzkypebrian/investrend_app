@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'package:Investrend/component/component_creator.dart';
 import 'package:Investrend/component/custom_text.dart';
 import 'package:Investrend/component/tapable_widget.dart';
@@ -10,7 +12,7 @@ class InfoDetailWidget extends StatefulWidget {
   final Widget expandedWiget;
   final bool expanded;
   const InfoDetailWidget(this.normalWiget, this.expandedWiget,
-      {this.expanded = false, Key key})
+      {this.expanded = false, Key? key})
       : super(key: key);
 
   @override
@@ -34,6 +36,7 @@ class _InfoDetailWidgetState extends State<InfoDetailWidget> {
     setState(() {
       expanded = !expanded;
     });
+    throw '';
   }
 
   @override
@@ -65,11 +68,11 @@ class _InfoDetailWidgetState extends State<InfoDetailWidget> {
 }
 
 class TopupBankInfoWidget extends StatefulWidget {
-  final String bank_name;
-  final String bank_icon;
-  final String topup_info;
+  final String? bank_name;
+  final String? bank_icon;
+  final String? topup_info;
   const TopupBankInfoWidget(this.bank_name, this.bank_icon, this.topup_info,
-      {Key key})
+      {Key? key})
       : super(key: key);
 
   @override
@@ -87,6 +90,7 @@ class _TopupBankInfoWidgetState extends State<TopupBankInfoWidget>
     setState(() {
       expanded = !expanded;
     });
+    throw '';
   }
 
   @override
@@ -102,7 +106,7 @@ class _TopupBankInfoWidgetState extends State<TopupBankInfoWidget>
     //
   }
 
-  Widget formattedWidget(BuildContext context, String data) {
+  Widget formattedWidget(BuildContext context, String? data) {
     List<Widget> list = List.empty(growable: true);
 
     if (data != null) {
@@ -117,14 +121,14 @@ class _TopupBankInfoWidgetState extends State<TopupBankInfoWidget>
                 width: 5.0,
               ),
               Text(line,
-                  style: InvestrendTheme.of(context).small_w400.copyWith(
+                  style: InvestrendTheme.of(context).small_w400?.copyWith(
                       color: InvestrendTheme.of(context).greyDarkerTextColor)),
             ],
           ));
         } else {
           list.add(
             Text(line,
-                style: InvestrendTheme.of(context).small_w400.copyWith(
+                style: InvestrendTheme.of(context).small_w400?.copyWith(
                     color: InvestrendTheme.of(context).greyDarkerTextColor)),
           );
         }
@@ -140,13 +144,13 @@ class _TopupBankInfoWidgetState extends State<TopupBankInfoWidget>
   @override
   Widget build(BuildContext context) {
     Widget iconWidget;
-    if (StringUtils.noNullString(widget.bank_icon)
+    if (StringUtils.noNullString(widget.bank_icon)!
         .toLowerCase()
         .startsWith('http')) {
       iconWidget = ComponentCreator.imageNetworkCached(widget.bank_icon,
           width: 40.0, height: 40.0);
     } else {
-      iconWidget = Image.asset(widget.bank_icon, width: 24.0, height: 24.0);
+      iconWidget = Image.asset(widget.bank_icon!, width: 24.0, height: 24.0);
     }
 
     if (expanded) {
@@ -161,10 +165,10 @@ class _TopupBankInfoWidgetState extends State<TopupBankInfoWidget>
               SizedBox(width: 14.0),
               Expanded(
                 flex: 1,
-                child: Text(widget.bank_name,
+                child: Text(widget.bank_name!,
                     style: InvestrendTheme.of(context)
                         .regular_w400_compact
-                        .copyWith(
+                        ?.copyWith(
                             color: InvestrendTheme.of(context)
                                 .greyDarkerTextColor)),
               ),
@@ -181,7 +185,7 @@ class _TopupBankInfoWidgetState extends State<TopupBankInfoWidget>
 
           FormatTextBullet(
             widget.topup_info,
-            style: InvestrendTheme.of(context).small_w400.copyWith(
+            style: InvestrendTheme.of(context).small_w400?.copyWith(
                 color: InvestrendTheme.of(context).greyDarkerTextColor),
           ),
         ],
@@ -194,10 +198,10 @@ class _TopupBankInfoWidgetState extends State<TopupBankInfoWidget>
           SizedBox(width: 14.0),
           Expanded(
             flex: 1,
-            child: Text(widget.bank_name,
+            child: Text(widget.bank_name!,
                 style: InvestrendTheme.of(context)
                     .regular_w400_compact
-                    .copyWith(
+                    ?.copyWith(
                         color:
                             InvestrendTheme.of(context).greyDarkerTextColor)),
           ),

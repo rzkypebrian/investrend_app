@@ -1,4 +1,3 @@
-
 import 'package:Investrend/component/broker_trade_summary_value.dart';
 import 'package:Investrend/component/chips_range.dart';
 import 'package:Investrend/component/component_app_bar.dart';
@@ -7,9 +6,8 @@ import 'package:Investrend/objects/data_object.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:Investrend/utils/ui_helper.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:easy_localization/src/public_ext.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class BrokerRank extends StatefulWidget {
   @override
@@ -48,7 +46,7 @@ class BrokerRankState extends State<BrokerRank> {
       shadowColor: shadowColor,
       centerTitle: true,
       title: Text('Broker Rank'),
-      titleTextStyle: InvestrendTheme.of(context).regular_w600.copyWith(
+      titleTextStyle: InvestrendTheme.of(context).regular_w600?.copyWith(
             color: InvestrendTheme.of(context).investrendPurple,
             fontWeight: FontWeight.bold,
           ),
@@ -78,7 +76,7 @@ class BrokerRankState extends State<BrokerRank> {
     List<Color> colorStock = [
       InvestrendTheme.of(context).whiteColor,
       InvestrendTheme.greenText,
-      InvestrendTheme.of(context).investrendPurpleText,
+      InvestrendTheme.of(context).investrendPurpleText!,
       InvestrendTheme.yellowText,
     ];
     return LayoutBuilder(
@@ -88,10 +86,10 @@ class BrokerRankState extends State<BrokerRank> {
         InvestrendTheme.of(context).oddColor,
       ];
       double fontSize = 14;
-      TextStyle styleHeader = InvestrendTheme.of(context).small_w500_compact;
-      TextStyle styleDarker =
+      TextStyle? styleHeader = InvestrendTheme.of(context).small_w500_compact;
+      TextStyle? styleDarker =
           InvestrendTheme.of(context).small_w400_compact_greyDarker;
-      double centerWidth = UIHelper.textSize(' 000 ', styleDarker).width;
+      double? centerWidth = UIHelper.textSize(' 000 ', styleDarker).width;
       double availableWidth = constraints.maxWidth -
           (InvestrendTheme.cardPaddingGeneral * 2) -
           (InvestrendTheme.cardPadding * 2);
@@ -128,7 +126,7 @@ class BrokerRankState extends State<BrokerRank> {
                     width: leftWidth * 0.2,
                     child: Text(
                       'NO',
-                      style: styleHeader.copyWith(
+                      style: styleHeader?.copyWith(
                         fontSize: fontSize,
                       ),
                       textAlign: TextAlign.left,
@@ -138,7 +136,7 @@ class BrokerRankState extends State<BrokerRank> {
                     width: leftWidth * 0.2,
                     child: Text(
                       'BC',
-                      style: styleHeader.copyWith(
+                      style: styleHeader?.copyWith(
                         fontSize: fontSize,
                       ),
                       textAlign: TextAlign.left,
@@ -148,7 +146,7 @@ class BrokerRankState extends State<BrokerRank> {
                     width: leftWidth * 0.45,
                     child: Text(
                       'NVAL',
-                      style: styleHeader.copyWith(
+                      style: styleHeader?.copyWith(
                         fontSize: fontSize,
                       ),
                       textAlign: TextAlign.right,
@@ -158,7 +156,7 @@ class BrokerRankState extends State<BrokerRank> {
                     width: leftWidth * 0.45,
                     child: Text(
                       'BVAL',
-                      style: styleHeader.copyWith(
+                      style: styleHeader?.copyWith(
                         fontSize: fontSize,
                       ),
                       textAlign: TextAlign.right,
@@ -168,7 +166,7 @@ class BrokerRankState extends State<BrokerRank> {
                     width: leftWidth * 0.45,
                     child: Text(
                       'SVAL',
-                      style: styleHeader.copyWith(
+                      style: styleHeader?.copyWith(
                         fontSize: fontSize,
                       ),
                       textAlign: TextAlign.right,
@@ -179,7 +177,7 @@ class BrokerRankState extends State<BrokerRank> {
                       width: leftWidth * 0.3,
                       child: Text(
                         'TVAL',
-                        style: styleHeader.copyWith(
+                        style: styleHeader?.copyWith(
                           fontSize: fontSize,
                         ),
                         textAlign: TextAlign.right,
@@ -194,7 +192,7 @@ class BrokerRankState extends State<BrokerRank> {
                     itemCount: brokerData.length,
                     itemBuilder: (context, index) {
                       brokerData.sort(
-                          (a, b) => b.tVal.toInt().compareTo(a.tVal.toInt()));
+                          (a, b) => b.tVal!.toInt().compareTo(a.tVal!.toInt()));
                       int line = index + 1;
                       return Card(
                         child: Column(
@@ -211,7 +209,7 @@ class BrokerRankState extends State<BrokerRank> {
                                           line.toDouble()),
                                       style: InvestrendTheme.of(context)
                                           .textLabelStyle
-                                          .copyWith(
+                                          ?.copyWith(
                                             fontSize: 14,
                                             color:
                                                 InvestrendTheme.blackTextColor,
@@ -222,11 +220,11 @@ class BrokerRankState extends State<BrokerRank> {
                                   SizedBox(
                                       width: leftWidth * 0.2,
                                       child: Text(
-                                        brokerData[index].brokerCode,
-                                        style: styleHeader.copyWith(
+                                        brokerData[index].brokerCode!,
+                                        style: styleHeader?.copyWith(
                                             fontSize: fontSize,
                                             color: colorStock[
-                                                brokerData[index].brokerType]),
+                                                brokerData[index].brokerType!]),
                                         textAlign: TextAlign.left,
                                       )),
                                   SizedBox(
@@ -234,7 +232,7 @@ class BrokerRankState extends State<BrokerRank> {
                                     child: Text(
                                       '${brokerData[index].nVal.toString()}' +
                                           'B',
-                                      style: styleHeader.copyWith(
+                                      style: styleHeader?.copyWith(
                                         fontSize: fontSize,
                                         color: (brokerData[index].nVal)
                                                 .toString()
@@ -249,7 +247,7 @@ class BrokerRankState extends State<BrokerRank> {
                                     width: leftWidth * 0.45,
                                     child: Text(
                                       '${brokerData[index].bVal}' + 'B',
-                                      style: styleHeader.copyWith(
+                                      style: styleHeader?.copyWith(
                                         fontSize: fontSize,
                                         color: InvestrendTheme.greenText,
                                       ),
@@ -260,7 +258,7 @@ class BrokerRankState extends State<BrokerRank> {
                                     width: leftWidth * 0.45,
                                     child: Text(
                                       '${brokerData[index].sVal}' + 'B',
-                                      style: styleHeader.copyWith(
+                                      style: styleHeader?.copyWith(
                                         fontSize: fontSize,
                                         color: InvestrendTheme.redText,
                                       ),
@@ -273,7 +271,7 @@ class BrokerRankState extends State<BrokerRank> {
                                       child: Text(
                                         '${brokerData[index].tVal.toString()}' +
                                             'B',
-                                        style: styleHeader.copyWith(
+                                        style: styleHeader?.copyWith(
                                           fontSize: fontSize,
                                           color: Colors.black,
                                         ),
@@ -295,7 +293,7 @@ class BrokerRankState extends State<BrokerRank> {
                   dateInfo,
                   style: InvestrendTheme.of(context)
                       .more_support_w400_compact
-                      .copyWith(
+                      ?.copyWith(
                         fontWeight: FontWeight.w500,
                         color: InvestrendTheme.of(context).greyDarkerTextColor,
                         fontStyle: FontStyle.italic,

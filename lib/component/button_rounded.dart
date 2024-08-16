@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:Investrend/component/bottom_sheet/bottom_sheet_select_stocks.dart';
 import 'package:Investrend/objects/riverpod_change_notifier.dart';
 
@@ -5,13 +7,12 @@ import 'package:Investrend/screens/tab_portfolio/component/bottom_sheet_list.dar
 import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ButtonRounded extends StatelessWidget {
-  final String text;
-  final VoidCallback onPressed;
+  final String? text;
+  final VoidCallback? onPressed;
 
-  const ButtonRounded(this.text, this.onPressed, {Key key}) : super(key: key);
+  const ButtonRounded(this.text, this.onPressed, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,20 +25,21 @@ class ButtonRounded extends StatelessWidget {
         ),
         color: InvestrendTheme.of(context).tileBackground,
         child: Text(
-          text,
+          text!,
           style: InvestrendTheme.of(context)
               .more_support_w400_compact
-              .copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor),
+              ?.copyWith(
+                  color: InvestrendTheme.of(context).greyDarkerTextColor),
         ),
         onPressed: onPressed);
   }
 }
 
 class ButtonDateRounded extends StatelessWidget {
-  final ValueNotifier<String> notifier;
-  DateFormat dateFormat;
+  final ValueNotifier<String>? notifier;
+  DateFormat? dateFormat;
 
-  ButtonDateRounded(this.notifier, {Key key, this.dateFormat})
+  ButtonDateRounded(this.notifier, {Key? key, this.dateFormat})
       : super(key: key);
 
   @override
@@ -51,13 +53,13 @@ class ButtonDateRounded extends StatelessWidget {
         ),
         color: InvestrendTheme.of(context).tileBackground,
         child: ValueListenableBuilder(
-          valueListenable: notifier,
+          valueListenable: notifier!,
           builder: (context, value, child) {
             return Text(
-              value,
+              value.toString(),
               style: InvestrendTheme.of(context)
                   .more_support_w400_compact
-                  .copyWith(
+                  ?.copyWith(
                       color: InvestrendTheme.of(context).greyDarkerTextColor),
             );
           },
@@ -72,27 +74,27 @@ class ButtonDateRounded extends StatelessWidget {
             if (dateFormat == null) {
               dateFormat = DateFormat('dd/MM/yyyy');
             }
-            notifier.value = dateFormat.format(value);
+            notifier!.value = dateFormat!.format(value!);
           });
         });
   }
 }
 
 class TextButtonDropdown extends StatelessWidget {
-  final ValueNotifier<int> notifier;
-  final List<String> list;
-  final bool clickAndClose;
-  final TextStyle style;
+  final ValueNotifier<int>? notifier;
+  final List<String>? list;
+  final bool? clickAndClose;
+  final TextStyle? style;
   const TextButtonDropdown(this.notifier, this.list,
-      {this.style, this.clickAndClose = false, Key key})
+      {this.style, this.clickAndClose = false, Key? key})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: notifier,
+      valueListenable: notifier!,
       builder: (context, index, child) {
-        String activeCA = list.elementAt(index);
+        String activeCA = list!.elementAt(index as int);
 
         double paddingVertical = 8.0;
 
@@ -117,9 +119,9 @@ class TextButtonDropdown extends StatelessWidget {
                   context: context,
                   builder: (context) {
                     return ListBottomSheet(
-                      notifier,
-                      list,
-                      clickAndClose: clickAndClose,
+                      notifier!,
+                      list!,
+                      clickAndClose: clickAndClose!,
                     );
                   });
             },
@@ -129,7 +131,7 @@ class TextButtonDropdown extends StatelessWidget {
               children: [
                 Text(
                   activeCA,
-                  style: this.style ?? Theme.of(context).textTheme.button,
+                  style: this.style ?? Theme.of(context).textTheme.labelLarge,
                 ),
                 SizedBox(
                   width: 5.0,
@@ -147,11 +149,11 @@ class TextButtonDropdown extends StatelessWidget {
 }
 
 class ButtonDropdown extends StatelessWidget {
-  final ValueNotifier<int> notifier;
-  final List<String> list;
-  final String staticText;
-  final bool clickAndClose;
-  final bool showEmojiDescendingAscending;
+  final ValueNotifier<int>? notifier;
+  final List<String>? list;
+  final String? staticText;
+  final bool? clickAndClose;
+  final bool? showEmojiDescendingAscending;
 
   const ButtonDropdown(
     this.notifier,
@@ -159,18 +161,18 @@ class ButtonDropdown extends StatelessWidget {
     this.staticText,
     this.clickAndClose = false,
     this.showEmojiDescendingAscending = false,
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     if (staticText != null) {
-      return _createButton(context, staticText);
+      return _createButton(context, staticText!);
     }
     return ValueListenableBuilder(
-      valueListenable: notifier,
+      valueListenable: notifier!,
       builder: (context, index, child) {
-        String activeCA = list.elementAt(index);
+        String activeCA = list!.elementAt(index as int);
 
         return _createButton(context, activeCA);
       },
@@ -179,10 +181,10 @@ class ButtonDropdown extends StatelessWidget {
 
   Widget _createButton(BuildContext context, String label) {
     Widget textWidget;
-    TextStyle style = InvestrendTheme.of(context)
+    TextStyle? style = InvestrendTheme.of(context)
         .more_support_w400_compact
-        .copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor);
-    if (showEmojiDescendingAscending) {
+        ?.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor);
+    if (showEmojiDescendingAscending!) {
       if (label.endsWith(TAG_DESC)) {
         textWidget = Text.rich(
           TextSpan(
@@ -191,7 +193,7 @@ class ButtonDropdown extends StatelessWidget {
               children: [
                 TextSpan(
                     text: '▼',
-                    style: style.copyWith(color: InvestrendTheme.greenText)),
+                    style: style?.copyWith(color: InvestrendTheme.greenText)),
               ]),
           textAlign: TextAlign.center,
         );
@@ -203,7 +205,7 @@ class ButtonDropdown extends StatelessWidget {
                 children: [
                   TextSpan(
                       text: '▲',
-                      style: style.copyWith(color: InvestrendTheme.redText)),
+                      style: style?.copyWith(color: InvestrendTheme.redText)),
                 ]),
             textAlign: TextAlign.center);
       } else {
@@ -271,10 +273,10 @@ class ButtonDropdown extends StatelessWidget {
               context: context,
               builder: (context) {
                 return ListBottomSheet(
-                  notifier,
-                  list,
-                  clickAndClose: clickAndClose,
-                  showEmojiDescendingAscending: showEmojiDescendingAscending,
+                  notifier!,
+                  list!,
+                  clickAndClose: clickAndClose!,
+                  showEmojiDescendingAscending: showEmojiDescendingAscending!,
                 );
               });
         });
@@ -282,32 +284,34 @@ class ButtonDropdown extends StatelessWidget {
 }
 
 class ButtonSelectionFilter extends StatelessWidget {
-  final String text;
-  final bool selected;
-  final VoidCallback onPressed;
+  final String? text;
+  final bool? selected;
+  final VoidCallback? onPressed;
 
   const ButtonSelectionFilter(this.text, this.selected, this.onPressed,
-      {Key key})
+      {Key? key})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     //const colorSoft = Color(0xFFF5F0FF);
-    TextStyle style = InvestrendTheme.of(context).small_w400_compact_greyDarker;
+    TextStyle? style =
+        InvestrendTheme.of(context).small_w400_compact_greyDarker;
     //Color colorBackground = selected ? colorSoft : Colors.transparent;
-    Color colorBackground =
-        selected ? InvestrendTheme.of(context).colorSoft : Colors.transparent;
-    Color colorBorder =
-        selected ? Theme.of(context).colorScheme.secondary : Colors.transparent;
-    Color colorText =
-        selected ? Theme.of(context).colorScheme.secondary : style.color;
+    Color? colorBackground =
+        selected! ? InvestrendTheme.of(context).colorSoft : Colors.transparent;
+    Color colorBorder = selected!
+        ? Theme.of(context).colorScheme.secondary
+        : Colors.transparent;
+    Color? colorText =
+        selected! ? Theme.of(context).colorScheme.secondary : style?.color;
     return OutlinedButton(
         style: ButtonStyle(
           backgroundColor: MaterialStateColor.resolveWith((states) {
-            final Color colors = states.contains(MaterialState.pressed)
+            final Color? colors = states.contains(MaterialState.pressed)
                 ? colorBackground //Colors.transparent
                 : colorBackground; //Colors.transparent;
-            return colors;
+            return colors!;
           }),
           padding: MaterialStateProperty.all(
               EdgeInsets.only(left: 10.0, right: 10.0, top: 2.0, bottom: 2.0)),
@@ -325,8 +329,8 @@ class ButtonSelectionFilter extends StatelessWidget {
           }),
         ),
         child: Text(
-          text,
-          style: style.copyWith(color: colorText),
+          text!,
+          style: style?.copyWith(color: colorText),
         ),
         onPressed: onPressed);
   }
@@ -397,13 +401,13 @@ class ButtonDropdownHelp extends StatelessWidget {
 class ButtonDropdownStock extends ConsumerWidget {
   //final ValueNotifier <int> notifier;
 
-  const ButtonDropdownStock(/*this.notifier,*/ {Key key}) : super(key: key);
+  const ButtonDropdownStock(/*this.notifier,*/ {Key? key}) : super(key: key);
 
   Widget build(BuildContext context, ScopedReader watch) {
     final notifier = watch(primaryStockChangeNotifier);
-    String code;
+    String? code;
     if (notifier.stock != null) {
-      code = notifier.stock.code;
+      code = notifier.stock?.code;
     } else {
       code = 'select_label'.tr();
     }
@@ -420,8 +424,8 @@ class ButtonDropdownStock extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              code,
-              style: InvestrendTheme.of(context).small_w600_compact.copyWith(
+              code!,
+              style: InvestrendTheme.of(context).small_w600_compact?.copyWith(
                   color: InvestrendTheme.of(context).greyDarkerTextColor),
             ),
             Padding(

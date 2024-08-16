@@ -7,7 +7,6 @@ import 'package:Investrend/objects/iii_objects.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:Investrend/utils/string_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class BottomSheetRelatedStock extends StatefulWidget {
@@ -25,26 +24,26 @@ class _BottomSheetRelatedStockState extends State<BottomSheetRelatedStock> {
   List<Stock> relatedStocks = List.empty(growable: true);
 
   ValueNotifier<bool> priceNotifier = ValueNotifier<bool>(false);
-  String codes = '';
+  String? codes = '';
   @override
   void initState() {
     super.initState();
-    widget.onDoUpdate?.addListener(doUpdate);
+    widget.onDoUpdate.addListener(doUpdate);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       doUpdate();
     });
   }
 
-  VoidCallback stockChangeListener;
+  VoidCallback? stockChangeListener;
 
   @override
   void dispose() {
-    widget.onDoUpdate?.removeListener(doUpdate);
+    widget.onDoUpdate.removeListener(doUpdate);
 
     final container = ProviderContainer();
     container
         .read(primaryStockChangeNotifier)
-        .removeListener(stockChangeListener);
+        .removeListener(stockChangeListener!);
     super.dispose();
   }
 
@@ -54,7 +53,7 @@ class _BottomSheetRelatedStockState extends State<BottomSheetRelatedStock> {
     if (stockChangeListener != null) {
       context
           .read(primaryStockChangeNotifier)
-          .removeListener(stockChangeListener);
+          .removeListener(stockChangeListener!);
     }
 
     constructRelatedStocks(context);
@@ -69,7 +68,7 @@ class _BottomSheetRelatedStockState extends State<BottomSheetRelatedStock> {
       setState(() {});
       //doUpdate(pullToRefresh: true);
     };
-    context.read(primaryStockChangeNotifier).addListener(stockChangeListener);
+    context.read(primaryStockChangeNotifier).addListener(stockChangeListener!);
   }
 
   List<Stock> getRelatedStock(String forCode) {
@@ -78,15 +77,15 @@ class _BottomSheetRelatedStockState extends State<BottomSheetRelatedStock> {
     int index = forCode.indexOf('-');
     if (index > 0) {
       mainCode = forCode.substring(0, index);
-      print('getRelatedStock mainCode = $mainCode  from stock.code = ' +
-          forCode);
+      print(
+          'getRelatedStock mainCode = $mainCode  from stock.code = ' + forCode);
     }
     relatedStocks.clear();
 
-    for (var value in InvestrendTheme.storedData.listStock) {
+    for (Stock? value in InvestrendTheme.storedData!.listStock!) {
       if (value != null &&
-          value is Stock &&
-          value.code.toLowerCase().startsWith(mainCode.toLowerCase())) {
+          // value is Stock &&
+          value.code!.toLowerCase().startsWith(mainCode.toLowerCase())) {
         relatedStocks.add(value);
       }
     }
@@ -94,25 +93,25 @@ class _BottomSheetRelatedStockState extends State<BottomSheetRelatedStock> {
   }
 
   void constructRelatedStocks(BuildContext context) {
-    String newCode = context.read(primaryStockChangeNotifier).stock.code;
+    String? newCode = context.read(primaryStockChangeNotifier).stock?.code;
 
-    String mainCode = newCode;
-    int index = newCode.indexOf('-');
-    if (index > 0) {
-      mainCode = newCode.substring(0, index);
-      print('mainCode = $mainCode  from stock.code = ' + newCode);
+    String? mainCode = newCode;
+    int? index = newCode?.indexOf('-');
+    if (index! > 0) {
+      mainCode = newCode?.substring(0, index);
+      print('mainCode = $mainCode  from stock.code = ' + newCode!);
     }
     relatedStocks.clear();
-    String newCodes = '';
-    for (var value in InvestrendTheme.storedData.listStock) {
+    String? newCodes = '';
+    for (Stock? value in InvestrendTheme.storedData!.listStock!) {
       if (value != null &&
-          value is Stock &&
-          value.code.toLowerCase().startsWith(mainCode.toLowerCase())) {
+          // value is Stock &&
+          value.code!.toLowerCase().startsWith(mainCode!.toLowerCase())) {
         relatedStocks.add(value);
-        if (newCodes.isEmpty) {
+        if (newCodes!.isEmpty) {
           newCodes = value.code;
         } else {
-          newCodes = newCodes + "_" + value.code;
+          newCodes = newCodes + "_" + value.code!;
         }
       }
     }
@@ -133,13 +132,15 @@ class _BottomSheetRelatedStockState extends State<BottomSheetRelatedStock> {
     try {
       print(routeName + ' try Summarys');
       if (!StringUtils.isEmtpy(codes)) {
-        final stockSummarys = await InvestrendTheme.datafeedHttp
+        final List<StockSummary>? stockSummarys = await InvestrendTheme
+            .datafeedHttp
             .fetchStockSummaryMultiple(codes, 'RG');
         if (stockSummarys != null && stockSummarys.isNotEmpty) {
           for (var newValue in stockSummarys) {
             bool updated = false;
             for (var existing in summarys) {
-              if (StringUtils.equalsIgnoreCase(existing.code, newValue.code)) {
+              if (StringUtils.equalsIgnoreCase(
+                  existing.code!, newValue.code!)) {
                 existing.copyValueFrom(newValue);
                 updated = true;
               }
@@ -168,10 +169,11 @@ class _BottomSheetRelatedStockState extends State<BottomSheetRelatedStock> {
     }
   }
 
-  StockSummary getSummary(String code) {
-    StockSummary result;
-    for (var summary in summarys) {
-      if (summary != null && StringUtils.equalsIgnoreCase(code, summary.code)) {
+  StockSummary getSummary(String? code) {
+    StockSummary? result;
+    for (StockSummary? summary in summarys) {
+      if (summary != null &&
+          StringUtils.equalsIgnoreCase(code!, summary.code!)) {
         result = summary;
 
         break;
@@ -183,7 +185,7 @@ class _BottomSheetRelatedStockState extends State<BottomSheetRelatedStock> {
       print('getSummary $code NOT found');
     }
 
-    return result;
+    return result!;
   }
 
   @override
@@ -287,7 +289,7 @@ class _BottomSheetRelatedStockState extends State<BottomSheetRelatedStock> {
               child: ValueListenableBuilder(
                 valueListenable: priceNotifier,
                 builder: (context, value, child) {
-                  Stock selectedStock =
+                  Stock? selectedStock =
                       context.read(primaryStockChangeNotifier).stock;
                   return ListView.separated(
                     itemCount: relatedStocks.length,
@@ -304,7 +306,7 @@ class _BottomSheetRelatedStockState extends State<BottomSheetRelatedStock> {
                     },
                     itemBuilder: (BuildContext context, int index) {
                       Stock rowStock = relatedStocks.elementAt(index);
-                      print("$index  rowStock : " + rowStock.code);
+                      print("$index  rowStock : " + rowStock.code!);
                       StockSummary summary = getSummary(rowStock.code);
 
                       return createRow(
@@ -320,15 +322,16 @@ class _BottomSheetRelatedStockState extends State<BottomSheetRelatedStock> {
     );
   }
 
-  ListTile createRow(BuildContext context, Stock selectedStock, Stock value,
-      StockSummary summary, double padding) {
+  ListTile createRow(BuildContext context, Stock? selectedStock, Stock value,
+      StockSummary? summary, double padding) {
     bool selected =
-        StringUtils.equalsIgnoreCase(selectedStock.code, value.code);
-    TextStyle titleStyle = InvestrendTheme.of(context).regular_w600_compact;
-    Color color = selected ? Theme.of(context).colorScheme.secondary : titleStyle.color;
-    Color colorPrice = selected
-        ? Theme.of(context).colorScheme.secondary
-        : InvestrendTheme.of(context).greyDarkerTextColor;
+        StringUtils.equalsIgnoreCase(selectedStock?.code, value.code);
+    TextStyle? titleStyle = InvestrendTheme.of(context).regular_w600_compact;
+    Color? color =
+        selected ? Theme.of(context).colorScheme.secondary : titleStyle?.color;
+    // Color? colorPrice = selected
+    //     ? Theme.of(context).colorScheme.secondary
+    //     : InvestrendTheme.of(context).greyDarkerTextColor;
     return ListTile(
       onTap: () {
         context.read(primaryStockChangeNotifier).setStock(value);
@@ -340,11 +343,11 @@ class _BottomSheetRelatedStockState extends State<BottomSheetRelatedStock> {
       contentPadding:
           EdgeInsets.only(top: 8.0, bottom: 8.0, left: padding, right: padding),
       title: Text(
-        value.code,
-        style: InvestrendTheme.of(context).regular_w600.copyWith(color: color),
+        value.code!,
+        style: InvestrendTheme.of(context).regular_w600?.copyWith(color: color),
       ),
       subtitle: Text(
-        summary != null ? InvestrendTheme.formatPrice(summary.close) : '-',
+        summary != null ? InvestrendTheme.formatPrice(summary.close!) : '-',
         style: InvestrendTheme.of(context).small_w400_greyDarker,
       ),
       trailing: selected

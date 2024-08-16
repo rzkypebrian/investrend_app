@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:Investrend/component/chart_candlestick.dart';
 import 'package:Investrend/objects/class_value_notifier.dart';
 import 'package:Investrend/objects/data_object.dart';
@@ -7,17 +9,17 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class CardOhlcvChart extends StatefulWidget {
-  final ChartOhlcvNotifier ohlcvDataNotifier;
-  final ValueNotifier<int> rangesNotifier;
-  NumberFormat numberFormatRight;
-  final RangeCallback rangeCallback;
-  final VoidCallback onRetry;
-  List<bool> listRangeEnabled;
+  final ChartOhlcvNotifier? ohlcvDataNotifier;
+  final ValueNotifier<int>? rangesNotifier;
+  NumberFormat? numberFormatRight;
+  final RangeCallback? rangeCallback;
+  final VoidCallback? onRetry;
+  List<bool>? listRangeEnabled;
 
   CardOhlcvChart(
     this.ohlcvDataNotifier,
     this.rangesNotifier, {
-    Key key,
+    Key? key,
     this.rangeCallback,
     this.numberFormatRight,
     this.onRetry,
@@ -40,7 +42,7 @@ class _CardOhlcvChartState extends State<CardOhlcvChart> {
     '5Y',
     'All'
   ];
-  List<bool> _listRangeEnabled = <bool>[
+  List<bool>? _listRangeEnabled = <bool>[
     false,
     true,
     true,
@@ -57,21 +59,21 @@ class _CardOhlcvChartState extends State<CardOhlcvChart> {
   void initState() {
     super.initState();
     if (widget.listRangeEnabled != null &&
-        widget.listRangeEnabled.length <= _listRangeEnabled.length) {
-      for (int i = 0; i < widget.listRangeEnabled.length; i++) {
-        _listRangeEnabled[i] = widget.listRangeEnabled.elementAt(i);
+        widget.listRangeEnabled!.length <= _listRangeEnabled!.length) {
+      for (int i = 0; i < widget.listRangeEnabled!.length; i++) {
+        _listRangeEnabled?[i] = widget.listRangeEnabled!.elementAt(i);
       }
     }
   }
 
-  bool enableButton(int index) {
+  bool? enableButton(int index) {
     if (_listRangeEnabled == null ||
-        _listRangeEnabled.isEmpty ||
+        _listRangeEnabled!.isEmpty ||
         index < 0 ||
-        index >= _listRangeEnabled.length) {
+        index >= _listRangeEnabled!.length) {
       return true;
     }
-    return _listRangeEnabled.elementAt(index);
+    return _listRangeEnabled?.elementAt(index);
   }
 
   final DateFormat _dateFormat = DateFormat('yy-MM-dd');
@@ -85,10 +87,10 @@ class _CardOhlcvChartState extends State<CardOhlcvChart> {
         children: [
           _chipsRange(context),
           ValueListenableBuilder(
-              valueListenable: widget.ohlcvDataNotifier,
-              builder: (context, ChartOhlcvData data, child) {
-                Widget noWidget = widget.ohlcvDataNotifier.currentState
-                    .getNoWidget(onRetry: widget.onRetry);
+              valueListenable: widget.ohlcvDataNotifier!,
+              builder: (context, ChartOhlcvData? data, child) {
+                Widget? noWidget = widget.ohlcvDataNotifier?.currentState
+                    .getNoWidget(onRetry: widget.onRetry!);
                 if (noWidget != null) {
                   return Container(
                     width: double.maxFinite,
@@ -107,9 +109,9 @@ class _CardOhlcvChartState extends State<CardOhlcvChart> {
                   ),
                   width: double.maxFinite,
                   child: CandlestickChart(
-                    chartData: data.datas,
-                    minimumData: data.minValue,
-                    maximumData: data.maxValue,
+                    chartData: data?.datas,
+                    minimumData: data?.minValue,
+                    maximumData: data?.maxValue,
                   ),
                 );
               })
@@ -133,32 +135,32 @@ class _CardOhlcvChartState extends State<CardOhlcvChart> {
       decoration: BoxDecoration(
         color: InvestrendTheme.of(context).tileBackground,
         border: Border.all(
-          color: InvestrendTheme.of(context).chipBorder,
+          color: InvestrendTheme.of(context).chipBorder!,
           width: 1.0,
         ),
         borderRadius: BorderRadius.circular(2.0),
       ),
       child: ValueListenableBuilder<int>(
-          valueListenable: widget.rangesNotifier,
+          valueListenable: widget.rangesNotifier!,
           builder: (context, value, child) {
             return Row(
               children:
                   List<Widget>.generate(_listChipRange.length, (int index) {
                 bool selected = value == index;
-                bool enabled = enableButton(index);
+                bool? enabled = enableButton(index);
                 Color color;
                 Color colorText;
                 if (selected) {
                   color = Theme.of(context).colorScheme.secondary;
                   colorText = Colors.white;
                 } else {
-                  if (enabled) {
+                  if (enabled!) {
                     color = Colors.transparent;
-                    colorText = InvestrendTheme.of(context).blackAndWhiteText;
+                    colorText = InvestrendTheme.of(context).blackAndWhiteText!;
                   } else {
                     color = Theme.of(context).colorScheme.background;
                     colorText =
-                        InvestrendTheme.of(context).greyLighterTextColor;
+                        InvestrendTheme.of(context).greyLighterTextColor!;
                   }
                 }
                 return Expanded(
@@ -166,9 +168,9 @@ class _CardOhlcvChartState extends State<CardOhlcvChart> {
                   child: Material(
                     color: Colors.transparent,
                     child: InkWell(
-                      onTap: enabled
+                      onTap: enabled!
                           ? () {
-                              widget.rangesNotifier.value = index;
+                              widget.rangesNotifier!.value = index;
                               executesCallback(index);
                             }
                           : null,
@@ -179,7 +181,7 @@ class _CardOhlcvChartState extends State<CardOhlcvChart> {
                             _listChipRange[index],
                             style: InvestrendTheme.of(context)
                                 .more_support_w400_compact
-                                .copyWith(color: colorText),
+                                ?.copyWith(color: colorText),
                           ),
                         ),
                       ),
@@ -194,8 +196,8 @@ class _CardOhlcvChartState extends State<CardOhlcvChart> {
 
   void executesCallback(int index) {
     if (widget.rangeCallback != null) {
-      DateTime from;
-      DateTime to;
+      DateTime? from;
+      DateTime? to;
       //widget.callbackRange(_listChipRange[_selectedRange]);
       //  0      1    2     3      4     5    6      7
       //['1D', '1W', '1M', '3M', '6M', '1Y', '5Y', 'All'];
@@ -254,7 +256,7 @@ class _CardOhlcvChartState extends State<CardOhlcvChart> {
       //fromText = _dateFormat.format(from);
       //toText = _dateFormat.format(to);
 
-      widget.rangeCallback(widget.rangesNotifier.value, fromText, toText);
+      widget.rangeCallback!(widget.rangesNotifier!.value, fromText, toText);
     }
   }
 }

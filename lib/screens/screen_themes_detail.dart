@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable, unnecessary_null_comparison, non_constant_identifier_names
+
 import 'package:Investrend/component/bottom_sheet/bottom_sheet_alert.dart';
 import 'package:Investrend/component/button_order.dart';
 import 'package:Investrend/component/circle_button.dart';
@@ -18,9 +20,9 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ScreenThemesDetail extends StatefulWidget {
-  final StockThemes themes;
+  final StockThemes? themes;
 
-  const ScreenThemesDetail(this.themes, {Key key}) : super(key: key);
+  const ScreenThemesDetail(this.themes, {Key? key}) : super(key: key);
 
   @override
   _ScreenThemesDetailState createState() => _ScreenThemesDetailState();
@@ -39,9 +41,9 @@ class _ScreenThemesDetailState
   void initState() {
     super.initState();
     GeneralPriceData members = GeneralPriceData();
-    widget.themes.member_stocks.forEach((stock) {
+    widget.themes?.member_stocks.forEach((stock) {
       //members.datas.add(GeneralPrice(stock.code, 0, 0.0, 0.0, name: stock.name));
-      members.datas.add(WatchlistPrice(stock.code, 0, 0.0, 0.0, stock.name));
+      members.datas?.add(WatchlistPrice(stock.code, 0, 0.0, 0.0, stock.name));
     });
     _watchlistDataNotifier.setValue(members);
   }
@@ -101,20 +103,21 @@ class _ScreenThemesDetailState
         "  active : $active  pullToRefresh : $pullToRefresh");
     //Watchlist activeWatchlist = context.read(watchlistChangeNotifier).getWatchlist(_watchlistNotifier.value);
 
-    if (widget.themes != null && widget.themes.member_stocks.isNotEmpty) {
+    if (widget.themes != null && widget.themes!.member_stocks.isNotEmpty) {
       try {
         print(routeName + ' try Summarys');
-        String codes;
-        widget.themes.member_stocks.forEach((stock) {
+        String? codes;
+        widget.themes?.member_stocks.forEach((stock) {
           if (StringUtils.isEmtpy(codes)) {
             codes = stock.code;
           } else {
-            codes = codes + '_' + stock.code;
+            codes = codes! + '_' + stock.code!;
           }
         });
 
-        final stockSummarys = await InvestrendTheme.datafeedHttp
-            .fetchStockSummaryMultiple(codes, 'RG');
+        final List<StockSummary>? stockSummarys = await InvestrendTheme
+            .datafeedHttp
+            .fetchStockSummaryMultiple(codes!, 'RG');
         if (stockSummarys != null && stockSummarys.isNotEmpty) {
           //print(routeName + ' Future Summary DATA : ' + stockSummary.code + '  prev : ' + stockSummary.prev.toString());
           //_summaryNotifier.setData(stockSummary);
@@ -161,7 +164,7 @@ class _ScreenThemesDetailState
   }
   */
   void onPressedButtonImportantInformation(BuildContext context,
-      List<Remark2Mapping> notation, SuspendStock suspendStock) {
+      List<Remark2Mapping>? notation, SuspendStock? suspendStock) {
     int count = notation == null ? 0 : notation.length;
     if (count == 0 && suspendStock == null) {
       print(routeName +
@@ -177,20 +180,20 @@ class _ScreenThemesDetailState
 
       DateFormat dateFormatter = DateFormat('EEEE, dd/MM/yyyy', 'id');
       DateFormat dateParser = DateFormat('yyyy-MM-dd');
-      DateTime dateTime = dateParser.parseUtc(suspendStock.date);
+      DateTime dateTime = dateParser.parseUtc(suspendStock.date!);
       print('dateTime : ' + dateTime.toString());
       //print('indexSummary.date : '+data.date+' '+data.time);
       String formatedDate = dateFormatter.format(dateTime);
       //String formatedTime = timeFormatter.format(dateTime);
       //infoSuspend = infoSuspend.replaceAll('#BOARD#', suspendStock.board);
       infoSuspend = infoSuspend.replaceAll('#DATE#', formatedDate);
-      infoSuspend = infoSuspend.replaceAll('#TIME#', suspendStock.time);
+      infoSuspend = infoSuspend.replaceAll('#TIME#', suspendStock.time!);
       //displayTime = infoTime;
       height += 25.0;
       childs.add(Padding(
         padding: const EdgeInsets.only(bottom: 5.0),
         child: Text(
-          'Suspended ' + suspendStock.board,
+          'Suspended ' + suspendStock.board!,
           style: InvestrendTheme.of(context).small_w600,
         ),
       ));
@@ -247,14 +250,14 @@ class _ScreenThemesDetailState
         }
       }
       */
-      Remark2Mapping remark2 = notation.elementAt(i);
+      Remark2Mapping? remark2 = notation?.elementAt(i);
       if (remark2 != null) {
         if (remark2.isSurveilance()) {
           height += 35.0;
           childs.add(Padding(
             padding: const EdgeInsets.only(bottom: 15.0),
             child: Text(
-              remark2.code + ' : ' + remark2.value,
+              remark2.code! + ' : ' + remark2.value!,
               style: InvestrendTheme.of(context).small_w600,
             ),
           ));
@@ -283,7 +286,7 @@ class _ScreenThemesDetailState
                       style: InvestrendTheme.of(context).small_w600,
                     ),
                     TextSpan(
-                      text: ' : ' + remark2.value,
+                      text: ' : ' + remark2.value!,
                       style: InvestrendTheme.of(context).small_w400,
                     )
                   ]),
@@ -298,12 +301,12 @@ class _ScreenThemesDetailState
   }
 
   void onPressedButtonCorporateAction(
-      BuildContext context, List<CorporateActionEvent> corporateAction) {
+      BuildContext context, List<CorporateActionEvent>? corporateAction) {
     print('onPressedButtonCorporateAction : ' + corporateAction.toString());
 
     List<Widget> childs = List.empty(growable: true);
     if (corporateAction != null && corporateAction.isNotEmpty) {
-      corporateAction.forEach((ca) {
+      corporateAction.forEach((CorporateActionEvent? ca) {
         if (ca != null) {
           childs.add(Padding(
             padding: const EdgeInsets.only(bottom: 20),
@@ -319,7 +322,7 @@ class _ScreenThemesDetailState
   }
 
   void showAlert(BuildContext context, List<Widget> childs,
-      {String title, double childsHeight = 0}) {
+      {String? title, double childsHeight = 0}) {
     showModalBottomSheet(
         isScrollControlled: true,
         shape: RoundedRectangleBorder(
@@ -338,7 +341,6 @@ class _ScreenThemesDetailState
   }
 
   void onVisibilityChanged(WidgetVisibility visibility) {
-    // TODO: Use visibility
     switch (visibility) {
       case WidgetVisibility.VISIBLE:
         // Like Android's Activity.onResume()
@@ -397,7 +399,7 @@ class _ScreenThemesDetailState
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
-      backgroundColor: widget.themes.background_color,
+      backgroundColor: widget.themes?.background_color,
       floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
       floatingActionButton: createFloatingActionButton(context),
       body: Stack(
@@ -428,7 +430,7 @@ class _ScreenThemesDetailState
         Container(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.width,
-          color: widget.themes.background_color,
+          color: widget.themes?.background_color,
         ),
         Container(
           width: MediaQuery.of(context).size.width,
@@ -449,7 +451,7 @@ class _ScreenThemesDetailState
         AspectRatio(
           aspectRatio: 1 / 1,
           child: ComponentCreator.imageNetworkCached(
-              widget.themes.background_image_url,
+              widget.themes?.background_image_url,
               fit: BoxFit.fitHeight),
         ),
         Padding(
@@ -458,9 +460,10 @@ class _ScreenThemesDetailState
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                widget.themes.getName(
-                    language: EasyLocalization.of(context).locale.languageCode),
-                style: Theme.of(context).textTheme.headline4.copyWith(
+                widget.themes!.getName(
+                    language:
+                        EasyLocalization.of(context)!.locale.languageCode)!,
+                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                     color: InvestrendTheme.of(context).textWhite,
                     fontWeight: FontWeight.w600),
               ),
@@ -468,11 +471,12 @@ class _ScreenThemesDetailState
                 height: 8.0,
               ),
               Text(
-                widget.themes.getDescription(
-                    language: EasyLocalization.of(context).locale.languageCode),
+                widget.themes!.getDescription(
+                    language:
+                        EasyLocalization.of(context)!.locale.languageCode)!,
                 style: InvestrendTheme.of(context)
                     .small_w400
-                    .copyWith(color: InvestrendTheme.of(context).textWhite),
+                    ?.copyWith(color: InvestrendTheme.of(context).textWhite),
               ),
               SizedBox(
                 height: 24.0,
@@ -518,7 +522,7 @@ class _ScreenThemesDetailState
       onRefresh: onRefresh,
       child: ValueListenableBuilder(
           valueListenable: _watchlistDataNotifier,
-          builder: (context, GeneralPriceData data, child) {
+          builder: (context, GeneralPriceData? data, child) {
             // if(data.count() == 0){
             //   return ListView(
             //     children: [
@@ -532,7 +536,7 @@ class _ScreenThemesDetailState
             return ListView.separated(
                 shrinkWrap: false,
                 //padding: const EdgeInsets.all(8),
-                itemCount: data.count() + preChilds.length,
+                itemCount: data!.count() + preChilds.length,
                 separatorBuilder: (BuildContext context, int index) {
                   // if(index == 0){
                   //   return SizedBox(width: 1.0,);
@@ -551,8 +555,8 @@ class _ScreenThemesDetailState
                   //GeneralPrice gp = data.datas.elementAt(index - pre_childs.length);
 
                   GeneralPrice generalPrice =
-                      data.datas.elementAt(index - preChilds.length);
-                  WatchlistPrice gp;
+                      data.datas!.elementAt(index - preChilds.length);
+                  WatchlistPrice? gp;
                   if (generalPrice is WatchlistPrice) {
                     gp = generalPrice;
                   }
@@ -569,12 +573,12 @@ class _ScreenThemesDetailState
                             'button_buy'.tr(),
                             InvestrendTheme.buyColor,
                             () {
-                              print('buy clicked code : ' + gp.code);
-                              Stock stock =
-                                  InvestrendTheme.storedData.findStock(gp.code);
+                              print('buy clicked code : ' + gp!.code!);
+                              Stock? stock = InvestrendTheme.storedData
+                                  ?.findStock(gp.code);
                               if (stock == null) {
                                 print('buy clicked code : ' +
-                                    gp.code +
+                                    gp.code! +
                                     ' aborted, not find stock on StockStorer');
                                 return;
                               }
@@ -611,12 +615,12 @@ class _ScreenThemesDetailState
                             'button_sell'.tr(),
                             InvestrendTheme.sellColor,
                             () {
-                              print('sell clicked code : ' + gp.code);
-                              Stock stock =
-                                  InvestrendTheme.storedData.findStock(gp.code);
+                              print('sell clicked code : ' + gp!.code!);
+                              Stock? stock = InvestrendTheme.storedData
+                                  ?.findStock(gp.code);
                               if (stock == null) {
                                 print('sell clicked code : ' +
-                                    gp.code +
+                                    gp.code! +
                                     ' aborted, not find stock on StockStorer');
                                 return;
                               }
@@ -654,20 +658,20 @@ class _ScreenThemesDetailState
                           */
                         ],
                         child: RowWatchlist(
-                          gp,
+                          gp!,
                           firstRow: true, //(index == 0),
                           onTap: () {
                             print('clicked code : ' +
-                                gp.code +
+                                gp!.code! +
                                 '  canTapRow : $canTapRow');
                             if (canTapRow) {
                               canTapRow = false;
 
-                              Stock stock =
-                                  InvestrendTheme.storedData.findStock(gp.code);
+                              Stock? stock = InvestrendTheme.storedData
+                                  ?.findStock(gp.code);
                               if (stock == null) {
                                 print('clicked code : ' +
-                                    gp.code +
+                                    gp.code! +
                                     ' aborted, not find stock on StockStorer');
                                 canTapRow = true;
                                 return;
@@ -687,11 +691,11 @@ class _ScreenThemesDetailState
                           showBidOffer: false,
                           onPressedButtonCorporateAction: () =>
                               onPressedButtonCorporateAction(
-                                  context, gp.corporateAction),
+                                  context, gp!.corporateAction!),
                           //onPressedButtonSpecialNotation: ()=> onPressedButtonSpecialNotation(context, gp.notation),
                           onPressedButtonSpecialNotation: () =>
                               onPressedButtonImportantInformation(
-                                  context, gp.notation, gp.suspendStock),
+                                  context, gp!.notation!, gp.suspendStock!),
                         )),
                   );
                 });
@@ -710,9 +714,9 @@ class _ScreenThemesDetailState
         elevation: 1.0,
         focusElevation: 0.1,
         backgroundColor:
-            InvestrendTheme.darkenColor(widget.themes.background_color, 0.2),
+            InvestrendTheme.darkenColor(widget.themes!.background_color, 0.2),
         splashColor:
-            InvestrendTheme.lightenColor(widget.themes.background_color, 0.2),
+            InvestrendTheme.lightenColor(widget.themes!.background_color, 0.2),
         child: Padding(
           padding: const EdgeInsets.only(right: 2.0),
           child: Image.asset(
@@ -728,8 +732,8 @@ class _ScreenThemesDetailState
   }
 
   Widget createBodyNoScroll(BuildContext context) {
-    int membersCount = (widget.themes.member_stocks != null
-        ? widget.themes.member_stocks.length
+    int? membersCount = (widget.themes?.member_stocks != null
+        ? widget.themes?.member_stocks.length
         : 0);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -739,10 +743,10 @@ class _ScreenThemesDetailState
           child: CircleButton(
             'images/icons/action_back.png',
             backgroundColor: InvestrendTheme.darkenColor(
-                widget.themes.background_color, 0.2),
+                widget.themes!.background_color, 0.2),
             // Button color
             splashColor: InvestrendTheme.lightenColor(
-                widget.themes.background_color, 0.2),
+                widget.themes!.background_color, 0.2),
             imageColor: Theme.of(context).primaryColor,
             buttonSize: 40.0,
             imageSize: 20.0,
@@ -774,7 +778,7 @@ class _ScreenThemesDetailState
             AspectRatio(
               aspectRatio: 1 / 1,
               child: ComponentCreator.imageNetworkCached(
-                  widget.themes.background_image_url,
+                  widget.themes?.background_image_url,
                   fit: BoxFit.fitHeight),
             ),
             Padding(
@@ -784,10 +788,10 @@ class _ScreenThemesDetailState
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    widget.themes.getName(
+                    widget.themes!.getName(
                         language:
-                            EasyLocalization.of(context).locale.languageCode),
-                    style: Theme.of(context).textTheme.headline4.copyWith(
+                            EasyLocalization.of(context)!.locale.languageCode)!,
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                         color: InvestrendTheme.of(context).textWhite,
                         fontWeight: FontWeight.w600),
                   ),
@@ -795,12 +799,11 @@ class _ScreenThemesDetailState
                     height: 8.0,
                   ),
                   Text(
-                    widget.themes.getDescription(
+                    widget.themes!.getDescription(
                         language:
-                            EasyLocalization.of(context).locale.languageCode),
-                    style: InvestrendTheme.of(context)
-                        .small_w400
-                        .copyWith(color: InvestrendTheme.of(context).textWhite),
+                            EasyLocalization.of(context)!.locale.languageCode)!,
+                    style: InvestrendTheme.of(context).small_w400?.copyWith(
+                        color: InvestrendTheme.of(context).textWhite),
                   ),
                   SizedBox(
                     height: 24.0,
@@ -841,7 +844,7 @@ class _ScreenThemesDetailState
             child: ListView.separated(
               shrinkWrap: false,
               padding: const EdgeInsets.all(8),
-              itemCount: membersCount,
+              itemCount: membersCount!,
               separatorBuilder: (BuildContext context, int index) {
                 //return ComponentCreator.divider(context);
                 return Divider(
@@ -850,16 +853,16 @@ class _ScreenThemesDetailState
                 );
               },
               itemBuilder: (BuildContext context, int index) {
-                Stock stock = widget.themes.member_stocks.elementAt(index);
-                StockSummary summary;
+                Stock? stock = widget.themes?.member_stocks.elementAt(index);
+                StockSummary? summary;
 
                 int price = 0;
                 double change = 0.0;
                 double percentChange = 0.0;
                 if (summary != null) {
-                  price = summary.close;
-                  change = summary.change;
-                  percentChange = summary.percentChange;
+                  price = summary.close!;
+                  change = summary.change!;
+                  percentChange = summary.percentChange!;
                 }
                 Color priceColor = InvestrendTheme.changeTextColor(change);
                 return ListTile(
@@ -870,7 +873,7 @@ class _ScreenThemesDetailState
                   title: Row(
                     children: [
                       Text(
-                        stock.code,
+                        stock!.code!,
                         style: InvestrendTheme.of(context).regular_w600_compact,
                       ),
                       Spacer(
@@ -880,17 +883,17 @@ class _ScreenThemesDetailState
                         InvestrendTheme.formatPrice(price),
                         style: InvestrendTheme.of(context)
                             .regular_w600_compact
-                            .copyWith(color: priceColor),
+                            ?.copyWith(color: priceColor),
                       ),
                     ],
                   ),
                   subtitle: Row(
                     children: [
                       Text(
-                        stock.name,
+                        stock.name!,
                         style: InvestrendTheme.of(context)
                             .more_support_w400_compact
-                            .copyWith(
+                            ?.copyWith(
                                 color: InvestrendTheme.of(context)
                                     .greyLighterTextColor),
                       ),
@@ -904,7 +907,7 @@ class _ScreenThemesDetailState
                             ')',
                         style: InvestrendTheme.of(context)
                             .more_support_w400_compact
-                            .copyWith(color: priceColor),
+                            ?.copyWith(color: priceColor),
                       )
                     ],
                   ),

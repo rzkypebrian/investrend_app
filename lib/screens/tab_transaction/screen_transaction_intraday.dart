@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'dart:async';
 import 'dart:math';
 
@@ -22,7 +24,7 @@ import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:Investrend/utils/string_utils.dart';
 import 'package:Investrend/utils/ui_helper.dart';
 import 'package:Investrend/utils/utils.dart';
-import 'package:animations/animations.dart';
+// import 'package:animations/animations.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -41,23 +43,27 @@ class ScreenTransactionIntraday extends StatefulWidget {
   ScreenTransactionIntraday(this.tabIndex, this.tabController, {Key key}) : super(key: key);
   */
 
-  final TabController tabController;
+  final TabController? tabController;
   final int tabIndex;
 
-  ScreenTransactionIntraday(this.tabIndex, this.tabController, {Key key}) : super(key: key);
+  ScreenTransactionIntraday(this.tabIndex, this.tabController, {Key? key})
+      : super(key: key);
 
   @override
-  _ScreenTransactionIntradayState createState() => _ScreenTransactionIntradayState(tabIndex, tabController);
+  _ScreenTransactionIntradayState createState() =>
+      _ScreenTransactionIntradayState(tabIndex, tabController);
 }
 
-class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<ScreenTransactionIntraday> {
+class _ScreenTransactionIntradayState
+    extends BaseStateNoTabsWithParentTab<ScreenTransactionIntraday> {
   //bool _active = false;
-  Timer _timer;
+  Timer? _timer;
   //static const Duration _durationUpdate = Duration(milliseconds: 1000);
-  Duration _durationUpdate;
+  Duration? _durationUpdate;
   static const String PIN_SUCCESS = 'pin_success';
-  _ScreenTransactionIntradayState(int tabIndex, TabController tabController)
-      : super('/transaction_intraday', tabIndex, tabController, parentTabIndex: Tabs.Transaction.index);
+  _ScreenTransactionIntradayState(int tabIndex, TabController? tabController)
+      : super('/transaction_intraday', tabIndex, tabController,
+            parentTabIndex: Tabs.Transaction.index);
 
   // List<String> _sort_by_option = [
   //   'transaction_sort_by_open'.tr(),
@@ -125,12 +131,13 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
   }
 
   void _startTimer() {
-    if (_timer == null || !_timer.isActive) {
+    if (_timer == null || !_timer!.isActive) {
       print(routeName + ' _startTimer');
-      _timer = Timer.periodic(_durationUpdate, (timer) {
+      _timer = Timer.periodic(_durationUpdate!, (timer) {
         if (active && mounted) {
           if (onProgress) {
-            print(routeName + ' timer aborted caused by onProgress : $onProgress');
+            print(routeName +
+                ' timer aborted caused by onProgress : $onProgress');
           } else {
             doUpdate();
           }
@@ -140,21 +147,26 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
   }
 
   void _stopTimer() {
-    if (_timer == null || !_timer.isActive) {
+    if (_timer == null || !_timer!.isActive) {
       return;
     }
     print(routeName + ' _stopTimer');
-    _timer.cancel();
+    _timer?.cancel();
     _timer = null;
   }
 
   bool onProgress = false;
 
   Future doUpdate({bool pullToRefresh = false}) async {
-    print('TransactionIntraday.doUpdate : ' + DateTime.now().toString() + "  active : $active  pullToRefresh : $pullToRefresh");
+    print('TransactionIntraday.doUpdate : ' +
+        DateTime.now().toString() +
+        "  active : $active  pullToRefresh : $pullToRefresh");
 
     if (!active) {
-      print(routeName + '.doUpdate Aborted : ' + DateTime.now().toString() + "  active : $active  pullToRefresh : $pullToRefresh");
+      print(routeName +
+          '.doUpdate Aborted : ' +
+          DateTime.now().toString() +
+          "  active : $active  pullToRefresh : $pullToRefresh");
       return;
     }
     onProgress = true;
@@ -162,7 +174,7 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
     try {
       User user = context.read(dataHolderChangeNotifier).user;
       int selected = context.read(accountChangeNotifier).index;
-      Account account = user.getAccount(selected);
+      Account? account = user.getAccount(selected);
       if (account == null) {
         String errorNoAccount = 'error_no_account_selected'.tr();
         //InvestrendTheme.of(context).showSnackBar(context, 'No Account Selected');
@@ -171,8 +183,13 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
         return false;
       }
 
-      final orderStatus = await InvestrendTheme.tradingHttp.orderStatus(account.brokercode /*''*/, account.accountcode /*''*/, user.username,
-          InvestrendTheme.of(context).applicationPlatform, InvestrendTheme.of(context).applicationVersion);
+      final List<OrderStatus>? orderStatus = await InvestrendTheme.tradingHttp
+          .orderStatus(
+              account.brokercode /*''*/,
+              account.accountcode /*''*/,
+              user.username,
+              InvestrendTheme.of(context).applicationPlatform,
+              InvestrendTheme.of(context).applicationVersion);
       int orderStatusCount = orderStatus != null ? orderStatus.length : 0;
       DebugWriter.info('Got orderStatus : ' + orderStatusCount.toString());
 
@@ -181,14 +198,15 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
       if (orderStatus != null) {
         final notifier = context.read(transactionIntradayFilterChangeNotifier);
         orderStatus.forEach((status) {
-          if (status.isFilterValid(notifier.index_transaction, notifier.index_status)) {
+          if (status.isFilterValid(
+              notifier.index_transaction, notifier.index_status)) {
             listDisplay.add(status);
           }
         });
 
         list.addAll(orderStatus);
       }
-      if(mounted){
+      if (mounted) {
         if (_valueNotifier.value == orderStatusCount) {
           _valueNotifier.value = Random().nextInt(1000).toInt();
         } else {
@@ -216,39 +234,50 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
     print('TransactionIntraday.initState');
     groupStatus = AutoSizeGroup();
 
-
-    if(InvestrendTheme.tradingHttp.is_production){
+    if (InvestrendTheme.tradingHttp.is_production) {
       _durationUpdate = Duration(seconds: 30);
-    }else{
+    } else {
       //_durationUpdate = Duration(milliseconds: 1000);
       _durationUpdate = Duration(seconds: 30);
     }
 
-
     runPostFrame(() {
       // #1 get properties
-      int filterTransaction = context.read(propertiesNotifier).properties.getInt(routeName, PROP_SELECTED_FILTER_TRANSACTION, 0);
-      int filterStatus = context.read(propertiesNotifier).properties.getInt(routeName, PROP_SELECTED_FILTER_STATUS, 0);
+      int filterTransaction = context
+          .read(propertiesNotifier)
+          .properties
+          .getInt(routeName, PROP_SELECTED_FILTER_TRANSACTION, 0);
+      int filterStatus = context
+          .read(propertiesNotifier)
+          .properties
+          .getInt(routeName, PROP_SELECTED_FILTER_STATUS, 0);
 
       // #2 use properties
-      int usedTransaction = min(filterTransaction, FilterTransaction.values.length - 1);
+      int usedTransaction =
+          min(filterTransaction, FilterTransaction.values.length - 1);
       int usedStatus = min(filterStatus, FilterStatus.values.length - 1);
-      context.read(transactionIntradayFilterChangeNotifier).setIndex(usedTransaction, usedStatus);
+      context
+          .read(transactionIntradayFilterChangeNotifier)
+          .setIndex(usedTransaction, usedStatus);
 
       // #3 check properties if changed, then save again
       if (filterTransaction != usedTransaction) {
-        context.read(propertiesNotifier).properties.saveInt(routeName, PROP_SELECTED_FILTER_TRANSACTION, usedTransaction);
+        context.read(propertiesNotifier).properties.saveInt(
+            routeName, PROP_SELECTED_FILTER_TRANSACTION, usedTransaction);
       }
       if (filterStatus != usedStatus) {
-        context.read(propertiesNotifier).properties.saveInt(routeName, PROP_SELECTED_FILTER_STATUS, usedStatus);
+        context
+            .read(propertiesNotifier)
+            .properties
+            .saveInt(routeName, PROP_SELECTED_FILTER_STATUS, usedStatus);
       }
     });
   }
 
-  VoidCallback filterApplied;
-  VoidCallback onAccountChanged;
+  VoidCallback? filterApplied;
+  VoidCallback? onAccountChanged;
 
-  VoidCallback onStatusRefreshEvent;
+  VoidCallback? onStatusRefreshEvent;
 
   @override
   void didChangeDependencies() {
@@ -256,27 +285,31 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
     super.didChangeDependencies();
     final notifier = context.read(transactionIntradayFilterChangeNotifier);
     if (filterApplied != null) {
-      notifier.removeListener(filterApplied);
+      notifier.removeListener(filterApplied!);
     } else {
       filterApplied = () {
         if (mounted) {
-          context
-              .read(propertiesNotifier)
-              .properties
-              .saveInt(routeName, PROP_SELECTED_FILTER_TRANSACTION, context.read(transactionIntradayFilterChangeNotifier).index_transaction);
-          context
-              .read(propertiesNotifier)
-              .properties
-              .saveInt(routeName, PROP_SELECTED_FILTER_STATUS, context.read(transactionIntradayFilterChangeNotifier).index_status);
+          context.read(propertiesNotifier).properties.saveInt(
+              routeName,
+              PROP_SELECTED_FILTER_TRANSACTION,
+              context
+                  .read(transactionIntradayFilterChangeNotifier)
+                  .index_transaction);
+          context.read(propertiesNotifier).properties.saveInt(
+              routeName,
+              PROP_SELECTED_FILTER_STATUS,
+              context
+                  .read(transactionIntradayFilterChangeNotifier)
+                  .index_status);
           doUpdate(pullToRefresh: true);
         }
       };
     }
-    notifier.addListener(filterApplied);
+    notifier.addListener(filterApplied!);
 
     final notifierAccount = context.read(accountChangeNotifier);
     if (onAccountChanged != null) {
-      notifierAccount.removeListener(onAccountChanged);
+      notifierAccount.removeListener(onAccountChanged!);
     } else {
       onAccountChanged = () {
         if (mounted) {
@@ -284,26 +317,26 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
         }
       };
     }
-    notifierAccount.addListener(onAccountChanged);
+    notifierAccount.addListener(onAccountChanged!);
 
     // tabListener = (){
     //   print('TransactionIntraday.tabListener : '+DefaultTabController.of(context).index.toString());
     // };
     // DefaultTabController.of(context).addListener(tabListener);
 
-
     final notifierRefreshStatus = context.read(statusRefreshNotifier);
     if (onStatusRefreshEvent != null) {
-      notifierRefreshStatus.removeListener(onStatusRefreshEvent);
+      notifierRefreshStatus.removeListener(onStatusRefreshEvent!);
     } else {
       onStatusRefreshEvent = () {
         if (mounted) {
-          print('Triggered Refresh Order Status at : '+notifierRefreshStatus.time);
+          print('Triggered Refresh Order Status at : ' +
+              notifierRefreshStatus.time);
           doUpdate(pullToRefresh: true);
         }
       };
     }
-    notifierRefreshStatus.addListener(onStatusRefreshEvent);
+    notifierRefreshStatus.addListener(onStatusRefreshEvent!);
   }
 
   @override
@@ -312,17 +345,21 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
 
     final container = ProviderContainer();
     if (filterApplied != null) {
-      container.read(transactionIntradayFilterChangeNotifier).removeListener(filterApplied);
+      container
+          .read(transactionIntradayFilterChangeNotifier)
+          .removeListener(filterApplied!);
     }
     filterApplied = null;
 
     if (onAccountChanged != null) {
-      container.read(accountChangeNotifier).removeListener(onAccountChanged);
+      container.read(accountChangeNotifier).removeListener(onAccountChanged!);
     }
     onAccountChanged = null;
 
     if (onStatusRefreshEvent != null) {
-      container.read(statusRefreshNotifier).removeListener(onStatusRefreshEvent);
+      container
+          .read(statusRefreshNotifier)
+          .removeListener(onStatusRefreshEvent!);
     }
     onStatusRefreshEvent = null;
 
@@ -478,7 +515,8 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
   }
   */
 
-  Widget tileTransactionNew(BuildContext context, OrderStatus os, double statusWidth) {
+  Widget tileTransactionNew(
+      BuildContext context, OrderStatus os, double statusWidth) {
     String bs = '-';
     Color bsColor = Colors.yellow;
     if (StringUtils.equalsIgnoreCase(os.bs, 'B')) {
@@ -492,7 +530,10 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
 
     return InkWell(
       onTap: () {
-        Account account = context.read(dataHolderChangeNotifier).user.getAccountByCode(os.brokercode, os.accountcode);
+        Account? account = context
+            .read(dataHolderChangeNotifier)
+            .user
+            .getAccountByCode(os.brokercode, os.accountcode);
         if (account != null) {
           OrderType orderType;
           if (StringUtils.equalsIgnoreCase(os.bs, 'B')) {
@@ -511,7 +552,7 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
           data.brokerCode = os.brokercode;
           data.stock_code = os.stockCode;
 
-          Stock stock = InvestrendTheme.storedData.findStock(os.stockCode);
+          Stock? stock = InvestrendTheme.storedData?.findStock(os.stockCode);
           data.stock_name = stock != null ? stock.name : '-';
           //data.normalTotalValue = os.price * os.orderQty;
           data.fastTotalValue = 0;
@@ -533,7 +574,8 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
         } else {
           String error = 'validation_account_not_related_to_user'.tr();
           error = error.replaceAll('#account#', os.accountcode);
-          error = error.replaceAll('#user#', context.read(dataHolderChangeNotifier).user.username);
+          error = error.replaceAll(
+              '#user#', context.read(dataHolderChangeNotifier).user.username!);
           InvestrendTheme.of(context).showSnackBar(context, error);
         }
       },
@@ -552,13 +594,17 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(os.stockCode, style: InvestrendTheme.of(context).regular_w600_compact),
+                    Text(os.stockCode,
+                        style:
+                            InvestrendTheme.of(context).regular_w600_compact),
                     SizedBox(
                       height: 4.0,
                     ),
                     Text(
                       bs,
-                      style: InvestrendTheme.of(context).small_w400_compact.copyWith(color: bsColor),
+                      style: InvestrendTheme.of(context)
+                          .small_w400_compact
+                          ?.copyWith(color: bsColor),
                     ),
                   ],
                 ),
@@ -571,24 +617,30 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        InvestrendTheme.formatComma((os.orderQty ~/ 100)) + ' Lot',
-                        style: InvestrendTheme.of(context).more_support_w600_compact,
+                        InvestrendTheme.formatComma((os.orderQty ~/ 100)) +
+                            ' Lot',
+                        style: InvestrendTheme.of(context)
+                            .more_support_w600_compact,
                       ),
                       SizedBox(
                         height: 5.0,
                       ),
                       Text(
                         InvestrendTheme.formatMoney(os.price, prefixRp: true),
-                        style: InvestrendTheme.of(context).more_support_w600_compact,
+                        style: InvestrendTheme.of(context)
+                            .more_support_w600_compact,
                       ),
                       SizedBox(
                         height: 5.0,
                       ),
                       Text(
-                        InvestrendTheme.formatMoney((os.price * os.orderQty), prefixRp: true),
+                        InvestrendTheme.formatMoney((os.price * os.orderQty),
+                            prefixRp: true),
                         style: InvestrendTheme.of(context)
                             .more_support_w400_compact
-                            .copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor),
+                            ?.copyWith(
+                                color: InvestrendTheme.of(context)
+                                    .greyDarkerTextColor),
                       ),
                     ],
                   ),
@@ -604,7 +656,11 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
                     children: [
                       Container(
                         //width: statusWidth,
-                        padding: EdgeInsets.only(left: InvestrendTheme.cardPadding, right: InvestrendTheme.cardPadding, top: 4.0, bottom: 4.0),
+                        padding: EdgeInsets.only(
+                            left: InvestrendTheme.cardPadding,
+                            right: InvestrendTheme.cardPadding,
+                            top: 4.0,
+                            bottom: 4.0),
                         decoration: BoxDecoration(
                           color: os.backgroundColor(context),
                           borderRadius: BorderRadius.circular(2.0),
@@ -616,7 +672,9 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
                           group: groupStatus,
                           style: InvestrendTheme.of(context)
                               .more_support_w400_compact
-                              .copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor),
+                              ?.copyWith(
+                                  color: InvestrendTheme.of(context)
+                                      .greyDarkerTextColor),
                         ),
                       ),
                     ],
@@ -649,7 +707,10 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
                       os.message,
                       style: InvestrendTheme.of(context)
                           .more_support_w400_compact
-                          .copyWith(fontSize: 10.0, color: InvestrendTheme.of(context).greyLighterTextColor),
+                          ?.copyWith(
+                              fontSize: 10.0,
+                              color: InvestrendTheme.of(context)
+                                  .greyLighterTextColor),
                     ),
                   )
                 : SizedBox(
@@ -662,7 +723,8 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
     );
   }
 
-  Widget tileTransaction(BuildContext context, OrderStatus os, double statusWidth) {
+  Widget tileTransaction(
+      BuildContext context, OrderStatus os, double statusWidth) {
     String bs = '-';
     Color bsColor = Colors.yellow;
     if (StringUtils.equalsIgnoreCase(os.bs, 'B')) {
@@ -675,7 +737,10 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
 
     return InkWell(
       onTap: () {
-        Account account = context.read(dataHolderChangeNotifier).user.getAccountByCode(os.brokercode, os.accountcode);
+        Account? account = context
+            .read(dataHolderChangeNotifier)
+            .user
+            .getAccountByCode(os.brokercode, os.accountcode);
         if (account != null) {
           OrderType orderType;
           if (StringUtils.equalsIgnoreCase(os.bs, 'B')) {
@@ -694,7 +759,7 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
           data.brokerCode = os.brokercode;
           data.stock_code = os.stockCode;
 
-          Stock stock = InvestrendTheme.storedData.findStock(os.stockCode);
+          Stock? stock = InvestrendTheme.storedData?.findStock(os.stockCode);
           data.stock_name = stock != null ? stock.name : '-';
           //data.normalTotalValue = os.price * os.orderQty;
           data.fastTotalValue = 0;
@@ -705,16 +770,22 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
           //InvestrendTheme.push(context, ScreenOrderDetail(data, os), ScreenTransition.SlideDown, '/order_detail');
           //InvestrendTheme.push(context, ScreenOrderDetail(data, os), ScreenTransition.SlideLeft, '/order_detail', durationMilisecond: 300);
           Navigator.push(
-              context, CupertinoPageRoute(builder: (_) => ScreenOrderDetail(data, os), settings: RouteSettings(name: '/order_detail')));
+              context,
+              CupertinoPageRoute(
+                  builder: (_) => ScreenOrderDetail(data, os),
+                  settings: RouteSettings(name: '/order_detail')));
         } else {
           String error = 'validation_account_not_related_to_user'.tr();
           error = error.replaceAll('#account#', os.accountcode);
-          error = error.replaceAll('#user#', context.read(dataHolderChangeNotifier).user.username);
+          error = error.replaceAll(
+              '#user#', context.read(dataHolderChangeNotifier).user.username!);
           InvestrendTheme.of(context).showSnackBar(context, error);
         }
       },
       child: Padding(
-        padding: const EdgeInsets.only(top: InvestrendTheme.cardPadding, bottom: InvestrendTheme.cardPadding),
+        padding: const EdgeInsets.only(
+            top: InvestrendTheme.cardPadding,
+            bottom: InvestrendTheme.cardPadding),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -724,13 +795,17 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(os.stockCode, style: InvestrendTheme.of(context).regular_w600_compact),
+                    Text(os.stockCode,
+                        style:
+                            InvestrendTheme.of(context).regular_w600_compact),
                     SizedBox(
                       height: 4.0,
                     ),
                     Text(
                       bs,
-                      style: InvestrendTheme.of(context).small_w400_compact.copyWith(color: bsColor),
+                      style: InvestrendTheme.of(context)
+                          .small_w400_compact
+                          ?.copyWith(color: bsColor),
                     ),
                   ],
                 ),
@@ -743,24 +818,30 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        InvestrendTheme.formatComma((os.orderQty ~/ 100)) + ' Lot',
-                        style: InvestrendTheme.of(context).more_support_w600_compact,
+                        InvestrendTheme.formatComma((os.orderQty ~/ 100)) +
+                            ' Lot',
+                        style: InvestrendTheme.of(context)
+                            .more_support_w600_compact,
                       ),
                       SizedBox(
                         height: 5.0,
                       ),
                       Text(
                         InvestrendTheme.formatMoney(os.price, prefixRp: true),
-                        style: InvestrendTheme.of(context).more_support_w600_compact,
+                        style: InvestrendTheme.of(context)
+                            .more_support_w600_compact,
                       ),
                       SizedBox(
                         height: 5.0,
                       ),
                       Text(
-                        InvestrendTheme.formatMoney((os.price * os.orderQty), prefixRp: true),
+                        InvestrendTheme.formatMoney((os.price * os.orderQty),
+                            prefixRp: true),
                         style: InvestrendTheme.of(context)
                             .more_support_w400_compact
-                            .copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor),
+                            ?.copyWith(
+                                color: InvestrendTheme.of(context)
+                                    .greyDarkerTextColor),
                       ),
                     ],
                   ),
@@ -776,7 +857,11 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
                     children: [
                       Container(
                         //width: statusWidth,
-                        padding: EdgeInsets.only(left: InvestrendTheme.cardPadding, right: InvestrendTheme.cardPadding, top: 4.0, bottom: 4.0),
+                        padding: EdgeInsets.only(
+                            left: InvestrendTheme.cardPadding,
+                            right: InvestrendTheme.cardPadding,
+                            top: 4.0,
+                            bottom: 4.0),
                         decoration: BoxDecoration(
                           color: os.backgroundColor(context),
                           borderRadius: BorderRadius.circular(2.0),
@@ -788,7 +873,9 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
                           group: groupStatus,
                           style: InvestrendTheme.of(context)
                               .more_support_w400_compact
-                              .copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor),
+                              ?.copyWith(
+                                  color: InvestrendTheme.of(context)
+                                      .greyDarkerTextColor),
                         ),
                       ),
                     ],
@@ -821,7 +908,10 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
                       os.message,
                       style: InvestrendTheme.of(context)
                           .more_support_w400
-                          .copyWith(fontSize: 10.0, color: InvestrendTheme.of(context).greyLighterTextColor),
+                          ?.copyWith(
+                              fontSize: 10.0,
+                              color: InvestrendTheme.of(context)
+                                  .greyLighterTextColor),
                     ),
                   )
                 : SizedBox(
@@ -850,7 +940,9 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
             showModalBottomSheet(
                 isScrollControlled: true,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(topLeft: Radius.circular(24.0), topRight: Radius.circular(24.0)),
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(24.0),
+                      topRight: Radius.circular(24.0)),
                 ),
                 //backgroundColor: Colors.transparent,
                 context: context,
@@ -865,7 +957,9 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
       showModalBottomSheet(
           isScrollControlled: true,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(topLeft: Radius.circular(24.0), topRight: Radius.circular(24.0)),
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(24.0),
+                topRight: Radius.circular(24.0)),
           ),
           //backgroundColor: Colors.transparent,
           context: context,
@@ -877,8 +971,10 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
   }
 
   void showScreenAmend(BuildContext context, OrderStatus os) {
-
-    Account account = context.read(dataHolderChangeNotifier).user.getAccountByCode(os.brokercode, os.accountcode);
+    Account? account = context
+        .read(dataHolderChangeNotifier)
+        .user
+        .getAccountByCode(os.brokercode, os.accountcode);
     if (account != null) {
       OrderType orderType;
       if (StringUtils.equalsIgnoreCase(os.bs, 'B')) {
@@ -897,7 +993,7 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
       data.brokerCode = os.brokercode;
       data.stock_code = os.stockCode;
 
-      Stock stock = InvestrendTheme.storedData.findStock(os.stockCode);
+      Stock? stock = InvestrendTheme.storedData?.findStock(os.stockCode);
       data.stock_name = stock != null ? stock.name : '-';
       //data.normalTotalValue = os.price * os.orderQty;
       data.fastTotalValue = 0;
@@ -917,17 +1013,21 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
             InvestrendTheme.of(context).showDialogInvalidSession(context);
           } else if (value is String) {
             if (StringUtils.equalsIgnoreCase(value, PIN_SUCCESS)) {
-              InvestrendTheme.push(context, ScreenAmend(data.cloneAsAmend()), ScreenTransition.SlideLeft, '/amend').then((value) {
+              InvestrendTheme.push(context, ScreenAmend(data.cloneAsAmend()),
+                      ScreenTransition.SlideLeft, '/amend')
+                  .then((value) {
                 if (value != null && value is String) {
                   if (StringUtils.equalsIgnoreCase(value, 'FINISHED')) {
                     Navigator.popUntil(context, (route) {
                       print('popUntil : ' + route.toString());
-                      if (StringUtils.equalsIgnoreCase(route?.settings?.name, '/main')) {
+                      if (StringUtils.equalsIgnoreCase(
+                          route.settings.name, '/main')) {
                         return true;
                       }
                       return route.isFirst;
                     });
-                    context.read(mainMenuChangeNotifier).setActive(Tabs.Transaction, TabsTransaction.Intraday.index);
+                    context.read(mainMenuChangeNotifier).setActive(
+                        Tabs.Transaction, TabsTransaction.Intraday.index);
                   }
                 }
               });
@@ -935,38 +1035,45 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
           }
         });
       } else {
-        InvestrendTheme.push(context, ScreenAmend(data.cloneAsAmend()), ScreenTransition.SlideLeft, '/amend').then((value) {
+        InvestrendTheme.push(context, ScreenAmend(data.cloneAsAmend()),
+                ScreenTransition.SlideLeft, '/amend')
+            .then((value) {
           if (value != null && value is String) {
             if (StringUtils.equalsIgnoreCase(value, 'FINISHED')) {
               Navigator.popUntil(context, (route) {
                 print('popUntil : ' + route.toString());
-                if (StringUtils.equalsIgnoreCase(route?.settings?.name, '/main')) {
+                if (StringUtils.equalsIgnoreCase(
+                    route.settings.name, '/main')) {
                   return true;
                 }
                 return route.isFirst;
               });
-              context.read(mainMenuChangeNotifier).setActive(Tabs.Transaction, TabsTransaction.Intraday.index);
+              context
+                  .read(mainMenuChangeNotifier)
+                  .setActive(Tabs.Transaction, TabsTransaction.Intraday.index);
             }
           }
         });
       }
-    }else{
-      InvestrendTheme.of(context).showSnackBar(context, 'Can\'t find order information locally.');
+    } else {
+      InvestrendTheme.of(context)
+          .showSnackBar(context, 'Can\'t find order information locally.');
       print('Can\'t find order information locally.');
     }
   }
 
   AutoSizeGroup autoSizeGroup = AutoSizeGroup();
-  Widget createSlidableRowAmendWithdraw(BuildContext context, OrderStatus os, double statusWidth) {
+  Widget createSlidableRowAmendWithdraw(
+      BuildContext context, OrderStatus os, double statusWidth) {
     List<Widget> listActions = List.empty(growable: true);
     bool isBuy = StringUtils.equalsIgnoreCase(os.bs, 'B');
     if (os.canAmend()) {
       String buttonAmend = 'button_amend'.tr();
-      Color buySellColor = isBuy ? InvestrendTheme.buyColor : InvestrendTheme.sellColor;
+      Color buySellColor =
+          isBuy ? InvestrendTheme.buyColor : InvestrendTheme.sellColor;
       listActions.add(TradeSlideAction(
         buttonAmend,
         buySellColor,
-
         () {
           print('amend clicked code : ' + os.stockCode);
           // Stock stock = InvestrendTheme.storedData.findStock(os.stockCode);
@@ -977,7 +1084,6 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
 
           //context.read(primaryStockChangeNotifier).setStock(stock);
           showScreenAmend(context, os);
-
 
           // bool hasAccount = context.read(dataHolderChangeNotifier).user.accountSize() > 0;
           // InvestrendTheme.pushScreenTrade(
@@ -1032,7 +1138,8 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
     }
   }
 
-  Widget createSlidableRow(BuildContext context, OrderStatus os, double statusWidth) {
+  Widget createSlidableRow(
+      BuildContext context, OrderStatus os, double statusWidth) {
     return Slidable(
         controller: slidableController,
         closeOnScroll: true,
@@ -1044,9 +1151,12 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
             InvestrendTheme.buyColor,
             () {
               print('buy clicked code : ' + os.stockCode);
-              Stock stock = InvestrendTheme.storedData.findStock(os.stockCode);
+              Stock? stock =
+                  InvestrendTheme.storedData?.findStock(os.stockCode);
               if (stock == null) {
-                print('buy clicked code : ' + os.stockCode + ' aborted, not find stock on StockStorer');
+                print('buy clicked code : ' +
+                    os.stockCode +
+                    ' aborted, not find stock on StockStorer');
                 return;
               }
 
@@ -1054,7 +1164,8 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
 
               //InvestrendTheme.push(context, ScreenTrade(OrderType.Buy), ScreenTransition.SlideLeft, '/trade');
 
-              bool hasAccount = context.read(dataHolderChangeNotifier).user.accountSize() > 0;
+              bool hasAccount =
+                  context.read(dataHolderChangeNotifier).user.accountSize() > 0;
               InvestrendTheme.pushScreenTrade(
                 context,
                 hasAccount,
@@ -1076,16 +1187,20 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
             InvestrendTheme.sellColor,
             () {
               print('sell clicked code : ' + os.stockCode);
-              Stock stock = InvestrendTheme.storedData.findStock(os.stockCode);
+              Stock? stock =
+                  InvestrendTheme.storedData?.findStock(os.stockCode);
               if (stock == null) {
-                print('sell clicked code : ' + os.stockCode + ' aborted, not find stock on StockStorer');
+                print('sell clicked code : ' +
+                    os.stockCode +
+                    ' aborted, not find stock on StockStorer');
                 return;
               }
 
               context.read(primaryStockChangeNotifier).setStock(stock);
               //InvestrendTheme.push(context, ScreenTrade(OrderType.Sell), ScreenTransition.SlideLeft, '/trade');
 
-              bool hasAccount = context.read(dataHolderChangeNotifier).user.accountSize() > 0;
+              bool hasAccount =
+                  context.read(dataHolderChangeNotifier).user.accountSize() > 0;
               InvestrendTheme.pushScreenTrade(
                 context,
                 hasAccount,
@@ -1147,10 +1262,12 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
       bs = 'order_status_sell'.tr();
       bsColor = InvestrendTheme.sellTextColor;
     }
-    Color greyDarkerText = InvestrendTheme.of(context).greyDarkerTextColor;
-    Color greyLighterText = InvestrendTheme.of(context).greyLighterTextColor;
+    Color? greyDarkerText = InvestrendTheme.of(context).greyDarkerTextColor;
+    Color? greyLighterText = InvestrendTheme.of(context).greyLighterTextColor;
     return Padding(
-      padding: const EdgeInsets.only(top: InvestrendTheme.cardPadding, bottom: InvestrendTheme.cardPadding),
+      padding: const EdgeInsets.only(
+          top: InvestrendTheme.cardPadding,
+          bottom: InvestrendTheme.cardPadding),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -1159,13 +1276,16 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(os.stockCode, style: InvestrendTheme.of(context).regular_w600_compact),
+                  Text(os.stockCode,
+                      style: InvestrendTheme.of(context).regular_w600_compact),
                   SizedBox(
                     height: 4.0,
                   ),
                   Text(
                     bs,
-                    style: InvestrendTheme.of(context).small_w400_compact.copyWith(color: bsColor),
+                    style: InvestrendTheme.of(context)
+                        .small_w400_compact
+                        ?.copyWith(color: bsColor),
                   ),
                 ],
               ),
@@ -1178,22 +1298,28 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      InvestrendTheme.formatComma((os.orderQty ~/ 100)) + ' Lot',
-                      style: InvestrendTheme.of(context).more_support_w600_compact,
+                      InvestrendTheme.formatComma((os.orderQty ~/ 100)) +
+                          ' Lot',
+                      style:
+                          InvestrendTheme.of(context).more_support_w600_compact,
                     ),
                     SizedBox(
                       height: 5.0,
                     ),
                     Text(
                       InvestrendTheme.formatMoney(os.price, prefixRp: true),
-                      style: InvestrendTheme.of(context).more_support_w600_compact,
+                      style:
+                          InvestrendTheme.of(context).more_support_w600_compact,
                     ),
                     SizedBox(
                       height: 5.0,
                     ),
                     Text(
-                      InvestrendTheme.formatMoney((os.price * os.orderQty), prefixRp: true),
-                      style: InvestrendTheme.of(context).more_support_w400_compact.copyWith(color: greyDarkerText),
+                      InvestrendTheme.formatMoney((os.price * os.orderQty),
+                          prefixRp: true),
+                      style: InvestrendTheme.of(context)
+                          .more_support_w400_compact
+                          ?.copyWith(color: greyDarkerText),
                     ),
                   ],
                 ),
@@ -1203,7 +1329,11 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
               ),
               Container(
                 width: statusWidth,
-                padding: EdgeInsets.only(left: InvestrendTheme.cardPadding, right: InvestrendTheme.cardPadding, top: 4.0, bottom: 4.0),
+                padding: EdgeInsets.only(
+                    left: InvestrendTheme.cardPadding,
+                    right: InvestrendTheme.cardPadding,
+                    top: 4.0,
+                    bottom: 4.0),
                 decoration: BoxDecoration(
                   color: os.backgroundColor(context),
                   borderRadius: BorderRadius.circular(2.0),
@@ -1211,7 +1341,9 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
                 child: Text(
                   os.orderStatus,
                   textAlign: TextAlign.center,
-                  style: InvestrendTheme.of(context).more_support_w400_compact.copyWith(color: greyDarkerText),
+                  style: InvestrendTheme.of(context)
+                      .more_support_w400_compact
+                      ?.copyWith(color: greyDarkerText),
                 ),
               ),
             ],
@@ -1222,7 +1354,9 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
           (os.gotMessage()
               ? Text(
                   os.message,
-                  style: InvestrendTheme.of(context).more_support_w400.copyWith(color: greyLighterText),
+                  style: InvestrendTheme.of(context)
+                      .more_support_w400
+                      ?.copyWith(color: greyLighterText),
                 )
               : SizedBox(
                   width: 1.0,
@@ -1243,10 +1377,12 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
       bs = 'order_status_sell'.tr();
       bsColor = InvestrendTheme.sellTextColor;
     }
-    Color greyDarkerText = InvestrendTheme.of(context).greyDarkerTextColor;
-    Color greyLighterText = InvestrendTheme.of(context).greyLighterTextColor;
+    Color? greyDarkerText = InvestrendTheme.of(context).greyDarkerTextColor;
+    Color? greyLighterText = InvestrendTheme.of(context).greyLighterTextColor;
     return Padding(
-      padding: const EdgeInsets.only(top: InvestrendTheme.cardPadding, bottom: InvestrendTheme.cardPadding),
+      padding: const EdgeInsets.only(
+          top: InvestrendTheme.cardPadding,
+          bottom: InvestrendTheme.cardPadding),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -1255,13 +1391,16 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(os.stockCode, style: InvestrendTheme.of(context).regular_w600_compact),
+                  Text(os.stockCode,
+                      style: InvestrendTheme.of(context).regular_w600_compact),
                   SizedBox(
                     height: 4.0,
                   ),
                   Text(
                     bs,
-                    style: InvestrendTheme.of(context).small_w400_compact.copyWith(color: bsColor),
+                    style: InvestrendTheme.of(context)
+                        .small_w400_compact
+                        ?.copyWith(color: bsColor),
                   ),
                 ],
               ),
@@ -1274,22 +1413,28 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      InvestrendTheme.formatComma((os.orderQty ~/ 100)) + ' Lot',
-                      style: InvestrendTheme.of(context).more_support_w600_compact,
+                      InvestrendTheme.formatComma((os.orderQty ~/ 100)) +
+                          ' Lot',
+                      style:
+                          InvestrendTheme.of(context).more_support_w600_compact,
                     ),
                     SizedBox(
                       height: 5.0,
                     ),
                     Text(
                       InvestrendTheme.formatMoney(os.price, prefixRp: true),
-                      style: InvestrendTheme.of(context).more_support_w600_compact,
+                      style:
+                          InvestrendTheme.of(context).more_support_w600_compact,
                     ),
                     SizedBox(
                       height: 5.0,
                     ),
                     Text(
-                      InvestrendTheme.formatMoney((os.price * os.orderQty), prefixRp: true),
-                      style: InvestrendTheme.of(context).more_support_w400_compact.copyWith(color: greyDarkerText),
+                      InvestrendTheme.formatMoney((os.price * os.orderQty),
+                          prefixRp: true),
+                      style: InvestrendTheme.of(context)
+                          .more_support_w400_compact
+                          ?.copyWith(color: greyDarkerText),
                     ),
                   ],
                 ),
@@ -1299,7 +1444,11 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
               ),
               Container(
                 width: statusWidth,
-                padding: EdgeInsets.only(left: InvestrendTheme.cardPadding, right: InvestrendTheme.cardPadding, top: 4.0, bottom: 4.0),
+                padding: EdgeInsets.only(
+                    left: InvestrendTheme.cardPadding,
+                    right: InvestrendTheme.cardPadding,
+                    top: 4.0,
+                    bottom: 4.0),
                 decoration: BoxDecoration(
                   //color: InvestrendTheme.of(context).tileBackground,
                   color: os.backgroundColor(context),
@@ -1308,7 +1457,9 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
                 child: Text(
                   os.orderStatus,
                   textAlign: TextAlign.center,
-                  style: InvestrendTheme.of(context).more_support_w400_compact.copyWith(color: greyDarkerText),
+                  style: InvestrendTheme.of(context)
+                      .more_support_w400_compact
+                      ?.copyWith(color: greyDarkerText),
                 ),
               ),
             ],
@@ -1319,7 +1470,9 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
           (os.gotMessage()
               ? Text(
                   os.message,
-                  style: InvestrendTheme.of(context).more_support_w400.copyWith(color: greyLighterText),
+                  style: InvestrendTheme.of(context)
+                      .more_support_w400
+                      ?.copyWith(color: greyLighterText),
                 )
               : SizedBox(
                   width: 1.0,
@@ -1329,6 +1482,7 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
       ),
     );
   }
+
   /*
   Widget detailPage(BuildContext context, OrderStatus os, double statusWidth) {
     Account account = context.read(dataHolderChangeNotifier).user.getAccountByCode(os.brokercode, os.accountcode);
@@ -1365,14 +1519,15 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
   }
   */
   @override
-  Widget createAppBar(BuildContext context) {
+  PreferredSizeWidget? createAppBar(BuildContext context) {
     return null;
   }
 
   Widget _options(BuildContext context) {
     return Padding(
-      padding:
-          const EdgeInsets.only(bottom: 8.0 /*, left: InvestrendTheme.cardPaddingPlusMargin, right: InvestrendTheme.cardPaddingPlusMargin*/),
+      padding: const EdgeInsets.only(
+          bottom:
+              8.0 /*, left: InvestrendTheme.cardPaddingPlusMargin, right: InvestrendTheme.cardPaddingPlusMargin*/),
       child: Row(
         children: [
           OutlinedButton(
@@ -1380,13 +1535,17 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
                 showModalBottomSheet(
                     isScrollControlled: true,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(topLeft: Radius.circular(24.0), topRight: Radius.circular(24.0)),
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(24.0),
+                          topRight: Radius.circular(24.0)),
                     ),
                     //backgroundColor: Colors.transparent,
                     context: context,
                     builder: (context) {
-                      final notifier = context.read(transactionIntradayFilterChangeNotifier);
-                      return BottomSheetTransactionIntradayFilter(notifier.index_transaction, notifier.index_status);
+                      final notifier =
+                          context.read(transactionIntradayFilterChangeNotifier);
+                      return BottomSheetTransactionIntradayFilter(
+                          notifier.index_transaction, notifier.index_status);
                     });
               },
               child: Row(
@@ -1400,7 +1559,8 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
                   ),
                   Text(
                     'button_filter'.tr(),
-                    style: InvestrendTheme.of(context).more_support_w400_compact,
+                    style:
+                        InvestrendTheme.of(context).more_support_w400_compact,
                   ),
                 ],
               )),
@@ -1427,11 +1587,13 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
     // return Future.delayed(Duration(seconds: 3));
   }
 
-  AutoSizeGroup groupStatus;
+  AutoSizeGroup? groupStatus;
 
   @override
   Widget createBody(BuildContext context, double paddingBottom) {
-    double statusWidth = UIHelper.textSize('Withdraw-P', InvestrendTheme.of(context).more_support_w400_compact).width +
+    double statusWidth = UIHelper.textSize('Withdraw-P',
+                InvestrendTheme.of(context).more_support_w400_compact)
+            .width +
         InvestrendTheme.cardPadding +
         InvestrendTheme.cardPadding;
 
@@ -1442,29 +1604,42 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
       child: ValueListenableBuilder<int>(
           valueListenable: _valueNotifier,
           builder: (context, value, child) {
-            final filter = context.read(transactionIntradayFilterChangeNotifier);
-            bool filterTransaction = filter.index_transaction != FilterTransaction.All.index;
+            final filter =
+                context.read(transactionIntradayFilterChangeNotifier);
+            bool filterTransaction =
+                filter.index_transaction != FilterTransaction.All.index;
             bool filterStatus = filter.index_status != FilterStatus.All.index;
 
             if (listDisplay.isEmpty) {
-              String emptyDescription = 'transaction_today_empty_description'.tr();
+              String emptyDescription =
+                  'transaction_today_empty_description'.tr();
               if (list.isNotEmpty || filterTransaction || filterStatus) {
                 if (filterTransaction && filterStatus) {
-                  emptyDescription = 'transaction_today_filter_description'.tr();
+                  emptyDescription =
+                      'transaction_today_filter_description'.tr();
                 } else if (filterTransaction) {
-                  emptyDescription = 'transaction_today_filter_transaction_description'.tr();
+                  emptyDescription =
+                      'transaction_today_filter_transaction_description'.tr();
                 } else if (filterStatus) {
-                  emptyDescription = 'transaction_today_filter_status_description'.tr();
+                  emptyDescription =
+                      'transaction_today_filter_status_description'.tr();
                 }
 
-                emptyDescription = emptyDescription.replaceFirst('#TRX#', FilterTransaction.values.elementAt(filter.index_transaction).text);
-                emptyDescription = emptyDescription.replaceFirst('#STS#', FilterStatus.values.elementAt(filter.index_status).text);
+                emptyDescription = emptyDescription.replaceFirst(
+                    '#TRX#',
+                    FilterTransaction.values
+                        .elementAt(filter.index_transaction)
+                        .text);
+                emptyDescription = emptyDescription.replaceFirst('#STS#',
+                    FilterStatus.values.elementAt(filter.index_status).text);
                 //Filter diterapkan untuk Transaksi #TRX# dan Status #STS#
               } else {
                 emptyDescription = 'transaction_today_empty_description'.tr();
               }
               return ListView(
-                padding: const EdgeInsets.only(left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral),
+                padding: const EdgeInsets.only(
+                    left: InvestrendTheme.cardPaddingGeneral,
+                    right: InvestrendTheme.cardPaddingGeneral),
                 children: [
                   _options(context),
                   SizedBox(
@@ -1486,26 +1661,34 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
             }
 
             int count = listDisplay.length + 1;
-            String filtered;
+            String? filtered;
             if (filterTransaction || filterStatus) {
               //count = count + 1;
 
               if (filterTransaction && filterStatus) {
                 filtered = 'transaction_today_filter_description'.tr();
               } else if (filterTransaction) {
-                filtered = 'transaction_today_filter_transaction_description'.tr();
+                filtered =
+                    'transaction_today_filter_transaction_description'.tr();
               } else if (filterStatus) {
                 filtered = 'transaction_today_filter_status_description'.tr();
               }
-              filtered = filtered.replaceFirst('#TRX#', FilterTransaction.values.elementAt(filter.index_transaction).text);
-              filtered = filtered.replaceFirst('#STS#', FilterStatus.values.elementAt(filter.index_status).text);
+              filtered = filtered?.replaceFirst(
+                  '#TRX#',
+                  FilterTransaction.values
+                      .elementAt(filter.index_transaction)
+                      .text);
+              filtered = filtered?.replaceFirst('#STS#',
+                  FilterStatus.values.elementAt(filter.index_status).text);
             }
             //count = count + 1;
             return ListView.separated(
               shrinkWrap: false,
               //padding: const EdgeInsets.all(8),
               //padding: const EdgeInsets.all(InvestrendTheme.cardPaddingGeneral),
-              padding: const EdgeInsets.only(left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral),
+              padding: const EdgeInsets.only(
+                  left: InvestrendTheme.cardPaddingGeneral,
+                  right: InvestrendTheme.cardPaddingGeneral),
               itemCount: count + 1,
               // di + 1 supaya muncul divider di paling bawah
               itemBuilder: (BuildContext context, int index) {
@@ -1516,7 +1699,8 @@ class _ScreenTransactionIntradayState extends BaseStateNoTabsWithParentTab<Scree
                 if (indexDisplay < listDisplay.length) {
                   //return tileTransactionNew(context, listDisplay.elementAt(indexDisplay), statusWidth);
                   //return createSlidableRow(context, listDisplay.elementAt(indexDisplay), statusWidth);
-                  return createSlidableRowAmendWithdraw(context, listDisplay.elementAt(indexDisplay), statusWidth);
+                  return createSlidableRowAmendWithdraw(context,
+                      listDisplay.elementAt(indexDisplay), statusWidth);
                 } else {
                   if (StringUtils.isEmtpy(filtered)) {
                     return SizedBox(

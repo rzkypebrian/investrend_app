@@ -1,3 +1,6 @@
+// ignore_for_file: must_call_super, unnecessary_null_comparison, unused_local_variable, unnecessary_cast
+
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -18,8 +21,9 @@ import 'package:crypto/crypto.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:skeleton_text/skeleton_text.dart';
 
+// ignore: must_be_immutable
 class ScreenRegisterRDN extends StatefulWidget {
-  String username;
+  String? username;
   ScreenRegisterRDN({
     this.username,
   });
@@ -33,7 +37,7 @@ abstract class _ScreenRegisterRDNState extends State<ScreenRegisterRDN>
   ValueNotifier<bool> _bottomSheetNotifier = ValueNotifier(true);
 
   ScreenRegisterRDNViewModel viewModel = ScreenRegisterRDNViewModel();
-  String endpointUrl = "https://olt1.buanacapital.com:8889/oa_form.php";
+  String endpointUrl = "https://register.buanacapital.com:8889/oa_form.php";
   String routeName = '/register_rdn';
   int showBackButton = 3;
   GlobalKey keyUp = new GlobalKey();
@@ -52,7 +56,7 @@ abstract class _ScreenRegisterRDNState extends State<ScreenRegisterRDN>
   @override
   void didChangeDependencies() {
     bool keyboardShowed = MediaQuery.of(context).viewInsets.bottom > 0;
-    _bottomSheetNotifier.value = !keyboardShowed;
+    _bottomSheetNotifier.value = keyboardShowed;
   }
 
   @override
@@ -60,7 +64,7 @@ abstract class _ScreenRegisterRDNState extends State<ScreenRegisterRDN>
     _bottomSheetNotifier.dispose();
   }
 
-  void hideKeyboard({BuildContext context}) {
+  void hideKeyboard({BuildContext? context}) {
     if (context == null) {
       context = this.context;
     }
@@ -76,8 +80,8 @@ abstract class _ScreenRegisterRDNState extends State<ScreenRegisterRDN>
   Widget createBottomSheet(BuildContext context, double paddingBottom) {
     return ValueListenableBuilder(
       valueListenable: _bottomSheetNotifier,
-      builder: (context, value, child) {
-        if (!value) {
+      builder: (context, dynamic value, child) {
+        if (value as bool) {
           if (Platform.isIOS) {
             return Container(
               // color: Colors.green,
@@ -97,7 +101,8 @@ abstract class _ScreenRegisterRDNState extends State<ScreenRegisterRDN>
                     'button_done'.tr(),
                     style: InvestrendTheme.of(context)
                         .small_w500_compact
-                        .copyWith(color: Theme.of(context).colorScheme.secondary),
+                        ?.copyWith(
+                            color: Theme.of(context).colorScheme.secondary),
                   ),
                   onPressed: () {
                     _bottomSheetNotifier.value = true;
@@ -118,16 +123,16 @@ abstract class _ScreenRegisterRDNState extends State<ScreenRegisterRDN>
 
   void saveOaid() {
     SharedPreferences.getInstance().then((value) {
-      value.setString(widget?.username + '_oaid', viewModel.oaid);
-      value.setString(widget?.username + '_oatoken', viewModel.oatoken);
+      value.setString(widget.username! + '_oaid', viewModel.oaid!);
+      value.setString(widget.username! + '_oatoken', viewModel.oatoken!);
     });
   }
 
   Future<void> getToken(BuildContext context) async {
     var sharedPreferences = await SharedPreferences.getInstance();
-    viewModel.oaid = sharedPreferences.getString(widget?.username + '_oaid');
+    viewModel.oaid = sharedPreferences.getString(widget.username! + '_oaid');
     viewModel.oatoken =
-        sharedPreferences.getString(widget?.username + '_oatoken');
+        sharedPreferences.getString(widget.username! + '_oatoken');
     if (viewModel.oaid != null && viewModel.oatoken != null) {
       return;
     }
@@ -140,7 +145,7 @@ abstract class _ScreenRegisterRDNState extends State<ScreenRegisterRDN>
     await myDevice.load();
     debugPrint(
         routeName + " Register RDN Create Device Id : " + myDevice.unique_id);
-    String uniqId = myDevice.unique_id;
+    String? uniqId = myDevice.unique_id;
     String devtoken = md5.convert(utf8.encode("INV2201$uniqId")).toString();
 
     debugPrint(routeName + ' richy_20220607 uniqId = [$uniqId]');
@@ -151,14 +156,14 @@ abstract class _ScreenRegisterRDNState extends State<ScreenRegisterRDN>
 
     bool hasToken = false;
     try {
-      bool tkn = await token.load();
+      // bool tkn = await token.load();
       hasToken = !StringUtils.isEmtpy(token.access_token) &&
           !StringUtils.isEmtpy(token.refresh_token);
       debugPrint(
           routeName + ' LOGIN LOAD FIRST TIME TOKEN.LOAD HASTOKEN : $hasToken');
       debugPrint(routeName + 'ACCESS TOKEN : ${token.access_token}');
     } catch (e) {
-      debugPrint(e);
+      debugPrint(e.toString());
     }
 
     if (StringUtils.isEmtpy(uniqId) || StringUtils.isEmtpy(devtoken)) {
@@ -177,13 +182,13 @@ abstract class _ScreenRegisterRDNState extends State<ScreenRegisterRDN>
           devtoken +
           '\n   ' +
           'User Token : ' +
-          token.access_token +
+          token.access_token! +
           '\n   ' +
           'oaid : ' +
-          sharedPreferences.getString("oaid") +
+          sharedPreferences.getString("oaid")! +
           '\n   ' +
           'oatoken : ' +
-          sharedPreferences.getString("oatoken");
+          sharedPreferences.getString("oatoken")!;
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(dataText)));
     } else {
@@ -204,9 +209,9 @@ abstract class _ScreenRegisterRDNState extends State<ScreenRegisterRDN>
       debugPrint(routeName +
           ' devtoken : ' +
           md5.convert(utf8.encode("INV2201$uniqId")).toString());
-      debugPrint(routeName + ' userId : ' + widget?.username);
+      debugPrint(routeName + ' userId : ' + widget.username!);
       // print(routeName + ' userid : ' + user.username);
-      debugPrint(routeName + ' usertoken : ' + token.access_token);
+      debugPrint(routeName + ' usertoken : ' + token.access_token!);
       debugPrint(
           routeName + ' ===============================================');
       debugPrint(" ");
@@ -217,7 +222,7 @@ abstract class _ScreenRegisterRDNState extends State<ScreenRegisterRDN>
           "action": "registration",
           "devid": uniqId,
           "devtoken": devtoken,
-          "userid": widget?.username,
+          "userid": widget.username,
           "usertoken": token.access_token,
         },
       ).then(
@@ -336,16 +341,16 @@ abstract class _ScreenRegisterRDNState extends State<ScreenRegisterRDN>
   // }
 
   void createUi({
-    Map<String, dynamic> data,
+    required Map<String, dynamic> data,
     bool autoReCreate = true,
-    ValueChanged<DynamicUi> onGetNewUi,
+    ValueChanged<DynamicUi>? onGetNewUi,
   }) {
     try {
       var newUI = DynamicUi.fromJson(
         data,
         onChanged: onFieldChanged,
       );
-      if (newUI.lastpage != viewModel?.dynamicUi?.lastpage)
+      if (newUI.lastpage != viewModel.dynamicUi?.lastpage)
         viewModel.scrollController
             .jumpTo(viewModel.scrollController.position.minScrollExtent);
       if (autoReCreate == true) viewModel.dynamicUi = newUI;
@@ -355,7 +360,7 @@ abstract class _ScreenRegisterRDNState extends State<ScreenRegisterRDN>
         showMessage(
           message: newUI.oamessage,
         );
-        Scrollable.ensureVisible(keyUp.currentContext);
+        Scrollable.ensureVisible(keyUp.currentContext!);
       }
       viewModel.commit();
       // setPage(data);
@@ -377,20 +382,19 @@ abstract class _ScreenRegisterRDNState extends State<ScreenRegisterRDN>
   // }
 
   getUi({
-    FormData data,
+    FormData? data,
     bool autoReCreate = true,
-    ValueChanged<DynamicUi> onGetNewUi,
-    Function(int, int) onSendProgress,
+    ValueChanged<DynamicUi>? onGetNewUi,
+    Function(int, int)? onSendProgress,
     String headers = "application/json",
   }) {
     viewModel.startLoading();
     data = data ?? FormData();
     data.fields.addAll([
       MapEntry("action", "registration"),
-      MapEntry("oaid", viewModel.oaid),
-      MapEntry("oatoken", viewModel.oatoken),
+      MapEntry("oaid", viewModel.oaid!),
+      MapEntry("oatoken", viewModel.oatoken!),
 
-      // TODO : GO TO PAGE N
       // MapEntry("lastpage", "5"),
       // MapEntry("submitpage", "5"),
     ]);
@@ -463,8 +467,8 @@ abstract class _ScreenRegisterRDNState extends State<ScreenRegisterRDN>
   }
 
   void showMessage({
-    String message,
-    double height,
+    String? message,
+    double? height,
   }) {
     showModalBottomSheet(
         context: context,
@@ -534,9 +538,9 @@ abstract class _ScreenRegisterRDNState extends State<ScreenRegisterRDN>
       'action': 'registration',
       'oaid': '${viewModel.oaid}',
       'oatoken': '${viewModel.oatoken}',
-      'backfrompage': '${viewModel.dynamicUi.lastpage}',
+      'backfrompage': '${viewModel.dynamicUi!.lastpage}',
     };
-    http.Response response = await http
+    http.Response? response = await http
         .post(
       Uri.parse(endpointUrl),
       body: requestBody,
@@ -547,16 +551,16 @@ abstract class _ScreenRegisterRDNState extends State<ScreenRegisterRDN>
         data: json.decode(value.body),
       );
       print('HASIL :' + '${value.body}');
-      return;
+      return null;
     });
-    viewModel.dynamicUi.lastpage = Utils.safeInt("${viewModel.lastpage}");
+    viewModel.dynamicUi!.lastpage = Utils.safeInt("${viewModel.lastpage}");
 
     viewModel.commit();
 
     debugPrint("Kembali ke halaman : " +
         "${viewModel.backfrompage}\n" +
         "Halaman terakhir anda : " +
-        "${viewModel.dynamicUi.lastpage}\n" +
+        "${viewModel.dynamicUi!.lastpage}\n" +
         "OaId : " +
         "${viewModel.oaid}\n" +
         "oatoken : " +
@@ -599,11 +603,11 @@ abstract class _ScreenRegisterRDNState extends State<ScreenRegisterRDN>
   */
 
   bool validateMandatory() {
-    DynamicUIPage page = viewModel.dynamicUi.pages
-        .where((e) => e.page == viewModel.dynamicUi.lastpage)
+    DynamicUIPage page = viewModel.dynamicUi!.pages!
+        .where((e) => e.page == viewModel.dynamicUi!.lastpage)
         .first;
 
-    List<DynamicUIField> form = page.form;
+    List<DynamicUIField> form = page.form!;
     List<DynamicUIField> emptyForm = [];
     form.forEach((e) {
       e.isError = false;
@@ -627,9 +631,9 @@ abstract class _ScreenRegisterRDNState extends State<ScreenRegisterRDN>
     viewModel.commit();
     if (emptyForm.length > 0) {
       debugPrint(
-          "focus node ada gak ya ? = ${emptyForm.first.focusNode.canRequestFocus}");
-      emptyForm.first.focusNode.requestFocus();
-      Scrollable.ensureVisible(emptyForm.first.globalKey.currentContext);
+          "focus node ada gak ya   = ${emptyForm.first.focusNode!.canRequestFocus}");
+      emptyForm.first.focusNode!.requestFocus();
+      Scrollable.ensureVisible(emptyForm.first.globalKey!.currentContext!);
       return false;
     } else {
       return true;
@@ -638,24 +642,24 @@ abstract class _ScreenRegisterRDNState extends State<ScreenRegisterRDN>
 
   Future<FormData> collectData() async {
     FormData data = FormData();
-    List<DynamicUIField> form = viewModel.dynamicUi.pages
-        .where((e) => e.page == viewModel.dynamicUi.lastpage)
+    List<DynamicUIField> form = viewModel.dynamicUi!.pages!
+        .where((e) => e.page == viewModel.dynamicUi!.lastpage)
         .first
-        .form;
+        .form!;
     for (var f in form) {
       if (DynamicUIType.basicInput.contains(f.ui)) {
         data.fields.add(
-          MapEntry(f.id, f.content.toString()),
+          MapEntry(f.id!, f.content.toString()),
         );
       } else if (DynamicUIType.checkBox == f.ui &&
           (f.content != null && f.content != "")) {
         data.fields.add(
-          MapEntry(f.id, (f.content as bool) == true ? "Y" : "N"),
+          MapEntry(f.id!, (f.content as bool?) == true ? "Y" : "N"),
         );
       } else if (DynamicUIType.datePicker == f.ui &&
           (f.content != null && f.content != "")) {
         data.fields.add(
-          MapEntry(f.id, (f.content as DateTime).toIso8601String()),
+          MapEntry(f.id!, (f.content as DateTime).toIso8601String()),
         );
       }
       // else if (DynamicUIType.fileInput.contains(f.ui) &&
@@ -668,18 +672,18 @@ abstract class _ScreenRegisterRDNState extends State<ScreenRegisterRDN>
       //   );
       // }
     }
-    data.fields.add(MapEntry("submitpage", "${viewModel.dynamicUi.lastpage}"));
+    data.fields.add(MapEntry("submitpage", "${viewModel.dynamicUi!.lastpage}"));
     return data;
   }
 
   Future<void> onFieldChanged(DynamicUIField field) async {
     FormData data = FormData();
-    data.fields.add(MapEntry("submitpage", "${viewModel.dynamicUi.lastpage}"));
+    data.fields.add(MapEntry("submitpage", "${viewModel.dynamicUi!.lastpage}"));
     switch (field.ui) {
       case DynamicUIType.upload:
         data.files.add(
           MapEntry(
-            field.id,
+            field.id!,
             await MultipartFile.fromFile(field.content),
           ),
         );
@@ -694,26 +698,26 @@ abstract class _ScreenRegisterRDNState extends State<ScreenRegisterRDN>
               }
             },
             onGetNewUi: (ui) {
-              String status = (ui.pages
-                      .where((p) => p.page == viewModel.dynamicUi.lastpage)
+              String? status = (ui.pages!
+                      .where((p) => p.page == viewModel.dynamicUi!.lastpage)
                       .first
-                      .form
+                      .form!
                       .where((f) => f.id == field.id)
                       .first as UploadUI)
                   .status;
               print("upload status $status ");
               (field as UploadUI).status = status;
-              (field as UploadUI).status = status;
+              field.status = status;
               if (field.controller is ImagePickerController) {
                 ImagePickerController ctrl = field.controller;
-                ctrl.setUploaded(status);
+                ctrl.setUploaded(status!);
               }
               // check all upload status
 
-              List<UploadUI> uploadCheck = (ui.pages
-                  .where((p) => p.page == viewModel.dynamicUi.lastpage)
+              List<UploadUI> uploadCheck = (ui.pages!
+                  .where((p) => p.page == viewModel.dynamicUi!.lastpage)
                   .first
-                  .form
+                  .form!
                   .where((f) => f.ui == DynamicUIType.upload)
                   .toList()
                   .map((e) => (e as UploadUI))
@@ -788,10 +792,10 @@ class _ScreenRegisterRDNViewState extends _ScreenRegisterRDNState {
       automaticallyImplyLeading: false,
       leading: Consumer<ScreenRegisterRDNViewModel>(
         builder: (c, d, w) {
-          //TODO :  MINPAGE
           if (viewModel != null && viewModel.dynamicUi != null) {
-            return viewModel.dynamicUi?.minpage >= showBackButton &&
-                    viewModel.dynamicUi?.minpage < viewModel.dynamicUi.lastpage
+            return viewModel.dynamicUi!.minpage! >= showBackButton &&
+                    viewModel.dynamicUi!.minpage! <
+                        viewModel.dynamicUi!.lastpage!
                 ? d.isLoading == true
                     ? Center(
                         child: Padding(
@@ -825,10 +829,10 @@ class _ScreenRegisterRDNViewState extends _ScreenRegisterRDNState {
         builder: (c, d, w) {
           if (d.dynamicUi != null && d.oaid != null) {
             return Text(
-                d.dynamicUi.pages
-                    .where((e) => e.page == d.dynamicUi.lastpage)
+                d.dynamicUi!.pages!
+                    .where((e) => e.page == d.dynamicUi!.lastpage)
                     .first
-                    .title,
+                    .title!,
                 style: Theme.of(context).appBarTheme.titleTextStyle);
           } else {
             return skeletonLoading(height: 50);
@@ -843,7 +847,7 @@ class _ScreenRegisterRDNViewState extends _ScreenRegisterRDNState {
     await myDevice.load();
     debugPrint(
         routeName + " Register RDN Create Device Id : " + myDevice.unique_id);
-    String uniqId = myDevice.unique_id;
+    String? uniqId = myDevice.unique_id;
     return Container(
       child: Consumer<ScreenRegisterRDNViewModel>(
         builder: (c, d, w) {
@@ -878,29 +882,29 @@ class _ScreenRegisterRDNViewState extends _ScreenRegisterRDNState {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: List.generate(
-                d.dynamicUi.pages
-                    .where((e) => e.page == d.dynamicUi.lastpage)
+                d.dynamicUi!.pages!
+                    .where((e) => e.page == d.dynamicUi!.lastpage)
                     .first
-                    .form
+                    .form!
                     .length,
                 (index) {
-                  return d.dynamicUi.pages
-                      .where((e) => e.page == d.dynamicUi.lastpage)
+                  return d.dynamicUi!.pages!
+                      .where((e) => e.page == d.dynamicUi!.lastpage)
                       .first
-                      .form[index]
+                      .form![index]
                       .onRecreate(
                         () => viewModel.commit(),
                         previousField: index == 0
                             ? null
-                            : d.dynamicUi.pages
-                                .where((e) => e.page == d.dynamicUi.lastpage)
+                            : d.dynamicUi!.pages!
+                                .where((e) => e.page == d.dynamicUi!.lastpage)
                                 .first
-                                .form[index - 1],
+                                .form![index - 1],
                       )
                       .printUi(
                         context,
-                        page: d.dynamicUi.pages
-                            .where((e) => e.page == d.dynamicUi.lastpage)
+                        page: d.dynamicUi!.pages!
+                            .where((e) => e.page == d.dynamicUi!.lastpage)
                             .first,
                       );
                 },
@@ -916,7 +920,7 @@ class _ScreenRegisterRDNViewState extends _ScreenRegisterRDNState {
   }
 
   Widget skeletonLoading({
-    double height,
+    double? height,
   }) {
     return SkeletonAnimation(
       child: Container(
@@ -939,26 +943,26 @@ class _ScreenRegisterRDNViewState extends _ScreenRegisterRDNState {
           builder: (c, d, w) {
             if (d.dynamicUi == null || d.isLoading == true)
               return skeletonLoading(height: 45);
-            return viewModel.dynamicUi?.pages
-                        ?.where((e) => e?.page == viewModel.dynamicUi?.lastpage)
-                        ?.toList()
-                        ?.first
-                        ?.withNext ==
+            return viewModel.dynamicUi!.pages!
+                        .where((e) => e.page == viewModel.dynamicUi!.lastpage)
+                        .toList()
+                        .first
+                        .withNext ==
                     false
                 ? SizedBox()
                 : ComponentCreator.roundedButton(
                     context,
-                    (viewModel.dynamicUi.lastpage >=
-                            viewModel.dynamicUi.pages.length)
+                    (viewModel.dynamicUi!.lastpage! >=
+                            viewModel.dynamicUi!.pages!.length)
                         // ? "finish"
-                        // : "${viewModel.dynamicUi?.pages?.where((e) => e?.page == viewModel.dynamicUi?.lastpage)?.toList()?.first?.withNext}",
+                        // : "${viewModel.dynamicUi .pages .where((e) => e .page == viewModel.dynamicUi .lastpage) .toList() .first .withNext}",
                         ? "Finish"
                         : 'register_rdn_button_continue'.tr(),
                     Theme.of(context).colorScheme.secondary,
                     Theme.of(context).primaryColor,
                     Theme.of(context).colorScheme.secondary, () {
-                    if (viewModel.dynamicUi.lastpage <
-                        viewModel.dynamicUi.pages.length) {
+                    if (viewModel.dynamicUi!.lastpage! <
+                        viewModel.dynamicUi!.pages!.length) {
                       super.nextPage();
                     } else {
                       InvestrendTheme.showMainPage(
@@ -973,15 +977,15 @@ class _ScreenRegisterRDNViewState extends _ScreenRegisterRDNState {
 }
 
 class ScreenRegisterRDNViewModel extends ChangeNotifier {
-  String oaid;
-  String oatoken;
-  String backfrompage;
-  String lastpage;
+  String? oaid;
+  String? oatoken;
+  String? backfrompage;
+  String? lastpage;
   bool isLoading = false;
   bool isError = false;
-  String message = "";
-  DynamicUi dynamicUi;
-  DynamicUIKeyboardType dynamicUiKeyboardType;
+  String? message = "";
+  DynamicUi? dynamicUi;
+  DynamicUIKeyboardType? dynamicUiKeyboardType;
   ScrollController scrollController = new ScrollController();
   bool isLogged = false;
   bool isForeground = false;
@@ -994,7 +998,7 @@ class ScreenRegisterRDNViewModel extends ChangeNotifier {
   }
 
   void stopLoading({
-    String message,
+    String? message,
     bool isError = false,
   }) {
     this.message = message;

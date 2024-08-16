@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable, unused_field, unnecessary_null_comparison, non_constant_identifier_names
+
 import 'dart:async';
 import 'dart:io';
 
@@ -23,11 +25,11 @@ import 'package:Investrend/screens/tab_transaction/screen_transaction.dart';
 import 'package:Investrend/utils/debug_writer.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:Investrend/utils/string_utils.dart';
-import 'package:auto_size_text/auto_size_text.dart';
+// import 'package:auto_size_text/auto_size_text.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // ignore: import_of_legacy_library_into_null_safe
@@ -61,7 +63,7 @@ class _ScreenMainState extends BaseStateNoTabs<
     ScreenMain> //with AutomaticKeepAliveClientMixin<ScreenMain>
 {
   static const Duration durationBackgroundUpdate = Duration(minutes: 5);
-  Timer timer;
+  Timer? timer;
 
   // @override
   // bool get wantKeepAlive => true;
@@ -78,13 +80,13 @@ class _ScreenMainState extends BaseStateNoTabs<
   final Key transactionKey = UniqueKey();
   final Key communityKey = UniqueKey();
   WrapperHomeNotifier _wrapperHomeNotifier = WrapperHomeNotifier();
-  Widget screenSearch;
+  Widget? screenSearch;
 
   // Widget screenSearch = new ScreenSearch(
   //   key: UniqueKey(),
   // );
   // Widget screenHome;// = new ScreenHome(_wrapperHomeNotifier, key: UniqueKey());
-  Widget screenHome;
+  Widget? screenHome;
   Widget screenPortfolio = new ScreenPortfolio(
     key: UniqueKey(),
   );
@@ -95,8 +97,8 @@ class _ScreenMainState extends BaseStateNoTabs<
     key: UniqueKey(),
   );
 
-  TextEditingController _searchFilterController;
-  String lastStatus = '';
+  TextEditingController? _searchFilterController;
+  String? lastStatus = '';
   _ScreenMainState(String routeName)
       : super(routeName,
             screenAware: true, overrideBackButton: Platform.isAndroid);
@@ -104,7 +106,7 @@ class _ScreenMainState extends BaseStateNoTabs<
   //Future<Map> futureStockBrokerIndex;
 
   //Home, Search, Portfolio, Transaction, Community
-  List<BaseValueNotifier<bool>> _visibilityNotifiers = [
+  List<BaseValueNotifier<bool>>? _visibilityNotifiers = [
     BaseValueNotifier<bool>(false),
     BaseValueNotifier<bool>(false),
     BaseValueNotifier<bool>(false),
@@ -249,7 +251,8 @@ class _ScreenMainState extends BaseStateNoTabs<
 
   void doUpdateBackground() async {
     try {
-      final remark2 = await InvestrendTheme.datafeedHttp.fetchRemark2();
+      final Remark2Data? remark2 =
+          await InvestrendTheme.datafeedHttp.fetchRemark2();
       if (remark2 != null) {
         print(routeName + ' Future remark2 DATA : ' + remark2.toString());
         //_summaryNotifier.setData(stockSummary);
@@ -263,12 +266,12 @@ class _ScreenMainState extends BaseStateNoTabs<
     }
 
     try {
-      final fundamentalCache =
+      final Map<String, FundamentalCache>? fundamentalCache =
           await InvestrendTheme.datafeedHttp.fetchFundamentalCache();
       if (fundamentalCache != null) {
         print(routeName +
             ' Future fundamentalCache DATA : ' +
-            fundamentalCache?.length.toString());
+            fundamentalCache.length.toString());
         //_summaryNotifier.setData(stockSummary);
         context.read(fundamentalCacheNotifier).setData(fundamentalCache);
       } else {
@@ -280,12 +283,12 @@ class _ScreenMainState extends BaseStateNoTabs<
     }
 
     try {
-      final corporateActionEvent =
+      final List<CorporateActionEvent>? corporateActionEvent =
           await InvestrendTheme.datafeedHttp.fetchCorporateActionEvent();
       if (corporateActionEvent != null) {
         print(routeName +
             ' Future corporateActionEvent DATA : ' +
-            corporateActionEvent?.length.toString());
+            corporateActionEvent.length.toString());
         //_summaryNotifier.setData(stockSummary);
         context
             .read(corporateActionEventNotifier)
@@ -299,7 +302,7 @@ class _ScreenMainState extends BaseStateNoTabs<
     }
 
     try {
-      final suspendStock =
+      final SuspendedStockData? suspendStock =
           await InvestrendTheme.datafeedHttp.fetchStockSuspend();
       if (suspendStock != null) {
         print(routeName +
@@ -323,11 +326,12 @@ class _ScreenMainState extends BaseStateNoTabs<
       print(routeName +
           ' background fecth marketData DATA : ' +
           DateTime.now().toString());
-      MD5StockBrokerIndex md5 = InvestrendTheme.storedData.md5;
+      MD5StockBrokerIndex? md5 = InvestrendTheme.storedData?.md5;
       if (md5 != null) {
         try {
-          final value = await InvestrendTheme.datafeedHttp.fetchMarketData(
-              md5.md5broker, md5.md5stock, md5.md5index, md5.md5sector);
+          final Map<dynamic, dynamic>? value =
+              await InvestrendTheme.datafeedHttp.fetchMarketData(
+                  md5.md5broker, md5.md5stock, md5.md5index, md5.md5sector);
           if (value != null) {
             print(routeName + ' Future marketData DATA : ' + value.toString());
             bool validBrokerChanged = value['validBrokerChanged'] ?? false;
@@ -335,7 +339,7 @@ class _ScreenMainState extends BaseStateNoTabs<
             bool validIndexChanged = value['validIndexChanged'] ?? false;
             bool validSectorChanged = value['validSectorChanged'] ?? false;
 
-            MD5StockBrokerIndex md5 = value['md5'];
+            MD5StockBrokerIndex? md5 = value['md5'];
 
             print(
                 'future validBrokerChanged : ' + validBrokerChanged.toString());
@@ -348,69 +352,72 @@ class _ScreenMainState extends BaseStateNoTabs<
             print('future md5 isValid : $isValid');
 
             if (isValid) {
-              InvestrendTheme.storedData.md5.sharePerLot = md5.sharePerLot;
+              InvestrendTheme.storedData?.md5.sharePerLot = md5.sharePerLot;
             }
 
             if (validStockChanged && isValid) {
-              InvestrendTheme.storedData.md5.md5stock = md5.md5stock;
-              InvestrendTheme.storedData.md5.md5stockUpdate =
+              InvestrendTheme.storedData?.md5.md5stock = md5.md5stock;
+              InvestrendTheme.storedData?.md5.md5stockUpdate =
                   md5.md5stockUpdate;
-              InvestrendTheme.storedData.listStock.clear();
+              InvestrendTheme.storedData?.listStock?.clear();
               if (value['stocks'] != null) {
-                InvestrendTheme.storedData.listStock.addAll(value['stocks']);
+                InvestrendTheme.storedData?.listStock?.addAll(value['stocks']);
               }
             }
 
             if (validBrokerChanged && isValid) {
-              InvestrendTheme.storedData.md5.md5broker = md5.md5broker;
-              InvestrendTheme.storedData.md5.md5brokerUpdate =
+              InvestrendTheme.storedData?.md5.md5broker = md5.md5broker;
+              InvestrendTheme.storedData?.md5.md5brokerUpdate =
                   md5.md5brokerUpdate;
-              InvestrendTheme.storedData.listBroker.clear();
+              InvestrendTheme.storedData?.listBroker?.clear();
               if (value['brokers'] != null) {
-                InvestrendTheme.storedData.listBroker.addAll(value['brokers']);
+                InvestrendTheme.storedData?.listBroker
+                    ?.addAll(value['brokers']);
               }
             }
 
             if (validIndexChanged && isValid) {
-              InvestrendTheme.storedData.md5.md5index = md5.md5index;
-              InvestrendTheme.storedData.md5.md5indexUpdate =
+              InvestrendTheme.storedData?.md5.md5index = md5.md5index;
+              InvestrendTheme.storedData?.md5.md5indexUpdate =
                   md5.md5indexUpdate;
-              InvestrendTheme.storedData.listIndex.clear();
+              InvestrendTheme.storedData?.listIndex?.clear();
               if (value['indexs'] != null) {
-                InvestrendTheme.storedData.listIndex.addAll(value['indexs']);
+                InvestrendTheme.storedData?.listIndex?.addAll(value['indexs']);
               }
             }
 
             if (validSectorChanged && isValid) {
-              InvestrendTheme.storedData.md5.md5sector = md5.md5sector;
-              InvestrendTheme.storedData.md5.md5sectorUpdate =
+              InvestrendTheme.storedData?.md5.md5sector = md5.md5sector;
+              InvestrendTheme.storedData?.md5.md5sectorUpdate =
                   md5.md5sectorUpdate;
-              InvestrendTheme.storedData.listSector.clear();
+              InvestrendTheme.storedData?.listSector?.clear();
               if (value['sectors'] != null) {
-                InvestrendTheme.storedData.listSector.addAll(value['sectors']);
+                InvestrendTheme.storedData?.listSector
+                    ?.addAll(value['sectors']);
               }
             }
 
-            int countIndex = InvestrendTheme.storedData.listIndex.length;
-            InvestrendTheme.storedData.listStock.forEach((stock) {
-              for (int i = 0; i < countIndex; i++) {
-                Index index = InvestrendTheme.storedData.listIndex.elementAt(i);
-                if (index.isSector) {
+            int? countIndex = InvestrendTheme.storedData?.listIndex?.length;
+            InvestrendTheme.storedData?.listStock?.forEach((stock) {
+              for (int i = 0; i < countIndex!; i++) {
+                Index? index =
+                    InvestrendTheme.storedData?.listIndex?.elementAt(i);
+                if (index!.isSector) {
                   index.checkAndAddMembers(stock);
                 }
               }
             });
 
             print('future stocks : ' +
-                InvestrendTheme.storedData.listStock.length.toString());
+                InvestrendTheme.storedData!.listStock!.length.toString());
             print('future brokers : ' +
-                InvestrendTheme.storedData.listBroker.length.toString());
+                InvestrendTheme.storedData!.listBroker!.length.toString());
             print('future indexs : ' +
-                InvestrendTheme.storedData.listIndex.length.toString());
+                InvestrendTheme.storedData!.listIndex!.length.toString());
             print('future sectors : ' +
-                InvestrendTheme.storedData.listSector.length.toString());
+                InvestrendTheme.storedData!.listSector!.length.toString());
 
-            Future<bool> savedFuture = InvestrendTheme.storedData.save();
+            Future<bool>? savedFuture = InvestrendTheme.storedData?.save();
           } else {
             print(routeName + ' Future marketData NO DATA');
           }
@@ -423,7 +430,7 @@ class _ScreenMainState extends BaseStateNoTabs<
   }
 
   void startTimer() {
-    if (timer == null || !timer.isActive) {
+    if (timer == null || !timer!.isActive) {
       timer = Timer.periodic(durationBackgroundUpdate, (timer) {
         if (mounted) {
           doUpdateBackground();
@@ -433,10 +440,10 @@ class _ScreenMainState extends BaseStateNoTabs<
   }
 
   void stopTimer() {
-    if (timer == null || !timer.isActive) {
+    if (timer == null || !timer!.isActive) {
       return;
     }
-    timer.cancel();
+    timer?.cancel();
     timer = null;
   }
 
@@ -478,10 +485,10 @@ class _ScreenMainState extends BaseStateNoTabs<
   }
 
   /// Create a [AndroidNotificationChannel] for heads up notifications
-  AndroidNotificationChannel channel;
+  AndroidNotificationChannel? channel;
 
   /// Initialize the [FlutterLocalNotificationsPlugin] package.
-  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+  FlutterLocalNotificationsPlugin? flutterLocalNotificationsPlugin;
 
   void enableFirebaseMessaging() {
     //if (!kIsWeb) {
@@ -507,15 +514,15 @@ class _ScreenMainState extends BaseStateNoTabs<
     var initSetttings = InitializationSettings(
         android: initializationSettingsAndroid, iOS: initializationSettingsIOs);
 
-    flutterLocalNotificationsPlugin.initialize(initSetttings,
+    flutterLocalNotificationsPlugin?.initialize(initSetttings,
         onSelectNotification: onSelectNotification);
 
     /* ASLI */
 
     flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
+        ?.resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin>()
-        ?.createNotificationChannel(channel);
+        ?.createNotificationChannel(channel!);
 
     /// Update the iOS foreground notification presentation options to allow
     /// heads up notifications.
@@ -528,7 +535,7 @@ class _ScreenMainState extends BaseStateNoTabs<
 
     FirebaseMessaging.instance
         .getInitialMessage()
-        .then((RemoteMessage message) {
+        .then((RemoteMessage? message) {
       bool valid = message != null;
       //bool valid = message != null && !StringUtils.isEmtpy(message.notification.title);
       //bool valid = message != null && message.notification != null;
@@ -549,13 +556,12 @@ class _ScreenMainState extends BaseStateNoTabs<
         // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         //   Navigator.pushNamed(context, '/message', arguments: MessageArguments(message, true));
         // });
-
       }
     });
 
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      RemoteNotification notification = message.notification;
-      AndroidNotification android = message.notification?.android;
+    FirebaseMessaging.onMessage.listen((RemoteMessage? message) {
+      RemoteNotification? notification = message?.notification;
+      AndroidNotification? android = message?.notification?.android;
       bool valid = notification != null && android != null;
       print(DateTime.now().toString() +
           ' firebase AAA onMessage receive valid : $valid');
@@ -567,7 +573,7 @@ class _ScreenMainState extends BaseStateNoTabs<
         String type = '';
         String bodyLenght = '';
         String recipient = '';
-        if (message.data != null && message.data.isNotEmpty) {
+        if (message?.data != null && message!.data.isNotEmpty) {
           if (message.data.containsKey('time')) {
             time = message.data['time'];
           }
@@ -582,22 +588,22 @@ class _ScreenMainState extends BaseStateNoTabs<
           }
         }
 
-        String createdAt = StringUtils.noNullString(time);
+        String? createdAt = StringUtils.noNullString(time);
         String sentAt = '';
-        String fcmTitle = StringUtils.noNullString(notification.title);
-        String fcmBody = StringUtils.noNullString(notification.body);
-        String fcmImageUrl =
-            StringUtils.noNullString(notification.android.imageUrl);
-        String fcmAndroidColor = StringUtils.noNullString(android.color);
-        String fcmAndroidChannelId =
-            StringUtils.noNullString(android.channelId);
+        String? fcmTitle = StringUtils.noNullString(notification.title!);
+        String? fcmBody = StringUtils.noNullString(notification.body!);
+        String? fcmImageUrl =
+            StringUtils.noNullString(notification.android!.imageUrl!);
+        String? fcmAndroidColor = StringUtils.noNullString(android.color!);
+        String? fcmAndroidChannelId =
+            StringUtils.noNullString(android.channelId!);
         String fcmDataKeys = '';
         String fcmDataValues = '';
-        if (message.data != null && message.data.isNotEmpty) {
+        if (message?.data != null && message!.data.isNotEmpty) {
           fcmDataKeys = message.data.keys.join('|');
           fcmDataValues = message.data.values.join('|');
         }
-        String fcmMessageId = StringUtils.noNullString(message.messageId);
+        String? fcmMessageId = StringUtils.noNullString(message?.messageId!);
         int readCount = 0;
 
         BaseMessage baseMessage;
@@ -645,18 +651,16 @@ class _ScreenMainState extends BaseStateNoTabs<
         }
         */
         //String payload = baseMessage != null ? baseMessage.serialize() : notification.title;
-        String payload = notification.title;
-        flutterLocalNotificationsPlugin.show(
+        String? payload = notification.title;
+        flutterLocalNotificationsPlugin?.show(
           notification.hashCode,
           notification.title,
           notification.body,
           NotificationDetails(
             android: AndroidNotificationDetails(
-              channel.id,
-              channel.name,
-              channelDescription: channel.description,
-              // TODO add a proper drawable resource to android, for now using
-              //      one that already exists in example app.
+              channel!.id,
+              channel!.name,
+              channelDescription: channel!.description,
               icon: 'launch_background',
             ),
           ),
@@ -665,7 +669,7 @@ class _ScreenMainState extends BaseStateNoTabs<
       }
     });
 
-    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage? message) {
       bool valid = message != null;
       bool contextIsNull = context == null;
       print(DateTime.now().toString() +
@@ -700,10 +704,10 @@ class _ScreenMainState extends BaseStateNoTabs<
 
   void firebaseTokenRegister() async {
     // Get the token each time the application loads
-    String token = await FirebaseMessaging.instance.getToken();
+    String? token = await FirebaseMessaging.instance.getToken();
 
     // Save the initial token to the database
-    await saveTokenToDatabase(token);
+    await saveTokenToDatabase(token!);
 
     // Any time the token refreshes, store this in the database too.
     FirebaseMessaging.instance.onTokenRefresh.listen(saveTokenToDatabase);
@@ -723,13 +727,13 @@ class _ScreenMainState extends BaseStateNoTabs<
     MyDevice myDevice = MyDevice();
     await myDevice.load();
     try {
-      String username = context.read(dataHolderChangeNotifier).user.username;
-      String deviceId = myDevice.unique_id;
-      String devicePlatform = InvestrendTheme.of(context).applicationPlatform;
+      String? username = context.read(dataHolderChangeNotifier).user.username;
+      String? deviceId = myDevice.unique_id;
+      String? devicePlatform = InvestrendTheme.of(context).applicationPlatform;
       String fcmToken = token;
-      String applicationVersion =
+      String? applicationVersion =
           InvestrendTheme.of(context).applicationVersion;
-      final result = await InvestrendTheme.datafeedHttp.registerDevice(
+      final String? result = await InvestrendTheme.datafeedHttp.registerDevice(
           username, deviceId, devicePlatform, fcmToken, applicationVersion);
       if (result != null) {
         print('registerDevice result : $result');
@@ -742,11 +746,11 @@ class _ScreenMainState extends BaseStateNoTabs<
     }
   }
 
-  Future onSelectNotification(String payload) {
+  Future? onSelectNotification(String? payload) {
     print(DateTime.now().toString() +
         ' firebase onSelectNotification : $payload');
-    Serializeable serializeable = Serializeable.unserialize(payload);
-    bool isBaseMessage = serializeable != null && serializeable is BaseMessage;
+    Serializeable? serializeable = Serializeable.unserialize(payload!);
+    bool? isBaseMessage = serializeable != null && serializeable is BaseMessage;
     print(DateTime.now().toString() +
         ' firebase onSelectNotification isBaseMessage : $isBaseMessage');
     if (isBaseMessage) {
@@ -771,6 +775,7 @@ class _ScreenMainState extends BaseStateNoTabs<
     //   //   payload: payload,
     //   // );
     // }));
+    return null;
   }
 
   void requestPermissions() async {
@@ -822,12 +827,12 @@ class _ScreenMainState extends BaseStateNoTabs<
 
     screenSearch = ScreenSearch(
       key: UniqueKey(),
-      visibilityNotifier: _visibilityNotifiers.elementAt(Tabs.Search.index),
+      visibilityNotifier: _visibilityNotifiers?.elementAt(Tabs.Search.index),
     );
     screenHome = ScreenHome(
       _wrapperHomeNotifier,
       key: UniqueKey(),
-      visibilityNotifier: _visibilityNotifiers.elementAt(Tabs.Home.index),
+      visibilityNotifier: _visibilityNotifiers?.elementAt(Tabs.Home.index),
     );
     /*
     COLLECTION_SUMMARY 	  = COLLECTION + TYPE_SUMMARY; 			// "IDX.SUMMARY";
@@ -884,8 +889,8 @@ class _ScreenMainState extends BaseStateNoTabs<
      */
   }
 
-  VoidCallback menuChangeListener;
-  VoidCallback onPinTimeout;
+  VoidCallback? menuChangeListener;
+  VoidCallback? onPinTimeout;
 
   //VoidCallback subscriptionChangeListener;
 
@@ -921,7 +926,7 @@ class _ScreenMainState extends BaseStateNoTabs<
     });
 
     if (menuChangeListener != null) {
-      context.read(mainMenuChangeNotifier).removeListener(menuChangeListener);
+      context.read(mainMenuChangeNotifier).removeListener(menuChangeListener!);
     } else {
       menuChangeListener = () {
         if (!mounted) {
@@ -937,11 +942,11 @@ class _ScreenMainState extends BaseStateNoTabs<
         }
       };
     }
-    context.read(mainMenuChangeNotifier).addListener(menuChangeListener);
+    context.read(mainMenuChangeNotifier).addListener(menuChangeListener!);
     //context.read(amendChangeNotifier).getData(orderType).setStock(stock.code, stock.name);
 
     if (onPinTimeout != null) {
-      context.read(propertiesNotifier).removeListener(onPinTimeout);
+      context.read(propertiesNotifier).removeListener(onPinTimeout!);
     } else {
       onPinTimeout = () {
         if (mounted) {
@@ -959,7 +964,7 @@ class _ScreenMainState extends BaseStateNoTabs<
         }
       };
     }
-    context.read(propertiesNotifier).addListener(onPinTimeout);
+    context.read(propertiesNotifier).addListener(onPinTimeout!);
   }
 
   @override
@@ -971,21 +976,23 @@ class _ScreenMainState extends BaseStateNoTabs<
     //disconnnectRedis();
     _wrapperHomeNotifier.dispose();
     notifierStockBrokerIndex.dispose();
-    _searchFilterController.dispose();
+    _searchFilterController?.dispose();
     final container = ProviderContainer();
 
     if (menuChangeListener != null) {
-      container.read(mainMenuChangeNotifier).removeListener(menuChangeListener);
+      container
+          .read(mainMenuChangeNotifier)
+          .removeListener(menuChangeListener!);
     }
     menuChangeListener = null;
 
     if (onPinTimeout != null) {
-      container.read(propertiesNotifier).removeListener(onPinTimeout);
+      container.read(propertiesNotifier).removeListener(onPinTimeout!);
     }
     onPinTimeout = null;
 
-    for (int i = 0; i < _visibilityNotifiers.length; i++) {
-      _visibilityNotifiers.elementAt(i).dispose();
+    for (int i = 0; i < _visibilityNotifiers!.length; i++) {
+      _visibilityNotifiers?.elementAt(i).dispose();
     }
     /*
     // orientation -------
@@ -1002,7 +1009,7 @@ class _ScreenMainState extends BaseStateNoTabs<
   Tabs _selectedTab = Tabs.Home;
 
   void _onBottomTabClicked(int index) {
-    context?.read(mainTabNotifier).setIndex(index);
+    context.read(mainTabNotifier).setIndex(index);
 
     _selectedTab = Tabs.values[index];
 
@@ -1011,8 +1018,8 @@ class _ScreenMainState extends BaseStateNoTabs<
       //_selectedTab = Tabs.values[index];
 
       // notify child is active
-      for (int i = 0; i < _visibilityNotifiers.length; i++) {
-        BaseValueNotifier childNotifier = _visibilityNotifiers.elementAt(i);
+      for (int i = 0; i < _visibilityNotifiers!.length; i++) {
+        BaseValueNotifier? childNotifier = _visibilityNotifiers?.elementAt(i);
         if (_selectedTab.index == i) {
           if (childNotifier != null) {
             childNotifier.value = true;
@@ -1026,7 +1033,7 @@ class _ScreenMainState extends BaseStateNoTabs<
     });
   }
 
-  Languages _selectionLanguage;
+  Languages? _selectionLanguage;
 
   Widget createBottomNavigationBar(BuildContext context) {
     return BottomNavigationBar(
@@ -1106,7 +1113,7 @@ class _ScreenMainState extends BaseStateNoTabs<
     );
   }
 
-  Widget _appBarHome(BuildContext context) {
+  PreferredSizeWidget _appBarHome(BuildContext context) {
     double elevation = 0.0;
     Color shadowColor = Theme.of(context).shadowColor;
     if (!InvestrendTheme.tradingHttp.is_production) {
@@ -1150,7 +1157,7 @@ class _ScreenMainState extends BaseStateNoTabs<
       ),
       */
       title: Image.asset(
-        InvestrendTheme.of(context).ic_launcher,
+        InvestrendTheme.of(context).ic_launcher!,
         //color: Theme.of(context).appBarTheme.foregroundColor,
       ),
       actions: [
@@ -1204,14 +1211,14 @@ class _ScreenMainState extends BaseStateNoTabs<
             if (value == null) {
               print('result finder = null');
             } else if (value is Stock) {
-              print('result finder = ' + value.code);
+              print('result finder = ' + value.code!);
               //InvestrendTheme.of(context).stockNotifier.setStock(value);
 
               context.read(primaryStockChangeNotifier).setStock(value);
 
               InvestrendTheme.of(context).showStockDetail(context);
             } else if (value is People) {
-              print('result finder = ' + value.name);
+              print('result finder = ' + value.name!);
             }
           });
         }),
@@ -1289,7 +1296,7 @@ class _ScreenMainState extends BaseStateNoTabs<
               final notifier = watch(avatarChangeNotifier);
               return AvatarProfileButton(
                 url: notifier.url,
-                fullname: context.read(dataHolderChangeNotifier).user.realname,
+                fullname: context.read(dataHolderChangeNotifier).user.realname!,
                 onPressed: () {
                   Navigator.push(
                       context,
@@ -1327,7 +1334,7 @@ class _ScreenMainState extends BaseStateNoTabs<
     );
   }
 
-  Widget _appBarPortfolio(BuildContext context) {
+  PreferredSizeWidget _appBarPortfolio(BuildContext context) {
     // Map<String, String> headersMap = {
     //   'accesstoken' : context.read(dataHolderChangeNotifier).user.token.access_token;
     // };
@@ -1364,14 +1371,14 @@ class _ScreenMainState extends BaseStateNoTabs<
             if (value == null) {
               print('result finder = null');
             } else if (value is Stock) {
-              print('result finder = ' + value.code);
+              print('result finder = ' + value.code!);
               //InvestrendTheme.of(context).stockNotifier.setStock(value);
 
               context.read(primaryStockChangeNotifier).setStock(value);
 
               InvestrendTheme.of(context).showStockDetail(context);
             } else if (value is People) {
-              print('result finder = ' + value.name);
+              print('result finder = ' + value.name!);
             }
           });
         }),
@@ -1400,7 +1407,7 @@ class _ScreenMainState extends BaseStateNoTabs<
               final notifier = watch(avatarChangeNotifier);
               return AvatarProfileButton(
                 url: notifier.url,
-                fullname: context.read(dataHolderChangeNotifier).user.realname,
+                fullname: context.read(dataHolderChangeNotifier).user.realname!,
                 onPressed: () {
                   Navigator.push(
                       context,
@@ -1463,7 +1470,7 @@ class _ScreenMainState extends BaseStateNoTabs<
     */
   }
 
-  Widget _appBarTransaction(BuildContext context) {
+  PreferredSizeWidget _appBarTransaction(BuildContext context) {
     bool hasAccount =
         context.read(dataHolderChangeNotifier).user.accountSize() > 0;
 
@@ -1500,14 +1507,14 @@ class _ScreenMainState extends BaseStateNoTabs<
               if (value == null) {
                 print('result finder = null');
               } else if (value is Stock) {
-                print('result finder = ' + value.code);
+                print('result finder = ' + value.code!);
                 //InvestrendTheme.of(context).stockNotifier.setStock(value);
 
                 context.read(primaryStockChangeNotifier).setStock(value);
 
                 InvestrendTheme.of(context).showStockDetail(context);
               } else if (value is People) {
-                print('result finder = ' + value.name);
+                print('result finder = ' + value.name!);
               }
             });
           },
@@ -1550,7 +1557,7 @@ class _ScreenMainState extends BaseStateNoTabs<
               final notifier = watch(avatarChangeNotifier);
               return AvatarProfileButton(
                 url: notifier.url,
-                fullname: context.read(dataHolderChangeNotifier).user.realname,
+                fullname: context.read(dataHolderChangeNotifier).user.realname!,
                 onPressed: () {
                   Navigator.push(
                       context,
@@ -1567,7 +1574,7 @@ class _ScreenMainState extends BaseStateNoTabs<
     );
   }
 
-  Widget _appBarCommunity(BuildContext context) {
+  PreferredSizeWidget _appBarCommunity(BuildContext context) {
     double elevation = 0.0;
     Color shadowColor = Theme.of(context).shadowColor;
     if (!InvestrendTheme.tradingHttp.is_production) {
@@ -1594,7 +1601,7 @@ class _ScreenMainState extends BaseStateNoTabs<
         },
       ),
       title: Image.asset(
-        InvestrendTheme.of(context).ic_launcher,
+        InvestrendTheme.of(context).ic_launcher!,
         //color: Theme.of(context).accentColor,
         //color: Theme.of(context).appBarTheme.foregroundColor,
       ),
@@ -1610,7 +1617,7 @@ class _ScreenMainState extends BaseStateNoTabs<
               if (value == null) {
                 print('result finder = null');
               } else if (value is Stock) {
-                print('result finder = ' + value.code);
+                print('result finder = ' + value.code!);
                 //InvestrendTheme.of(context).stockNotifier.setStock(value);
 
                 context.read(primaryStockChangeNotifier).setStock(value);
@@ -1619,7 +1626,7 @@ class _ScreenMainState extends BaseStateNoTabs<
 
                 InvestrendTheme.of(context).showStockDetail(context);
               } else if (value is People) {
-                print('result finder = ' + value.name);
+                print('result finder = ' + value.name!);
               }
             });
           },
@@ -1657,7 +1664,7 @@ class _ScreenMainState extends BaseStateNoTabs<
             final notifier = watch(avatarChangeNotifier);
             return AvatarProfileButton(
               url: notifier.url,
-              fullname: context.read(dataHolderChangeNotifier).user.realname,
+              fullname: context.read(dataHolderChangeNotifier).user.realname!,
               onPressed: () {
                 Navigator.push(
                     context,
@@ -1694,7 +1701,7 @@ class _ScreenMainState extends BaseStateNoTabs<
     );
   }
 
-  Widget _appBarSearch(BuildContext context) {
+  PreferredSizeWidget _appBarSearch(BuildContext context) {
     double elevation = 0.0;
     Color shadowColor = Theme.of(context).shadowColor;
     if (!InvestrendTheme.tradingHttp.is_production) {
@@ -1820,14 +1827,14 @@ class _ScreenMainState extends BaseStateNoTabs<
       case Tabs.Home:
         {
           //return ScreenHome(key:homeKey);
-          return screenHome;
+          return screenHome!;
           //return ScreenHome(_wrapperHomeNotifier, key: UniqueKey(), visibilityNotifier: _visibilityNotifiers.elementAt(Tabs.Home.index),);
         }
       case Tabs.Search:
         {
           //return ScreenSearch(key: searchKey,);
           // return ScreenSearch(key: UniqueKey(), visibilityNotifier: _visibilityNotifiers.elementAt(Tabs.Search.index),);
-          return screenSearch;
+          return screenSearch!;
         }
       case Tabs.Portfolio:
         {
@@ -1845,10 +1852,12 @@ class _ScreenMainState extends BaseStateNoTabs<
           return screenCommunity;
         }
     }
+    /*
     return Container(
       color: Colors.blue,
       child: Text('No Screen based on Tabs'),
     );
+    */
   }
 
   /*
@@ -1915,24 +1924,25 @@ class _ScreenMainState extends BaseStateNoTabs<
   //    */
   // }
 
-  Future<Map> updateStockBrokerIndex() {
+  Future<Map>? updateStockBrokerIndex() {
     //final _prefs = await SharedPreferences.getInstance();
     // Try reading data from the key. If it doesn't exist, return empty string.
 
     print('updateStockBrokerIndex');
 
-    MD5StockBrokerIndex md5 = InvestrendTheme.storedData.md5;
+    MD5StockBrokerIndex? md5 = InvestrendTheme.storedData?.md5;
     if (md5 != null) {
       //futureStockBrokerIndex = HttpSSI.fetchStockBrokerIndex(md5.md5broker, md5.md5stock, md5.md5index);
       return InvestrendTheme.datafeedHttp
-          .fetchStockBrokerIndex(md5.md5broker, md5.md5stock, md5.md5index);
+          .fetchStockBrokerIndex(md5.md5broker!, md5.md5stock!, md5.md5index!);
     } else {
       print('error md5 is null');
     }
+    return null;
   }
 
   @override
-  Widget createAppBar(BuildContext context) {
+  PreferredSizeWidget createAppBar(BuildContext context) {
     switch (_selectedTab) {
       case Tabs.Home:
         {
@@ -1955,10 +1965,10 @@ class _ScreenMainState extends BaseStateNoTabs<
           return _appBarCommunity(context);
         }
     }
-    return Container(
-      color: Colors.blue,
-      child: Text('No Appbar based on Tabs'),
-    );
+    // return Container(
+    //   color: Colors.blue,
+    //   child: Text('No Appbar based on Tabs'),
+    // ) as PreferredSizeWidget;
   }
 
   void updateAccountCashPosition(BuildContext context) {
@@ -1968,7 +1978,7 @@ class _ScreenMainState extends BaseStateNoTabs<
       // InvestrendTheme.of(context).user.accounts.forEach((account) {
       //   listAccountCode.add(account.accountcode);
       // });
-      context.read(dataHolderChangeNotifier).user.accounts.forEach((account) {
+      context.read(dataHolderChangeNotifier).user.accounts?.forEach((account) {
         listAccountCode.add(account.accountcode);
       });
 
@@ -1977,19 +1987,19 @@ class _ScreenMainState extends BaseStateNoTabs<
           .accountStockPosition(
               '' /*account.brokercode*/,
               listAccountCode,
-              context.read(dataHolderChangeNotifier).user.username,
+              context.read(dataHolderChangeNotifier).user.username!,
               InvestrendTheme.of(context).applicationPlatform,
               InvestrendTheme.of(context).applicationVersion);
-      accountStockPosition.then((value) {
-        DebugWriter.information(routeName +
-            ' Got accountStockPosition  accountStockPosition.size : ' +
-            value.length.toString());
+      accountStockPosition.then((List<AccountStockPosition>? value) {
+        // DebugWriter.information(routeName +
+        //     ' Got accountStockPosition  accountStockPosition.size : ' +
+        //     value.length.toString());
         if (!mounted) {
           print(
               routeName + ' accountStockPosition ignored.  mounted : $mounted');
           return;
         }
-        AccountStockPosition first =
+        AccountStockPosition? first =
             (value != null && value.length > 0) ? value.first : null;
         if (first != null && first.ignoreThis()) {
           // ignore in aja
@@ -1998,12 +2008,12 @@ class _ScreenMainState extends BaseStateNoTabs<
               first.message);
         } else {
           context.read(accountsInfosNotifier).updateList(value);
-          Account activeAccount = context
+          Account? activeAccount = context
               .read(dataHolderChangeNotifier)
               .user
               .getAccount(context.read(accountChangeNotifier).index);
           if (activeAccount != null) {
-            AccountStockPosition accountInfo = context
+            AccountStockPosition? accountInfo = context
                 .read(accountsInfosNotifier)
                 .getInfo(activeAccount.accountcode);
             if (accountInfo != null) {
@@ -2068,8 +2078,8 @@ class _ScreenMainState extends BaseStateNoTabs<
     //   }
     // });
 
-    for (int i = 0; i < _visibilityNotifiers.length; i++) {
-      BaseValueNotifier childNotifier = _visibilityNotifiers.elementAt(i);
+    for (int i = 0; i < _visibilityNotifiers!.length; i++) {
+      BaseValueNotifier? childNotifier = _visibilityNotifiers?.elementAt(i);
       if (_selectedTab.index == i) {
         if (childNotifier != null) {
           childNotifier.value = true;
@@ -2084,11 +2094,10 @@ class _ScreenMainState extends BaseStateNoTabs<
 
   @override
   void onInactive() {
-    // TODO: implement onInactive
     //disconnnectRedis();
     if (mounted) {
-      for (int i = 0; i < _visibilityNotifiers.length; i++) {
-        BaseValueNotifier childNotifier = _visibilityNotifiers.elementAt(i);
+      for (int i = 0; i < _visibilityNotifiers!.length; i++) {
+        BaseValueNotifier? childNotifier = _visibilityNotifiers?.elementAt(i);
         if (childNotifier != null && !childNotifier.isDiposed) {
           childNotifier.value = false;
         }
@@ -2096,39 +2105,39 @@ class _ScreenMainState extends BaseStateNoTabs<
     }
   }
 
-  PsubscribeAndHGET subscribeSingleSignOn;
+  PsubscribeAndHGET? subscribeSingleSignOn;
 
-  SubscribeAndGET subscribeSystemEvent;
-  SubscribeAndGET subscribeStatus;
+  SubscribeAndGET? subscribeSystemEvent;
+  SubscribeAndGET? subscribeStatus;
   void unsubscribe(BuildContext context, String caller) {
     if (subscribeSingleSignOn != null) {
-      print(routeName + ' unsubscribe : ' + subscribeSingleSignOn.channel);
+      print(routeName + ' unsubscribe : ' + subscribeSingleSignOn!.channel!);
       context
           .read(managerEventNotifier)
-          .punsubscribe(subscribeSingleSignOn, routeName + '.' + caller);
+          .punsubscribe(subscribeSingleSignOn!, routeName + '.' + caller);
       subscribeSingleSignOn = null;
     }
 
     if (subscribeSystemEvent != null) {
-      print(routeName + ' unsubscribe : ' + subscribeSystemEvent.channel);
+      print(routeName + ' unsubscribe : ' + subscribeSystemEvent!.channel!);
       context
           .read(managerEventNotifier)
-          .unsubscribe(subscribeSystemEvent, routeName + '.' + caller);
+          .unsubscribe(subscribeSystemEvent!, routeName + '.' + caller);
       subscribeSystemEvent = null;
     }
 
     if (subscribeStatus != null) {
-      print(routeName + ' unsubscribe : ' + subscribeStatus.channel);
+      print(routeName + ' unsubscribe : ' + subscribeStatus!.channel!);
       context
           .read(managerEventNotifier)
-          .unsubscribe(subscribeStatus, routeName + '.' + caller);
+          .unsubscribe(subscribeStatus!, routeName + '.' + caller);
       subscribeStatus = null;
     }
   }
 
   void subscribe(BuildContext context, String caller) {
     //String codeBoard = stock.code + '.' + stock.defaultBoard;
-    String username = context.read(dataHolderChangeNotifier).user.username;
+    String username = context.read(dataHolderChangeNotifier).user.username!;
     //String channel = DatafeedType.SingleSignON.key + '.' + username ;
     String channel = DatafeedType.SingleSignON.key + '.*|' + username + '|*';
 
@@ -2150,11 +2159,12 @@ class _ScreenMainState extends BaseStateNoTabs<
               message: information, title: 'system_event_title'.tr());
         }
       }
+      return '';
     }, validator: validatorSystemEvent);
-    print(routeName + ' subscribe : ' + subscribeSystemEvent.channel);
+    print(routeName + ' subscribe : ' + subscribeSystemEvent!.channel!);
     context
         .read(managerEventNotifier)
-        .subscribe(subscribeSystemEvent, routeName + '.' + caller);
+        .subscribe(subscribeSystemEvent!, routeName + '.' + caller);
 
     subscribeSingleSignOn = PsubscribeAndHGET(
         channel, DatafeedType.SingleSignON.collection, username,
@@ -2175,8 +2185,8 @@ class _ScreenMainState extends BaseStateNoTabs<
             print(routeName +
                 ' got SingleSignOn $channel  time $time : ' +
                 tokenNew);
-            String tokenExisting =
-                context.read(dataHolderChangeNotifier).user.token.access_token;
+            String? tokenExisting =
+                context.read(dataHolderChangeNotifier).user.token?.access_token;
             if (!StringUtils.equalsIgnoreCase(tokenNew, tokenExisting)) {
               String defaultMessage = 'single_sign_on_message'.tr();
               String defaultTitle = 'single_sign_on_title'.tr();
@@ -2217,26 +2227,29 @@ class _ScreenMainState extends BaseStateNoTabs<
           }
         }
       }
+      return '';
     }, validator: validatorSingleSignOn, receiveUnknownMessage: false);
-    print(routeName + ' psubscribe : ' + subscribeSingleSignOn.channel);
+    print(routeName + ' psubscribe : ' + subscribeSingleSignOn!.channel!);
     context
         .read(managerEventNotifier)
-        .psubscribe(subscribeSingleSignOn, routeName + '.' + caller);
+        .psubscribe(subscribeSingleSignOn!, routeName + '.' + caller);
 
-    subscribeStatus = SubscribeAndGET(
-        DatafeedType.Status.key, DatafeedType.Status.key, listener: (message) {
+    subscribeStatus =
+        SubscribeAndGET(DatafeedType.Status.key, DatafeedType.Status.key,
+            listener: (List<String>? message) {
       //print('got : '+message.join('|'));
-      DebugWriter.info('$routeName got status : ' + message.elementAt(1));
+      // DebugWriter.info('$routeName got status : ' + message.elementAt(1));
       DebugWriter.info(message);
       //[III, C, 15:35:00, Z, Market Close]
       // P = market not yet open
-      lastStatus = message.elementAt(3) ?? '';
+      lastStatus = message?.elementAt(3) ?? '';
       print('lastStatus : $lastStatus');
+      return '';
     }, validator: validatorStatus);
-    print(routeName + ' subscribe : ' + subscribeStatus.channel);
+    print(routeName + ' subscribe : ' + subscribeStatus!.channel!);
     context
         .read(managerEventNotifier)
-        .subscribe(subscribeStatus, routeName + '.' + caller);
+        .subscribe(subscribeStatus!, routeName + '.' + caller);
   }
 
   bool validatorStatus(List<String> data, String channel) {
@@ -2247,10 +2260,10 @@ class _ScreenMainState extends BaseStateNoTabs<
     return false;
   }
 
-  bool validatorSystemEvent(List<String> data, String channel) {
+  bool validatorSystemEvent(List<String>? data, String channel) {
     if (data != null &&
             data.length >= 4 &&
-            StringUtils.equalsIgnoreCase(channel, subscribeSystemEvent.channel)
+            StringUtils.equalsIgnoreCase(channel, subscribeSystemEvent!.channel)
         //&& StringUtils.equalsIgnoreCase(channel, subscribeSingleSignOn.channel)
         ) {
       final String HEADER = data[0]; // BOT
@@ -2264,7 +2277,7 @@ class _ScreenMainState extends BaseStateNoTabs<
     return false;
   }
 
-  bool validatorSingleSignOn(List<String> data, String channel) {
+  bool validatorSingleSignOn(List<String>? data, String channel) {
     if (data != null &&
             data.length > 2 &&
             channel.startsWith(DatafeedType.SingleSignON.key)

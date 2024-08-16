@@ -2,9 +2,9 @@ import 'package:Investrend/component/component_creator.dart';
 import 'package:flutter/material.dart';
 
 class CardDataWithFilter<T> extends StatelessWidget {
-  final EdgeInsetsGeometry margin;
-  final String title;
-  final List<CardDataWithFilterModel<T>> data;
+  final EdgeInsetsGeometry? margin;
+  final String? title;
+  final List<CardDataWithFilterModel<T>>? data;
 
   CardDataWithFilter({
     this.margin,
@@ -26,7 +26,7 @@ class CardDataWithFilter<T> extends StatelessWidget {
             children: [
               ComponentCreator.subtitleNoButtonMore(
                 context,
-                title,
+                title!,
               ),
               IconButton(
                 onPressed: () {},
@@ -46,8 +46,8 @@ class CardDataWithFilterModel<T> {
   T data;
 
   CardDataWithFilterModel({
-    @required this.name,
+    required this.name,
     this.isShown = true,
-    @required this.data,
+    required this.data,
   });
 }

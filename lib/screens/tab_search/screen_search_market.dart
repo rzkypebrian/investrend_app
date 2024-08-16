@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable, unnecessary_null_comparison
+
 import 'dart:async';
 
 import 'package:Investrend/component/cards/card_broker_rank.dart';
@@ -31,11 +33,11 @@ class ScreenSearchMarket extends StatefulWidget {
   // @override
   // _ScreenSearchMarketState createState() => _ScreenSearchMarketState();
 
-  final TabController tabController;
+  final TabController? tabController;
   final int tabIndex;
-  final ValueNotifier<bool> visibilityNotifier;
+  final ValueNotifier<bool>? visibilityNotifier;
   ScreenSearchMarket(this.tabIndex, this.tabController,
-      {Key key, this.visibilityNotifier})
+      {Key? key, this.visibilityNotifier})
       : super(key: key);
 
   @override
@@ -50,18 +52,18 @@ class _ScreenSearchMarketState extends BaseStateNoTabsWithParentTab<
     ScreenSearchMarket> //    with RouteAware
 {
   static const Duration durationUpdate = Duration(milliseconds: 1000);
-  IndexSummaryNotifier _compositeNotifier;
-  LocalForeignNotifier _foreignDomesticNotifier;
+  IndexSummaryNotifier? _compositeNotifier;
+  LocalForeignNotifier? _foreignDomesticNotifier;
   ValueNotifier<int> _boardForeignDomesticNotifier = ValueNotifier<int>(0);
   RangeNotifier _rangeForeignDomesticNotifier =
       RangeNotifier(Range.createBasic());
-  PerformanceNotifier _performanceNotifier;
+  PerformanceNotifier? _performanceNotifier;
   ChartNotifier _chartNotifier = ChartNotifier(ChartLineData());
   ChartOhlcvNotifier _chartOhlcvNotifier = ChartOhlcvNotifier(ChartOhlcvData());
   ValueNotifier<int> _chartRangeNotifier = ValueNotifier<int>(0);
   String _selectedChartFrom = '';
   String _selectedChartTo = '';
-  DateTime lastChartUpdate;
+  DateTime? lastChartUpdate;
   bool candleChart = true;
 
   List<SortAndFilterModel> listIHSGOverview = [
@@ -96,8 +98,8 @@ class _ScreenSearchMarketState extends BaseStateNoTabsWithParentTab<
   // int _selectedDomesticForeign = 0;
   // List<String> _listChipRange = <String>['1D', '1W', '1M', '3M', '6M', '1Y', '5Y', 'All'];
 
-  _ScreenSearchMarketState(int tabIndex, TabController tabController,
-      {ValueNotifier<bool> visibilityNotifier})
+  _ScreenSearchMarketState(int tabIndex, TabController? tabController,
+      {ValueNotifier<bool>? visibilityNotifier})
       : super('/search_market', tabIndex, tabController,
             parentTabIndex: Tabs.Search.index,
             visibilityNotifier: visibilityNotifier);
@@ -106,7 +108,7 @@ class _ScreenSearchMarketState extends BaseStateNoTabsWithParentTab<
   // bool get wantKeepAlive => true;
   void startTimer() {
     print(routeName + '._startTimer');
-    if (timer == null || !timer.isActive) {
+    if (timer == null || !timer!.isActive) {
       timer = Timer.periodic(durationUpdate, (timer) {
         print(routeName + ' timer.tick : ' + timer.tick.toString());
         if (active) {
@@ -122,10 +124,10 @@ class _ScreenSearchMarketState extends BaseStateNoTabsWithParentTab<
   }
 
   void stopTimer() {
-    if (timer == null || !timer.isActive) {
+    if (timer == null || !timer!.isActive) {
       return;
     }
-    timer.cancel();
+    timer?.cancel();
     timer = null;
   }
 
@@ -534,17 +536,17 @@ class _ScreenSearchMarketState extends BaseStateNoTabsWithParentTab<
                 top: InvestrendTheme.cardPadding,
                 bottom: 10.0),
             child: ValueListenableBuilder(
-                valueListenable: _compositeNotifier,
+                valueListenable: _compositeNotifier!,
                 builder: (context, value, child) {
-                  if (_compositeNotifier.invalid()) {
+                  if (_compositeNotifier!.invalid()) {
                     return Center(child: CircularProgressIndicator());
                   }
                   return WidgetPrice(
                       'IHSG',
-                      _compositeNotifier.index.name,
-                      _compositeNotifier.value.last,
-                      _compositeNotifier.value.change,
-                      _compositeNotifier.value.percentChange,
+                      _compositeNotifier?.index?.name,
+                      _compositeNotifier?.value?.last,
+                      _compositeNotifier?.value?.change,
+                      _compositeNotifier?.value?.percentChange,
                       true);
                 }),
           ),
@@ -719,13 +721,14 @@ class _ScreenSearchMarketState extends BaseStateNoTabsWithParentTab<
   }
 
   Widget tableCellRightExpanded(BuildContext context, String text,
-      {double padding = 0.0, Color color}) {
-    TextStyle textStyle;
+      {double padding = 0.0, Color? color}) {
+    TextStyle? textStyle;
     if (color == null) {
       textStyle = InvestrendTheme.of(context).small_w400_compact;
     } else {
-      textStyle =
-          InvestrendTheme.of(context).small_w400_compact.copyWith(color: color);
+      textStyle = InvestrendTheme.of(context)
+          .small_w400_compact
+          ?.copyWith(color: color);
     }
     return Expanded(
       flex: 1,
@@ -745,9 +748,9 @@ class _ScreenSearchMarketState extends BaseStateNoTabsWithParentTab<
 
   Widget getTableData(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: _compositeNotifier,
+      valueListenable: _compositeNotifier!,
       builder: (context, value, child) {
-        if (_compositeNotifier.invalid()) {
+        if (_compositeNotifier!.invalid()) {
           return Center(child: CircularProgressIndicator());
         }
         const padding = 15.0;
@@ -759,11 +762,11 @@ class _ScreenSearchMarketState extends BaseStateNoTabsWithParentTab<
               tableCellRightExpanded(
                   context,
                   InvestrendTheme.formatPriceDouble(
-                      _compositeNotifier.value.open,
+                      _compositeNotifier?.value?.open,
                       showDecimal: false),
                   color: InvestrendTheme.changeTextColor(
-                      _compositeNotifier.value.open,
-                      prev: _compositeNotifier.value.prev),
+                      _compositeNotifier?.value?.open,
+                      prev: _compositeNotifier?.value?.prev),
                   padding: padding),
             ],
           ),
@@ -773,7 +776,7 @@ class _ScreenSearchMarketState extends BaseStateNoTabsWithParentTab<
               tableCellRightExpanded(
                 context,
                 InvestrendTheme.formatValue(
-                    context, _compositeNotifier.value.value),
+                    context, _compositeNotifier?.value?.value),
               ),
             ],
           ),
@@ -786,11 +789,11 @@ class _ScreenSearchMarketState extends BaseStateNoTabsWithParentTab<
               tableCellRightExpanded(
                   context,
                   InvestrendTheme.formatPriceDouble(
-                      _compositeNotifier.value.low,
+                      _compositeNotifier?.value?.low,
                       showDecimal: false),
                   color: InvestrendTheme.changeTextColor(
-                      _compositeNotifier.value.low,
-                      prev: _compositeNotifier.value.prev),
+                      _compositeNotifier?.value?.low,
+                      prev: _compositeNotifier?.value?.prev),
                   padding: padding),
             ],
           ),
@@ -800,7 +803,7 @@ class _ScreenSearchMarketState extends BaseStateNoTabsWithParentTab<
               tableCellRightExpanded(
                 context,
                 InvestrendTheme.formatValue(
-                    context, _compositeNotifier.value.volume),
+                    context, _compositeNotifier?.value?.volume),
               ),
             ],
           ),
@@ -811,11 +814,12 @@ class _ScreenSearchMarketState extends BaseStateNoTabsWithParentTab<
               tableCellLeft(context, 'High'),
               tableCellRightExpanded(
                   context,
-                  InvestrendTheme.formatPriceDouble(_compositeNotifier.value.hi,
+                  InvestrendTheme.formatPriceDouble(
+                      _compositeNotifier?.value?.hi,
                       showDecimal: false),
                   color: InvestrendTheme.changeTextColor(
-                      _compositeNotifier.value.hi,
-                      prev: _compositeNotifier.value.prev),
+                      _compositeNotifier?.value?.hi,
+                      prev: _compositeNotifier?.value?.prev),
                   padding: padding),
             ],
           ),
@@ -824,7 +828,7 @@ class _ScreenSearchMarketState extends BaseStateNoTabsWithParentTab<
               tableCellLeft(context, 'Frequency (x)', padding: padding),
               tableCellRightExpanded(
                 context,
-                InvestrendTheme.formatComma(_compositeNotifier.value.freq),
+                InvestrendTheme.formatComma(_compositeNotifier?.value?.freq),
               ),
             ],
           ),
@@ -867,9 +871,9 @@ class _ScreenSearchMarketState extends BaseStateNoTabsWithParentTab<
 
   Widget getTableDataNew(BuildContext context) {
     return ValueListenableBuilder(
-      valueListenable: _compositeNotifier,
+      valueListenable: _compositeNotifier!,
       builder: (context, value, child) {
-        if (_compositeNotifier.invalid()) {
+        if (_compositeNotifier!.invalid()) {
           return Center(child: CircularProgressIndicator());
         }
 
@@ -881,44 +885,45 @@ class _ScreenSearchMarketState extends BaseStateNoTabsWithParentTab<
           double widthLeftSection = availableWidth * 0.4;
           double widthRightSection = availableWidth - widthLeftSection;
 
-          TextStyle labelStyle = InvestrendTheme.of(context).textLabelStyle;
-          TextStyle valueStyle = InvestrendTheme.of(context).small_w400_compact;
+          TextStyle? labelStyle = InvestrendTheme.of(context).textLabelStyle;
+          TextStyle? valueStyle =
+              InvestrendTheme.of(context).small_w400_compact;
 
           List<LabelValueColor> listLeft = List.empty(growable: true);
           List<LabelValueColor> listRight = List.empty(growable: true);
 
           listLeft.add(LabelValueColor(
               'Open',
-              InvestrendTheme.formatPriceDouble(_compositeNotifier.value.open,
+              InvestrendTheme.formatPriceDouble(_compositeNotifier?.value?.open,
                   showDecimal: false),
-              color: _compositeNotifier.value.openColor()));
+              color: _compositeNotifier?.value?.openColor()));
           listRight.add(LabelValueColor(
             'Value',
             InvestrendTheme.formatValue(
-                context, _compositeNotifier.value.value),
+                context, _compositeNotifier?.value?.value),
           ));
 
           listLeft.add(LabelValueColor(
               'Low',
-              InvestrendTheme.formatPriceDouble(_compositeNotifier.value.low,
+              InvestrendTheme.formatPriceDouble(_compositeNotifier?.value?.low,
                   showDecimal: false),
-              color: _compositeNotifier.value.lowColor()));
+              color: _compositeNotifier?.value?.lowColor()));
           listRight.add(LabelValueColor(
               'Vol (Shares)',
               InvestrendTheme.formatValue(
-                  context, _compositeNotifier.value.volume)));
+                  context, _compositeNotifier?.value?.volume)));
 
           listLeft.add(LabelValueColor(
               'High',
-              InvestrendTheme.formatPriceDouble(_compositeNotifier.value.hi,
+              InvestrendTheme.formatPriceDouble(_compositeNotifier?.value?.hi,
                   showDecimal: false),
-              color: _compositeNotifier.value.hiColor()));
+              color: _compositeNotifier?.value?.hiColor()));
           listRight.add(LabelValueColor('Frequency (x)',
-              InvestrendTheme.formatComma(_compositeNotifier.value.freq)));
+              InvestrendTheme.formatComma(_compositeNotifier?.value?.freq)));
 
           int count = listLeft.length;
 
-          List<TextStyle> styles = [labelStyle, valueStyle];
+          List<TextStyle?>? styles = [labelStyle, valueStyle];
           for (int i = 0; i < count; i++) {
             LabelValueColor leftLVC = listLeft.elementAt(i);
             LabelValueColor rightLVC = listRight.elementAt(i);
@@ -927,8 +932,8 @@ class _ScreenSearchMarketState extends BaseStateNoTabsWithParentTab<
             styles = UIHelper.calculateFontSizes(context, styles,
                 widthRightSection, [rightLVC.label, rightLVC.value]);
           }
-          labelStyle = styles.elementAt(0);
-          valueStyle = styles.elementAt(1);
+          labelStyle = styles?.elementAt(0);
+          valueStyle = styles?.elementAt(1);
 
           List<Widget> childs = List.empty(growable: true);
           for (int i = 0; i < count; i++) {
@@ -960,7 +965,7 @@ class _ScreenSearchMarketState extends BaseStateNoTabsWithParentTab<
                           maxLines: 1,
                           style: leftLVC.color == null
                               ? valueStyle
-                              : valueStyle.copyWith(color: leftLVC.color),
+                              : valueStyle?.copyWith(color: leftLVC.color),
                           textAlign: TextAlign.right,
                         ),
                       ],
@@ -990,7 +995,7 @@ class _ScreenSearchMarketState extends BaseStateNoTabsWithParentTab<
                           maxLines: 1,
                           style: rightLVC.color == null
                               ? valueStyle
-                              : valueStyle.copyWith(color: rightLVC.color),
+                              : valueStyle?.copyWith(color: rightLVC.color),
                           textAlign: TextAlign.right,
                         ),
                       ],
@@ -1000,8 +1005,8 @@ class _ScreenSearchMarketState extends BaseStateNoTabsWithParentTab<
               ),
             ));
           }
-          if (!StringUtils.isEmtpy(_compositeNotifier.value.date) &&
-              !StringUtils.isEmtpy(_compositeNotifier.value.time)) {
+          if (!StringUtils.isEmtpy(_compositeNotifier?.value?.date) &&
+              !StringUtils.isEmtpy(_compositeNotifier?.value?.time)) {
             /*
                 DateFormat dateFormatter = DateFormat('EEEE, dd/MM/yyyy HH:mm:ss', 'id');
                 //DateFormat timeFormatter = DateFormat('HH:mm:ss');
@@ -1012,13 +1017,14 @@ class _ScreenSearchMarketState extends BaseStateNoTabsWithParentTab<
                 String formatedDate = dateFormatter.format(dateTime);
                 //String formatedTime = timeFormatter.format(dateTime);
                 */
-            String displayTime = _compositeNotifier.value.date +
+            String displayTime = _compositeNotifier!.value!.date! +
                 ' ' +
-                _compositeNotifier.value.time;
+                _compositeNotifier!.value!.time!;
             String infoTime = 'last_data_date_info_label'.tr();
 
-            String formatedDate = Utils.formatLastDataUpdate(
-                _compositeNotifier.value.date, _compositeNotifier.value.time);
+            String? formatedDate = Utils.formatLastDataUpdate(
+                _compositeNotifier?.value?.date,
+                _compositeNotifier?.value?.time);
             infoTime = infoTime.replaceAll('#DATE#', formatedDate);
             //infoTime = infoTime.replaceAll('#TIME#', formatedTime);
             displayTime = infoTime;
@@ -1034,7 +1040,7 @@ class _ScreenSearchMarketState extends BaseStateNoTabsWithParentTab<
                   displayTime,
                   style: InvestrendTheme.of(context)
                       .more_support_w400_compact
-                      .copyWith(
+                      ?.copyWith(
                         fontWeight: FontWeight.w500,
                         color: InvestrendTheme.of(context).greyDarkerTextColor,
                         fontStyle: FontStyle.italic,
@@ -1134,9 +1140,9 @@ class _ScreenSearchMarketState extends BaseStateNoTabsWithParentTab<
   }
   */
 
-  Widget progressPerformance(
-      BuildContext context, String label, double change, double percentChange) {
-    double progressValue = percentChange.abs() / 100;
+  Widget progressPerformance(BuildContext context, String? label,
+      double? change, double? percentChange) {
+    double progressValue = percentChange!.abs() / 100;
     return Padding(
       padding: const EdgeInsets.only(top: 10.0, bottom: 10.0),
       child: Row(
@@ -1146,8 +1152,8 @@ class _ScreenSearchMarketState extends BaseStateNoTabsWithParentTab<
               fit: BoxFit.scaleDown,
               alignment: Alignment.centerLeft,
               child: Text(
-                label,
-                style: Theme.of(context).textTheme.bodyText1,
+                label!,
+                style: Theme.of(context).textTheme.bodyLarge,
 
                 //textAlign: TextAlign.start,
               ),
@@ -1182,8 +1188,8 @@ class _ScreenSearchMarketState extends BaseStateNoTabsWithParentTab<
                 InvestrendTheme.formatPercentChange(percentChange),
                 style: Theme.of(context)
                     .textTheme
-                    .bodyText1
-                    .copyWith(color: InvestrendTheme.changeTextColor(change)),
+                    .bodyLarge
+                    ?.copyWith(color: InvestrendTheme.changeTextColor(change)),
                 textAlign: TextAlign.end,
               ),
             ),
@@ -1210,16 +1216,16 @@ class _ScreenSearchMarketState extends BaseStateNoTabsWithParentTab<
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 ValueListenableBuilder(
-                  valueListenable: _compositeNotifier,
+                  valueListenable: _compositeNotifier!,
                   builder: (context, value, child) {
-                    if (_compositeNotifier.invalid()) {
+                    if (_compositeNotifier!.invalid()) {
                       return Center(child: CircularProgressIndicator());
                     }
                     return progressPerformance(
                         context,
                         '1 Day',
-                        _compositeNotifier.value.change,
-                        _compositeNotifier.value.percentChange);
+                        _compositeNotifier?.value?.change,
+                        _compositeNotifier?.value?.percentChange);
                   },
                 ),
                 progressPerformance(context, '1 Week', 0, 0),
@@ -1228,16 +1234,16 @@ class _ScreenSearchMarketState extends BaseStateNoTabsWithParentTab<
                 progressPerformance(context, '6 Mo', 0, 0),
                 //progressPerformance(context, '1 Year',10, -1.09),
                 ValueListenableBuilder(
-                  valueListenable: _compositeNotifier,
+                  valueListenable: _compositeNotifier!,
                   builder: (context, value, child) {
-                    if (_compositeNotifier.invalid()) {
+                    if (_compositeNotifier!.invalid()) {
                       return Center(child: CircularProgressIndicator());
                     }
                     return progressPerformance(
                         context,
                         '1 Year',
-                        _compositeNotifier.value.return52W,
-                        _compositeNotifier.value.return52W);
+                        _compositeNotifier?.value?.return52W,
+                        _compositeNotifier?.value?.return52W);
                   },
                 ),
                 progressPerformance(context, '5 Year', 0, 0),
@@ -1550,7 +1556,7 @@ class _ScreenSearchMarketState extends BaseStateNoTabsWithParentTab<
         shape: RoundedRectangleBorder(
           borderRadius: new BorderRadius.circular(10.0),
           side: BorderSide(
-            color: InvestrendTheme.of(context).tileBackground,
+            color: InvestrendTheme.of(context).tileBackground!,
             width: 0.0,
           ),
         ),
@@ -1559,7 +1565,7 @@ class _ScreenSearchMarketState extends BaseStateNoTabsWithParentTab<
             FittedBox(
               fit: BoxFit.scaleDown,
               child: Text(
-                sector.getAlias(context),
+                sector.getAlias(context)!,
                 //style: Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.bold),
                 style: InvestrendTheme.of(context).small_w600,
               ),
@@ -1569,7 +1575,7 @@ class _ScreenSearchMarketState extends BaseStateNoTabsWithParentTab<
               child: Text(
                 sector.member_count.toString() + ' Emiten',
                 //style: Theme.of(context).textTheme.bodyText2.copyWith(fontWeight: FontWeight.w300),
-                style: InvestrendTheme.of(context).support_w400.copyWith(
+                style: InvestrendTheme.of(context).support_w400?.copyWith(
                     color: InvestrendTheme.of(context).greyDarkerTextColor),
               ),
             ),
@@ -1596,7 +1602,7 @@ class _ScreenSearchMarketState extends BaseStateNoTabsWithParentTab<
                   //style: TextStyle(color: percentChangeTextColor),
                   style: InvestrendTheme.of(context)
                       .support_w600
-                      .copyWith(color: percentChangeTextColor),
+                      ?.copyWith(color: percentChangeTextColor),
                 ),
               ),
             ),
@@ -1620,7 +1626,7 @@ class _ScreenSearchMarketState extends BaseStateNoTabsWithParentTab<
     percentChangeBackgroundColor =
         InvestrendTheme.priceBackgroundColorDouble(sector.percentChange);
 
-    String codeAliased = sector.getAlias(context);
+    String? codeAliased = sector.getAlias(context);
     return SizedBox(
       width: width,
       child: MaterialButton(
@@ -1633,14 +1639,14 @@ class _ScreenSearchMarketState extends BaseStateNoTabsWithParentTab<
         shape: RoundedRectangleBorder(
           borderRadius: new BorderRadius.circular(10.0),
           side: BorderSide(
-            color: InvestrendTheme.of(context).tileBackground,
+            color: InvestrendTheme.of(context).tileBackground!,
             width: 0.0,
           ),
         ),
         child: Column(
           children: [
             AutoSizeText(
-              codeAliased, //getSectorAlias(context, sector.code),
+              codeAliased!, //getSectorAlias(context, sector.code),
               //style: Theme.of(context).textTheme.bodyText1.copyWith(fontWeight: FontWeight.bold),
               style: InvestrendTheme.of(context).small_w600,
               maxLines: 1,
@@ -1654,7 +1660,7 @@ class _ScreenSearchMarketState extends BaseStateNoTabsWithParentTab<
                 sector.member_count.toString() + ' ' + 'emiten_label'.tr(),
 
                 //style: Theme.of(context).textTheme.bodyText2.copyWith(fontWeight: FontWeight.w300),
-                style: InvestrendTheme.of(context).support_w400.copyWith(
+                style: InvestrendTheme.of(context).support_w400?.copyWith(
                     color: InvestrendTheme.of(context).greyDarkerTextColor),
               ),
             ),
@@ -1681,29 +1687,29 @@ class _ScreenSearchMarketState extends BaseStateNoTabsWithParentTab<
                   //style: TextStyle(color: percentChangeTextColor),
                   style: InvestrendTheme.of(context)
                       .support_w600
-                      .copyWith(color: percentChangeTextColor),
+                      ?.copyWith(color: percentChangeTextColor),
                 ),
               ),
             ),
           ],
         ),
         onPressed: () {
-          List<Stock> members = List.empty(growable: true);
-          for (Stock stock in InvestrendTheme.storedData.listStock) {
+          List<Stock>? members = List.empty(growable: true);
+          for (Stock? stock in InvestrendTheme.storedData!.listStock!) {
             if (stock != null) {
               //stock --> "sectorText": "IDXNONCYC",
               // sector --> "sector": "IDXENERGY"
               bool matched = stock.sectorText == sector.code;
               print('matched : $matched  for  stock.sectorText : ' +
-                  stock.sectorText +
+                  stock.sectorText! +
                   '   sector.code : ' +
-                  sector.code);
+                  sector.code!);
               if (matched) {
                 members.add(stock);
               }
             }
           }
-          Index indexSector;
+          Index? indexSector;
           /*
           for (final index in InvestrendTheme.storedData.listIndex) {
             if (index != null && index.code == sector.code) {
@@ -1730,8 +1736,8 @@ class _ScreenSearchMarketState extends BaseStateNoTabsWithParentTab<
     );
   }
 
-  Future<List<IndexSummary>> indexSummarys;
-  Timer timer;
+  Future<List<IndexSummary>>? indexSummarys;
+  Timer? timer;
 
   // bool active = true;
   @override
@@ -1742,8 +1748,8 @@ class _ScreenSearchMarketState extends BaseStateNoTabsWithParentTab<
         new ForeignDomestic('', '', '', '', 0, 0, 0, 0.0, 0, 0, 0, 0.0));
     _performanceNotifier = PerformanceNotifier(new PerformanceData());
     _rebuildSectors();
-    Index composite;
-    for (final index in InvestrendTheme.storedData.listIndex) {
+    Index? composite;
+    for (final Index? index in InvestrendTheme.storedData!.listIndex!) {
       if (index != null && index.isComposite) {
         composite = index;
         break;
@@ -1776,16 +1782,16 @@ class _ScreenSearchMarketState extends BaseStateNoTabsWithParentTab<
   @override
   void dispose() {
     _chartRangeNotifier.dispose();
-    _compositeNotifier.dispose();
-    _foreignDomesticNotifier.dispose();
-    _performanceNotifier.dispose();
+    _compositeNotifier?.dispose();
+    _foreignDomesticNotifier?.dispose();
+    _performanceNotifier?.dispose();
     _chartNotifier.dispose();
     _chartOhlcvNotifier.dispose();
     _boardForeignDomesticNotifier.dispose();
     _rangeForeignDomesticNotifier.dispose();
     //routeObserver.unsubscribe(this);
     if (timer != null) {
-      timer.cancel();
+      timer?.cancel();
     }
     super.dispose();
   }
@@ -1804,8 +1810,8 @@ class _ScreenSearchMarketState extends BaseStateNoTabsWithParentTab<
 
   void _rebuildSectors() {
     listSectors.clear();
-    if (InvestrendTheme.storedData.listIndex.isNotEmpty) {
-      InvestrendTheme.storedData.listIndex.forEach((index) {
+    if (InvestrendTheme.storedData!.listIndex!.isNotEmpty) {
+      InvestrendTheme.storedData?.listIndex?.forEach((Index? index) {
         if (index != null && index.isSector) {
           listSectors
               .add(SectorObject(index.code, index.listMembers.length, '', 0.0));
@@ -1837,11 +1843,11 @@ class _ScreenSearchMarketState extends BaseStateNoTabsWithParentTab<
     List<String> listCode = List<String>.empty(growable: true);
 
     //listSectors.clear();
-    if (InvestrendTheme.storedData.listIndex.isNotEmpty) {
-      InvestrendTheme.storedData.listIndex.forEach((index) {
+    if (InvestrendTheme.storedData!.listIndex!.isNotEmpty) {
+      InvestrendTheme.storedData?.listIndex?.forEach((Index? index) {
         if (index != null && (index.isSector || index.isComposite)) {
           //listSectors.add(SectorObject(index.code, index.listMembers.length, '/images/icons/action_bell.png', 0.0));
-          listCode.add(index.code);
+          listCode.add(index.code!);
         }
       });
     }
@@ -1850,12 +1856,12 @@ class _ScreenSearchMarketState extends BaseStateNoTabsWithParentTab<
 
     try {
       String board = _boardForeignDomesticNotifier.value == 0 ? '*' : 'RG';
-      if (_rangeForeignDomesticNotifier.value.index == 0) {
+      if (_rangeForeignDomesticNotifier.value?.index == 0) {
         final compositeFD =
             await InvestrendTheme.datafeedHttp.fetchCompositeFD(board);
         if (compositeFD != null) {
           if (mounted) {
-            _foreignDomesticNotifier.setValue(compositeFD);
+            _foreignDomesticNotifier?.setValue(compositeFD);
           }
         } else {
           setNotifierNoData(_foreignDomesticNotifier);
@@ -1867,7 +1873,7 @@ class _ScreenSearchMarketState extends BaseStateNoTabsWithParentTab<
               .fetchCompositeFDHistorical(board, range.from, range.to);
           if (stockFD != null) {
             if (mounted) {
-              _foreignDomesticNotifier.setValue(stockFD);
+              _foreignDomesticNotifier?.setValue(stockFD);
             }
           } else {
             setNotifierNoData(_foreignDomesticNotifier);
@@ -1878,11 +1884,12 @@ class _ScreenSearchMarketState extends BaseStateNoTabsWithParentTab<
       setNotifierError(_foreignDomesticNotifier, error);
     }
     try {
-      final performanceData = await InvestrendTheme.datafeedHttp
+      final PerformanceData? performanceData = await InvestrendTheme
+          .datafeedHttp
           .fetchPerformance('INDEX', 'COMPOSITE');
       if (performanceData != null) {
         if (mounted) {
-          _performanceNotifier.setValue(performanceData);
+          _performanceNotifier?.setValue(performanceData);
         }
       } else {
         setNotifierNoData(_performanceNotifier);
@@ -1892,9 +1899,9 @@ class _ScreenSearchMarketState extends BaseStateNoTabsWithParentTab<
     }
 
     try {
-      final indexSummarys =
+      final List<IndexSummary?>? indexSummarys =
           await InvestrendTheme.datafeedHttp.fetchIndices(listCode);
-      if (indexSummarys.length > 0) {
+      if (indexSummarys!.length > 0) {
         print('Future DATA : ' + indexSummarys.length.toString());
         indexSummarys.forEach((indexSummary) {
           if (indexSummary != null) {
@@ -1911,7 +1918,7 @@ class _ScreenSearchMarketState extends BaseStateNoTabsWithParentTab<
 
             if (StringUtils.equalsIgnoreCase(indexSummary.code, 'COMPOSITE')) {
               if (mounted) {
-                _compositeNotifier.setData(indexSummary);
+                _compositeNotifier?.setData(indexSummary);
               }
 
               // PerformanceData newPD = PerformanceData();
@@ -1970,23 +1977,23 @@ class _ScreenSearchMarketState extends BaseStateNoTabsWithParentTab<
     bool isIntradayChart = StringUtils.isEmtpy(_selectedChartFrom) ||
         StringUtils.isEmtpy(_selectedChartTo);
 
-    int inSeconds = lastChartUpdate == null
+    int? inSeconds = lastChartUpdate == null
         ? -1
-        : DateTime.now().difference(lastChartUpdate).inSeconds;
+        : DateTime.now().difference(lastChartUpdate!).inSeconds;
 
     if (lastChartUpdate == null || (isIntradayChart && inSeconds > 10)) {
       lastChartUpdate = DateTime.now();
       print('Requesting chartCandle update  at ' + lastChartUpdate.toString());
 
-      final chartCandle = await InvestrendTheme.datafeedHttp.fetchChartOhlcv(
-          'COMPOSITE', true,
-          from: _selectedChartFrom, to: _selectedChartTo);
+      final ChartOhlcvData chartCandle = await InvestrendTheme.datafeedHttp
+          .fetchChartOhlcv('COMPOSITE', true,
+              from: _selectedChartFrom, to: _selectedChartTo);
       if (chartCandle != null &&
           chartCandle.isValidResponse(
               'COMPOSITE', _selectedChartFrom, _selectedChartTo)) {
         bool intraday = _chartRangeNotifier.value == 0;
-        if (_compositeNotifier.value != null && intraday) {
-          chartCandle.setPrev(_compositeNotifier.value.prev);
+        if (_compositeNotifier?.value != null && intraday) {
+          chartCandle.setPrev(_compositeNotifier?.value?.prev);
         }
 
         chartCandle.normalize(middlePrev: intraday);
@@ -2009,9 +2016,9 @@ class _ScreenSearchMarketState extends BaseStateNoTabsWithParentTab<
 
       print('Requesting chartLine update  at ' + lastChartUpdate.toString());
 
-      final chartLine = await InvestrendTheme.datafeedHttp.fetchChartLine(
-          'COMPOSITE', true,
-          from: _selectedChartFrom, to: _selectedChartTo);
+      final ChartLineData? chartLine = await InvestrendTheme.datafeedHttp
+          .fetchChartLine('COMPOSITE', true,
+              from: _selectedChartFrom, to: _selectedChartTo);
       if (chartLine != null &&
           chartLine.isValidResponse(
               'COMPOSITE', _selectedChartFrom, _selectedChartTo)) {
@@ -2020,9 +2027,9 @@ class _ScreenSearchMarketState extends BaseStateNoTabsWithParentTab<
         // }
 
         bool intraday = _chartRangeNotifier.value == 0;
-        if (_compositeNotifier.value != null && intraday) {
+        if (_compositeNotifier?.value != null && intraday) {
           //chartLine.setPrev(_compositeNotifier.value.prev, middlePrev: intraday);
-          chartLine.setPrev(_compositeNotifier.value.prev);
+          chartLine.setPrev(_compositeNotifier?.value?.prev);
         }
         // harus di normalise
         chartLine.normalize(middlePrev: intraday);
@@ -2059,15 +2066,15 @@ class _ScreenSearchMarketState extends BaseStateNoTabsWithParentTab<
     setNotifierLoading(_chartOhlcvNotifier);
 
     try {
-      final chartCandle = await InvestrendTheme.datafeedHttp.fetchChartOhlcv(
-          'COMPOSITE', true,
-          from: _selectedChartFrom, to: _selectedChartTo);
+      final ChartOhlcvData? chartCandle = await InvestrendTheme.datafeedHttp
+          .fetchChartOhlcv('COMPOSITE', true,
+              from: _selectedChartFrom, to: _selectedChartTo);
       if (chartCandle != null &&
           chartCandle.isValidResponse(
               'COMPOSITE', _selectedChartFrom, _selectedChartTo)) {
         bool intraday = _chartRangeNotifier.value == 0;
-        if (_compositeNotifier.value != null && intraday) {
-          chartCandle.setPrev(_compositeNotifier.value.prev);
+        if (_compositeNotifier?.value != null && intraday) {
+          chartCandle.setPrev(_compositeNotifier?.value?.prev);
         }
         chartCandle.normalize(middlePrev: intraday);
         print('Future chartCandle DATA : ' + chartCandle.toString());
@@ -2103,16 +2110,16 @@ class _ScreenSearchMarketState extends BaseStateNoTabsWithParentTab<
     setNotifierLoading(_chartNotifier);
 
     try {
-      final chartLine = await InvestrendTheme.datafeedHttp.fetchChartLine(
-          'COMPOSITE', true,
-          from: _selectedChartFrom, to: _selectedChartTo);
+      final ChartLineData? chartLine = await InvestrendTheme.datafeedHttp
+          .fetchChartLine('COMPOSITE', true,
+              from: _selectedChartFrom, to: _selectedChartTo);
       if (chartLine != null &&
           chartLine.isValidResponse(
               'COMPOSITE', _selectedChartFrom, _selectedChartTo)) {
         bool intraday = _chartRangeNotifier.value == 0;
-        if (_compositeNotifier.value != null && intraday) {
+        if (_compositeNotifier?.value != null && intraday) {
           //chartLine.setPrev(_compositeNotifier.value.prev, middlePrev: intraday);
-          chartLine.setPrev(_compositeNotifier.value.prev);
+          chartLine.setPrev(_compositeNotifier?.value?.prev);
         }
         // harus di normalise
         chartLine.normalize(middlePrev: intraday);
@@ -2275,8 +2282,7 @@ class _ScreenSearchMarketState extends BaseStateNoTabsWithParentTab<
   }
 
   @override
-  Widget createAppBar(BuildContext context) {
-    // TODO: implement createAppBar
+  PreferredSizeWidget? createAppBar(BuildContext context) {
     return null;
   }
 }

@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_null_comparison
+
 import 'package:Investrend/component/button_order.dart';
 import 'package:Investrend/component/button_outlined_rounded.dart';
 import 'package:Investrend/objects/riverpod_change_notifier.dart';
@@ -13,7 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ScreenTransaction extends StatefulWidget {
-  const ScreenTransaction({Key key}) : super(key: key);
+  const ScreenTransaction({Key? key}) : super(key: key);
 
   @override
   _ScreenTransactionState createState() => _ScreenTransactionState();
@@ -30,23 +32,22 @@ class _ScreenTransactionState extends BaseStateWithTabs<
     'transaction_tabs_historical_title'.tr()
   ];
 
-  _ScreenTransactionState() : super("/transaction");
+  _ScreenTransactionState() : super("/transaction", null, null);
 
   //TabController _tabController;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     //_tabController = new TabController(vsync: this, length: tabs.length);
     timeCreation = DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.now());
     final container = ProviderContainer();
     initialIndex = container.read(mainMenuChangeNotifier).subTabTransaction;
     print('ScreenTransaction.didChangeDependencies : $initialIndex');
-    pTabController.addListener(() {});
-    pTabController.index = 0;
+    pTabController?.addListener(() {});
+    pTabController?.index = 0;
   }
 
-  Widget createAppBar(BuildContext context) {
+  PreferredSizeWidget? createAppBar(BuildContext context) {
     return null;
   }
 
@@ -96,7 +97,7 @@ class _ScreenTransactionState extends BaseStateWithTabs<
                 'transaction_button_fast_order'.tr(),
                 style: InvestrendTheme.of(context)
                     .small_w400_compact
-                    .copyWith(color: Theme.of(context).colorScheme.secondary),
+                    ?.copyWith(color: Theme.of(context).colorScheme.secondary),
               ),
               onPressed: () {}),
           SizedBox(
@@ -204,7 +205,7 @@ class _ScreenTransactionState extends BaseStateWithTabs<
     );
   }
 
-  int initialIndex = 0;
+  int? initialIndex = 0;
 
   /*
   @override
@@ -221,7 +222,7 @@ class _ScreenTransactionState extends BaseStateWithTabs<
   }
   */
 
-  VoidCallback menuChangeListener;
+  VoidCallback? menuChangeListener;
 
   @override
   void didChangeDependencies() {
@@ -230,7 +231,7 @@ class _ScreenTransactionState extends BaseStateWithTabs<
     print('ScreenTransaction.didChangeDependencies : $initialIndex');
 
     if (menuChangeListener != null) {
-      context.read(mainMenuChangeNotifier).removeListener(menuChangeListener);
+      context.read(mainMenuChangeNotifier).removeListener(menuChangeListener!);
     } else {
       //if (menuChangeListener == null) {
       menuChangeListener = () {
@@ -246,21 +247,21 @@ class _ScreenTransactionState extends BaseStateWithTabs<
         }
         Tabs mainTab = context.read(mainMenuChangeNotifier).mainTab;
         if (mainTab == Tabs.Transaction) {
-          int subTab = context.read(mainMenuChangeNotifier).subTabTransaction;
+          int? subTab = context.read(mainMenuChangeNotifier).subTabTransaction;
           /*
           int currentTab = DefaultTabController.of(context).index;
           if(subTab != currentTab){
             DefaultTabController.of(context).animateTo(subTab);
           }
           */
-          int currentTab = pTabController.index;
+          int? currentTab = pTabController?.index;
           if (subTab != currentTab) {
-            pTabController.index = subTab;
+            pTabController?.index = subTab!;
           }
         }
       };
     }
-    context.read(mainMenuChangeNotifier).addListener(menuChangeListener);
+    context.read(mainMenuChangeNotifier).addListener(menuChangeListener!);
   }
 
   @override
@@ -268,7 +269,9 @@ class _ScreenTransactionState extends BaseStateWithTabs<
     final container = ProviderContainer();
     //context.read(mainMenuChangeNotifier).removeListener(menuChangeListener);
     if (menuChangeListener != null) {
-      container.read(mainMenuChangeNotifier).removeListener(menuChangeListener);
+      container
+          .read(mainMenuChangeNotifier)
+          .removeListener(menuChangeListener!);
     }
 
     //_tabController.dispose();
@@ -276,7 +279,7 @@ class _ScreenTransactionState extends BaseStateWithTabs<
   }
 
   @override
-  Widget createTabs(BuildContext context) {
+  PreferredSizeWidget createTabs(BuildContext context) {
     bool hasAccount =
         context.read(dataHolderChangeNotifier).user.accountSize() > 0;
     if (!hasAccount) {
@@ -325,7 +328,7 @@ class _ScreenTransactionState extends BaseStateWithTabs<
                   if (value == null) {
                     print('result finder = null');
                   } else if (value is Stock) {
-                    print('result finder = ' + value.code);
+                    print('result finder = ' + value.code!);
                     //InvestrendTheme.of(context).stockNotifier.setStock(value);
 
                     context.read(primaryStockChangeNotifier).setStock(value);
@@ -351,7 +354,7 @@ class _ScreenTransactionState extends BaseStateWithTabs<
                         ));
                     */
                   } else if (value is People) {
-                    print('result finder = ' + value.name);
+                    print('result finder = ' + value.name!);
                   }
                 });
 
@@ -374,12 +377,8 @@ class _ScreenTransactionState extends BaseStateWithTabs<
   }
 
   @override
-  void onActive() {
-    // TODO: implement onActive
-  }
+  void onActive() {}
 
   @override
-  void onInactive() {
-    // TODO: implement onInactive
-  }
+  void onInactive() {}
 }

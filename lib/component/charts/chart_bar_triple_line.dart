@@ -1,3 +1,4 @@
+/*
 import 'package:Investrend/component/chart_series_legend.dart';
 import 'package:Investrend/component/charts/chart_color.dart';
 import 'package:Investrend/component/charts/year_value.dart';
@@ -267,4 +268,4 @@ class ChartBarTripleLine extends StatelessWidget {
   }
 
 }
-
+*/

@@ -1,18 +1,15 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+// import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:Investrend/main_application.dart';
 import 'package:flutter/material.dart';
 import 'package:visibility_aware_state/visibility_aware_state.dart';
 
-
-
-
-
 class ScreenAware extends StatefulWidget {
-  final Widget child;
-  final Function() onInactive;
-  final Function() onActive;
-  final String routeName;
-  ScreenAware({this.child, this.onActive, this.onInactive, @required this.routeName});
+  final Widget? child;
+  final Function()? onInactive;
+  final Function()? onActive;
+  final String? routeName;
+  ScreenAware(
+      {this.child, this.onActive, this.onInactive, @required this.routeName});
 
   @override
   State<StatefulWidget> createState() {
@@ -24,23 +21,24 @@ class ScreenAware extends StatefulWidget {
 class ScreenVisibilityState extends VisibilityAwareState<ScreenAware> {
   @override
   Widget build(BuildContext context) {
-    return widget.child;
+    return widget.child!;
   }
+
   void onLeaveScreen() {
     if (widget.onInactive != null) {
-      widget.onInactive();
+      widget.onInactive!();
     }
   }
+
   void onScreen() {
     if (widget.onActive != null) {
-      widget.onActive();
+      widget.onActive!();
     }
   }
 
   @override
   void onVisibilityChanged(WidgetVisibility visibility) {
-    // TODO: Use visibility
-    switch(visibility) {
+    switch (visibility) {
       case WidgetVisibility.VISIBLE:
         // Like Android's Activity.onResume()
         print('*** ScreenVisibility.VISIBLE: ${widget.routeName}');
@@ -58,34 +56,33 @@ class ScreenVisibilityState extends VisibilityAwareState<ScreenAware> {
         break;
     }
 
-
     super.onVisibilityChanged(visibility);
   }
 }
+
 class ScreenAwareState extends State<ScreenAware> with RouteAware {
   @override
   Widget build(BuildContext context) {
-    return widget.child;
+    return widget.child!;
   }
 
   void onLeaveScreen() {
     if (widget.onInactive != null) {
-      widget.onInactive();
+      widget.onInactive!();
     }
   }
+
   void onScreen() {
     if (widget.onActive != null) {
-      widget.onActive();
+      widget.onActive!();
     }
   }
-
-
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    MainApplication.routeObserver.subscribe(this, ModalRoute.of(context));
-
+    MainApplication.routeObserver
+        .subscribe(this, ModalRoute.of(context) as PageRoute);
   }
 
   @override
@@ -116,5 +113,4 @@ class ScreenAwareState extends State<ScreenAware> with RouteAware {
     print('*** ScreenAware.Going back to screen: ${widget.routeName}');
     onScreen();
   }
-
 }

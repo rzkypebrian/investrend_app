@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'package:Investrend/component/empty_label.dart';
 import 'package:Investrend/objects/data_object.dart';
 import 'package:Investrend/objects/riverpod_change_notifier.dart';
@@ -13,13 +15,16 @@ class ScreenProfileLinkedAccounts extends StatefulWidget {
   final TabController tabController;
   final int tabIndex;
 
-  ScreenProfileLinkedAccounts(this.tabIndex, this.tabController, {Key key}) : super(key: key);
+  ScreenProfileLinkedAccounts(this.tabIndex, this.tabController, {Key? key})
+      : super(key: key);
 
   @override
-  _ScreenProfileLinkedAccountsState createState() => _ScreenProfileLinkedAccountsState(tabIndex, tabController);
+  _ScreenProfileLinkedAccountsState createState() =>
+      _ScreenProfileLinkedAccountsState(tabIndex, tabController);
 }
 
-class _ScreenProfileLinkedAccountsState extends BaseStateNoTabsWithParentTab<ScreenProfileLinkedAccounts> {
+class _ScreenProfileLinkedAccountsState
+    extends BaseStateNoTabsWithParentTab<ScreenProfileLinkedAccounts> {
   // final SlidableController slidableController = SlidableController();
   // //PortfolioNotifier _portfolioNotifier = PortfolioNotifier(new PortfolioData());
   // StockPositionNotifier _stockPositionNotifier = StockPositionNotifier(new StockPosition('', 0, 0, 0, 0, 0, 0, List.empty(growable: true)));
@@ -30,10 +35,11 @@ class _ScreenProfileLinkedAccountsState extends BaseStateNoTabsWithParentTab<Scr
 
   // bool canTapRow = true;
   _ScreenProfileLinkedAccountsState(int tabIndex, TabController tabController)
-      : super('/profile_linked_accounts', tabIndex, tabController, parentTabIndex: Tabs.Portfolio.index);
+      : super('/profile_linked_accounts', tabIndex, tabController,
+            parentTabIndex: Tabs.Portfolio.index);
 
   @override
-  Widget createAppBar(BuildContext context) {
+  PreferredSizeWidget? createAppBar(BuildContext context) {
     return null;
   }
 
@@ -41,7 +47,8 @@ class _ScreenProfileLinkedAccountsState extends BaseStateNoTabsWithParentTab<Scr
 
   @override
   Widget createBody(BuildContext context, double paddingBottom) {
-    bool hasAccount = context.read(dataHolderChangeNotifier).user.accountSize() > 0;
+    bool hasAccount =
+        context.read(dataHolderChangeNotifier).user.accountSize() > 0;
     if (!hasAccount) {
       return Center(
         child: Padding(
@@ -55,7 +62,8 @@ class _ScreenProfileLinkedAccountsState extends BaseStateNoTabsWithParentTab<Scr
     return ValueListenableBuilder(
       valueListenable: _selectedListNotifier,
       builder: (context, value, child) {
-        int itemCount = context.read(dataHolderChangeNotifier).user.accountSize();
+        int itemCount =
+            context.read(dataHolderChangeNotifier).user.accountSize();
 
         return ListView.builder(
             controller: pScrollController,
@@ -67,8 +75,9 @@ class _ScreenProfileLinkedAccountsState extends BaseStateNoTabsWithParentTab<Scr
                 bottom: InvestrendTheme.cardPaddingVertical),
             itemCount: itemCount,
             itemBuilder: (BuildContext context, int index) {
-              Account account = context.read(dataHolderChangeNotifier).user.getAccount(index);
-              return createCardAccount(context, account, index, value);
+              Account? account =
+                  context.read(dataHolderChangeNotifier).user.getAccount(index);
+              return createCardAccount(context, account!, index, value as int);
             });
       },
     );
@@ -80,40 +89,72 @@ class _ScreenProfileLinkedAccountsState extends BaseStateNoTabsWithParentTab<Scr
   static final Color colorRegulerDetail = Color(0xFFebe6f2);
   static final Color colorMarginDetail = Color(0xFFf0cac9);
 
-  Widget rowDetail(BuildContext context, String label, String value){
+  Widget rowDetail(BuildContext context, String label, String value) {
     return Padding(
       padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
       child: Row(
         children: [
-          Text(label, style: InvestrendTheme.of(context).support_w400_compact.copyWith(color: InvestrendTheme.blackTextColor),),
-          Expanded( flex:1,child: Text(value, style: InvestrendTheme.of(context).support_w600_compact.copyWith(color: InvestrendTheme.blackTextColor), textAlign: TextAlign.right,))
+          Text(
+            label,
+            style: InvestrendTheme.of(context)
+                .support_w400_compact
+                ?.copyWith(color: InvestrendTheme.blackTextColor),
+          ),
+          Expanded(
+              flex: 1,
+              child: Text(
+                value,
+                style: InvestrendTheme.of(context)
+                    .support_w600_compact
+                    ?.copyWith(color: InvestrendTheme.blackTextColor),
+                textAlign: TextAlign.right,
+              ))
         ],
       ),
     );
   }
 
-  Widget createCardAccount(BuildContext context, Account account, final int itemIndex, int selectedIndex) {
+  Widget createCardAccount(BuildContext context, Account account,
+      final int itemIndex, int selectedIndex) {
     Color cardColor = StringUtils.equalsIgnoreCase(account.type, 'R')
         ? colorReguler
-        : (StringUtils.equalsIgnoreCase(account.type, 'M') ? colorMargin : Color(0xFFffd085));
+        : (StringUtils.equalsIgnoreCase(account.type, 'M')
+            ? colorMargin
+            : Color(0xFFffd085));
 
     Color cardColorDetail = StringUtils.equalsIgnoreCase(account.type, 'R')
         ? colorRegulerDetail
-        : (StringUtils.equalsIgnoreCase(account.type, 'M') ? colorMarginDetail : Color(0xFFfaf1e3));
+        : (StringUtils.equalsIgnoreCase(account.type, 'M')
+            ? colorMarginDetail
+            : Color(0xFFfaf1e3));
 
     String accountType = StringUtils.equalsIgnoreCase(account.type, 'R')
         ? 'Regular'
-        : (StringUtils.equalsIgnoreCase(account.type, 'M') ? 'Margin' : account.type);
-    TextStyle styleTitle = InvestrendTheme.of(context).medium_w400_compact.copyWith(color: InvestrendTheme.of(context).textWhite);
-    TextStyle styleTitle600 = InvestrendTheme.of(context).medium_w600_compact.copyWith(color: InvestrendTheme.of(context).textWhite);
-    TextStyle styleReguler = InvestrendTheme.of(context).regular_w500_compact.copyWith(color: InvestrendTheme.of(context).textWhite);
-    TextStyle styleReguler600 = InvestrendTheme.of(context).regular_w600_compact.copyWith(color: InvestrendTheme.of(context).textWhite);
+        : (StringUtils.equalsIgnoreCase(account.type, 'M')
+            ? 'Margin'
+            : account.type);
+    TextStyle? styleTitle = InvestrendTheme.of(context)
+        .medium_w400_compact
+        ?.copyWith(color: InvestrendTheme.of(context).textWhite);
+    TextStyle? styleTitle600 = InvestrendTheme.of(context)
+        .medium_w600_compact
+        ?.copyWith(color: InvestrendTheme.of(context).textWhite);
+    TextStyle? styleReguler = InvestrendTheme.of(context)
+        .regular_w500_compact
+        ?.copyWith(color: InvestrendTheme.of(context).textWhite);
+    TextStyle? styleReguler600 = InvestrendTheme.of(context)
+        .regular_w600_compact
+        ?.copyWith(color: InvestrendTheme.of(context).textWhite);
 
-    TextStyle styleSupport = InvestrendTheme.of(context).support_w400_compact.copyWith(color: InvestrendTheme.of(context).textWhite);
-    TextStyle styleSupport600 = InvestrendTheme.of(context).support_w600_compact.copyWith(color: InvestrendTheme.of(context).textWhite);
+    TextStyle? styleSupport = InvestrendTheme.of(context)
+        .support_w400_compact
+        ?.copyWith(color: InvestrendTheme.of(context).textWhite);
+    TextStyle? styleSupport600 = InvestrendTheme.of(context)
+        .support_w600_compact
+        ?.copyWith(color: InvestrendTheme.of(context).textWhite);
 
     Widget bottom;
-    if(itemIndex == selectedIndex){
+    if (itemIndex == selectedIndex) {
       bottom = Container(
         //color: Colors.white,
         margin: EdgeInsets.only(top: InvestrendTheme.cardPadding),
@@ -121,7 +162,9 @@ class _ScreenProfileLinkedAccountsState extends BaseStateNoTabsWithParentTab<Scr
         decoration: BoxDecoration(
           color: cardColorDetail, //Theme.of(context).backgroundColor,
           border: Border.all(width: 1.0, color: cardColor),
-          borderRadius: BorderRadius.only(bottomLeft: Radius.circular(12.0), bottomRight: Radius.circular(12.0)),
+          borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(12.0),
+              bottomRight: Radius.circular(12.0)),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -132,20 +175,25 @@ class _ScreenProfileLinkedAccountsState extends BaseStateNoTabsWithParentTab<Scr
 
             //SizedBox(height: InvestrendTheme.cardPadding,),
             Padding(
-              padding: const EdgeInsets.only(top: InvestrendTheme.cardPadding, bottom: 4.0),
-              child: Text('RDN', style: InvestrendTheme.of(context).small_w600_compact.copyWith(color: InvestrendTheme.blackTextColor),),
+              padding: const EdgeInsets.only(
+                  top: InvestrendTheme.cardPadding, bottom: 4.0),
+              child: Text(
+                'RDN',
+                style: InvestrendTheme.of(context)
+                    .small_w600_compact
+                    ?.copyWith(color: InvestrendTheme.blackTextColor),
+              ),
             ),
             rowDetail(context, 'Bank', account.bank),
             rowDetail(context, 'No', account.acc_no),
 
             rowDetail(context, 'Name', account.acc_name),
-
           ],
         ),
       );
-    }else{
+    } else {
       bottom = Padding(
-        padding: EdgeInsets.only(left: 10.0 , right: 10.0),
+        padding: EdgeInsets.only(left: 10.0, right: 10.0),
         child: TextButton(
           onPressed: () {
             _selectedListNotifier.value = itemIndex;
@@ -154,7 +202,6 @@ class _ScreenProfileLinkedAccountsState extends BaseStateNoTabsWithParentTab<Scr
         ),
       );
     }
-
 
     return Container(
       // duration: Duration(milliseconds: 2000),
@@ -170,7 +217,10 @@ class _ScreenProfileLinkedAccountsState extends BaseStateNoTabsWithParentTab<Scr
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Padding(
-            padding: EdgeInsets.only(left: InvestrendTheme.cardPadding, right: InvestrendTheme.cardPadding, top: InvestrendTheme.cardPadding),
+            padding: EdgeInsets.only(
+                left: InvestrendTheme.cardPadding,
+                right: InvestrendTheme.cardPadding,
+                top: InvestrendTheme.cardPadding),
             child: Row(
               children: [
                 Image.asset(
@@ -197,11 +247,12 @@ class _ScreenProfileLinkedAccountsState extends BaseStateNoTabsWithParentTab<Scr
               ],
             ),
           ),
-
           Container(
             //height: 50.0,
             alignment: Alignment.centerRight,
-            padding: EdgeInsets.only(left: InvestrendTheme.cardPadding + 10.0, right: InvestrendTheme.cardPadding + 10.0),
+            padding: EdgeInsets.only(
+                left: InvestrendTheme.cardPadding + 10.0,
+                right: InvestrendTheme.cardPadding + 10.0),
             child: Text(
               account.acc_name,
               style: styleTitle,

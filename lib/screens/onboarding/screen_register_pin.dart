@@ -13,7 +13,10 @@ class ScreenRegisterPin extends StatefulWidget {
   final String password;
   final String nextPage;
 
-  const ScreenRegisterPin(this.username,this.email,this.password,this.nextPage, {Key key}) : super(key: key);
+  const ScreenRegisterPin(
+      this.username, this.email, this.password, this.nextPage,
+      {Key? key})
+      : super(key: key);
 
   @override
   _ScreenRegisterPinState createState() => _ScreenRegisterPinState();
@@ -28,11 +31,11 @@ class _ScreenRegisterPinState extends State<ScreenRegisterPin> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     focusNode.dispose();
     fieldPinController.dispose();
     super.dispose();
   }
+
   @override
   void initState() {
     super.initState();
@@ -66,14 +69,25 @@ class _ScreenRegisterPinState extends State<ScreenRegisterPin> {
 
     }
     */
-    Future reply = InvestrendTheme.tradingHttp.registerPin(widget.username, fieldPinController.text,
-        InvestrendTheme.of(context).applicationPlatform, InvestrendTheme.of(context).applicationVersion);
+    Future reply = InvestrendTheme.tradingHttp.registerPin(
+        widget.username,
+        fieldPinController.text,
+        InvestrendTheme.of(context).applicationPlatform,
+        InvestrendTheme.of(context).applicationVersion);
     reply.then((value) {
       if (value != null) {
         if (value.isSuccess()) {
-          if(StringUtils.equalsIgnoreCase(widget.nextPage, 'login')){
-            InvestrendTheme.pushReplacement(context, ScreenLogin(initialUser: value.username, initialEmail:value.email, initialPassword: widget.password,), ScreenTransition.Fade, '/login');
-          }else{
+          if (StringUtils.equalsIgnoreCase(widget.nextPage, 'login')) {
+            InvestrendTheme.pushReplacement(
+                context,
+                ScreenLogin(
+                  initialUser: value.username,
+                  initialEmail: value.email,
+                  initialPassword: widget.password,
+                ),
+                ScreenTransition.Fade,
+                '/login');
+          } else {
             //InvestrendTheme.pushReplacement(context, ScreenMain(), ScreenTransition.Fade, '/main');
             InvestrendTheme.showMainPage(context, ScreenTransition.Fade);
           }
@@ -96,17 +110,18 @@ class _ScreenRegisterPinState extends State<ScreenRegisterPin> {
         InvestrendTheme.of(context).showSnackBar(context, error.toString());
       }
       */
-      if(error is TradingHttpException){
-        if(error.isUnauthorized()){
+      if (error is TradingHttpException) {
+        if (error.isUnauthorized()) {
           InvestrendTheme.of(context).showDialogInvalidSession(context);
-        }else if(error.isErrorTrading()){
+        } else if (error.isErrorTrading()) {
           InvestrendTheme.of(context).showSnackBar(context, error.message());
-        }else{
+        } else {
           String networkErrorLabel = 'network_error_label'.tr();
-          networkErrorLabel = networkErrorLabel.replaceFirst("#CODE#", error.code.toString());
+          networkErrorLabel =
+              networkErrorLabel.replaceFirst("#CODE#", error.code.toString());
           InvestrendTheme.of(context).showSnackBar(context, networkErrorLabel);
         }
-      }else{
+      } else {
         InvestrendTheme.of(context).showSnackBar(context, error.toString());
       }
     });
@@ -167,16 +182,23 @@ class _ScreenRegisterPinState extends State<ScreenRegisterPin> {
       */
     }
     fieldPinController.text = value;
-    fieldPinController.selection = TextSelection(baseOffset: value.length, extentOffset: value.length);
+    fieldPinController.selection =
+        TextSelection(baseOffset: value.length, extentOffset: value.length);
     if (StringUtils.isEmtpy(value) || value.length < 4) {
-      button = ComponentCreator.roundedButton(context, ' ', Colors.transparent, Colors.transparent, Colors.transparent, null,
+      button = ComponentCreator.roundedButton(context, ' ', Colors.transparent,
+          Colors.transparent, Colors.transparent, null,
           disabledColor: Colors.transparent);
     } else {
       button = ComponentCreator.roundedButton(
-          context, buttonText, Theme.of(context).colorScheme.secondary, InvestrendTheme.of(context).whiteColor, Theme.of(context).colorScheme.secondary, () {
+          context,
+          buttonText,
+          Theme.of(context).colorScheme.secondary,
+          InvestrendTheme.of(context).whiteColor,
+          Theme.of(context).colorScheme.secondary, () {
         if (showConfirmPin) {
           if (!StringUtils.equalsIgnoreCase(pin, confirmPin)) {
-            InvestrendTheme.of(context).showSnackBar(context, 'register_create_pin_error_label'.tr());
+            InvestrendTheme.of(context)
+                .showSnackBar(context, 'register_create_pin_error_label'.tr());
             return;
           }
           registerPin(pin);
@@ -218,7 +240,9 @@ class _ScreenRegisterPinState extends State<ScreenRegisterPin> {
               Spacer(
                 flex: 1,
               ),
-              Text(labelText.tr(), style: InvestrendTheme.of(context).regular_w600, textAlign: TextAlign.center),
+              Text(labelText.tr(),
+                  style: InvestrendTheme.of(context).regular_w600,
+                  textAlign: TextAlign.center),
               SizedBox(
                 height: 24.0,
               ),
@@ -239,30 +263,50 @@ class _ScreenRegisterPinState extends State<ScreenRegisterPin> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       value.length > 0
-                          ? Image.asset('images/icons/dot_purple.png', width: 20.0, height: 20.0)
-                          : Image.asset('images/icons/dot_gray.png', width: 20.0, height: 20.0),
+                          ? Image.asset('images/icons/dot_purple.png',
+                              width: 20.0, height: 20.0)
+                          : Image.asset('images/icons/dot_gray.png',
+                              width: 20.0, height: 20.0),
                       value.length > 1
-                          ? Image.asset('images/icons/dot_purple.png', width: 20.0, height: 20.0)
-                          : Image.asset('images/icons/dot_gray.png', width: 20.0, height: 20.0),
+                          ? Image.asset('images/icons/dot_purple.png',
+                              width: 20.0, height: 20.0)
+                          : Image.asset('images/icons/dot_gray.png',
+                              width: 20.0, height: 20.0),
                       value.length > 2
-                          ? Image.asset('images/icons/dot_purple.png', width: 20.0, height: 20.0)
-                          : Image.asset('images/icons/dot_gray.png', width: 20.0, height: 20.0),
+                          ? Image.asset('images/icons/dot_purple.png',
+                              width: 20.0, height: 20.0)
+                          : Image.asset('images/icons/dot_gray.png',
+                              width: 20.0, height: 20.0),
                       value.length > 3
-                          ? Image.asset('images/icons/dot_purple.png', width: 20.0, height: 20.0)
-                          : Image.asset('images/icons/dot_gray.png', width: 20.0, height: 20.0),
+                          ? Image.asset('images/icons/dot_purple.png',
+                              width: 20.0, height: 20.0)
+                          : Image.asset('images/icons/dot_gray.png',
+                              width: 20.0, height: 20.0),
                     ],
                   ),
                   TextField(
                     focusNode: focusNode,
                     decoration: InputDecoration(
-                      border: UnderlineInputBorder(borderSide: BorderSide(color: Colors.transparent, width: 1.0)),
-                      focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.transparent, width: 2.0)),
+                      border: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                              color: Colors.transparent, width: 1.0)),
+                      focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                              color: Colors.transparent, width: 2.0)),
                       focusColor: Colors.transparent,
                       labelStyle: TextStyle(color: Colors.transparent),
-                      prefixStyle: InvestrendTheme.of(context).inputPrefixStyle.copyWith(color: Colors.transparent),
-                      hintStyle: InvestrendTheme.of(context).inputHintStyle.copyWith(color: Colors.transparent),
-                      helperStyle: InvestrendTheme.of(context).inputHelperStyle.copyWith(color: Colors.transparent),
-                      errorStyle: InvestrendTheme.of(context).inputErrorStyle.copyWith(color: Colors.transparent),
+                      prefixStyle: InvestrendTheme.of(context)
+                          .inputPrefixStyle
+                          ?.copyWith(color: Colors.transparent),
+                      hintStyle: InvestrendTheme.of(context)
+                          .inputHintStyle
+                          ?.copyWith(color: Colors.transparent),
+                      helperStyle: InvestrendTheme.of(context)
+                          .inputHelperStyle
+                          ?.copyWith(color: Colors.transparent),
+                      errorStyle: InvestrendTheme.of(context)
+                          .inputErrorStyle
+                          ?.copyWith(color: Colors.transparent),
                       fillColor: Colors.transparent,
                       hoverColor: Colors.transparent,
                       counter: SizedBox(

@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable, unnecessary_null_comparison, non_constant_identifier_names
+
 import 'dart:async';
 
 import 'package:Investrend/component/avatar.dart';
@@ -32,27 +34,27 @@ import 'package:Investrend/utils/utils.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
+// import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
-import 'package:reorderables/reorderables.dart';
+// import 'package:reorderables/reorderables.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:Investrend/component/card_data_with_filter.dart';
 
 class ScreenStockDetailOverview extends StatefulWidget {
   final TabController tabController;
   final int tabIndex;
-  final ValueNotifier<bool> visibilityNotifier;
+  final ValueNotifier<bool>? visibilityNotifier;
 
   ScreenStockDetailOverview(this.tabIndex, this.tabController,
-      {Key key, this.visibilityNotifier})
+      {Key? key, this.visibilityNotifier})
       : super(key: key);
 
   @override
   _ScreenStockDetailOverviewState createState() =>
       _ScreenStockDetailOverviewState(tabIndex, tabController,
-          visibilityNotifier: visibilityNotifier);
+          visibilityNotifier: visibilityNotifier!);
 }
 
 //final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
@@ -73,21 +75,21 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
   ChangeNotifier onDoUpdate = ChangeNotifier();
   ValueNotifier<bool> animateSpecialNotationNotifier =
       ValueNotifier<bool>(true);
-  YourPositionNotifer _yourPositionNotifer =
+  YourPositionNotifer? _yourPositionNotifer =
       YourPositionNotifer(YourPosition());
 
   String _selectedChartFrom = '';
   String _selectedChartTo = '';
-  DateTime lastChartUpdate;
-  DateTime lastPositionUpdate;
+  DateTime? lastChartUpdate;
+  DateTime? lastPositionUpdate;
   int maxPositionSeconds = 10;
   bool showOptionRelated = false;
-  GroupStyle groupStyle = GroupStyle();
+  GroupStyle? groupStyle = GroupStyle();
   bool candleChart = true;
   bool checkedValue = true;
 
   //update filter and orderable
-  List<LabelValueColor> listLeft;
+  List<LabelValueColor>? listLeft;
   List<SortAndFilterModel> listOverview = [
     SortAndFilterModel(
       name: "Previous",
@@ -164,7 +166,7 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
   // bool active = false;
 
   _ScreenStockDetailOverviewState(int tabIndex, TabController tabController,
-      {ValueNotifier<bool> visibilityNotifier})
+      {ValueNotifier<bool>? visibilityNotifier})
       : super('/stock_detail_overview', tabIndex, tabController,
             notifyStockChange: true, visibilityNotifier: visibilityNotifier);
 
@@ -176,26 +178,26 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
         .read(stockDetailScreenVisibilityChangeNotifier)
         .setActive(tabIndex, true);
     attentionCodes = context.read(remark2Notifier).getSpecialNotationCodes(
-        context.read(primaryStockChangeNotifier).stock.code);
+        context.read(primaryStockChangeNotifier).stock?.code);
     notation = context.read(remark2Notifier).getSpecialNotation(
-        context.read(primaryStockChangeNotifier).stock.code);
+        context.read(primaryStockChangeNotifier).stock?.code);
     status = context.read(remark2Notifier).getSpecialNotationStatus(
-        context.read(primaryStockChangeNotifier).stock.code);
+        context.read(primaryStockChangeNotifier).stock?.code);
     suspendStock = context.read(suspendedStockNotifier).getSuspended(
-        context.read(primaryStockChangeNotifier).stock.code,
-        context.read(primaryStockChangeNotifier).stock.defaultBoard);
+        context.read(primaryStockChangeNotifier).stock?.code,
+        context.read(primaryStockChangeNotifier).stock!.defaultBoard);
     if (suspendStock != null) {
       status = StockInformationStatus.Suspended;
     }
     corporateAction = context
         .read(corporateActionEventNotifier)
-        .getEvent(context.read(primaryStockChangeNotifier).stock.code);
+        .getEvent(context.read(primaryStockChangeNotifier).stock?.code);
     corporateActionColor = CorporateActionEvent.getColor(corporateAction);
     doUpdate(pullToRefresh: true);
     startTimer();
 
     unsubscribe(context, 'onActive');
-    Stock stock = context.read(primaryStockChangeNotifier).stock;
+    Stock? stock = context.read(primaryStockChangeNotifier).stock;
     subscribe(context, stock, 'onActive');
 
     // runPostFrame((){
@@ -210,7 +212,7 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
   }
 
   void startTimer() {
-    if (timer == null || !timer.isActive) {
+    if (timer == null || !timer!.isActive) {
       timer = Timer.periodic(durationUpdate, (timer) {
         if (active) {
           /* 2021-10-08 MOVING to Streaming
@@ -224,10 +226,10 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
   }
 
   void stopTimer() {
-    if (timer == null || !timer.isActive) {
+    if (timer == null || !timer!.isActive) {
       return;
     }
-    timer.cancel();
+    timer?.cancel();
     timer = null;
   }
 
@@ -244,7 +246,7 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
   // Stock stock = context.read(primaryStockChangeNotifier).stock;
   // subscribe(context, stock);
   //Future<List<IndexSummary>> indexSummarys;
-  Timer timer;
+  Timer? timer;
 
   // bool active = true;
 
@@ -286,14 +288,14 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
   }
 
   // harus set notifyStockChange = true saat constructor super class
-  void onStockChanged(Stock newStock) {
+  void onStockChanged(Stock? newStock) {
     super.onStockChanged(newStock);
     // ini dipertanyakan, dipindahin  ke StockDetail aja di parent nya
     //context.read(stockSummaryChangeNotifier).setData(null);
 
     _orderbookNotifier.setValue(null);
     _researchRankNotifier.setValue(null);
-    _yourPositionNotifer.setValue(null);
+    _yourPositionNotifer?.setValue(null);
     _chartNotifier.setValue(null);
     _chartOhlcvNotifier.setValue(null);
     lastChartUpdate = null;
@@ -304,8 +306,8 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
       //Stock stock = context.read(primaryStockChangeNotifier).stock;
       subscribe(context, newStock, 'onStockChanged');
 
-      List<Stock> relatedStock =
-          InvestrendTheme.storedData.getRelatedStock(newStock.code);
+      List<Stock>? relatedStock =
+          InvestrendTheme.storedData?.getRelatedStock(newStock.code);
       showOptionRelated = relatedStock != null && relatedStock.length > 1;
 
       attentionCodes =
@@ -330,7 +332,7 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
       doUpdate(pullToRefresh: true);
 
       if (groupStyle != null) {
-        groupStyle.reset();
+        groupStyle?.reset();
       }
     } else {
       showOptionRelated = false;
@@ -378,7 +380,7 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
       context.read(primaryStockChangeNotifier).addListener(stockChangeListener);
     // }
     */
-    if (timer == null || !timer.isActive) {
+    if (timer == null || !timer!.isActive) {
       timer = Timer.periodic(durationUpdate, (timer) {
         if (active) {
           doUpdate();
@@ -396,7 +398,7 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
   void dispose() {
     print('ScreenStockDetailOverview.dispose');
     onDoUpdate.dispose();
-    _yourPositionNotifer.dispose();
+    _yourPositionNotifer?.dispose();
     _chartRangeNotifier.dispose();
     _orderbookNotifier.dispose();
     showMoreTradeBookNotifier.dispose();
@@ -405,7 +407,7 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
     //container.read(primaryStockChangeNotifier).removeListener(stockChangeListener);
     _chartNotifier.dispose();
     _chartOhlcvNotifier.dispose();
-    if (timer != null) timer.cancel();
+    if (timer != null) timer?.cancel();
 
     final container = ProviderContainer();
     container
@@ -414,7 +416,7 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
     if (subscribeOrderbook != null) {
       container
           .read(managerDatafeedNotifier)
-          .unsubscribe(subscribeOrderbook, 'dispose');
+          .unsubscribe(subscribeOrderbook!, 'dispose');
     }
     super.dispose();
   }
@@ -426,7 +428,7 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
         if (notifier.invalid()) {
           return Center(child: CircularProgressIndicator());
         }
-        if (notifier.stock.isAccelerationBoard()) {
+        if (notifier.stock!.isAccelerationBoard()) {
           return Container(
             margin: const EdgeInsets.only(
               top: InvestrendTheme.cardPadding,
@@ -438,7 +440,7 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
             // color: InvestrendTheme.accelerationBackground,
             child: Text(
               'stock_detail_overview_card_detail_special_notation'.tr(),
-              style: InvestrendTheme.of(context).support_w400_compact.copyWith(
+              style: InvestrendTheme.of(context).support_w400_compact?.copyWith(
                   color: InvestrendTheme.of(context).accelerationTextColor),
               textAlign: TextAlign.center,
             ),
@@ -545,7 +547,7 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
               name: 'Previous',
               data: LabelValueColor(
                 'Previous',
-                InvestrendTheme.formatPrice(notifier.summary.prev),
+                InvestrendTheme.formatPrice(notifier.summary!.prev!),
                 color: InvestrendTheme.yellowText,
               ),
             ),
@@ -553,15 +555,15 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
               name: 'Turnover',
               data: LabelValueColor(
                 'Turnover',
-                InvestrendTheme.formatValue(context, notifier.summary.value),
+                InvestrendTheme.formatValue(context, notifier.summary!.value!),
               ),
             ),
             CardDataWithFilterModel<LabelValueColor>(
               name: 'Open',
               data: LabelValueColor(
                 'Open',
-                InvestrendTheme.formatPrice(notifier.summary.open),
-                color: notifier.summary.openColor(),
+                InvestrendTheme.formatPrice(notifier.summary!.open!),
+                color: notifier.summary!.openColor(),
               ),
             ),
             CardDataWithFilterModel<LabelValueColor>(
@@ -569,15 +571,15 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
               data: LabelValueColor(
                 'Lot',
                 InvestrendTheme.formatValue(
-                    context, notifier.summary.volume ~/ 100),
+                    context, notifier.summary!.volume! ~/ 100),
               ),
             ),
             CardDataWithFilterModel<LabelValueColor>(
               name: 'Low',
               data: LabelValueColor(
                 'Low',
-                InvestrendTheme.formatPrice(notifier.summary.low),
-                color: notifier.summary.lowColor(),
+                InvestrendTheme.formatPrice(notifier.summary!.low!),
+                color: notifier.summary!.lowColor(),
               ),
             ),
             CardDataWithFilterModel<LabelValueColor>(
@@ -585,48 +587,49 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
               data: LabelValueColor(
                 'Market Cap',
                 InvestrendTheme.formatValue(
-                    context, notifier.summary.marketCap),
+                    context, notifier.summary!.marketCap!),
               ),
             ),
             CardDataWithFilterModel<LabelValueColor>(
               name: 'High',
               data: LabelValueColor(
                 'High',
-                InvestrendTheme.formatPrice(notifier.summary.hi),
-                color: notifier.summary.hiColor(),
+                InvestrendTheme.formatPrice(notifier.summary!.hi!),
+                color: notifier.summary!.hiColor(),
               ),
             ),
             CardDataWithFilterModel<LabelValueColor>(
               name: 'P/E',
-              data: LabelValueColor('P/E', notifier.summary.PE),
+              data: LabelValueColor('P/E', notifier.summary!.PE),
             ),
             CardDataWithFilterModel<LabelValueColor>(
               name: 'VWAP',
               data: LabelValueColor(
                 'VWAP' /*'Avg. Price'*/,
                 InvestrendTheme.formatPrice(
-                  notifier.summary.averagePrice.toInt(),
+                  notifier.summary!.averagePrice!.toInt(),
                 ),
-                color: notifier.summary.averagePriceColor(),
+                color: notifier.summary!.averagePriceColor(),
               ),
             ),
             CardDataWithFilterModel<LabelValueColor>(
               name: 'YTD (%)',
               data: LabelValueColor(
                 'YTD (%)',
-                InvestrendTheme.formatPercentChange(notifier.summary.returnYTD),
-                color:
-                    InvestrendTheme.changeTextColor(notifier.summary.returnYTD),
+                InvestrendTheme.formatPercentChange(
+                    notifier.summary!.returnYTD!),
+                color: InvestrendTheme.changeTextColor(
+                    notifier.summary!.returnYTD!),
               ),
             ),
             CardDataWithFilterModel<LabelValueColor>(
               name: 'IEP',
               data: LabelValueColor(
                 'IEP',
-                notifier.summary.iep == 0
+                notifier.summary!.iep == 0
                     ? '-'
                     : InvestrendTheme.formatPrice(
-                        notifier.summary.iep.toInt(),
+                        notifier.summary!.iep!.toInt(),
                       ),
               ),
             ),
@@ -634,9 +637,10 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
               name: 'IEV (Lot)',
               data: LabelValueColor(
                 'IEV (Lot)',
-                notifier.summary.iev == 0
+                notifier.summary!.iev == 0
                     ? '-'
-                    : InvestrendTheme.formatComma(notifier.summary.iev ~/ 100),
+                    : InvestrendTheme.formatComma(
+                        notifier.summary!.iev! ~/ 100),
               ),
             ),
           ],
@@ -756,16 +760,16 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
           SizedBox(
             height: 10.0,
           ),
-          ValueListenableBuilder<YourPosition>(
-              valueListenable: _yourPositionNotifer,
+          ValueListenableBuilder<YourPosition?>(
+              valueListenable: _yourPositionNotifer!,
               builder: (context, value, child) {
-                Widget noWigdet =
-                    _yourPositionNotifer.currentState.getNoWidget(onRetry: () {
+                Widget? noWigdet =
+                    _yourPositionNotifer?.currentState.getNoWidget(onRetry: () {
                   doUpdate(pullToRefresh: true);
                 });
                 if (noWigdet != null &&
-                    (_yourPositionNotifer.currentState.isLoading() ||
-                        _yourPositionNotifer.currentState.isError())) {
+                    (_yourPositionNotifer!.currentState.isLoading() ||
+                        _yourPositionNotifer!.currentState.isError())) {
                   return Container(
                       width: double.maxFinite,
                       height: MediaQuery.of(context).size.width * 0.8,
@@ -773,34 +777,34 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
                 }
                 return getTableDataPosition1(
                     context,
-                    value.jumlahLot,
-                    value.averagePrice,
-                    value.marketValue,
-                    value.percentPortfolio);
+                    value?.jumlahLot,
+                    value?.averagePrice,
+                    value?.marketValue,
+                    value?.percentPortfolio);
               }),
           //getTableDataPosition1(context, jumlahLot, averagePrice, marketValue, percentPortfolio),
           //getTableDataPosition2(context),
           //WidgetReturns(3288000, 12.0, 20824000, 76.11),
           //WidgetReturns(todayReturnValue, todayReturnPercentage, totalReturnValue, totalReturnPercentage),
-          ValueListenableBuilder<YourPosition>(
-              valueListenable: _yourPositionNotifer,
+          ValueListenableBuilder<YourPosition?>(
+              valueListenable: _yourPositionNotifer!,
               builder: (context, value, child) {
-                Widget noWigdet =
-                    _yourPositionNotifer.currentState.getNoWidget(onRetry: () {
+                Widget? noWigdet =
+                    _yourPositionNotifer?.currentState.getNoWidget(onRetry: () {
                   doUpdate(pullToRefresh: true);
                 });
                 if (noWigdet != null &&
-                    (_yourPositionNotifer.currentState.isLoading() ||
-                        _yourPositionNotifer.currentState.isError())) {
+                    (_yourPositionNotifer!.currentState.isLoading() ||
+                        _yourPositionNotifer!.currentState.isError())) {
                   return SizedBox(
                     width: 1.0,
                   );
                 }
                 return WidgetReturns(
-                  value.todayReturnValue,
-                  value.todayReturnPercentage,
-                  value.totalReturnValue.truncate(),
-                  value.totalReturnPercentage,
+                  value?.todayReturnValue,
+                  value?.todayReturnPercentage,
+                  value?.totalReturnValue.truncate(),
+                  value?.totalReturnPercentage,
                   groupStyle: groupStyle,
                 );
               }),
@@ -810,17 +814,17 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
   }
 
   Widget createCardPositionNew(BuildContext context) {
-    return ValueListenableBuilder<YourPosition>(
-      valueListenable: _yourPositionNotifer,
+    return ValueListenableBuilder<YourPosition?>(
+      valueListenable: _yourPositionNotifer!,
       builder: (context, value, child) {
-        if (_yourPositionNotifer.currentState.isNoData() ||
-            _yourPositionNotifer.currentState.isLoading()) {
+        if (_yourPositionNotifer!.currentState.isNoData() ||
+            _yourPositionNotifer!.currentState.isLoading()) {
           return SizedBox(
             width: 1.0,
           );
         }
 
-        Widget noWigdet = _yourPositionNotifer.currentState.getNoWidget(
+        Widget? noWigdet = _yourPositionNotifer?.currentState.getNoWidget(
           onRetry: () {
             doUpdate(pullToRefresh: true);
           },
@@ -852,18 +856,18 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
           childs.add(
             getTableDataPosition1(
               context,
-              value.jumlahLot,
-              value.averagePrice,
-              value.marketValue,
-              value.percentPortfolio,
+              value?.jumlahLot,
+              value?.averagePrice,
+              value?.marketValue,
+              value?.percentPortfolio,
             ),
           );
           childs.add(
             WidgetReturns(
-              value.todayReturnValue,
-              value.todayReturnPercentage,
-              value.totalReturnValue.truncate(),
-              value.totalReturnPercentage,
+              value?.todayReturnValue,
+              value?.todayReturnPercentage,
+              value?.totalReturnValue.truncate(),
+              value?.totalReturnPercentage,
               groupStyle: groupStyle,
             ),
           );
@@ -953,8 +957,8 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
                 ),
                 AvatarListCompetition(
                   size: 25,
-                  participants_avatar: owners_avatar,
-                  total_participant: owners_avatar.length,
+                  participantsAvatar: owners_avatar,
+                  totalParticipant: owners_avatar.length,
                   showCountingNumber: false,
                 ),
                 SizedBox(
@@ -1080,7 +1084,7 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
                               2),
                       child: Text(
                         'Rating',
-                        style: Theme.of(context).textTheme.bodyText2.copyWith(
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             color:
                                 InvestrendTheme.of(context).blackAndWhiteText,
                             fontWeight: FontWeight.bold),
@@ -1099,7 +1103,7 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
                               2),
                       child: Text(
                         'What Wall St. analysts suggest for this stock',
-                        style: Theme.of(context).textTheme.bodyText2.copyWith(
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             color: InvestrendTheme.of(context)
                                 .greyLighterTextColor),
                       ),
@@ -1203,7 +1207,7 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
           text,
           maxLines: 2,
           textAlign: TextAlign.left,
-          style: InvestrendTheme.of(context).small_w400.copyWith(
+          style: InvestrendTheme.of(context).small_w400?.copyWith(
               color: InvestrendTheme.of(context).greyLighterTextColor),
         ),
       );
@@ -1217,7 +1221,7 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
           text,
           maxLines: 2,
           textAlign: TextAlign.right,
-          style: InvestrendTheme.of(context).small_w400.copyWith(
+          style: InvestrendTheme.of(context).small_w400?.copyWith(
               color: InvestrendTheme.of(context).greyLighterTextColor),
         ),
       );
@@ -1229,7 +1233,7 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
         child: Text(
           text,
           textAlign: TextAlign.center,
-          style: InvestrendTheme.of(context).small_w400.copyWith(
+          style: InvestrendTheme.of(context).small_w400?.copyWith(
               color: InvestrendTheme.of(context).greyLighterTextColor),
         ),
       );
@@ -1265,7 +1269,7 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
                   padding: const EdgeInsets.only(bottom: 3.0),
                   child: Text(
                     progress.toString(),
-                    style: Theme.of(context).textTheme.caption.copyWith(
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: InvestrendTheme.of(context)
                             .textWhite /*Colors.white*/),
                   ),
@@ -1319,7 +1323,7 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
                   padding: const EdgeInsets.only(bottom: 3.0),
                   child: Text(
                     progress.toString(),
-                    style: Theme.of(context).textTheme.caption.copyWith(
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: InvestrendTheme.of(context)
                             .textWhite /*Colors.white*/),
                   ),
@@ -1371,7 +1375,7 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
                   padding: const EdgeInsets.only(bottom: 3.0),
                   child: Text(
                     progress.toString(),
-                    style: Theme.of(context).textTheme.caption.copyWith(
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: InvestrendTheme.of(context)
                             .textWhite /*Colors.white*/),
                   ),
@@ -1421,7 +1425,7 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
   }
 
   void onPressedButtonImportantInformation(BuildContext context,
-      List<Remark2Mapping> notation, SuspendStock suspendStock) {
+      List<Remark2Mapping>? notation, SuspendStock? suspendStock) {
     List<Widget> childs = List.empty(growable: true);
     int count = notation == null ? 0 : notation.length;
     animateSpecialNotationNotifier.value = false;
@@ -1431,20 +1435,20 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
 
       DateFormat dateFormatter = DateFormat('EEEE, dd/MM/yyyy', 'id');
       DateFormat dateParser = DateFormat('yyyy-MM-dd');
-      DateTime dateTime = dateParser.parseUtc(suspendStock.date);
+      DateTime dateTime = dateParser.parseUtc(suspendStock.date!);
       print('dateTime : ' + dateTime.toString());
       //print('indexSummary.date : '+data.date+' '+data.time);
       String formatedDate = dateFormatter.format(dateTime);
       //String formatedTime = timeFormatter.format(dateTime);
       //infoSuspend = infoSuspend.replaceAll('#BOARD#', suspendStock.board);
       infoSuspend = infoSuspend.replaceAll('#DATE#', formatedDate);
-      infoSuspend = infoSuspend.replaceAll('#TIME#', suspendStock.time);
+      infoSuspend = infoSuspend.replaceAll('#TIME#', suspendStock.time!);
       //displayTime = infoTime;
       height += 25.0;
       childs.add(Padding(
         padding: const EdgeInsets.only(bottom: 5.0),
         child: Text(
-          'Suspended ' + suspendStock.board,
+          'Suspended ' + suspendStock.board!,
           style: InvestrendTheme.of(context).small_w600,
         ),
       ));
@@ -1500,14 +1504,14 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
         }
       }
       */
-      Remark2Mapping remark2 = notation.elementAt(i);
+      Remark2Mapping? remark2 = notation?.elementAt(i);
       if (remark2 != null) {
         if (remark2.isSurveilance()) {
           height += 35.0;
           childs.add(Padding(
             padding: const EdgeInsets.only(bottom: 15.0),
             child: Text(
-              remark2.code + ' : ' + remark2.value,
+              remark2.code! + ' : ' + remark2.value!,
               style: InvestrendTheme.of(context).small_w600,
             ),
           ));
@@ -1536,7 +1540,7 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
                       style: InvestrendTheme.of(context).small_w600,
                     ),
                     TextSpan(
-                      text: ' : ' + remark2.value,
+                      text: ' : ' + remark2.value!,
                       style: InvestrendTheme.of(context).small_w400,
                     )
                   ]),
@@ -1591,8 +1595,8 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
     print('onPressedButtonCorporateAction : ' + corporateAction.toString());
 
     List<Widget> childs = List.empty(growable: true);
-    if (corporateAction != null && corporateAction.isNotEmpty) {
-      corporateAction.forEach((ca) {
+    if (corporateAction != null && corporateAction!.isNotEmpty) {
+      corporateAction?.forEach((CorporateActionEvent? ca) {
         if (ca != null) {
           childs.add(Padding(
             padding: const EdgeInsets.only(bottom: 20),
@@ -1607,11 +1611,11 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
     }
   }
 
-  String attentionCodes;
-  List<Remark2Mapping> notation = List.empty(growable: true);
-  StockInformationStatus status;
-  SuspendStock suspendStock;
-  List<CorporateActionEvent> corporateAction = List.empty(growable: true);
+  String? attentionCodes;
+  List<Remark2Mapping>? notation = List.empty(growable: true);
+  StockInformationStatus? status;
+  SuspendStock? suspendStock;
+  List<CorporateActionEvent>? corporateAction = List.empty(growable: true);
   Color corporateActionColor = Colors.black;
 
   Widget createCardDetailStock(BuildContext context) {
@@ -1629,17 +1633,17 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
               return Center(child: CircularProgressIndicator());
             }
 
-            VoidCallback onImportantInformation;
-            if (notation.isNotEmpty || suspendStock != null) {
+            VoidCallback? onImportantInformation;
+            if (notation!.isNotEmpty || suspendStock != null) {
               onImportantInformation = () =>
                   onPressedButtonImportantInformation(
-                      context, notation, suspendStock);
+                      context, notation, suspendStock!);
             }
-            TextStyle styleAttention = InvestrendTheme.of(context).headline3;
-            Size textSize = UIHelper.textSize('ABCD', styleAttention);
+            TextStyle? styleAttention = InvestrendTheme.of(context).headline3;
+            Size textSize = UIHelper.textSize('ABCD', styleAttention!);
             String attentionCodes = context
                 .read(remark2Notifier)
-                .getSpecialNotationCodes(notifier.stock.code);
+                .getSpecialNotationCodes(notifier.stock?.code);
 
             return Container(
               margin: const EdgeInsets.only(
@@ -1647,17 +1651,17 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
                   right: InvestrendTheme.cardPaddingGeneral,
                   top: InvestrendTheme.cardPadding),
               child: WidgetPrice(
-                notifier.stock.code,
-                notifier.stock.name,
-                notifier.summary.close.toDouble(),
-                notifier.summary.change.toDouble(),
-                notifier.summary.percentChange,
+                notifier.stock?.code,
+                notifier.stock?.name,
+                notifier.summary!.close!.toDouble(),
+                notifier.summary!.change!.toDouble(),
+                notifier.summary!.percentChange!,
                 false,
                 heroTag: 'trade_code',
                 onPressedButtonBoard:
                     showOptionRelated ? onPressedButtonStockRelated : null,
                 onPressedButtonCorporateAction:
-                    (corporateAction == null || corporateAction.isEmpty)
+                    (corporateAction == null || corporateAction!.isEmpty)
                         ? null
                         : onPressedButtonCorporateAction,
                 corporateActionColor: corporateActionColor,
@@ -1679,13 +1683,13 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
             }
 
             List<String> list = List.empty(growable: true);
-            if (!StringUtils.isEmtpy(notifier.stock.sectorName)) {
-              list.add(notifier.stock.sectorName);
+            if (!StringUtils.isEmtpy(notifier.stock?.sectorName)) {
+              list.add(notifier.stock!.sectorName!);
             }
 
-            if (!list.contains(notifier.stock.subSectorDescription) &&
-                !StringUtils.isEmtpy(notifier.stock.subSectorDescription)) {
-              list.add(notifier.stock.subSectorDescription);
+            if (!list.contains(notifier.stock?.subSectorDescription) &&
+                !StringUtils.isEmtpy(notifier.stock?.subSectorDescription)) {
+              list.add(notifier.stock!.subSectorDescription!);
             }
             return Container(
               margin: const EdgeInsets.only(
@@ -1844,8 +1848,8 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
 
   void showRelatedStockByInfo(BuildContext context, String info) {
     List<Stock> members = List.empty(growable: true);
-    SectorObject sector;
-    for (Stock stock in InvestrendTheme.storedData.listStock) {
+    SectorObject? sector;
+    for (Stock? stock in InvestrendTheme.storedData!.listStock!) {
       if (stock != null) {
         bool matched =
             info == stock.sectorName || info == stock.subSectorDescription;
@@ -1853,15 +1857,15 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
         print('matched : $matched  for  info : ' +
             info +
             '   ' +
-            stock.code +
+            stock.code! +
             ' sectorName : ' +
-            stock.sectorName +
+            stock.sectorName! +
             '  subSectorDescription : ' +
-            stock.subSectorDescription);
+            stock.subSectorDescription!);
         if (matched) {
           members.add(stock);
           if (sector == null) {
-            sector = SectorObject(stock.sectorText, 0, '', 0.0);
+            sector = SectorObject(stock.sectorText!, 0, '', 0.0);
           }
         }
       }
@@ -1872,7 +1876,7 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
           builder: (_) => ScreenListDetail(
             members,
             title: info,
-            icon: sector.getIconAssetPath(context),
+            icon: sector!.getIconAssetPath(context),
             color: sector.getColor(context),
           ),
           settings: RouteSettings(name: '/list_detail'),
@@ -2211,7 +2215,7 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
         return false;
       }
     }
-    Stock stock = context.read(primaryStockChangeNotifier).stock;
+    Stock? stock = context.read(primaryStockChangeNotifier).stock;
     if (stock == null) {
       print(routeName + '.doUpdate aborted stock is NULL');
       return false;
@@ -2225,7 +2229,7 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
       setNotifierLoading(_researchRankNotifier);
       try {
         final researchRank =
-            await InvestrendTheme.datafeedHttp.fetchResearchRank(stock?.code);
+            await InvestrendTheme.datafeedHttp.fetchResearchRank(stock.code);
         if (researchRank != null) {
           if (mounted) {
             print('Got researchRank : ' + researchRank.toString());
@@ -2277,28 +2281,29 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
       print(error);
     }
      */
+    // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
     onDoUpdate.notifyListeners();
 
-    StockSummary stockSummary =
+    StockSummary? stockSummary =
         context.read(stockSummaryChangeNotifier).summary;
 
     bool isIntradayChart = StringUtils.isEmtpy(_selectedChartFrom) ||
         StringUtils.isEmtpy(_selectedChartTo);
 
     bool canRequestChart = true;
-    if (isIntradayChart && (stockSummary == null || stockSummary.prev <= 0)) {
+    if (isIntradayChart && (stockSummary == null || stockSummary.prev! <= 0)) {
       canRequestChart = false;
     }
 
     if (canRequestChart) {
       int inSeconds = lastChartUpdate == null
           ? -1
-          : DateTime.now().difference(lastChartUpdate).inSeconds;
+          : DateTime.now().difference(lastChartUpdate!).inSeconds;
       bool chartAllowedRefresh =
           lastChartUpdate == null || (isIntradayChart && inSeconds > 10);
       if (chartAllowedRefresh || pullToRefresh) {
         lastChartUpdate = DateTime.now();
-        if (_chartNotifier.value.isEmpty() || pullToRefresh) {
+        if (_chartNotifier.value!.isEmpty() || pullToRefresh) {
           setNotifierLoading(_chartNotifier);
         }
 
@@ -2307,7 +2312,7 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
             lastChartUpdate.toString());
 
         try {
-          final chartCandle = await InvestrendTheme.datafeedHttp
+          final ChartOhlcvData? chartCandle = await InvestrendTheme.datafeedHttp
               .fetchChartOhlcv(stock.code, false,
                   from: _selectedChartFrom, to: _selectedChartTo);
           if (chartCandle != null &&
@@ -2315,7 +2320,7 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
                   stock.code, _selectedChartFrom, _selectedChartTo)) {
             bool intraday = _chartRangeNotifier.value == 0;
             if (stockSummary != null && intraday) {
-              chartCandle.setPrev(stockSummary.prev.toDouble());
+              chartCandle.setPrev(stockSummary.prev!.toDouble());
             }
             chartCandle.normalize(middlePrev: intraday);
 
@@ -2343,16 +2348,16 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
             ' Requesting chartLine update  at ' +
             lastChartUpdate.toString());
         try {
-          final chartLine = await InvestrendTheme.datafeedHttp.fetchChartLine(
-              stock.code, false,
-              from: _selectedChartFrom, to: _selectedChartTo);
+          final ChartLineData? chartLine = await InvestrendTheme.datafeedHttp
+              .fetchChartLine(stock.code, false,
+                  from: _selectedChartFrom, to: _selectedChartTo);
           if (chartLine != null &&
               chartLine.isValidResponse(
                   stock.code, _selectedChartFrom, _selectedChartTo)) {
             bool intraday = _chartRangeNotifier.value == 0;
             if (stockSummary != null && intraday) {
               //chartLine.setPrev(stockSummary.prev.toDouble(), middlePrev: intraday);
-              chartLine.setPrev(stockSummary.prev.toDouble());
+              chartLine.setPrev(stockSummary.prev!.toDouble());
             }
             // harus di normalise
             chartLine.normalize(middlePrev: intraday);
@@ -2383,7 +2388,7 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
             '  inSeconds : $inSeconds  isIntradayChart : $isIntradayChart');
       }
     } else {
-      if (_chartNotifier.value.isEmpty() || pullToRefresh) {
+      if (_chartNotifier.value!.isEmpty() || pullToRefresh) {
         setNotifierLoading(_chartNotifier);
       }
       print(routeName +
@@ -2424,14 +2429,14 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
 
     int gapPosition = lastPositionUpdate == null
         ? maxPositionSeconds
-        : DateTime.now().difference(lastPositionUpdate).inSeconds;
+        : DateTime.now().difference(lastPositionUpdate!).inSeconds;
     if (gapPosition >= maxPositionSeconds) {
       lastPositionUpdate = DateTime.now();
       int selected = context.read(accountChangeNotifier).index;
-      Account account =
+      Account? account =
           context.read(dataHolderChangeNotifier).user.getAccount(selected);
       if (account != null) {
-        if (_yourPositionNotifer.value.isEmpty() || pullToRefresh) {
+        if (_yourPositionNotifer!.value!.isEmpty() || pullToRefresh) {
           setNotifierLoading(_yourPositionNotifer);
         }
         try {
@@ -2440,17 +2445,17 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
               .stock_position(
                   account.brokercode,
                   account.accountcode,
-                  context.read(dataHolderChangeNotifier).user.username,
+                  context.read(dataHolderChangeNotifier).user.username!,
                   InvestrendTheme.of(context).applicationPlatform,
                   InvestrendTheme.of(context).applicationVersion);
           DebugWriter.information(routeName +
               ' Got stockPosition ' +
-              stockPosition.accountcode +
+              stockPosition.accountcode! +
               '   stockList.size : ' +
               stockPosition.stockListSize().toString());
           print(stockPosition.toString());
 
-          StockPositionDetail detail =
+          StockPositionDetail? detail =
               stockPosition.getStockPositionDetailByCode(stock.code);
           if (mounted) {
             YourPosition your = YourPosition();
@@ -2476,10 +2481,10 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
 
               your.totalReturnValue = detail.stockGL;
               your.totalReturnPercentage = detail.stockGLPct;
-              _yourPositionNotifer.setValue(your);
+              _yourPositionNotifer?.setValue(your);
             } else {
               //your.code = stock.code;
-              _yourPositionNotifer.setValue(your);
+              _yourPositionNotifer?.setValue(your);
             }
             //_yourPositionNotifer.setValue(your);
           }
@@ -2508,18 +2513,18 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
         lastChartUpdate.toString());
     setNotifierLoading(_chartOhlcvNotifier);
     try {
-      Stock stock = context.read(stockSummaryChangeNotifier).stock;
-      StockSummary stockSummary =
+      Stock? stock = context.read(stockSummaryChangeNotifier).stock;
+      StockSummary? stockSummary =
           context.read(stockSummaryChangeNotifier).summary;
-      final chartCandle = await InvestrendTheme.datafeedHttp.fetchChartOhlcv(
-          stock.code, false,
-          from: _selectedChartFrom, to: _selectedChartTo);
+      final ChartOhlcvData? chartCandle = await InvestrendTheme.datafeedHttp
+          .fetchChartOhlcv(stock?.code, false,
+              from: _selectedChartFrom, to: _selectedChartTo);
       if (chartCandle != null &&
           chartCandle.isValidResponse(
-              stock.code, _selectedChartFrom, _selectedChartTo)) {
+              stock?.code, _selectedChartFrom, _selectedChartTo)) {
         bool intraday = _chartRangeNotifier.value == 0;
         if (stockSummary != null && intraday) {
-          chartCandle.setPrev(stockSummary.prev.toDouble());
+          chartCandle.setPrev(stockSummary.prev!.toDouble());
         }
 
         chartCandle.normalize(middlePrev: intraday);
@@ -2552,18 +2557,18 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
         lastChartUpdate.toString());
     setNotifierLoading(_chartNotifier);
     try {
-      Stock stock = context.read(stockSummaryChangeNotifier).stock;
-      StockSummary stockSummary =
+      Stock? stock = context.read(stockSummaryChangeNotifier).stock;
+      StockSummary? stockSummary =
           context.read(stockSummaryChangeNotifier).summary;
-      final chartLine = await InvestrendTheme.datafeedHttp.fetchChartLine(
-          stock.code, false,
-          from: _selectedChartFrom, to: _selectedChartTo);
+      final ChartLineData? chartLine = await InvestrendTheme.datafeedHttp
+          .fetchChartLine(stock?.code, false,
+              from: _selectedChartFrom, to: _selectedChartTo);
       if (chartLine != null &&
           chartLine.isValidResponse(
-              stock.code, _selectedChartFrom, _selectedChartTo)) {
+              stock?.code, _selectedChartFrom, _selectedChartTo)) {
         bool intraday = _chartRangeNotifier.value == 0;
         if (stockSummary != null && intraday) {
-          chartLine.setPrev(stockSummary.prev.toDouble());
+          chartLine.setPrev(stockSummary.prev!.toDouble());
         }
         // harus di normalise
         chartLine.normalize(middlePrev: intraday);
@@ -3108,9 +3113,9 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
    */
 
   Widget tableCellLabel(BuildContext context, String text) {
-    TextStyle style = InvestrendTheme.of(context)
+    TextStyle? style = InvestrendTheme.of(context)
         .small_w400_compact
-        .copyWith(color: InvestrendTheme.of(context).greyLighterTextColor);
+        ?.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor);
     return Padding(
       padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
       child: ComponentCreator.textFit(
@@ -3122,10 +3127,10 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
     );
   }
 
-  Widget tableCellValue(BuildContext context, String text, {Color color}) {
-    TextStyle style = InvestrendTheme.of(context).regular_w600_compact;
+  Widget tableCellValue(BuildContext context, String text, {Color? color}) {
+    TextStyle? style = InvestrendTheme.of(context).regular_w600_compact;
     if (color != null) {
-      style = style.copyWith(color: color);
+      style = style?.copyWith(color: color);
     }
     return Padding(
       padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
@@ -3138,8 +3143,8 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
     );
   }
 
-  Widget getTableDataPosition1(BuildContext context, double jumlahLot,
-      double averagePrice, double marketValue, double percentPortfolio) {
+  Widget getTableDataPosition1(BuildContext context, double? jumlahLot,
+      double? averagePrice, double? marketValue, double? percentPortfolio) {
     // int jumlahLot = 275;
     // double averagePrice = 1000.0;
     // int marketValue = 48224000;
@@ -3155,7 +3160,7 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
     ]);
     TableRow row1 = TableRow(children: [
       tableCellValue(
-          context, InvestrendTheme.formatComma(jumlahLot.truncate())),
+          context, InvestrendTheme.formatComma(jumlahLot?.truncate())),
       tableCellValue(
         context,
         InvestrendTheme.formatMoneyDouble(averagePrice, prefixRp: true),
@@ -3171,7 +3176,7 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
     ]);
     TableRow row3 = TableRow(children: [
       tableCellValue(
-          context, InvestrendTheme.formatComma(marketValue.truncate())),
+          context, InvestrendTheme.formatComma(marketValue?.truncate())),
       tableCellValue(
         context,
         InvestrendTheme.formatPriceDouble(percentPortfolio),
@@ -3209,8 +3214,8 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
         InvestrendTheme.formatPercentChange(totalReturnPercentage,
             sufixPercent: true) +
         ')';
-    Color colorToday = InvestrendTheme.priceTextColor(todayReturnValue);
-    Color colorTotal = InvestrendTheme.priceTextColor(totalReturnValue);
+    Color? colorToday = InvestrendTheme.priceTextColor(todayReturnValue);
+    Color? colorTotal = InvestrendTheme.priceTextColor(totalReturnValue);
 
     TableRow row0 = TableRow(children: [
       tableCellLabel(
@@ -3256,13 +3261,14 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
   }
 
   Widget tableCellRight(BuildContext context, String text,
-      {double padding = 0.0, Color color}) {
-    TextStyle textStyle;
+      {double padding = 0.0, Color? color}) {
+    TextStyle? textStyle;
     if (color == null) {
       textStyle = InvestrendTheme.of(context).small_w400_compact;
     } else {
-      textStyle =
-          InvestrendTheme.of(context).small_w400_compact.copyWith(color: color);
+      textStyle = InvestrendTheme.of(context)
+          .small_w400_compact
+          ?.copyWith(color: color);
     }
     return Padding(
       padding: EdgeInsets.only(right: padding, top: 5.0, bottom: 5.0),
@@ -3298,68 +3304,71 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
       TableRow row0 = TableRow(children: [
         tableCellLeftSupport(context, 'Previous'),
         tableCellRight(
-            context, InvestrendTheme.formatPrice(notifier.summary.prev),
+            context, InvestrendTheme.formatPrice(notifier.summary!.prev!),
             color: InvestrendTheme.yellowText, padding: padding),
         tableCellLeftSupport(context, 'Turnover', padding: padding),
         tableCellRight(
           context,
-          InvestrendTheme.formatValue(context, notifier.summary.value),
+          InvestrendTheme.formatValue(context, notifier.summary!.value!),
         ),
       ]);
 
       TableRow row1 = TableRow(children: [
         tableCellLeftSupport(context, 'Open'),
         tableCellRight(
-            context, InvestrendTheme.formatPrice(notifier.summary.open),
-            color: InvestrendTheme.priceTextColor(notifier.summary.open,
-                prev: notifier.summary.prev),
+            context, InvestrendTheme.formatPrice(notifier.summary!.open!),
+            color: InvestrendTheme.priceTextColor(notifier.summary!.open!,
+                prev: notifier.summary!.prev!),
             padding: padding),
         tableCellLeftSupport(context, 'Vol (Shares)', padding: padding),
         tableCellRight(
           context,
-          InvestrendTheme.formatValue(context, notifier.summary.volume),
+          InvestrendTheme.formatValue(context, notifier.summary!.volume!),
         ),
       ]);
       TableRow row2 = TableRow(children: [
         tableCellLeftSupport(context, 'Low'),
         tableCellRight(
-            context, InvestrendTheme.formatPrice(notifier.summary.low),
-            color: InvestrendTheme.priceTextColor(notifier.summary.low,
-                prev: notifier.summary.prev),
+            context, InvestrendTheme.formatPrice(notifier.summary!.low!),
+            color: InvestrendTheme.priceTextColor(notifier.summary!.low!,
+                prev: notifier.summary!.prev!),
             padding: padding),
         tableCellLeftSupport(context, 'Market Cap', padding: padding),
         tableCellRight(
           context,
-          InvestrendTheme.formatValue(context, notifier.summary.marketCap),
+          InvestrendTheme.formatValue(context, notifier.summary!.marketCap!),
         ),
       ]);
 
       TableRow row3 = TableRow(children: [
         tableCellLeftSupport(context, 'High'),
         tableCellRight(
-            context, InvestrendTheme.formatPrice(notifier.summary.hi),
-            color: InvestrendTheme.priceTextColor(notifier.summary.hi,
-                prev: notifier.summary.prev),
+            context, InvestrendTheme.formatPrice(notifier.summary!.hi!),
+            color: InvestrendTheme.priceTextColor(notifier.summary!.hi!,
+                prev: notifier.summary!.prev!),
             padding: padding),
         //tableCellLeftSupport(context, 'PER', padding: padding),
         tableCellLeftSupport(context, 'P/E', padding: padding),
         tableCellRight(
           context,
-          notifier.summary.PE,
+          notifier.summary!.PE,
         ),
       ]);
       TableRow row4 = TableRow(children: [
         tableCellLeftSupport(context, 'Avg. Price'),
-        tableCellRight(context,
-            InvestrendTheme.formatPrice(notifier.summary.averagePrice.toInt()),
+        tableCellRight(
+            context,
+            InvestrendTheme.formatPrice(
+                notifier.summary!.averagePrice!.toInt()),
             color: InvestrendTheme.priceTextColor(
-                notifier.summary.averagePrice.toInt(),
-                prev: notifier.summary.prev),
+                notifier.summary!.averagePrice!.toInt(),
+                prev: notifier.summary!.prev!),
             padding: padding),
         tableCellLeftSupport(context, 'YTD (%)', padding: padding),
         tableCellRight(context,
-            InvestrendTheme.formatPercentChange(notifier.summary.returnYTD),
-            color: InvestrendTheme.changeTextColor(notifier.summary.returnYTD)),
+            InvestrendTheme.formatPercentChange(notifier.summary!.returnYTD!),
+            color:
+                InvestrendTheme.changeTextColor(notifier.summary!.returnYTD!)),
       ]);
       return Table(
         defaultVerticalAlignment: TableCellVerticalAlignment.middle,
@@ -3527,57 +3536,61 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
         double maxWidthSection =
             ((constraints.maxWidth - marginSection) / 2); // - marginContent;
 
-        TextStyle labelStyle = InvestrendTheme.of(context).textLabelStyle;
-        TextStyle valueStyle = InvestrendTheme.of(context).small_w400_compact;
+        TextStyle? labelStyle = InvestrendTheme.of(context).textLabelStyle;
+        TextStyle? valueStyle = InvestrendTheme.of(context).small_w400_compact;
 
         List<LabelValueColor> listLeft = List.empty(growable: true);
 
         listLeft.add(LabelValueColor(
-            'Previous', InvestrendTheme.formatPrice(notifier.summary.prev),
+            'Previous', InvestrendTheme.formatPrice(notifier.summary!.prev!),
             color: InvestrendTheme.yellowText));
         listLeft.add(LabelValueColor('Turnover',
-            InvestrendTheme.formatValue(context, notifier.summary.value)));
+            InvestrendTheme.formatValue(context, notifier.summary!.value!)));
 
         listLeft.add(LabelValueColor(
-            'Open', InvestrendTheme.formatPrice(notifier.summary.open),
-            color: notifier.summary.openColor()));
+            'Open', InvestrendTheme.formatPrice(notifier.summary!.open!),
+            color: notifier.summary!.openColor()));
         listLeft.add(LabelValueColor(
             'Lot',
             InvestrendTheme.formatValue(
-                context, notifier.summary.volume ~/ 100)));
+                context, notifier.summary!.volume! ~/ 100)));
 
         listLeft.add(LabelValueColor(
-            'Low', InvestrendTheme.formatPrice(notifier.summary.low),
-            color: notifier.summary.lowColor()));
-        listLeft.add(LabelValueColor('Market Cap',
-            InvestrendTheme.formatValue(context, notifier.summary.marketCap)));
+            'Low', InvestrendTheme.formatPrice(notifier.summary!.low!),
+            color: notifier.summary!.lowColor()));
+        listLeft.add(LabelValueColor(
+            'Market Cap',
+            InvestrendTheme.formatValue(
+                context, notifier.summary!.marketCap!)));
 
         listLeft.add(LabelValueColor(
-            'High', InvestrendTheme.formatPrice(notifier.summary.hi),
-            color: notifier.summary.hiColor()));
-        listLeft.add(LabelValueColor('P/E', notifier.summary.PE));
+            'High', InvestrendTheme.formatPrice(notifier.summary!.hi!),
+            color: notifier.summary!.hiColor()));
+        listLeft.add(LabelValueColor('P/E', notifier.summary!.PE));
 
-        listLeft.add(LabelValueColor('VWAP' /*'Avg. Price'*/,
-            InvestrendTheme.formatPrice(notifier.summary.averagePrice.toInt()),
-            color: notifier.summary.averagePriceColor()));
+        listLeft.add(LabelValueColor(
+            'VWAP' /*'Avg. Price'*/,
+            InvestrendTheme.formatPrice(
+                notifier.summary!.averagePrice!.toInt()),
+            color: notifier.summary!.averagePriceColor()));
         listLeft.add(LabelValueColor('YTD (%)',
-            InvestrendTheme.formatPercentChange(notifier.summary.returnYTD),
+            InvestrendTheme.formatPercentChange(notifier.summary!.returnYTD!),
             color:
-                InvestrendTheme.changeTextColor(notifier.summary.returnYTD)));
+                InvestrendTheme.changeTextColor(notifier.summary!.returnYTD!)));
         listLeft.add(LabelValueColor(
             'IEP',
-            notifier.summary.iep == 0
+            notifier.summary!.iep == 0
                 ? '-'
-                : InvestrendTheme.formatPrice(notifier.summary.iep.toInt())));
+                : InvestrendTheme.formatPrice(notifier.summary!.iep!.toInt())));
         listLeft.add(LabelValueColor(
             'IEV (Lot)',
-            notifier.summary.iev == 0
+            notifier.summary!.iev == 0
                 ? '-'
-                : InvestrendTheme.formatComma(notifier.summary.iev ~/ 100)));
+                : InvestrendTheme.formatComma(notifier.summary!.iev! ~/ 100)));
 
         int count = listLeft.length;
         List<LabelValueColor> filtered = [];
-        List<TextStyle> styles = [labelStyle, valueStyle];
+        List<TextStyle?>? styles = [labelStyle!, valueStyle];
         for (int i = 0; i < count; i++) {
           LabelValueColor leftLVC = listLeft.elementAt(i);
           // LabelValueColor rightLVC = listRight.elementAt(i);
@@ -3600,8 +3613,8 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
           });
         });
 
-        labelStyle = styles.elementAt(0);
-        valueStyle = styles.elementAt(1);
+        labelStyle = styles?.elementAt(0);
+        valueStyle = styles?.elementAt(1);
 
         List<Widget> childs = List.empty(growable: true);
 
@@ -3634,7 +3647,7 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
                           maxLines: 1,
                           style: filtered[index].color == null
                               ? valueStyle
-                              : valueStyle.copyWith(
+                              : valueStyle?.copyWith(
                                   color: filtered[index].color),
                           textAlign: TextAlign.right,
                         ),
@@ -3647,8 +3660,8 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
           ),
         );
 
-        if (!StringUtils.isEmtpy(notifier.summary.tradeDate) &&
-            !StringUtils.isEmtpy(notifier.summary.tradeTime)) {
+        if (!StringUtils.isEmtpy(notifier.summary!.tradeDate) &&
+            !StringUtils.isEmtpy(notifier.summary!.tradeTime)) {
           /*
           String displayTime = notifier.summary.tradeDate +' '+notifier.summary.tradeTime;
 
@@ -3664,11 +3677,11 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
           //String formatedTime = timeFormatter.format(dateTime);
           */
           String displayTime =
-              notifier.summary.tradeDate + ' ' + notifier.summary.tradeTime;
+              notifier.summary!.tradeDate! + ' ' + notifier.summary!.tradeTime!;
           String infoTime = 'last_data_date_info_label'.tr();
 
           String formatedDate = Utils.formatLastDataUpdate(
-              notifier.summary.tradeDate, notifier.summary.tradeTime);
+              notifier.summary!.tradeDate!, notifier.summary!.tradeTime!);
           infoTime = infoTime.replaceAll('#DATE#', formatedDate);
           //infoTime = infoTime.replaceAll('#TIME#', formatedTime);
           displayTime = infoTime;
@@ -3684,7 +3697,7 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
                 displayTime,
                 style: InvestrendTheme.of(context)
                     .more_support_w400_compact
-                    .copyWith(
+                    ?.copyWith(
                       fontWeight: FontWeight.w500,
                       color: InvestrendTheme.of(context).greyDarkerTextColor,
                       fontStyle: FontStyle.italic,
@@ -3722,9 +3735,9 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
       ]);
       list.add(header);
 
-      StockSummary stockSummary =
+      StockSummary? stockSummary =
           context.read(stockSummaryChangeNotifier).summary;
-      int prev = stockSummary != null && stockSummary.prev != null
+      int? prev = stockSummary != null && stockSummary.prev != null
           ? stockSummary.prev
           : 0;
 
@@ -3735,62 +3748,64 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
       int totalVolumeShowedBid = 0;
       int totalVolumeShowedOffer = 0;
       for (int index = 0; index < maxShowLevel; index++) {
-        totalVolumeShowedBid += notifier.orderbook.bidVol(index);
-        totalVolumeShowedOffer += notifier.orderbook.offerVol(index);
+        totalVolumeShowedBid += notifier.orderbook!.bidVol(index);
+        totalVolumeShowedOffer += notifier.orderbook!.offerVol(index);
       }
       for (int index = 0; index < maxShowLevel; index++) {
         double fractionBid =
-            notifier.orderbook.bidVol(index) / totalVolumeShowedBid;
+            notifier.orderbook!.bidVol(index) / totalVolumeShowedBid;
         double fractionOffer =
-            notifier.orderbook.offerVol(index) / totalVolumeShowedOffer;
+            notifier.orderbook!.offerVol(index) / totalVolumeShowedOffer;
 
-        bool showBid = notifier.orderbook.bids.elementAt(index) > 0;
-        bool showOffer = notifier.orderbook.offers.elementAt(index) > 0;
+        bool showBid = notifier.orderbook?.bids?.elementAt(index) > 0;
+        bool showOffer = notifier.orderbook?.offers?.elementAt(index) > 0;
 
         print(
             'orderbook[$index] --> fractionBid : $fractionBid  fractionOffer --> $fractionOffer');
         print('orderbook[$index] --> totalBid : ' +
-            notifier.orderbook.totalBid.toString() +
+            notifier.orderbook!.totalBid.toString() +
             '  bidVol --> ' +
-            notifier.orderbook.bidVol(index).toString());
+            notifier.orderbook!.bidVol(index).toString());
         print('orderbook[$index] --> totalOffer : ' +
-            notifier.orderbook.totalOffer.toString() +
+            notifier.orderbook!.totalOffer.toString() +
             '  offerVol --> ' +
-            notifier.orderbook.offerVol(index).toString());
+            notifier.orderbook!.offerVol(index).toString());
         TableRow row = TableRow(children: [
-          cellBidQueue(context, notifier.orderbook.bidsQueue.elementAt(index),
+          cellBidQueue(context, notifier.orderbook?.bidsQueue?.elementAt(index),
               () {
             InvestrendTheme.of(context).showSnackBar(
                 context,
                 'Action show queue for : ' +
-                    notifier.orderbook.bidsQueue.elementAt(index).toString());
+                    notifier.orderbook!.bidsQueue!.elementAt(index).toString());
           }),
-          cellBidLot(context, notifier.orderbook.bidLot(index), () {
+          cellBidLot(context, notifier.orderbook?.bidLot(index), () {
             // show nothing
           }),
-          cellBidPrice(context, notifier.orderbook.bids.elementAt(index), prev,
-              fractionBid, padding, () {
+          cellBidPrice(context, notifier.orderbook?.bids?.elementAt(index),
+              prev!, fractionBid, padding, () {
             InvestrendTheme.of(context).showSnackBar(
                 context,
                 'Action show Bid for : ' +
-                    notifier.orderbook.bids.elementAt(index).toString());
+                    notifier.orderbook!.bids?.elementAt(index).toStringss());
           }),
-          cellOfferPrice(context, notifier.orderbook.offers.elementAt(index),
+          cellOfferPrice(context, notifier.orderbook?.offers?.elementAt(index),
               prev, fractionOffer, padding, () {
             InvestrendTheme.of(context).showSnackBar(
                 context,
                 'Action show Offer for : ' +
-                    notifier.orderbook.offers.elementAt(index).toString());
+                    notifier.orderbook!.offers!.elementAt(index).toString());
           }),
-          cellOfferLot(context, notifier.orderbook.offerLot(index), () {
+          cellOfferLot(context, notifier.orderbook?.offerLot(index), () {
             // show nothing
           }),
           cellOfferQueue(
-              context, notifier.orderbook.offersQueue.elementAt(index), () {
+              context, notifier.orderbook?.offersQueue?.elementAt(index), () {
             InvestrendTheme.of(context).showSnackBar(
                 context,
                 'Action show queue for : ' +
-                    notifier.orderbook.offersQueue.elementAt(index).toString());
+                    notifier.orderbook!.offersQueue!
+                        .elementAt(index)
+                        .toString());
           }),
         ]);
         list.add(row);
@@ -3917,7 +3932,7 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
 
   Widget cellOfferPrice(BuildContext context, int offerPrice, int prev,
       double fractionOffer, double padding, VoidCallback onTap) {
-    Color textColor = InvestrendTheme.priceTextColor(offerPrice, prev: prev);
+    Color? textColor = InvestrendTheme.priceTextColor(offerPrice, prev: prev);
     Color backgroundColor =
         InvestrendTheme.priceBackgroundColor(offerPrice, prev: prev);
     if (offerPrice > 0) {
@@ -3969,8 +3984,8 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
     }
   }
 
-  Widget cellOfferLot(BuildContext context, int offerLot, VoidCallback onTap) {
-    if (offerLot > 0) {
+  Widget cellOfferLot(BuildContext context, int? offerLot, VoidCallback onTap) {
+    if (offerLot! > 0) {
       return TableRowInkWell(
         onTap: () {},
         child: ComponentCreator.tableCellRightValue(
@@ -4010,7 +4025,7 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
 
   Widget cellBidPrice(BuildContext context, int bidPrice, int prev,
       double fractionBid, double padding, VoidCallback onTap) {
-    Color textColor = InvestrendTheme.priceTextColor(bidPrice, prev: prev);
+    Color? textColor = InvestrendTheme.priceTextColor(bidPrice, prev: prev);
     Color backgroundColor =
         InvestrendTheme.priceBackgroundColor(bidPrice, prev: prev);
 
@@ -4063,8 +4078,8 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
     }
   }
 
-  Widget cellBidLot(BuildContext context, int bidLot, VoidCallback onTap) {
-    if (bidLot > 0) {
+  Widget cellBidLot(BuildContext context, int? bidLot, VoidCallback onTap) {
+    if (bidLot! > 0) {
       return TableRowInkWell(
         onTap: onTap,
         child: ComponentCreator.tableCellLeftValue(
@@ -4119,9 +4134,9 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
       ]);
       list.add(header);
 
-      StockSummary stockSummary =
+      StockSummary? stockSummary =
           context.read(stockSummaryChangeNotifier).summary;
-      int prev = stockSummary != null && stockSummary.prev != null
+      int? prev = stockSummary != null && stockSummary.prev != null
           ? stockSummary.prev
           : 0;
 
@@ -4132,50 +4147,50 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
       int totalVolumeShowedBid = 0;
       int totalVolumeShowedOffer = 0;
       for (int index = 0; index < maxShowLevel; index++) {
-        totalVolumeShowedBid += notifier.orderbook.bidVol(index);
-        totalVolumeShowedOffer += notifier.orderbook.offerVol(index);
+        totalVolumeShowedBid += notifier.orderbook!.bidVol(index);
+        totalVolumeShowedOffer += notifier.orderbook!.offerVol(index);
       }
       for (int index = 0; index < maxShowLevel; index++) {
         // double fractionBid = value.bidVol(index) / value.totalBid;
         // double fractionOffer = value.offerVol(index) / value.totalOffer;
 
         double fractionBid =
-            notifier.orderbook.bidVol(index) / totalVolumeShowedBid;
+            notifier.orderbook!.bidVol(index) / totalVolumeShowedBid;
         double fractionOffer =
-            notifier.orderbook.offerVol(index) / totalVolumeShowedOffer;
+            notifier.orderbook!.offerVol(index) / totalVolumeShowedOffer;
 
         print(
             'orderbook[$index] --> fractionBid : $fractionBid  fractionOffer --> $fractionOffer');
         print('orderbook[$index] --> totalBid : ' +
-            notifier.orderbook.totalBid.toString() +
+            notifier.orderbook!.totalBid.toString() +
             '  bidVol --> ' +
-            notifier.orderbook.bidVol(index).toString());
+            notifier.orderbook!.bidVol(index).toString());
         print('orderbook[$index] --> totalOffer : ' +
-            notifier.orderbook.totalOffer.toString() +
+            notifier.orderbook!.totalOffer.toString() +
             '  offerVol --> ' +
-            notifier.orderbook.offerVol(index).toString());
+            notifier.orderbook!.offerVol(index).toString());
         TableRow row = TableRow(children: [
           // cellBidQueue(context, value.bidsQueue.elementAt(index), () {
           //   InvestrendTheme.of(context).showSnackBar(context, 'Action show queue for : ' + value.bidsQueue.elementAt(index).toString());
           // }),
-          cellBidLot(context, notifier.orderbook.bidLot(index), () {
+          cellBidLot(context, notifier.orderbook?.bidLot(index), () {
             // show nothing
           }),
-          cellBidPrice(context, notifier.orderbook.bids.elementAt(index), prev,
-              fractionBid, padding, () {
+          cellBidPrice(context, notifier.orderbook?.bids?.elementAt(index),
+              prev!, fractionBid, padding, () {
             InvestrendTheme.of(context).showSnackBar(
                 context,
                 'Action show Bid for : ' +
-                    notifier.orderbook.bids.elementAt(index).toString());
+                    notifier.orderbook!.bids!.elementAt(index).toString());
           }),
-          cellOfferPrice(context, notifier.orderbook.offers.elementAt(index),
+          cellOfferPrice(context, notifier.orderbook?.offers?.elementAt(index),
               prev, fractionOffer, padding, () {
             InvestrendTheme.of(context).showSnackBar(
                 context,
                 'Action show Offer for : ' +
-                    notifier.orderbook.offers.elementAt(index).toString());
+                    notifier.orderbook!.offers!.elementAt(index).toString());
           }),
-          cellOfferLot(context, notifier.orderbook.offerLot(index), () {
+          cellOfferLot(context, notifier.orderbook?.offerLot(index), () {
             // show nothing
           }),
           // cellOfferQueue(context, value.offersQueue.elementAt(index), () {
@@ -4279,7 +4294,7 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
 
   Widget bidPrice(BuildContext context, int price, int prev, double padding,
       double fraction) {
-    Color textColor = InvestrendTheme.priceTextColor(price, prev: prev);
+    Color? textColor = InvestrendTheme.priceTextColor(price, prev: prev);
     Color backgroundColor =
         InvestrendTheme.priceBackgroundColor(price, prev: prev);
 
@@ -4305,7 +4320,7 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
 
   Widget offerPrice(BuildContext context, int price, int prev, double padding,
       double fraction) {
-    Color textColor = InvestrendTheme.priceTextColor(price, prev: prev);
+    Color? textColor = InvestrendTheme.priceTextColor(price, prev: prev);
     Color backgroundColor =
         InvestrendTheme.priceBackgroundColor(price, prev: prev);
 
@@ -4428,7 +4443,7 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
   }
   */
   @override
-  Widget createAppBar(BuildContext context) {
+  PreferredSizeWidget? createAppBar(BuildContext context) {
     return null;
   }
 
@@ -4441,26 +4456,26 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
           .read(stockDetailScreenVisibilityChangeNotifier)
           .setActive(tabIndex, true);
       attentionCodes = context.read(remark2Notifier).getSpecialNotationCodes(
-          context.read(primaryStockChangeNotifier).stock.code);
+          context.read(primaryStockChangeNotifier).stock?.code);
       notation = context.read(remark2Notifier).getSpecialNotation(
-          context.read(primaryStockChangeNotifier).stock.code);
+          context.read(primaryStockChangeNotifier).stock?.code);
       status = context.read(remark2Notifier).getSpecialNotationStatus(
-          context.read(primaryStockChangeNotifier).stock.code);
+          context.read(primaryStockChangeNotifier).stock?.code);
       suspendStock = context.read(suspendedStockNotifier).getSuspended(
-          context.read(primaryStockChangeNotifier).stock.code,
-          context.read(primaryStockChangeNotifier).stock.defaultBoard);
+          context.read(primaryStockChangeNotifier).stock?.code,
+          context.read(primaryStockChangeNotifier).stock!.defaultBoard);
       if (suspendStock != null) {
         status = StockInformationStatus.Suspended;
       }
       corporateAction = context
           .read(corporateActionEventNotifier)
-          .getEvent(context.read(primaryStockChangeNotifier).stock.code);
+          .getEvent(context.read(primaryStockChangeNotifier).stock?.code);
       corporateActionColor = CorporateActionEvent.getColor(corporateAction);
       //doUpdate(pullToRefresh: true);
       startTimer();
 
       unsubscribe(context, 'onRefresh');
-      Stock stock = context.read(primaryStockChangeNotifier).stock;
+      Stock? stock = context.read(primaryStockChangeNotifier).stock;
       subscribe(context, stock, 'onRefresh');
     }
     return doUpdate(pullToRefresh: true);
@@ -4491,12 +4506,12 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
        */
     } else if (field == TypeField.Queue) {
       if (data.queue > 0) {
-        Stock stock = context.read(primaryStockChangeNotifier).stock;
+        Stock? stock = context.read(primaryStockChangeNotifier).stock;
         Navigator.push(
             context,
             CupertinoPageRoute(
               builder: (_) => ScreenOrderQueue(
-                  stock.code, stock.defaultBoard, type.text, data.price),
+                  stock?.code, stock?.defaultBoard, type.text, data.price),
               settings: RouteSettings(name: '/order_queue'),
             ));
       }
@@ -4548,7 +4563,7 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
               child: Text(
                 'portfolio_detail_detail_label'.tr(),
                 textAlign: TextAlign.end,
-                style: InvestrendTheme.of(context).small_w600.copyWith(
+                style: InvestrendTheme.of(context).small_w600?.copyWith(
                       color: InvestrendTheme.of(context).investrendPurple,
                       fontWeight: FontWeight.normal,
                     ),
@@ -4606,29 +4621,30 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
     );
   }
 
-  SubscribeAndHGET subscribeOrderbook;
-  SubscribeAndHGET subscribeTradebook;
+  SubscribeAndHGET? subscribeOrderbook;
+  SubscribeAndHGET? subscribeTradebook;
 
   void unsubscribe(BuildContext context, String caller) {
     if (subscribeOrderbook != null) {
-      print(routeName + ' unsubscribe : ' + subscribeOrderbook.channel);
+      print(routeName + ' unsubscribe : ' + subscribeOrderbook!.channel!);
       context
           .read(managerDatafeedNotifier)
-          .unsubscribe(subscribeOrderbook, routeName + '.' + caller);
+          .unsubscribe(subscribeOrderbook!, routeName + '.' + caller);
       subscribeOrderbook = null;
     }
     if (subscribeTradebook != null) {
-      print(
-          routeName + ' unsubscribe Tradebook : ' + subscribeTradebook.channel);
+      print(routeName +
+          ' unsubscribe Tradebook : ' +
+          subscribeTradebook!.channel!);
       context
           .read(managerDatafeedNotifier)
-          .unsubscribe(subscribeTradebook, routeName + '.' + caller);
+          .unsubscribe(subscribeTradebook!, routeName + '.' + caller);
       subscribeTradebook = null;
     }
   }
 
-  void subscribe(BuildContext context, Stock stock, String caller) {
-    String codeBoard = stock.code + '.' + stock.defaultBoard;
+  void subscribe(BuildContext context, Stock? stock, String caller) {
+    String codeBoard = stock!.code! + '.' + stock.defaultBoard;
     String channel = DatafeedType.Orderbook.key + '.' + codeBoard;
     context.read(orderBookChangeNotifier).setStock(stock);
     subscribeOrderbook =
@@ -4643,23 +4659,24 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
         orderbook.generateDataForUI(10, context: context);
 
         context.read(orderBookChangeNotifier).setData(orderbook);
-        StockSummary stockSummary =
+        StockSummary? stockSummary =
             context.read(stockSummaryChangeNotifier).summary;
         OrderbookData orderbookData = OrderbookData();
         orderbookData.orderbook = orderbook;
-        orderbookData.prev = stockSummary != null ? stockSummary.prev : 0;
-        orderbookData.close = stockSummary != null ? stockSummary.close : 0;
+        orderbookData.prev = stockSummary != null ? stockSummary.prev! : 0;
+        orderbookData.close = stockSummary != null ? stockSummary.close! : 0;
         orderbookData.averagePrice =
-            stockSummary != null ? stockSummary.averagePrice : 0;
+            stockSummary != null ? stockSummary.averagePrice! : 0;
         _orderbookNotifier.setValue(orderbookData);
 
         print('got orderbook --> notify');
       }
+      return '';
     }, validator: validatorOrderbook);
     print(routeName + ' subscribe : $codeBoard');
     context
         .read(managerDatafeedNotifier)
-        .subscribe(subscribeOrderbook, routeName + '.' + caller);
+        .subscribe(subscribeOrderbook!, routeName + '.' + caller);
 
     String channelTradebook = DatafeedType.Tradebook.key + '.' + codeBoard;
     context.read(tradeBookChangeNotifier).setStock(stock);
@@ -4675,11 +4692,12 @@ class _ScreenStockDetailOverviewState extends BaseStateNoTabsWithParentTab<
         context.read(tradeBookChangeNotifier).setData(tradebook);
         print('got tradebook --> notify');
       }
+      return '';
     }, validator: validatorTradebook);
     print(routeName + ' subscribe Tradebook : $codeBoard');
     context
         .read(managerDatafeedNotifier)
-        .subscribe(subscribeTradebook, routeName + '.' + caller);
+        .subscribe(subscribeTradebook!, routeName + '.' + caller);
   }
 
   bool validatorOrderbook(List<String> data, String channel) {

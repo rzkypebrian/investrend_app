@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'dart:math';
 
 import 'package:Investrend/component/component_creator.dart';
@@ -12,6 +14,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'dart:ui' as ui;
 
 enum TypeOrderbook { Bid, Offer }
+
 enum TypeField { Price, Lot, Queue }
 
 extension TypeOrderbookExtension on TypeOrderbook {
@@ -42,18 +45,21 @@ extension TypeFieldExtension on TypeField {
   }
 }
 
-typedef OrderbookCallback = Function(TypeOrderbook type, TypeField field, PriceLotQueue data);
+typedef OrderbookCallback = Function(
+    TypeOrderbook type, TypeField field, PriceLotQueue data);
 
 class CardOrderbook extends StatelessWidget {
-  final int maxShowLevel;
-  final String owner;
+  final int? maxShowLevel;
+  final String? owner;
 
   //final String title;
-  final OrderbookNotifier notifier;
-  final OrderbookCallback onTap;
-  final VoidCallback onRetry;
+  final OrderbookNotifier? notifier;
+  final OrderbookCallback? onTap;
+  final VoidCallback? onRetry;
 
-  const CardOrderbook(/*this.title, */ this.notifier, this.maxShowLevel, {this.onRetry, Key key, this.owner = '', this.onTap}) : super(key: key);
+  const CardOrderbook(/*this.title, */ this.notifier, this.maxShowLevel,
+      {this.onRetry, Key? key, this.owner = '', this.onTap})
+      : super(key: key);
 
   Widget build(BuildContext context) {
     return Container(
@@ -75,8 +81,10 @@ class CardOrderbook extends StatelessWidget {
           ),
           LayoutBuilder(
             builder: (context, constraints) {
-              print('CardOrderbook constrains ' + constraints.maxWidth.toString());
-              return buildOrderbook(context, constraints.maxWidth, constraints.maxHeight);
+              print('CardOrderbook constrains ' +
+                  constraints.maxWidth.toString());
+              return buildOrderbook(
+                  context, constraints.maxWidth, constraints.maxHeight);
             },
           )
         ],
@@ -93,7 +101,7 @@ class CardOrderbook extends StatelessWidget {
   //     },
   //   );
   // }
-  Size _textSize(String text, TextStyle style) {
+  Size _textSize(String? text, TextStyle? style) {
     final TextPainter textPainter = TextPainter(
       text: TextSpan(text: text, style: style),
       maxLines: 1,
@@ -104,13 +112,14 @@ class CardOrderbook extends StatelessWidget {
 
   static const double middle_gap = 20.0;
 
-  Widget buildOrderbook(BuildContext context, double widthWidget, double heightWidget) {
+  Widget buildOrderbook(
+      BuildContext context, double widthWidget, double heightWidget) {
     double widthHalf = widthWidget / 2;
     double widthSection = (widthWidget - middle_gap) / 2;
 
     return ValueListenableBuilder(
-      valueListenable: this.notifier,
-      builder: (context, OrderbookData data, child) {
+      valueListenable: this.notifier!,
+      builder: (context, OrderbookData? data, child) {
         // if (notifier.invalid()) {
         //   return Center(child: CircularProgressIndicator());
         // }
@@ -120,13 +129,19 @@ class CardOrderbook extends StatelessWidget {
         Widget headers = createHeader(context, widthSection);
         list.add(headers);
 
-        print('stateText orderbook -->'+notifier.currentState.stateText);
-        Widget noWidget = notifier.currentState.getNoWidget(onRetry: onRetry);
+        print('stateText orderbook -->' + notifier!.currentState.stateText);
+        Widget? noWidget =
+            notifier?.currentState.getNoWidget(onRetry: onRetry!);
         if (noWidget != null) {
-
-          double height = UIHelper.textSize('Pj', InvestrendTheme.of(context).small_w400).height + 10;
+          double height =
+              UIHelper.textSize('Pj', InvestrendTheme.of(context).small_w400)
+                      .height +
+                  10;
           height = height * 10;
-          list.add(Container(width: double.maxFinite, height: height, child: Center(child: noWidget)));
+          list.add(Container(
+              width: double.maxFinite,
+              height: height,
+              child: Center(child: noWidget)));
           return Column(
             children: list,
           );
@@ -139,65 +154,95 @@ class CardOrderbook extends StatelessWidget {
         //     && StringUtils.equalsIgnoreCase(stockSummary.code, data.orderbook.code)
         //     ? stockSummary.prev
         //     : 0;
-        print('data.orderbook -->'+data.orderbook.toString());
+        print('data.orderbook -->' + data!.orderbook.toString());
 
-        data.orderbook.generateDataForUI(maxShowLevel);
+        data.orderbook.generateDataForUI(maxShowLevel!);
 
-        int totalVolumeShowedBid = data.orderbook.totalVolumeShowedBid;
-        int totalVolumeShowedOffer = data.orderbook.totalVolumeShowedOffer;
+        int? totalVolumeShowedBid = data.orderbook.totalVolumeShowedBid;
+        int? totalVolumeShowedOffer = data.orderbook.totalVolumeShowedOffer;
 
-        double fontSize = InvestrendTheme.of(context).small_w400.fontSize;
+        double? fontSize = InvestrendTheme.of(context).small_w400?.fontSize!;
         fontSize = useFontSize(context, fontSize, widthSection, data.orderbook);
-        int count = min(maxShowLevel, data.orderbook.countBids());
+        int count = min(maxShowLevel!, data.orderbook.countBids());
         for (int index = 0; index < count; index++) {
           // double fractionBid = value.bidVol(index) / totalVolumeShowedBid;
           // double fractionOffer = value.offerVol(index) / totalVolumeShowedOffer;
 
-          bool showBid = data.orderbook.bids.elementAt(index) > 0;
-          bool showOffer = data.orderbook.offers.elementAt(index) > 0;
+          bool showBid = data.orderbook.bids?.elementAt(index) > 0;
+          bool showOffer = data.orderbook.offers?.elementAt(index) > 0;
 
           bool bidIsClosePrice = false;
           bool offerIsClosePrice = false;
 
-          String bidQueue = data.orderbook.bidsQueueText.elementAt(index);
-          String bidLot = data.orderbook.bidsLotText.elementAt(index);
-          String bidPrice = data.orderbook.bidsText.elementAt(index);
-          Color bidColor = data.prev == 0
+          String bidQueue = data.orderbook.bidsQueueText?.elementAt(index);
+          String bidLot = data.orderbook.bidsLotText?.elementAt(index);
+          String bidPrice = data.orderbook.bidsText?.elementAt(index);
+          Color? bidColor = data.prev == 0
               ? InvestrendTheme.of(context).blackAndWhiteText
-              : InvestrendTheme.priceTextColor(data.orderbook.bids.elementAt(index), prev: data.prev);
-          String offerQueue = data.orderbook.offersQueueText.elementAt(index);
-          String offerLot = data.orderbook.offersLotText.elementAt(index);
-          String offerPrice = data.orderbook.offersText.elementAt(index);
-          Color offerColor = data.prev == 0
+              : InvestrendTheme.priceTextColor(
+                  data.orderbook.bids?.elementAt(index),
+                  prev: data.prev);
+          String offerQueue = data.orderbook.offersQueueText?.elementAt(index);
+          String offerLot = data.orderbook.offersLotText?.elementAt(index);
+          String offerPrice = data.orderbook.offersText?.elementAt(index);
+          Color? offerColor = data.prev == 0
               ? InvestrendTheme.of(context).blackAndWhiteText
-              : InvestrendTheme.priceTextColor(data.orderbook.offers.elementAt(index), prev: data.prev);
+              : InvestrendTheme.priceTextColor(
+                  data.orderbook.offers?.elementAt(index),
+                  prev: data.prev);
           bool canTap = showBid || showOffer;
           if (canTap) {
-            List<int> bidsInfo;
+            List<int>? bidsInfo;
             if (showBid) {
-              bidIsClosePrice = data.orderbook.bids.elementAt(index) == data.close;
+              bidIsClosePrice =
+                  data.orderbook.bids?.elementAt(index) == data.close;
               bidsInfo = [
-                data.orderbook.bids.elementAt(index),
-                data.orderbook.bidsLot.elementAt(index),
-                data.orderbook.bidsQueue.elementAt(index)
+                data.orderbook.bids?.elementAt(index),
+                data.orderbook.bidsLot?.elementAt(index),
+                data.orderbook.bidsQueue?.elementAt(index)
               ];
             }
 
-            List<int> offersInfo;
+            List<int>? offersInfo;
             if (showOffer) {
-              offerIsClosePrice = data.orderbook.offers.elementAt(index) == data.close;
+              offerIsClosePrice =
+                  data.orderbook.offers?.elementAt(index) == data.close;
               offersInfo = [
-                data.orderbook.offers.elementAt(index),
-                data.orderbook.offersLot.elementAt(index),
-                data.orderbook.offersQueue.elementAt(index)
+                data.orderbook.offers?.elementAt(index),
+                data.orderbook.offersLot?.elementAt(index),
+                data.orderbook.offersQueue?.elementAt(index)
               ];
             }
             list.add(createRow(
-                context, bidQueue, bidLot, bidPrice, bidColor, offerQueue, offerLot, offerPrice, offerColor, widthSection, fontSize,
-                onTap: onTap, bidsInfo: bidsInfo, offersInfo: offersInfo, highlightBid: bidIsClosePrice, highlightOffer: offerIsClosePrice));
+                context,
+                bidQueue,
+                bidLot,
+                bidPrice,
+                bidColor!,
+                offerQueue,
+                offerLot,
+                offerPrice,
+                offerColor!,
+                widthSection,
+                fontSize,
+                onTap: onTap!,
+                bidsInfo: bidsInfo!,
+                offersInfo: offersInfo!,
+                highlightBid: bidIsClosePrice,
+                highlightOffer: offerIsClosePrice));
           } else {
-            list.add(
-                createRow(context, bidQueue, bidLot, bidPrice, bidColor, offerQueue, offerLot, offerPrice, offerColor, widthSection, fontSize));
+            list.add(createRow(
+                context,
+                bidQueue,
+                bidLot,
+                bidPrice,
+                bidColor!,
+                offerQueue,
+                offerLot,
+                offerPrice,
+                offerColor!,
+                widthSection,
+                fontSize));
           }
         }
         return Column(
@@ -220,21 +265,26 @@ class CardOrderbook extends StatelessWidget {
     */
   }
 
-  double useFontSize(BuildContext context, double fontSize, double widthSection, OrderBook value, {int offset = 0}) {
-    print('WidgetOrderbook[$owner].useFontSize try fontSize  : $fontSize  offset : $offset');
-    TextStyle smallW400 = InvestrendTheme.of(context).small_w400.copyWith(fontSize: fontSize);
-    TextStyle smallW500 = InvestrendTheme.of(context).small_w500.copyWith(fontSize: fontSize);
+  double? useFontSize(BuildContext context, double? fontSize,
+      double widthSection, OrderBook value,
+      {int offset = 0}) {
+    print(
+        'WidgetOrderbook[$owner].useFontSize try fontSize  : $fontSize  offset : $offset');
+    TextStyle? smallW400 =
+        InvestrendTheme.of(context).small_w400?.copyWith(fontSize: fontSize);
+    TextStyle? smallW500 =
+        InvestrendTheme.of(context).small_w500?.copyWith(fontSize: fontSize);
     const double font_step = 1.0;
-    int count = min(maxShowLevel, value.countBids());
+    int count = min(maxShowLevel!, value.countBids());
     print('WidgetOrderbook[$owner].useFontSize count  : $count');
     for (int index = offset; index < count; index++) {
-      String bidQueue = value.bidsQueueText.elementAt(index);
-      String bidLot = value.bidsLotText.elementAt(index);
-      String bidPrice = value.bidsText.elementAt(index);
+      String bidQueue = value.bidsQueueText?.elementAt(index);
+      String bidLot = value.bidsLotText?.elementAt(index);
+      String bidPrice = value.bidsText?.elementAt(index);
 
-      String offerQueue = value.offersQueueText.elementAt(index);
-      String offerLot = value.offersLotText.elementAt(index);
-      String offerPrice = value.offersText.elementAt(index);
+      String offerQueue = value.offersQueueText?.elementAt(index);
+      String offerLot = value.offersLotText?.elementAt(index);
+      String offerPrice = value.offersText?.elementAt(index);
 
       // double widthSectionTextLeft = _textSize(bidQueue, small_w400).width + _textSize(bidLot, small_w400).width + _textSize(bidPrice, small_w500).width;
       // double widthSectionTextRight = _textSize(offerPrice, small_w500).width + _textSize(offerLot, small_w400).width + _textSize(offerQueue, small_w400).width;
@@ -244,15 +294,18 @@ class CardOrderbook extends StatelessWidget {
       double widthSectionTextLeft = _textSize(leftText, smallW400).width;
       double widthSectionTextRight = _textSize(righText, smallW500).width;
 
-      bool reduceFontSize = widthSectionTextLeft > widthSection || widthSectionTextRight > widthSection;
+      bool reduceFontSize = widthSectionTextLeft > widthSection ||
+          widthSectionTextRight > widthSection;
       // print(' useFontSize widthSection  : $widthSection   widthSectionTextLeft : $widthSectionTextLeft   widthSectionTextRight : $widthSectionTextRight  reduceFontSize : $reduceFontSize');
       if (reduceFontSize) {
-        fontSize = useFontSize(context, fontSize - 2, widthSection, value, offset: index);
+        fontSize = useFontSize(context, fontSize! - 2, widthSection, value,
+            offset: index);
         //break;
         return fontSize;
       }
     }
-    print('WidgetOrderbook[$owner].useFontSize Final fontSize  : $fontSize  offset : $offset');
+    print(
+        'WidgetOrderbook[$owner].useFontSize Final fontSize  : $fontSize  offset : $offset');
     return fontSize;
   }
 
@@ -301,14 +354,15 @@ class CardOrderbook extends StatelessWidget {
     String offerPrice,
     Color offerColor,
     double widthSection,
-    double fontSize, {
-    OrderbookCallback onTap,
-    List<int> bidsInfo,
-    List<int> offersInfo,
+    double? fontSize, {
+    OrderbookCallback? onTap,
+    List<int>? bidsInfo,
+    List<int>? offersInfo,
     bool highlightBid = false,
     bool highlightOffer = false,
   }) {
-    print('orderbook createRow  bidPrice : $bidPrice  offerPrice : $offerPrice');
+    print(
+        'orderbook createRow  bidPrice : $bidPrice  offerPrice : $offerPrice');
     return Row(
       children: [
         Container(
@@ -317,17 +371,25 @@ class CardOrderbook extends StatelessWidget {
           child: Stack(
             //fit: StackFit.expand,
             children: [
-              createLabelPrice(context, fontSize, '', TextAlign.right, bidColor),
-              Positioned.fill(child: createLabelQueue(context, fontSize, bidQueue, TextAlign.left)),
+              createLabelPrice(
+                  context, fontSize, '', TextAlign.right, bidColor),
+              Positioned.fill(
+                  child: createLabelQueue(
+                      context, fontSize, bidQueue, TextAlign.left)),
               Positioned.fill(child: createLabelLot(context, fontSize, bidLot)),
-              Positioned.fill(child: createLabelPrice(context, fontSize, bidPrice, TextAlign.right, bidColor, highlight: highlightBid)),
+              Positioned.fill(
+                  child: createLabelPrice(
+                      context, fontSize, bidPrice, TextAlign.right, bidColor,
+                      highlight: highlightBid)),
               Positioned.fill(
                 child: Row(
                   children: [
                     tapableEpandedArea(context, () {
                       if (bidsInfo != null && onTap != null) {
-
-                        PriceLotQueue data = PriceLotQueue(bidsInfo.elementAt(TypeField.Price.index), bidsInfo.elementAt(TypeField.Lot.index), bidsInfo.elementAt(TypeField.Queue.index));
+                        PriceLotQueue data = PriceLotQueue(
+                            bidsInfo.elementAt(TypeField.Price.index),
+                            bidsInfo.elementAt(TypeField.Lot.index),
+                            bidsInfo.elementAt(TypeField.Queue.index));
                         //onTap(TypeOrderbook.Bid, TypeField.Queue, bidsInfo.elementAt(TypeField.Queue.index));
                         onTap(TypeOrderbook.Bid, TypeField.Queue, data);
                       }
@@ -335,14 +397,20 @@ class CardOrderbook extends StatelessWidget {
                     tapableEpandedArea(context, () {
                       if (bidsInfo != null && onTap != null) {
                         //onTap(TypeOrderbook.Bid, TypeField.Lot, bidsInfo.elementAt(TypeField.Lot.index));
-                        PriceLotQueue data = PriceLotQueue(bidsInfo.elementAt(TypeField.Price.index), bidsInfo.elementAt(TypeField.Lot.index), bidsInfo.elementAt(TypeField.Queue.index));
+                        PriceLotQueue data = PriceLotQueue(
+                            bidsInfo.elementAt(TypeField.Price.index),
+                            bidsInfo.elementAt(TypeField.Lot.index),
+                            bidsInfo.elementAt(TypeField.Queue.index));
                         onTap(TypeOrderbook.Bid, TypeField.Lot, data);
                       }
                     }, color: null),
                     tapableEpandedArea(context, () {
                       if (bidsInfo != null && onTap != null) {
                         //onTap(TypeOrderbook.Bid, TypeField.Price, bidsInfo.elementAt(TypeField.Price.index));
-                        PriceLotQueue data = PriceLotQueue(bidsInfo.elementAt(TypeField.Price.index), bidsInfo.elementAt(TypeField.Lot.index), bidsInfo.elementAt(TypeField.Queue.index));
+                        PriceLotQueue data = PriceLotQueue(
+                            bidsInfo.elementAt(TypeField.Price.index),
+                            bidsInfo.elementAt(TypeField.Lot.index),
+                            bidsInfo.elementAt(TypeField.Queue.index));
                         onTap(TypeOrderbook.Bid, TypeField.Price, data);
                       }
                     }, color: null),
@@ -360,31 +428,47 @@ class CardOrderbook extends StatelessWidget {
           width: widthSection,
           child: Stack(
             children: [
-              createLabelPrice(context, fontSize, '', TextAlign.left, offerColor),
-              Positioned.fill(child: createLabelPrice(context, fontSize, offerPrice, TextAlign.left, offerColor, highlight: highlightOffer)),
-              Positioned.fill(child: createLabelLot(context, fontSize, offerLot)),
-              Positioned.fill(child: createLabelQueue(context, fontSize, offerQueue, TextAlign.right)),
+              createLabelPrice(
+                  context, fontSize, '', TextAlign.left, offerColor),
+              Positioned.fill(
+                  child: createLabelPrice(
+                      context, fontSize, offerPrice, TextAlign.left, offerColor,
+                      highlight: highlightOffer)),
+              Positioned.fill(
+                  child: createLabelLot(context, fontSize, offerLot)),
+              Positioned.fill(
+                  child: createLabelQueue(
+                      context, fontSize, offerQueue, TextAlign.right)),
               Positioned.fill(
                 child: Row(
                   children: [
                     tapableEpandedArea(context, () {
                       if (offersInfo != null && onTap != null) {
                         //onTap(TypeOrderbook.Offer, TypeField.Price, offersInfo.elementAt(TypeField.Price.index));
-                        PriceLotQueue data = PriceLotQueue(offersInfo.elementAt(TypeField.Price.index), offersInfo.elementAt(TypeField.Lot.index), offersInfo.elementAt(TypeField.Queue.index));
+                        PriceLotQueue data = PriceLotQueue(
+                            offersInfo.elementAt(TypeField.Price.index),
+                            offersInfo.elementAt(TypeField.Lot.index),
+                            offersInfo.elementAt(TypeField.Queue.index));
                         onTap(TypeOrderbook.Offer, TypeField.Price, data);
                       }
                     }, color: null),
                     tapableEpandedArea(context, () {
                       if (offersInfo != null && onTap != null) {
                         //onTap(TypeOrderbook.Offer, TypeField.Lot, offersInfo.elementAt(TypeField.Lot.index));
-                        PriceLotQueue data = PriceLotQueue(offersInfo.elementAt(TypeField.Price.index), offersInfo.elementAt(TypeField.Lot.index), offersInfo.elementAt(TypeField.Queue.index));
+                        PriceLotQueue data = PriceLotQueue(
+                            offersInfo.elementAt(TypeField.Price.index),
+                            offersInfo.elementAt(TypeField.Lot.index),
+                            offersInfo.elementAt(TypeField.Queue.index));
                         onTap(TypeOrderbook.Offer, TypeField.Lot, data);
                       }
                     }, color: null),
                     tapableEpandedArea(context, () {
                       if (offersInfo != null && onTap != null) {
                         //onTap(TypeOrderbook.Offer, TypeField.Queue, offersInfo.elementAt(TypeField.Queue.index));
-                        PriceLotQueue data = PriceLotQueue(offersInfo.elementAt(TypeField.Price.index), offersInfo.elementAt(TypeField.Lot.index), offersInfo.elementAt(TypeField.Queue.index));
+                        PriceLotQueue data = PriceLotQueue(
+                            offersInfo.elementAt(TypeField.Price.index),
+                            offersInfo.elementAt(TypeField.Lot.index),
+                            offersInfo.elementAt(TypeField.Queue.index));
                         onTap(TypeOrderbook.Offer, TypeField.Queue, data);
                       }
                     }, color: null),
@@ -398,7 +482,8 @@ class CardOrderbook extends StatelessWidget {
     );
   }
 
-  Widget tapableEpandedArea(BuildContext context, VoidCallback onTap, {Color color}) {
+  Widget tapableEpandedArea(BuildContext context, VoidCallback onTap,
+      {Color? color}) {
     return Expanded(
         flex: 1,
         child: TapableWidget(
@@ -442,48 +527,54 @@ class CardOrderbook extends StatelessWidget {
     );
   }
 
-  Widget createLabelQueue(BuildContext context, double fontSize, String text, TextAlign textAlign) {
+  Widget createLabelQueue(BuildContext context, double? fontSize, String text,
+      TextAlign textAlign) {
     return Padding(
       padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
       child: Text(
         text,
-        style: InvestrendTheme.of(context).small_w400.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor, fontSize: fontSize),
+        style: InvestrendTheme.of(context).small_w400?.copyWith(
+            color: InvestrendTheme.of(context).greyLighterTextColor,
+            fontSize: fontSize),
         textAlign: textAlign,
       ),
     );
   }
 
-  Widget createLabelLot(BuildContext context, double fontSize, String text) {
+  Widget createLabelLot(BuildContext context, double? fontSize, String text) {
     return Padding(
       padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
       child: Text(
         text,
-        style: InvestrendTheme.of(context).small_w400.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor, fontSize: fontSize),
+        style: InvestrendTheme.of(context).small_w400?.copyWith(
+            color: InvestrendTheme.of(context).greyDarkerTextColor,
+            fontSize: fontSize),
         textAlign: TextAlign.center,
       ),
     );
   }
 
-  Widget createLabelPrice(BuildContext context, double fontSize, String text, TextAlign textAlign, Color color, {bool highlight = false}) {
-
+  Widget createLabelPrice(BuildContext context, double? fontSize, String text,
+      TextAlign textAlign, Color color,
+      {bool highlight = false}) {
     // TextStyle style = InvestrendTheme.of(context).small_w500.copyWith(
     //       color: color,
     //       fontSize: fontSize,
     //       decoration: highlight ? TextDecoration.underline : null,
     //       decorationColor: highlight ? Theme.of(context).accentColor : null,
     //     );
-    TextStyle style;
-    if(highlight){
+    TextStyle? style;
+    if (highlight) {
       text = ' $text ';
-      style = InvestrendTheme
-          .of(context)
+      style = InvestrendTheme.of(context).small_w500?.copyWith(
+            color: Theme.of(context).primaryColor,
+            fontSize: fontSize,
+            backgroundColor: color,
+          );
+    } else {
+      style = InvestrendTheme.of(context)
           .small_w500
-          .copyWith(color: Theme.of(context).primaryColor, fontSize: fontSize, backgroundColor: color,);
-    }else{
-      style = InvestrendTheme
-          .of(context)
-          .small_w500
-          .copyWith(color: color, fontSize: fontSize);
+          ?.copyWith(color: color, fontSize: fontSize);
     }
 
     return Padding(

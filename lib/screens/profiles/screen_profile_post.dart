@@ -1,3 +1,4 @@
+// ignore_for_file: unused_local_variable
 
 import 'package:Investrend/component/cards/card_social_media.dart';
 import 'package:Investrend/component/empty_label.dart';
@@ -17,41 +18,48 @@ class ScreenProfilePost extends StatefulWidget {
   final TabController tabController;
   final int tabIndex;
 
-  ScreenProfilePost(this.tabIndex, this.tabController, {Key key}) : super(key: key);
+  ScreenProfilePost(this.tabIndex, this.tabController, {Key? key})
+      : super(key: key);
 
   @override
-    _ScreenProfilePostState createState() => _ScreenProfilePostState(tabIndex, tabController);
-  }
+  _ScreenProfilePostState createState() =>
+      _ScreenProfilePostState(tabIndex, tabController);
+}
 
-class _ScreenProfilePostState extends BaseStateNoTabsWithParentTab<ScreenProfilePost> {
-
-
-  _ScreenProfilePostState(int tabIndex, TabController tabController) : super('/profile_post', tabIndex, tabController,parentTabIndex: Tabs.Portfolio.index);
-  ScrollController _scrollController;
+class _ScreenProfilePostState
+    extends BaseStateNoTabsWithParentTab<ScreenProfilePost> {
+  _ScreenProfilePostState(int tabIndex, TabController tabController)
+      : super('/profile_post', tabIndex, tabController,
+            parentTabIndex: Tabs.Portfolio.index);
+  ScrollController? _scrollController;
 
   void _scrollToTop() {
-    _scrollController.animateTo(0,
+    _scrollController?.animateTo(0,
         duration: Duration(seconds: 2), curve: Curves.easeInOutQuint);
   }
+
   void scrollListener() {
-    if (_scrollController.offset >= _scrollController.position.maxScrollExtent &&
-        !_scrollController.position.outOfRange) {
+    if (_scrollController!.offset >=
+            _scrollController!.position.maxScrollExtent &&
+        !_scrollController!.position.outOfRange) {
       //"reach the bottom";
 
-      if(mounted){
+      if (mounted) {
         fetchNextPage();
       }
     }
-    if (_scrollController.offset <= _scrollController.position.minScrollExtent &&
-        !_scrollController.position.outOfRange) {
+    if (_scrollController!.offset <=
+            _scrollController!.position.minScrollExtent &&
+        !_scrollController!.position.outOfRange) {
       //"reach the top";
-
     }
   }
+
   bool showedLastPageInfo = false;
-  void fetchNextPage(){
-    if(context.read(sosmedFeedChangeNotifier).loadingBottom){
-      print('scrollListener nextPage onProgress : '+context.read(sosmedFeedChangeNotifier).loadingBottom.toString());
+  void fetchNextPage() {
+    if (context.read(sosmedFeedChangeNotifier).loadingBottom) {
+      print('scrollListener nextPage onProgress : ' +
+          context.read(sosmedFeedChangeNotifier).loadingBottom.toString());
       return;
     }
     print('reach the bottom');
@@ -59,13 +67,18 @@ class _ScreenProfilePostState extends BaseStateNoTabsWithParentTab<ScreenProfile
     String nextPageUrl = context.read(sosmedFeedChangeNotifier).next_page_url;
     int currentPage = context.read(sosmedFeedChangeNotifier).current_page;
     int lastPage = context.read(sosmedFeedChangeNotifier).last_page;
-    if(currentPage == lastPage){
-      if(showedLastPageInfo){
+    if (currentPage == lastPage) {
+      if (showedLastPageInfo) {
         return;
       }
       showedLastPageInfo = true;
-      InvestrendTheme.of(context).showSnackBar(context, 'sosmed_label_all_post_viewed'.tr(), buttonOnPress: _scrollToTop, buttonLabel: 'button_latest_feed'.tr(), buttonColor: Colors.orange, seconds: 5);
-      Future.delayed(Duration(seconds: 1),(){
+      InvestrendTheme.of(context).showSnackBar(
+          context, 'sosmed_label_all_post_viewed'.tr(),
+          buttonOnPress: _scrollToTop,
+          buttonLabel: 'button_latest_feed'.tr(),
+          buttonColor: Colors.orange,
+          seconds: 5);
+      Future.delayed(Duration(seconds: 1), () {
         context.read(sosmedFeedChangeNotifier).showLoadingBottom(false);
       });
       return;
@@ -74,34 +87,43 @@ class _ScreenProfilePostState extends BaseStateNoTabsWithParentTab<ScreenProfile
     int nextPage = currentPage + 1;
     final result = doUpdate(nextPage: nextPage);
   }
+
   bool showLoadingFirstTime = true;
 
   @override
-  Widget createAppBar(BuildContext context) {
+  PreferredSizeWidget? createAppBar(BuildContext context) {
     return null;
   }
-  Future doUpdate({bool pullToRefresh = false, int nextPage}) async {
+
+  Future doUpdate({bool pullToRefresh = false, int? nextPage}) async {
     print(routeName + '.doUpdate');
     showedLastPageInfo = false;
-    try{
+    try {
       context.read(sosmedFeedChangeNotifier).showLoadingBottom(true);
       //final fetchPost = await SosMedHttp.sosmedFetchPost('123', InvestrendTheme.of(context).applicationPlatform, InvestrendTheme.of(context).applicationVersion, page: nextPage, language: EasyLocalization.of(context).locale.languageCode);
-      final fetchPost = await InvestrendTheme.tradingHttp.sosmedFetchPost( InvestrendTheme.of(context).applicationPlatform, InvestrendTheme.of(context).applicationVersion, page: nextPage, language: EasyLocalization.of(context).locale.languageCode, mine: true);
-      if(fetchPost.result != null ){
-        print('fetchPost = '+fetchPost.status.toString() +' --> '+fetchPost.message);
+      final fetchPost = await InvestrendTheme.tradingHttp.sosmedFetchPost(
+          InvestrendTheme.of(context).applicationPlatform,
+          InvestrendTheme.of(context).applicationVersion,
+          page: nextPage,
+          language: EasyLocalization.of(context)!.locale.languageCode,
+          mine: true);
+      if (fetchPost.result != null) {
+        print('fetchPost = ' +
+            fetchPost.status.toString() +
+            ' --> ' +
+            fetchPost.message);
         //_pageSize = fetchPost.result.per_page;
         showLoadingFirstTime = false;
         context.read(sosmedFeedChangeNotifier).setResult(fetchPost.result);
         // Future.delayed(Duration(seconds: 2),(){
         context.read(sosmedFeedChangeNotifier).showLoadingBottom(false);
         // });
-
       }
-    }catch(error){
-      print(routeName + '.doUpdate Exception fetch_post : '+error.toString());
+    } catch (error) {
+      print(routeName + '.doUpdate Exception fetch_post : ' + error.toString());
       //context.read(sosmedPostChangeNotifier).showLoadingBottom(false);
       showLoadingFirstTime = false;
-      if(mounted){
+      if (mounted) {
         //InvestrendTheme.of(context).showSnackBar(context, 'Error : '+error.toString());
         // Future.delayed(Duration(seconds: 2),(){
         //context.read(sosmedPostChangeNotifier).showLoadingBottom(false);
@@ -127,29 +149,37 @@ class _ScreenProfilePostState extends BaseStateNoTabsWithParentTab<ScreenProfile
       // _pagingController.error = error;
     }
 
-
     print(routeName + '.doUpdate finished. pullToRefresh : $pullToRefresh');
 
     return true;
   }
 
   Future onRefresh() {
-
     return doUpdate(pullToRefresh: true);
     // return Future.delayed(Duration(seconds: 3));
   }
 
-  void commentClicked(BuildContext context, Post post){
+  void commentClicked(BuildContext context, Post post) {
     showDetailPost(context, post, showKeyboard: true);
   }
-  void likeClicked(BuildContext context,Post post){
-    if(mounted){
+
+  void likeClicked(BuildContext context, Post post) {
+    if (mounted) {
       context.read(sosmedFeedChangeNotifier).mustNotifyListener();
     }
   }
-  void showDetailPost(BuildContext context, Post post, {bool showKeyboard=false}){
-    Navigator.push(context, CupertinoPageRoute(
-      builder: (_) => ScreenDetailPost(post, showKeyboard: showKeyboard,), settings: RouteSettings(name: '/detail_post'),));
+
+  void showDetailPost(BuildContext context, Post post,
+      {bool showKeyboard = false}) {
+    Navigator.push(
+        context,
+        CupertinoPageRoute(
+          builder: (_) => ScreenDetailPost(
+            post,
+            showKeyboard: showKeyboard,
+          ),
+          settings: RouteSettings(name: '/detail_post'),
+        ));
     /*
     .then((value) {
       if(value is String){
@@ -163,6 +193,7 @@ class _ScreenProfilePostState extends BaseStateNoTabsWithParentTab<ScreenProfile
     });
      */
   }
+
   @override
   Widget createBody(BuildContext context, double paddingBottom) {
     return RefreshIndicator(
@@ -171,7 +202,7 @@ class _ScreenProfilePostState extends BaseStateNoTabsWithParentTab<ScreenProfile
       onRefresh: onRefresh,
       child: Consumer(builder: (context, watch, child) {
         final notifier = watch(sosmedFeedChangeNotifier);
-        if(notifier.countData() == 0){
+        if (notifier.countData() == 0) {
           /*
           return ListView(
             padding: const EdgeInsets.all(InvestrendTheme.cardMargin),
@@ -179,93 +210,145 @@ class _ScreenProfilePostState extends BaseStateNoTabsWithParentTab<ScreenProfile
             children: showLoadingFirstTime ? pre_childs_loading : pre_childs,
           );
           */
-          if(showLoadingFirstTime){
-            return Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.secondary, backgroundColor: Theme.of(context).colorScheme.secondary.withOpacity(0.2),));
-          }else{
-            return Center(child: EmptyLabel(text: 'infinity_label️'.tr(),));
+          if (showLoadingFirstTime) {
+            return Center(
+                child: CircularProgressIndicator(
+              color: Theme.of(context).colorScheme.secondary,
+              backgroundColor:
+                  Theme.of(context).colorScheme.secondary.withOpacity(0.2),
+            ));
+          } else {
+            return Center(
+                child: EmptyLabel(
+              text: 'infinity_label️'.tr(),
+            ));
           }
-
         }
 
-        int totalCount = notifier.countData() ;//+ pre_childs.length;
-        if(notifier.loadingBottom || notifier.retryBottom){
-          totalCount  = totalCount + 1;
+        int? totalCount = notifier.countData(); //+ pre_childs.length;
+        if (notifier.loadingBottom || notifier.retryBottom) {
+          totalCount = totalCount! + 1;
         }
         return ListView.builder(
             controller: _scrollController,
             shrinkWrap: false,
-            padding: const EdgeInsets.only(left: InvestrendTheme.cardMargin, right: InvestrendTheme.cardMargin, top: InvestrendTheme.cardMargin, bottom: (InvestrendTheme.cardMargin + 100.0)),
+            padding: const EdgeInsets.only(
+                left: InvestrendTheme.cardMargin,
+                right: InvestrendTheme.cardMargin,
+                top: InvestrendTheme.cardMargin,
+                bottom: (InvestrendTheme.cardMargin + 100.0)),
             //itemCount: notifier.countPost() + pre_childs.length ,
-            itemCount:totalCount,
+            itemCount: totalCount,
             itemBuilder: (BuildContext context, int index) {
               /*if(index < pre_childs.length){
                 return pre_childs.elementAt(index);
               }else  if(index < (pre_childs.length + notifier.countData())){*/
-              if(index < notifier.countData()){
+              if (index < notifier.countData()!) {
                 //int indexPost = index - pre_childs.length;
                 int indexPost = index; // - pre_childs.length;
-                Post post = notifier.datas().elementAt(indexPost);
+                Post? post = notifier.datas()?.elementAt(indexPost);
 
-                if(post != null){
-
-                  switch(post.postType){
+                if (post != null) {
+                  switch (post.postType) {
                     case PostType.POLL:
                       {
                         //return CardSocialTextVote(votes, avatarUrl, name, username, label, datetime, text, commentCount, likedCount, comments);
-                        return NewCardSocialTextPoll(post, shareClick: (){}, commentClick: ()=>commentClicked(context, post),likeClick:()=> likeClicked(context, post), onTap: ()=>showDetailPost(context, post), key: Key(post.keyString),);
+                        return NewCardSocialTextPoll(
+                          post,
+                          shareClick: () {},
+                          commentClick: () => commentClicked(context, post),
+                          likeClick: () => likeClicked(context, post),
+                          onTap: () => showDetailPost(context, post),
+                          key: Key(post.keyString!),
+                        );
                       }
-                      break;
                     case PostType.PREDICTION:
                       {
                         //return CardSocialTextPrediction(prediction, avatarUrl, name, username, label, datetime, text, commentCount, likedCount, comments);
-                        return NewCardSocialTextPrediction(post, shareClick: (){}, commentClick: ()=>commentClicked(context, post),likeClick: ()=> likeClicked(context, post), onTap: ()=>showDetailPost(context, post), key: Key(post.keyString));
+                        return NewCardSocialTextPrediction(post,
+                            shareClick: () {},
+                            commentClick: () => commentClicked(context, post),
+                            likeClick: () => likeClicked(context, post),
+                            onTap: () => showDetailPost(context, post),
+                            key: Key(post.keyString!));
                       }
-                      break;
                     case PostType.TRANSACTION:
                       {
                         //return CardSocialTextActivity(activityType, activityCode, avatarUrl, name, username, label, datetime, text, commentCount, likedCount, comments);
-                        return NewCardSocialTextActivity(post, shareClick: (){}, commentClick: ()=>commentClicked(context, post),likeClick: ()=> likeClicked(context, post), onTap: ()=>showDetailPost(context, post), key: Key(post.keyString));
+                        return NewCardSocialTextActivity(post,
+                            shareClick: () {},
+                            commentClick: () => commentClicked(context, post),
+                            likeClick: () => likeClicked(context, post),
+                            onTap: () => showDetailPost(context, post),
+                            key: Key(post.keyString!));
                       }
-                      break;
                     case PostType.TEXT:
                       {
-                        if(post.attachmentsCount() > 0 ){
-                          return NewCardSocialTextImages(post, shareClick: (){}, commentClick: ()=>commentClicked(context, post),likeClick: ()=> likeClicked(context, post), onTap: ()=>showDetailPost(context, post), key: Key(post.keyString));
-                        }else{
-                          return NewCardSocialText(post, shareClick: (){}, commentClick: ()=>commentClicked(context, post),likeClick: ()=> likeClicked(context, post), onTap: ()=>showDetailPost(context, post), key: Key(post.keyString));
+                        if (post.attachmentsCount()! > 0) {
+                          return NewCardSocialTextImages(post,
+                              shareClick: () {},
+                              commentClick: () => commentClicked(context, post),
+                              likeClick: () => likeClicked(context, post),
+                              onTap: () => showDetailPost(context, post),
+                              key: Key(post.keyString!));
+                        } else {
+                          return NewCardSocialText(post,
+                              shareClick: () {},
+                              commentClick: () => commentClicked(context, post),
+                              likeClick: () => likeClicked(context, post),
+                              onTap: () => showDetailPost(context, post),
+                              key: Key(post.keyString!));
                         }
                       }
-                      break;
                     case PostType.Unknown:
                       {
-                        return Text('[$indexPost] --> '+post.type+' is Unknown');
+                        return Text(
+                            '[$indexPost] --> ' + post.type! + ' is Unknown');
                       }
-                      break;
                     default:
                       {
-                        return Text('[$indexPost] --> '+post.type+' is Unknown[default]');
+                        return Text('[$indexPost] --> ' +
+                            post.type! +
+                            ' is Unknown[default]');
                       }
-                      break;
                   }
                   //return Text('[$indexPost] --> '+post.type);
-
-                }else{
-                  return EmptyLabel(text: 'post index $index is null',);
+                } else {
+                  return EmptyLabel(
+                    text: 'post index $index is null',
+                  );
                 }
-
-              }else{
-                if(notifier.loadingBottom){
-                  return Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.secondary, backgroundColor: Theme.of(context).colorScheme.secondary.withOpacity(0.2),));
-                }else if(notifier.retryBottom){
-                  return Center(child: TextButton(child: Text('button_retry'.tr(), style: InvestrendTheme.of(context).small_w400_compact.copyWith(color: Theme.of(context).colorScheme.secondary),), onPressed: (){
-                    fetchNextPage();
-                  },));
-                }else{
-                  return Center(child: EmptyLabel(text: 'infinity_label️'.tr(),));
+              } else {
+                if (notifier.loadingBottom) {
+                  return Center(
+                      child: CircularProgressIndicator(
+                    color: Theme.of(context).colorScheme.secondary,
+                    backgroundColor: Theme.of(context)
+                        .colorScheme
+                        .secondary
+                        .withOpacity(0.2),
+                  ));
+                } else if (notifier.retryBottom) {
+                  return Center(
+                      child: TextButton(
+                    child: Text(
+                      'button_retry'.tr(),
+                      style: InvestrendTheme.of(context)
+                          .small_w400_compact
+                          ?.copyWith(
+                              color: Theme.of(context).colorScheme.secondary),
+                    ),
+                    onPressed: () {
+                      fetchNextPage();
+                    },
+                  ));
+                } else {
+                  return Center(
+                      child: EmptyLabel(
+                    text: 'infinity_label️'.tr(),
+                  ));
                 }
               }
-
-
             });
       }),
     );
@@ -324,7 +407,7 @@ class _ScreenProfilePostState extends BaseStateNoTabsWithParentTab<ScreenProfile
   void initState() {
     super.initState();
     _scrollController = ScrollController();
-    _scrollController.addListener(scrollListener);
+    _scrollController?.addListener(scrollListener);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       doUpdate();
     });
@@ -355,7 +438,7 @@ class _ScreenProfilePostState extends BaseStateNoTabsWithParentTab<ScreenProfile
   @override
   void dispose() {
     // _portfolioNotifier.dispose();
-    _scrollController.dispose();
+    _scrollController?.dispose();
     super.dispose();
   }
 

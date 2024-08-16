@@ -1,4 +1,3 @@
-
 import 'package:Investrend/component/cards/card_stock_themes.dart';
 import 'package:Investrend/objects/class_value_notifier.dart';
 import 'package:Investrend/objects/data_object.dart';
@@ -8,52 +7,60 @@ import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:flutter/material.dart';
 
 class ScreenSearchThemes extends StatefulWidget {
-  final TabController tabController;
+  final TabController? tabController;
   final int tabIndex;
-  final ValueNotifier<bool> visibilityNotifier;
-  ScreenSearchThemes(this.tabIndex, this.tabController, {Key key, this.visibilityNotifier}) : super(key: key);
+  final ValueNotifier<bool>? visibilityNotifier;
+  ScreenSearchThemes(this.tabIndex, this.tabController,
+      {Key? key, this.visibilityNotifier})
+      : super(key: key);
 
   @override
-  _ScreenSearchThemesState createState() => _ScreenSearchThemesState(tabIndex, tabController, visibilityNotifier: visibilityNotifier);
+  _ScreenSearchThemesState createState() =>
+      _ScreenSearchThemesState(tabIndex, tabController,
+          visibilityNotifier: visibilityNotifier);
 }
 
-class _ScreenSearchThemesState extends BaseStateNoTabsWithParentTab<ScreenSearchThemes> {
+class _ScreenSearchThemesState
+    extends BaseStateNoTabsWithParentTab<ScreenSearchThemes> {
   StockThemeNotifier _themeNotifier = StockThemeNotifier(new StockThemesData());
 
   // LabelValueNotifier _shareHolderCompositionNotifier = LabelValueNotifier(new LabelValueData());
   // LabelValueNotifier _boardOfCommisionersNotifier = LabelValueNotifier(new LabelValueData());
 
-  _ScreenSearchThemesState(int tabIndex, TabController tabController, {ValueNotifier<bool> visibilityNotifier})
-      : super('/search_theme', tabIndex, tabController, parentTabIndex: Tabs.Search.index, visibilityNotifier: visibilityNotifier);
+  _ScreenSearchThemesState(int tabIndex, TabController? tabController,
+      {ValueNotifier<bool>? visibilityNotifier})
+      : super('/search_theme', tabIndex, tabController,
+            parentTabIndex: Tabs.Search.index,
+            visibilityNotifier: visibilityNotifier);
 
   // @override
   // bool get wantKeepAlive => true;
 
   @override
-  Widget createAppBar(BuildContext context) {
+  PreferredSizeWidget? createAppBar(BuildContext context) {
     return null;
   }
 
   Future doUpdate({bool pullToRefresh = false}) async {
-    if(pullToRefresh || _themeNotifier.value.isEmpty()){
+    if (pullToRefresh || _themeNotifier.value!.isEmpty()) {
       //_themeNotifier.setLoading();
       setNotifierLoading(_themeNotifier);
     }
 
-    Future<List<StockThemes>> themes = InvestrendTheme.datafeedHttp.fetchThemes();
-    themes.then((value) {
-      StockThemesData dataTheme = StockThemesData();
-      if(value != null){
+    Future<List<StockThemes>> themes =
+        InvestrendTheme.datafeedHttp.fetchThemes();
+    themes.then((List<StockThemes>? value) {
+      StockThemesData? dataTheme = StockThemesData();
+      if (value != null) {
         value.forEach((theme) {
-          dataTheme.datas.add(theme);
+          dataTheme.datas?.add(theme);
         });
-        if(mounted){
+        if (mounted) {
           _themeNotifier.setValue(dataTheme);
         }
-      }else{
+      } else {
         setNotifierNoData(_themeNotifier);
       }
-
     }).onError((error, stackTrace) {
       //_themeNotifier.setError(message: error.toString());
       setNotifierError(_themeNotifier, error);
@@ -63,7 +70,7 @@ class _ScreenSearchThemesState extends BaseStateNoTabsWithParentTab<ScreenSearch
   }
 
   Future onRefresh() {
-    if(!active){
+    if (!active) {
       active = true;
       //onActive();
     }
@@ -74,9 +81,13 @@ class _ScreenSearchThemesState extends BaseStateNoTabsWithParentTab<ScreenSearch
   @override
   Widget createBody(BuildContext context, double paddingBottom) {
     List<Widget> childs = List.empty(growable: true);
-    childs.add(CardStockThemes('', _themeNotifier, onRetry: (){
-      doUpdate(pullToRefresh: true);
-    },));
+    childs.add(CardStockThemes(
+      '',
+      _themeNotifier,
+      onRetry: () {
+        doUpdate(pullToRefresh: true);
+      },
+    ));
     childs.add(SizedBox(height: paddingBottom + 80));
 
     return RefreshIndicator(
@@ -90,6 +101,7 @@ class _ScreenSearchThemesState extends BaseStateNoTabsWithParentTab<ScreenSearch
       ),
     );
   }
+
   /*
   @override
   Widget createBody(BuildContext context, double paddingBottom) {
@@ -109,7 +121,6 @@ class _ScreenSearchThemesState extends BaseStateNoTabsWithParentTab<ScreenSearch
   @override
   void onActive() {
     //print(routeName + ' onActive');
-
   }
 
   @override

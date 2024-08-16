@@ -8,59 +8,61 @@ import 'package:Investrend/screens/base/base_state.dart';
 import 'package:Investrend/screens/screen_main.dart';
 import 'package:flutter/material.dart';
 
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:easy_localization/easy_localization.dart';
+// import 'package:flutter_riverpod/flutter_riverpod.dart';
+// import 'package:easy_localization/easy_localization.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
 
 class ScreenSearchCurrency extends StatefulWidget {
-  final TabController tabController;
+  final TabController? tabController;
   final int tabIndex;
-  final ValueNotifier<bool> visibilityNotifier;
-  ScreenSearchCurrency(this.tabIndex, this.tabController,  {Key key, this.visibilityNotifier}) : super( key: key);
+  final ValueNotifier<bool>? visibilityNotifier;
+  ScreenSearchCurrency(this.tabIndex, this.tabController,
+      {Key? key, this.visibilityNotifier})
+      : super(key: key);
 
   @override
-  _ScreenSearchCurrencyState createState() => _ScreenSearchCurrencyState(tabIndex, tabController, visibilityNotifier: visibilityNotifier);
-
+  _ScreenSearchCurrencyState createState() =>
+      _ScreenSearchCurrencyState(tabIndex, tabController,
+          visibilityNotifier: visibilityNotifier);
 }
 
-class _ScreenSearchCurrencyState extends BaseStateNoTabsWithParentTab<ScreenSearchCurrency>
-
-{
-  GroupedNotifier _groupedNotifier = GroupedNotifier(GroupedData());
+class _ScreenSearchCurrencyState
+    extends BaseStateNoTabsWithParentTab<ScreenSearchCurrency> {
+  GroupedNotifier? _groupedNotifier = GroupedNotifier(GroupedData());
 
   // GeneralPriceNotifier _idrNotifier = GeneralPriceNotifier(new GeneralPriceData());
   // GeneralPriceNotifier _crossNotifier = GeneralPriceNotifier(new GeneralPriceData());
-  
-  
+
   // LabelValueNotifier _shareHolderCompositionNotifier = LabelValueNotifier(new LabelValueData());
   // LabelValueNotifier _boardOfCommisionersNotifier = LabelValueNotifier(new LabelValueData());
 
-  _ScreenSearchCurrencyState(int tabIndex, TabController tabController, {ValueNotifier<bool> visibilityNotifier})
-      : super('/search_currency', tabIndex, tabController,parentTabIndex: Tabs.Search.index, visibilityNotifier: visibilityNotifier);
+  _ScreenSearchCurrencyState(int tabIndex, TabController? tabController,
+      {ValueNotifier<bool>? visibilityNotifier})
+      : super('/search_currency', tabIndex, tabController,
+            parentTabIndex: Tabs.Search.index,
+            visibilityNotifier: visibilityNotifier);
 
   // @override
   // bool get wantKeepAlive => true;
 
-
-
-
   @override
-  Widget createAppBar(BuildContext context) {
+  PreferredSizeWidget? createAppBar(BuildContext context) {
     return null;
   }
 
   Future doUpdate({bool pullToRefresh = false}) async {
-    print(routeName+'.doUpdate '+DateTime.now().toString());
-    if(_groupedNotifier.value.isEmpty() || pullToRefresh) {
+    print(routeName + '.doUpdate ' + DateTime.now().toString());
+    if (_groupedNotifier!.value!.isEmpty() || pullToRefresh) {
       setNotifierLoading(_groupedNotifier);
     }
     try {
-      final groupedData = await InvestrendTheme.datafeedHttp.fetchCurrencies();
-      if(groupedData != null){
-        if(mounted){
-          _groupedNotifier.setValue(groupedData);
+      final GroupedData? groupedData =
+          await InvestrendTheme.datafeedHttp.fetchCurrencies();
+      if (groupedData != null) {
+        if (mounted) {
+          _groupedNotifier?.setValue(groupedData);
         }
-      }else{
+      } else {
         setNotifierNoData(_groupedNotifier);
       }
     } catch (error) {
@@ -71,7 +73,7 @@ class _ScreenSearchCurrencyState extends BaseStateNoTabsWithParentTab<ScreenSear
   }
 
   Future onRefresh() {
-    if(!active){
+    if (!active) {
       active = true;
       //onActive();
     }
@@ -81,15 +83,12 @@ class _ScreenSearchCurrencyState extends BaseStateNoTabsWithParentTab<ScreenSear
 
   @override
   Widget createBody(BuildContext context, double paddingBottom) {
-
     return RefreshIndicator(
       color: InvestrendTheme.of(context).textWhite,
-      backgroundColor: Theme
-          .of(context)
-          .colorScheme.secondary,
+      backgroundColor: Theme.of(context).colorScheme.secondary,
       onRefresh: onRefresh,
-      child:ValueListenableBuilder<GroupedData>(
-          valueListenable: _groupedNotifier,
+      child: ValueListenableBuilder<GroupedData?>(
+          valueListenable: _groupedNotifier!,
           builder: (context, value, child) {
             // if (_groupedNotifier.invalid()) {
             //   return ListView(
@@ -116,53 +115,71 @@ class _ScreenSearchCurrencyState extends BaseStateNoTabsWithParentTab<ScreenSear
             //   }
             // }
 
-            Widget noWidget  = _groupedNotifier.currentState.getNoWidget(onRetry: (){
+            Widget? noWidget =
+                _groupedNotifier?.currentState.getNoWidget(onRetry: () {
               doUpdate(pullToRefresh: true);
             });
-            if(noWidget != null){
+            if (noWidget != null) {
               return ListView(
                 children: [
                   Padding(
                     //padding: EdgeInsets.only(top: MediaQuery.of(context).size.width - 80.0),
-                    padding:  EdgeInsets.only(top: MediaQuery.of(context).size.width / 4),
+                    padding: EdgeInsets.only(
+                        top: MediaQuery.of(context).size.width / 4),
                     child: Center(child: noWidget),
                   ),
                 ],
               );
             }
-            print('value.datasSize : '+value.datasSize().toString());
+            print('value.datasSize : ' + value!.datasSize().toString());
             return ListView.separated(
                 shrinkWrap: false,
-                padding: const EdgeInsets.only(left:InvestrendTheme.cardPaddingGeneral , right:InvestrendTheme.cardPaddingGeneral),
+                padding: const EdgeInsets.only(
+                    left: InvestrendTheme.cardPaddingGeneral,
+                    right: InvestrendTheme.cardPaddingGeneral),
                 itemCount: value.datasSize(),
                 separatorBuilder: (context, index) {
                   StringIndex holder = value.elementAt(index);
-                  print('index : $index  '+holder.toString());
-                  if(holder.number < 0){
-                    return Divider(thickness: 1.0, color: Colors.transparent, );
-                  }else{
+                  print('index : $index  ' + holder.toString());
+                  if (holder.number! < 0) {
+                    return Divider(
+                      thickness: 1.0,
+                      color: Colors.transparent,
+                    );
+                  } else {
                     // bool last = holder.number == (value.map[holder.text].length - 1);
                     // if(last){
                     //   return Divider(thickness: 1.0, color: Colors.transparent, );
                     // }else{
                     return ComponentCreator.divider(context);
                     // }
-
                   }
                 },
                 itemBuilder: (BuildContext context, int index) {
                   StringIndex holder = value.elementAt(index);
-                  print('index : $index  '+holder.toString());
-                  if(holder.number < 0){
-                    String group = holder.text;
+                  print('index : $index  ' + holder.toString());
+                  if (holder.number! < 0) {
+                    String? group = holder.text;
                     print('group : $group');
                     return Padding(
                       padding: const EdgeInsets.only(top: 28.0),
-                      child: GroupTitle(group, color: InvestrendTheme.of(context).greyLighterTextColor),
+                      child: GroupTitle(group,
+                          color:
+                              InvestrendTheme.of(context).greyLighterTextColor),
                     );
-                  }else{
-                    GeneralPrice gp = value.map[holder.text].elementAt(holder.number);
-                    return RowGeneralPrice(gp.code, gp.price, gp.change, gp.percent, InvestrendTheme.changeTextColor(gp.change), name: gp.name, firstRow: true, onTap: (){},);
+                  } else {
+                    GeneralPrice gp =
+                        value.map?[holder.text]?.elementAt(holder.number!);
+                    return RowGeneralPrice(
+                      gp.code,
+                      gp.price,
+                      gp.change,
+                      gp.percent,
+                      InvestrendTheme.changeTextColor(gp.change),
+                      name: gp.name,
+                      firstRow: true,
+                      onTap: () {},
+                    );
                   }
                   //return EmptyLabel(text: 'Unknown',);
                 });
@@ -187,6 +204,7 @@ class _ScreenSearchCurrencyState extends BaseStateNoTabsWithParentTab<ScreenSear
 
      */
   }
+
   /*
   @override
   Widget createBody(BuildContext context, double paddingBottom) {
@@ -211,7 +229,6 @@ class _ScreenSearchCurrencyState extends BaseStateNoTabsWithParentTab<ScreenSear
     //print(routeName+' onActive');
     doUpdate();
   }
-
 
   @override
   void initState() {
@@ -239,16 +256,13 @@ class _ScreenSearchCurrencyState extends BaseStateNoTabsWithParentTab<ScreenSear
     */
   }
 
-
   @override
   void dispose() {
-    _groupedNotifier.dispose();
+    _groupedNotifier?.dispose();
     // _idrNotifier.dispose();
     // _crossNotifier.dispose();
     super.dispose();
   }
-
-
 
   @override
   void onInactive() {

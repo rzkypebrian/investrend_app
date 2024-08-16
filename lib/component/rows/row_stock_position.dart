@@ -1,3 +1,5 @@
+// ignore_for_file: unused_field, must_be_immutable, unused_local_variable
+
 import 'package:Investrend/component/buttons_attention.dart';
 import 'package:Investrend/component/component_creator.dart';
 import 'package:Investrend/objects/data_object.dart';
@@ -8,21 +10,21 @@ import 'package:Investrend/utils/string_utils.dart';
 import 'package:Investrend/utils/ui_helper.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:easy_localization/easy_localization.dart';
+// import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class RowStockPositions extends StatefulWidget {
-  StockPositionDetail portfolio;
+  StockPositionDetail? portfolio;
 
   final bool firstRow;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
   final double paddingLeftRight;
-  final StockSummary summary;
+  final StockSummary? summary;
   final bool modeProfile;
-  final Function callbackChecked;
+  final Function? callbackChecked;
   final bool showToPublic;
-  final VoidCallback onPressedButtonSpecialNotation;
-  final VoidCallback onPressedButtonCorporateAction;
+  final VoidCallback? onPressedButtonSpecialNotation;
+  final VoidCallback? onPressedButtonCorporateAction;
 
   RowStockPositions(this.portfolio,
       {this.onPressedButtonSpecialNotation,
@@ -40,7 +42,7 @@ class RowStockPositions extends StatefulWidget {
 }
 
 class _RowStockPositionsState extends State<RowStockPositions> {
-  ValueNotifier<bool> _notifier;
+  ValueNotifier<bool>? _notifier;
 
   @override
   void initState() {
@@ -65,54 +67,80 @@ class _RowStockPositionsState extends State<RowStockPositions> {
   }
 
   Widget row(BuildContext context) {
-    TextStyle regular700 = InvestrendTheme.of(context).regular_w600_compact;
-    TextStyle moreSupport400 = InvestrendTheme.of(context).more_support_w400_compact;
+    TextStyle? regular700 = InvestrendTheme.of(context).regular_w600_compact;
+    TextStyle? moreSupport400 =
+        InvestrendTheme.of(context).more_support_w400_compact;
 
-    Color gainLossColor = InvestrendTheme.changeTextColor(widget.portfolio.stockGL);
-    String gainLossText = InvestrendTheme.formatMoneyDouble(widget.portfolio.stockGL, prefixPlus: true, prefixRp: true);
-    gainLossText = gainLossText + ' (' + InvestrendTheme.formatPercent(widget.portfolio.stockGLPct, prefixPlus: true) + ')';
+    Color gainLossColor =
+        InvestrendTheme.changeTextColor(widget.portfolio?.stockGL);
+    String? gainLossText = InvestrendTheme.formatMoneyDouble(
+        widget.portfolio?.stockGL,
+        prefixPlus: true,
+        prefixRp: true);
+    gainLossText = gainLossText +
+        ' (' +
+        InvestrendTheme.formatPercent(widget.portfolio?.stockGLPct,
+            prefixPlus: true) +
+        ')';
 
     int price = 0;
     double change = 0;
     double percentChange = 0;
     if (widget.summary != null) {
-      price = widget.summary.close;
-      change = widget.summary.change;
-      percentChange = widget.summary.percentChange;
+      price = widget.summary!.close!;
+      change = widget.summary!.change!;
+      percentChange = widget.summary!.percentChange!;
     }
 
     Color marketColor = InvestrendTheme.changeTextColor(change);
-    String changeText = InvestrendTheme.formatMoneyDouble(change, prefixPlus: true, prefixRp: false);
-    changeText = changeText + ' (' + InvestrendTheme.formatPercent(percentChange, prefixPlus: true) + ')';
+    String changeText = InvestrendTheme.formatMoneyDouble(change,
+        prefixPlus: true, prefixRp: false);
+    changeText = changeText +
+        ' (' +
+        InvestrendTheme.formatPercent(percentChange, prefixPlus: true) +
+        ')';
 
-    String lotAverage = InvestrendTheme.formatPrice(widget.portfolio.netBalance.toInt()) + ' Lot | Avg ';
-    lotAverage = lotAverage + InvestrendTheme.formatPrice(widget.portfolio.avgPrice.toInt());
+    String lotAverage =
+        InvestrendTheme.formatPrice(widget.portfolio?.netBalance.toInt()) +
+            ' Lot | Avg ';
+    lotAverage = lotAverage +
+        InvestrendTheme.formatPrice(widget.portfolio?.avgPrice.toInt());
 
     List<Widget> firstColumn = List.empty(growable: true);
     List<Widget> listAttention = List.empty(growable: true);
-    firstColumn.add(Text(widget.portfolio.stockCode, style: regular700));
+    firstColumn.add(Text(widget.portfolio!.stockCode!, style: regular700));
 
-    String attentionCodes;
-    List<Remark2Mapping> notation = List.empty(growable: true);
-    StockInformationStatus status;
-    SuspendStock suspendStock;
-    List<CorporateActionEvent> corporateAction = List.empty(growable: true);
+    String? attentionCodes;
+    List<Remark2Mapping>? notation = List.empty(growable: true);
+    StockInformationStatus? status;
+    SuspendStock? suspendStock;
+    List<CorporateActionEvent>? corporateAction = List.empty(growable: true);
     Color corporateActionColor = Colors.black;
     try {
-      attentionCodes = context.read(remark2Notifier).getSpecialNotationCodes(widget.portfolio.stockCode);
-      notation = context.read(remark2Notifier).getSpecialNotation(widget.portfolio.stockCode);
-      status = context.read(remark2Notifier).getSpecialNotationStatus(widget.portfolio.stockCode);
-      suspendStock = context.read(suspendedStockNotifier).getSuspended(widget.portfolio.stockCode, Stock.defaultBoardByCode(widget.portfolio.stockCode));
-      if(suspendStock != null){
+      attentionCodes = context
+          .read(remark2Notifier)
+          .getSpecialNotationCodes(widget.portfolio?.stockCode);
+      notation = context
+          .read(remark2Notifier)
+          .getSpecialNotation(widget.portfolio?.stockCode);
+      status = context
+          .read(remark2Notifier)
+          .getSpecialNotationStatus(widget.portfolio?.stockCode);
+      suspendStock = context.read(suspendedStockNotifier).getSuspended(
+          widget.portfolio?.stockCode,
+          Stock.defaultBoardByCode(widget.portfolio?.stockCode));
+      if (suspendStock != null) {
         status = StockInformationStatus.Suspended;
       }
-      corporateAction = context.read(corporateActionEventNotifier).getEvent(widget.portfolio.stockCode);
+      corporateAction = context
+          .read(corporateActionEventNotifier)
+          .getEvent(widget.portfolio?.stockCode);
       corporateActionColor = CorporateActionEvent.getColor(corporateAction);
     } catch (e) {
       print(e);
     }
 
-    Size textSize = UIHelper.textSize('ABCD', regular700);
+    Size textSize = UIHelper.textSize('ABCD', regular700!);
     double heightIcon = textSize.height;
     if (notation != null && notation.isNotEmpty) {
       listAttention.add(Container(
@@ -121,7 +149,8 @@ class _RowStockPositionsState extends State<RowStockPositions> {
             heightIcon,
             widget.onPressedButtonSpecialNotation,
             status,
-            padding: EdgeInsets.only(left: 3.0, right: 3.0, top: 1.0, bottom: 1.0),
+            padding:
+                EdgeInsets.only(left: 3.0, right: 3.0, top: 1.0, bottom: 1.0),
           )));
       listAttention.add(SizedBox(
         width: InvestrendTheme.cardPadding,
@@ -135,15 +164,20 @@ class _RowStockPositionsState extends State<RowStockPositions> {
             heightIcon,
             corporateActionColor,
             widget.onPressedButtonCorporateAction,
-            style: InvestrendTheme.of(context).more_support_w600_compact.copyWith(color: InvestrendTheme.of(context).textWhite),
-            padding: EdgeInsets.only(left: 3.0, right: 3.0, top: 1.0, bottom: 1.0),
+            style: InvestrendTheme.of(context)
+                .more_support_w600_compact
+                ?.copyWith(color: InvestrendTheme.of(context).textWhite),
+            padding:
+                EdgeInsets.only(left: 3.0, right: 3.0, top: 1.0, bottom: 1.0),
           )));
       listAttention.add(SizedBox(
         width: InvestrendTheme.cardPadding,
       ));
     }
     if (listAttention.isNotEmpty) {
-      firstColumn.add(SizedBox(height: 5.0,));
+      firstColumn.add(SizedBox(
+        height: 5.0,
+      ));
       firstColumn.add(Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         // mainAxisAlignment: MainAxisAlignment.start,
@@ -151,14 +185,21 @@ class _RowStockPositionsState extends State<RowStockPositions> {
         children: listAttention,
       ));
     }
-    if(!StringUtils.isEmtpy(attentionCodes)){
-      firstColumn.add(SizedBox(height: 5.0,));
-      firstColumn.add(ButtonTextAttention(attentionCodes, textSize.height, widget.onPressedButtonSpecialNotation,));
+    if (!StringUtils.isEmtpy(attentionCodes!)) {
+      firstColumn.add(SizedBox(
+        height: 5.0,
+      ));
+      firstColumn.add(ButtonTextAttention(
+        attentionCodes,
+        textSize.height,
+        widget.onPressedButtonSpecialNotation,
+      ));
     }
     return Container(
       // color: Colors.lightBlueAccent,
       width: double.maxFinite,
-      padding: EdgeInsets.only(left: widget.paddingLeftRight, right: widget.paddingLeftRight),
+      padding: EdgeInsets.only(
+          left: widget.paddingLeftRight, right: widget.paddingLeftRight),
       child: Column(
         children: [
           widget.firstRow
@@ -189,15 +230,24 @@ class _RowStockPositionsState extends State<RowStockPositions> {
                           // asli 2021-09-29
                           //Text(InvestrendTheme.formatMoneyDouble(portfolio.stockVal, prefixRp: true), style: regular700),
                           // philmond minta diganti marketVal
-                          Text(InvestrendTheme.formatMoneyDouble(widget.portfolio.marketVal, prefixRp: true), style: regular700),
+                          Text(
+                              InvestrendTheme.formatMoneyDouble(
+                                  widget.portfolio?.marketVal,
+                                  prefixRp: true),
+                              style: regular700),
                           SizedBox(
                             height: 5.0,
                           ),
-                          AutoSizeText(gainLossText, style: moreSupport400.copyWith(color: gainLossColor)),
+                          AutoSizeText(gainLossText,
+                              style: moreSupport400?.copyWith(
+                                  color: gainLossColor)),
                           SizedBox(
                             height: 5.0,
                           ),
-                          Text(lotAverage, style: moreSupport400.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor)),
+                          Text(lotAverage,
+                              style: moreSupport400?.copyWith(
+                                  color: InvestrendTheme.of(context)
+                                      .greyDarkerTextColor)),
                         ],
                       ),
                     ),
@@ -221,7 +271,8 @@ class _RowStockPositionsState extends State<RowStockPositions> {
                         Text(InvestrendTheme.formatPrice(price), style: regular700.copyWith(color: marketColor)),
                       ],
                     ),*/
-                    Text(InvestrendTheme.formatPrice(price), style: regular700.copyWith(color: marketColor)),
+                    Text(InvestrendTheme.formatPrice(price),
+                        style: regular700.copyWith(color: marketColor)),
                     SizedBox(
                       height: 5.0,
                     ),
@@ -229,7 +280,7 @@ class _RowStockPositionsState extends State<RowStockPositions> {
                         fit: BoxFit.scaleDown,
                         child: Text(
                           changeText,
-                          style: moreSupport400.copyWith(color: marketColor),
+                          style: moreSupport400?.copyWith(color: marketColor),
                           maxLines: 1,
                         )),
                   ],
@@ -246,33 +297,50 @@ class _RowStockPositionsState extends State<RowStockPositions> {
   }
 
   Widget rowProfile(BuildContext context) {
-    TextStyle regular700 = InvestrendTheme.of(context).regular_w600_compact;
-    TextStyle moreSupport400 = InvestrendTheme.of(context).more_support_w400_compact;
+    TextStyle? regular700 = InvestrendTheme.of(context).regular_w600_compact;
+    TextStyle? moreSupport400 =
+        InvestrendTheme.of(context).more_support_w400_compact;
 
-    Color gainLossColor = InvestrendTheme.changeTextColor(widget.portfolio.stockGL);
-    String gainLossText = InvestrendTheme.formatMoneyDouble(widget.portfolio.stockGL, prefixPlus: true, prefixRp: true);
-    gainLossText = gainLossText + ' (' + InvestrendTheme.formatPercent(widget.portfolio.stockGLPct, prefixPlus: true) + ')';
+    Color gainLossColor =
+        InvestrendTheme.changeTextColor(widget.portfolio?.stockGL);
+    String gainLossText = InvestrendTheme.formatMoneyDouble(
+        widget.portfolio?.stockGL,
+        prefixPlus: true,
+        prefixRp: true);
+    gainLossText = gainLossText +
+        ' (' +
+        InvestrendTheme.formatPercent(widget.portfolio?.stockGLPct,
+            prefixPlus: true) +
+        ')';
 
     int price = 0;
     double change = 0;
     double percentChange = 0;
     if (widget.summary != null) {
-      price = widget.summary.close;
-      change = widget.summary.change;
-      percentChange = widget.summary.percentChange;
+      price = widget.summary!.close!;
+      change = widget.summary!.change!;
+      percentChange = widget.summary!.percentChange!;
     }
 
     Color marketColor = InvestrendTheme.changeTextColor(change);
-    String changeText = InvestrendTheme.formatMoneyDouble(change, prefixPlus: true, prefixRp: false);
-    changeText = changeText + ' (' + InvestrendTheme.formatPercent(percentChange, prefixPlus: true) + ')';
+    String changeText = InvestrendTheme.formatMoneyDouble(change,
+        prefixPlus: true, prefixRp: false);
+    changeText = changeText +
+        ' (' +
+        InvestrendTheme.formatPercent(percentChange, prefixPlus: true) +
+        ')';
 
-    String lotAverage = InvestrendTheme.formatPrice(widget.portfolio.netBalance.toInt()) + ' Lot | Avg ';
-    lotAverage = lotAverage + InvestrendTheme.formatPrice(widget.portfolio.avgPrice.toInt());
+    String lotAverage =
+        InvestrendTheme.formatPrice(widget.portfolio?.netBalance.toInt()) +
+            ' Lot | Avg ';
+    lotAverage = lotAverage +
+        InvestrendTheme.formatPrice(widget.portfolio?.avgPrice.toInt());
 
     return Container(
       // color: Colors.lightBlueAccent,
       width: double.maxFinite,
-      padding: EdgeInsets.only(left: widget.paddingLeftRight, right: widget.paddingLeftRight),
+      padding: EdgeInsets.only(
+          left: widget.paddingLeftRight, right: widget.paddingLeftRight),
       child: Column(
         children: [
           widget.firstRow
@@ -285,7 +353,7 @@ class _RowStockPositionsState extends State<RowStockPositions> {
           ),
           Row(
             children: [
-              Text(widget.portfolio.stockCode, style: regular700),
+              Text(widget.portfolio!.stockCode!, style: regular700),
               Expanded(
                 flex: 1,
                 child: Column(
@@ -301,7 +369,8 @@ class _RowStockPositionsState extends State<RowStockPositions> {
                       ],
                     ),
                     */
-                    Text(InvestrendTheme.formatPrice(price), style: regular700.copyWith(color: marketColor)),
+                    Text(InvestrendTheme.formatPrice(price),
+                        style: regular700?.copyWith(color: marketColor)),
                     SizedBox(
                       height: 5.0,
                     ),
@@ -309,7 +378,7 @@ class _RowStockPositionsState extends State<RowStockPositions> {
                         fit: BoxFit.scaleDown,
                         child: Text(
                           changeText,
-                          style: moreSupport400.copyWith(color: marketColor),
+                          style: moreSupport400?.copyWith(color: marketColor),
                           maxLines: 1,
                         )),
                   ],

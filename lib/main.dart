@@ -4,9 +4,8 @@ import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-
+// import 'package:http/http.dart' as http;
+// import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 //import 'permissions.dart';
 import 'package:flutter/services.dart';
@@ -40,10 +39,10 @@ extension ColorExtension on String {
 extension ImageExtension on Image {
   networkLoader(
     String src, {
-    Key key,
-    double width,
-    double height,
-    BoxFit fit,
+    Key? key,
+    double? width,
+    double? height,
+    BoxFit? fit,
   }) {
     return Image.network(
       src,
@@ -92,7 +91,7 @@ void main() async {
   ]);
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  int savedThemeModeIndex = prefs.getInt('theme_mode');
+  int? savedThemeModeIndex = prefs.getInt('theme_mode');
   print('savedThemeModeIndex : $savedThemeModeIndex');
   if (savedThemeModeIndex == null) {
     savedThemeModeIndex = ThemeMode.system.index;

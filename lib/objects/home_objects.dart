@@ -1,50 +1,61 @@
+// ignore_for_file: non_constant_identifier_names
 
 import 'package:Investrend/utils/string_utils.dart';
 import 'package:Investrend/utils/utils.dart';
 import 'package:xml/xml.dart';
+
 extension BetterString on String {
-  String between(String tagStart, String tagEnd){
-    int indexStart = indexOf(tagStart,0);
-    if(indexStart != -1){
+  String? between(String tagStart, String tagEnd) {
+    int indexStart = indexOf(tagStart, 0);
+    if (indexStart != -1) {
       indexStart = indexStart + tagStart.length;
-      int indexEnd = indexOf(tagEnd,indexStart);
-      if(indexEnd != -1){
-        return substring(indexEnd,indexEnd);
+      int indexEnd = indexOf(tagEnd, indexStart);
+      if (indexEnd != -1) {
+        return substring(indexEnd, indexEnd);
       }
     }
+    return '';
   }
 }
-class HomePortfolio extends CodePricePercent{
-  HomePortfolio(String code, double price, double percentChange) : super(code, price, percentChange);
+
+class HomePortfolio extends CodePricePercent {
+  HomePortfolio(String code, double price, double percentChange)
+      : super(code, price, percentChange);
   // String code;
   // int price;
   // double percentChange;
   //
   // HomePortfolio(this.code, this.price, this.percentChange);
 }
-class CodePricePercent{
-  String code;
+
+class CodePricePercent {
+  String? code;
   double price;
   double percentChange;
 
   CodePricePercent(this.code, this.price, this.percentChange);
 }
-class CodePriceChangePercent extends CodePricePercent{
+
+class CodePriceChangePercent extends CodePricePercent {
   double change;
 
-  CodePriceChangePercent(String code, double price, this.change, double percentChange) : super(code, price, percentChange);
-
-
+  CodePriceChangePercent(
+      String? code, double price, this.change, double percentChange)
+      : super(code, price, percentChange);
 }
+
 class HomeCommodities extends CodePricePercent {
-  HomeCommodities(String code, double price, double percentChange) : super(code, price, percentChange);
+  HomeCommodities(String? code, double price, double percentChange)
+      : super(code, price, percentChange);
   // String code;
   // double price;
   // double percentChange;
   //HomeCommodities(this.code, this.price, this.percentChange);
 }
+
 class HomeCrypto extends CodePricePercent {
-  HomeCrypto(String code, double price, double percentChange) : super(code, price, percentChange);
+  HomeCrypto(String? code, double price, double percentChange)
+      : super(code, price, percentChange);
   // String code;
   // double price;
   // double percentChange;
@@ -53,7 +64,8 @@ class HomeCrypto extends CodePricePercent {
 }
 
 class HomeCurrencies extends CodePricePercent {
-  HomeCurrencies(String code, double price, double percentChange) : super(code, price, percentChange);
+  HomeCurrencies(String? code, double price, double percentChange)
+      : super(code, price, percentChange);
   // String code;
   // double price;
   // double percentChange;
@@ -62,23 +74,34 @@ class HomeCurrencies extends CodePricePercent {
 }
 
 class GeneralDetailPrice {
-  String group          = '';
-  String code           = '';
-  String name           = '';
-  double open           = 0.0;
-  double hi             = 0.0;
-  double low            = 0.0;
-  double price          = 0.0;
-  double change         = 0.0;
-  double percentChange  = 0.0;
-  String date           = '';
-  String time           = '';
-  String timezone       = '';
-  String updated_at     = '';
+  String? group = '';
+  String? code = '';
+  String? name = '';
+  double open = 0.0;
+  double hi = 0.0;
+  double low = 0.0;
+  double price = 0.0;
+  double change = 0.0;
+  double percentChange = 0.0;
+  String? date = '';
+  String? time = '';
+  String? timezone = '';
+  String? updated_at = '';
 
-  GeneralDetailPrice(this.group, this.code, this.name, this.open, this.hi, this.low, this.price, this.change, this.percentChange, this.date, this.time,
-      this.timezone, this.updated_at);
-
+  GeneralDetailPrice(
+      this.group,
+      this.code,
+      this.name,
+      this.open,
+      this.hi,
+      this.low,
+      this.price,
+      this.change,
+      this.percentChange,
+      this.date,
+      this.time,
+      this.timezone,
+      this.updated_at);
 
   @override
   String toString() {
@@ -89,21 +112,21 @@ class GeneralDetailPrice {
 }
 
 class CryptoPrice {
-  String group          = '';
-  String code           = '';
-  String name           = '';
-  double price          = 0.0;
-  double percent_change_1h    = 0.0;
-  double percent_change_24h   = 0.0;
-  double percent_change_7d    = 0.0;
-  double percent_change_30d   = 0.0;
-  double percent_change_60d   = 0.0;
-  double percent_change_90d   = 0.0;
-  double volume_24h           = 0.0;
-  double market_cap           = 0.0;
-  String icon_url             = '';
-  String last_updated         = '';
-  String updated_at           = '';
+  String? group = '';
+  String? code = '';
+  String? name = '';
+  double price = 0.0;
+  double percent_change_1h = 0.0;
+  double percent_change_24h = 0.0;
+  double percent_change_7d = 0.0;
+  double percent_change_30d = 0.0;
+  double percent_change_60d = 0.0;
+  double percent_change_90d = 0.0;
+  double volume_24h = 0.0;
+  double market_cap = 0.0;
+  String? icon_url = '';
+  String? last_updated = '';
+  String? updated_at = '';
 
   CryptoPrice(
       this.group,
@@ -133,10 +156,9 @@ class CryptoPrice {
   }
 }
 
-
 class StringIndex {
-  String text;
-  int number;
+  String? text;
+  int? number;
 
   StringIndex(this.text, this.number);
 
@@ -145,133 +167,140 @@ class StringIndex {
     return '[StringIndex  text : $text  number : $number]';
   }
 }
-class GroupedData{
-  List<StringIndex> datas = List.empty(growable: true);
-  List<String> keysIndex = List.empty(growable: true);
+
+class GroupedData {
+  List<StringIndex>? datas = List.empty(growable: true);
+  List<String>? keysIndex = List.empty(growable: true);
   //Map<String, List<GlobalPrice>> map = Map<String, List<GlobalPrice>>();
-  Map<String, List> map = Map<String, List>();
+  Map<String, List>? map = Map<String, List>();
   bool loaded = false;
-  void copyValueFrom(GroupedData newValue) {
+  void copyValueFrom(GroupedData? newValue) {
     if (newValue != null) {
       this.loaded = true;
-      this.datas.clear();
-      if(newValue.datas != null) {
-        this.datas.addAll(newValue.datas);
+      this.datas!.clear();
+      if (newValue.datas != null) {
+        this.datas!.addAll(newValue.datas!);
       }
 
-      this.map.clear();
-      if(newValue.map != null) {
-        this.map.addAll(newValue.map);
+      this.map!.clear();
+      if (newValue.map != null) {
+        this.map!.addAll(newValue.map!);
       }
-      this.keysIndex.clear();
-      if(newValue.keysIndex != null) {
-        this.keysIndex.addAll(newValue.keysIndex);
+      this.keysIndex!.clear();
+      if (newValue.keysIndex != null) {
+        this.keysIndex!.addAll(newValue.keysIndex!);
       }
     } else {
-      this.datas.clear();
-      this.map.clear();
-      this.keysIndex.clear();
+      this.datas!.clear();
+      this.map!.clear();
+      this.keysIndex!.clear();
     }
   }
-  
-  void addData(String group, var data){
-    if(map.containsKey(group)){
-      map[group].add(data);
-    }else{
-      keysIndex.add(group);
+
+  void addData(String? group, var data) {
+    if (map!.containsKey(group)) {
+      map?[group]?.add(data);
+    } else {
+      keysIndex?.add(group!);
       //List <GlobalPrice> list = List.empty(growable: true);
       //map[group] = list;
-      map[group] = List.empty(growable: true);
-      map[group].add(data);
+      map?[group!] = List.empty(growable: true);
+      map?[group]?.add(data);
     }
   }
-  int groupSize(){
-    return map.keys.length;
+
+  int groupSize() {
+    return map!.keys.length;
   }
-  bool isEmpty(){
+
+  bool isEmpty() {
     return groupSize() == 0;
   }
 
-
-
-  int datasSize(){
+  int datasSize() {
     // int count = 0;
     // map.values.forEach((list) {
     //   count += list.length;
     // });
     // return count;
-    return datas.length;
+    return datas!.length;
   }
-  void constructAsList({bool withGroup=true}){
-    datas.clear();
-    keysIndex.forEach((group) {
-      if(withGroup){
-        datas.add(StringIndex(group, -1));
+
+  void constructAsList({bool withGroup = true}) {
+    datas?.clear();
+    keysIndex?.forEach((group) {
+      if (withGroup) {
+        datas?.add(StringIndex(group, -1));
       }
-      int count = map[group].length;
-      for(int i = 0; i < count; i++){
-        datas.add(StringIndex(group, i));
+      int count = map![group]!.length;
+      for (int i = 0; i < count; i++) {
+        datas?.add(StringIndex(group, i));
       }
     });
   }
 
-
-  StringIndex elementAt(int index){
-    if(index >= 0 && index < datas.length){
-      return datas.elementAt(index);
+  StringIndex elementAt(int index) {
+    if (index >= 0 && index < datas!.length) {
+      return datas!.elementAt(index);
     }
-    return null;
-  }
-  
-}
-class HomeData{
-  List <HomeCurrencies> listCurrencies    = List.empty(growable: true);
-  List <HomeWorldIndices> listIndices     = List.empty(growable: true);
-  List <HomeCommodities> listCommodities  = List.empty(growable: true);
-  List <HomeCrypto> listCrypto            = List.empty(growable: true);
-
-  bool validCrypto(){
-    return listCrypto != null && listCrypto.isNotEmpty;
-  }
-  bool validCurrencies(){
-    return listCurrencies != null && listCurrencies.isNotEmpty;
-  }
-  bool validCommodities(){
-    return listCommodities != null && listCommodities.isNotEmpty;
-  }
-  bool validIndices(){
-    return listIndices != null && listIndices.isNotEmpty;
-  }
-
-  void addCrypto(HomeCrypto crypto){
-    if(crypto != null){
-      listCrypto.add(crypto);
-    }
-  }
-
-  void addCurrencies(HomeCurrencies currencies){
-    if(currencies != null){
-      listCurrencies.add(currencies);
-    }
-  }
-
-  void addCommodities(HomeCommodities commodities){
-    if(commodities != null) {
-      listCommodities.add(commodities);
-    }
-  }
-
-  void addIndices(HomeWorldIndices indices){
-    if(indices != null){
-      listIndices.add(indices);
-    }
+    return StringIndex(null, null);
   }
 }
-class HomeWorldIndices extends CodePriceChangePercent{
+
+class HomeData {
+  List<HomeCurrencies>? listCurrencies = List.empty(growable: true);
+  List<HomeWorldIndices>? listIndices = List.empty(growable: true);
+  List<HomeCommodities>? listCommodities = List.empty(growable: true);
+  List<HomeCrypto>? listCrypto = List.empty(growable: true);
+
+  bool validCrypto() {
+    return listCrypto != null && listCrypto!.isNotEmpty;
+  }
+
+  bool validCurrencies() {
+    return listCurrencies != null && listCurrencies!.isNotEmpty;
+  }
+
+  bool validCommodities() {
+    return listCommodities != null && listCommodities!.isNotEmpty;
+  }
+
+  bool validIndices() {
+    return listIndices != null && listIndices!.isNotEmpty;
+  }
+
+  void addCrypto(HomeCrypto? crypto) {
+    if (crypto != null) {
+      listCrypto?.add(crypto);
+    }
+  }
+
+  void addCurrencies(HomeCurrencies? currencies) {
+    if (currencies != null) {
+      listCurrencies?.add(currencies);
+    }
+  }
+
+  void addCommodities(HomeCommodities? commodities) {
+    if (commodities != null) {
+      listCommodities?.add(commodities);
+    }
+  }
+
+  void addIndices(HomeWorldIndices? indices) {
+    if (indices != null) {
+      listIndices?.add(indices);
+    }
+  }
+}
+
+class HomeWorldIndices extends CodePriceChangePercent {
   //String code;
-  String name;
+  String? name;
 
-  HomeWorldIndices(String code, this.name, double price, double change, double percentChange) : super(code, price, change, percentChange);
+  HomeWorldIndices(String? code, this.name, double price, double change,
+      double percentChange)
+      : super(code, price, change, percentChange);
   // double price;
   // double change;
   // double percentChange;
@@ -279,23 +308,23 @@ class HomeWorldIndices extends CodePriceChangePercent{
   //HomeWorldIndices(this.code, this.name,this.change, this.percentChange, this.price);
 
   factory HomeWorldIndices.fromXml(XmlElement element) {
-    String code = StringUtils.noNullString(element.getAttribute('code'));
-    String name = StringUtils.noNullString(element.getAttribute('name'));
+    String? code = StringUtils.noNullString(element.getAttribute('code')!);
+    String? name = StringUtils.noNullString(element.getAttribute('name')!);
     double last = Utils.safeDouble(element.getAttribute('last'));
     double change = Utils.safeDouble(element.getAttribute('change'));
-    double percentChange = Utils.safeDouble(element.getAttribute('percentChange'));
-    return HomeWorldIndices(code, name,last, change, percentChange );
+    double percentChange =
+        Utils.safeDouble(element.getAttribute('percentChange'));
+    return HomeWorldIndices(code, name, last, change, percentChange);
   }
 
   factory HomeWorldIndices.fromJson(Map<String, dynamic> parsedJson) {
-    String code = StringUtils.noNullString(parsedJson['code']);
-    String name = StringUtils.noNullString(parsedJson['name']);
+    String? code = StringUtils.noNullString(parsedJson['code']);
+    String? name = StringUtils.noNullString(parsedJson['name']);
     double last = Utils.safeDouble(parsedJson['last']);
     double change = Utils.safeDouble(parsedJson['change']);
     double percentChange = Utils.safeDouble(parsedJson['percentChange']);
-    return HomeWorldIndices(code, name,last, change, percentChange );
+    return HomeWorldIndices(code, name, last, change, percentChange);
   }
-
 }
 
 class HomeCompetition {
@@ -303,10 +332,12 @@ class HomeCompetition {
   int rank;
   int participant_size;
   String url_background;
-  List <String> participants_avatar;
+  List<String> participants_avatar;
 
-  HomeCompetition(this.name, this.rank, this.participant_size, this.url_background, this.participants_avatar);
+  HomeCompetition(this.name, this.rank, this.participant_size,
+      this.url_background, this.participants_avatar);
 }
+
 /*
 class HomeEIPO {
   String url_icon;
@@ -376,14 +407,13 @@ class HomeThemes {
   String description;
   String url_background;
 
-
   HomeThemes(this.name, this.description, this.url_background);
 }
+
 class HomeProfiles {
   String name;
   String description;
   String url_background;
-
 
   HomeProfiles(this.name, this.description, this.url_background);
 }
@@ -391,17 +421,19 @@ class HomeProfiles {
 class HomeNews {
   String title;
   String description;
-  String url_tumbnail;
+  String? url_tumbnail;
   String url_news;
   String time;
   String category;
   int commentCount;
   int likedCount;
 
-  String toString(){
+  String toString() {
     return '[title=$title] [time=$time] [url_tumbnail=$url_tumbnail] [description=$description] [url_news=$url_news] [category=$category] ';
   }
-  HomeNews(this.title, this.description,this.url_news, this.url_tumbnail, this.time, this.category, this.commentCount, this.likedCount);
+
+  HomeNews(this.title, this.description, this.url_news, this.url_tumbnail,
+      this.time, this.category, this.commentCount, this.likedCount);
   /*
   <item>
     <title>Apple akan hadirkan kembali platform media sosial Parler ke App Store</title>
@@ -414,26 +446,26 @@ class HomeNews {
   </item>
   */
   factory HomeNews.fromXml(XmlElement element) {
-     String title = element.findElements('title').single.text;
-     String description = element.findElements('description').single.text;
-     String urlTumbnail = StringUtils.between(description, '<img src=\"', '\"');
+    String title = element.findElements('title').single.text;
+    String description = element.findElements('description').single.text;
+    String? urlTumbnail = StringUtils.between(description, '<img src=\"', '\"');
 
-     String urlNews = element.findElements('link').single.text;
-     String time = element.findElements('pubDate').single.text;
-     
-     int indexStart = description.indexOf('>');
-     if(indexStart > -1){
-       description = description.substring(indexStart+1);
-     }
-     
-     // description = StringUtils.between(description,'>', ']]>');
-     //String url_tumbnail = 'aa';
-         String category = 'general';
-     int commentCount = 3;
-     int likedCount = 6;
-    return HomeNews(title, description,urlNews, urlTumbnail, time, category, commentCount, likedCount);
+    String urlNews = element.findElements('link').single.text;
+    String time = element.findElements('pubDate').single.text;
+
+    int indexStart = description.indexOf('>');
+    if (indexStart > -1) {
+      description = description.substring(indexStart + 1);
+    }
+
+    // description = StringUtils.between(description,'>', ']]>');
+    //String url_tumbnail = 'aa';
+    String category = 'general';
+    int commentCount = 3;
+    int likedCount = 6;
+    return HomeNews(title, description, urlNews, urlTumbnail, time, category,
+        commentCount, likedCount);
   }
-
 
   factory HomeNews.fromXmlPasarDana(XmlElement element) {
     /*
@@ -457,8 +489,10 @@ class HomeNews {
     </item>
     */
 
-    String title = StringUtils.noNullString(element.findElements('title').single.text);
-    String description = StringUtils.noNullString(element.findElements('description').single.text);
+    String? title =
+        StringUtils.noNullString(element.findElements('title').single.text);
+    String? description = StringUtils.noNullString(
+        element.findElements('description').single.text);
     title = StringUtils.decodeHtmlString(title);
     title = StringUtils.removeHtml(title);
     description = StringUtils.decodeHtmlString(description);
@@ -466,27 +500,27 @@ class HomeNews {
     title = title.trim();
     description = description.trim();
     String marker = 'Pasardana.id';
-    if(description.startsWith(marker)){
-      description = description.substring(marker.length,description.length );
+    if (description.startsWith(marker)) {
+      description = description.substring(marker.length, description.length);
     }
     description = description.trim();
-    if(description.startsWith('-')){
-      description = description.substring(1,description.length );
+    if (description.startsWith('-')) {
+      description = description.substring(1, description.length);
     }
     description = description.trim();
 
-    String urlTumbnail = element.findElements('media:content').toString();
+    String? urlTumbnail = element.findElements('media:content').toString();
     urlTumbnail = StringUtils.between(urlTumbnail, 'url=\"', '\"');
-    int index = urlTumbnail.indexOf('?');
-    if(index != -1){
-      urlTumbnail = urlTumbnail.substring(0, index);
+    int? index = urlTumbnail?.indexOf('?');
+    if (index != -1) {
+      urlTumbnail = urlTumbnail?.substring(0, index);
     }
     String urlNews = element.findElements('link').single.text;
     String time = element.findElements('pubDate').single.text;
 
     int indexStart = description.indexOf('>');
-    if(indexStart > -1){
-      description = description.substring(indexStart+1);
+    if (indexStart > -1) {
+      description = description.substring(indexStart + 1);
     }
 
     // description = StringUtils.between(description,'>', ']]>');
@@ -494,10 +528,7 @@ class HomeNews {
     String category = 'general';
     int commentCount = 0;
     int likedCount = 0;
-    return HomeNews(title, description,urlNews, urlTumbnail, time, category, commentCount, likedCount);
+    return HomeNews(title, description, urlNews, urlTumbnail, time, category,
+        commentCount, likedCount);
   }
 }
-
-
-
-

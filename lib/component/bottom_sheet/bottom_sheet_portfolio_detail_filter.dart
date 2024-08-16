@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'dart:math';
 
 import 'package:Investrend/component/bottom_sheet/bottom_sheet_transaction_filter.dart';
@@ -9,7 +11,9 @@ import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:Investrend/utils/string_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
+
+// import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
 /// ***************************************
 ///
@@ -20,10 +24,10 @@ class BottomSheetPortfolioDetailFilter extends StatefulWidget {
   final int index_transaction;
   final String from;
   final String to;
-  final RangeCallback callbackRange;
+  final RangeCallback? callbackRange;
   const BottomSheetPortfolioDetailFilter(
       this.index_transaction, this.from, this.to,
-      {this.callbackRange, Key key})
+      {this.callbackRange, Key? key})
       : super(key: key);
 
   @override
@@ -33,10 +37,10 @@ class BottomSheetPortfolioDetailFilter extends StatefulWidget {
 
 class _BottomSheetPortfolioDetailFilterState
     extends State<BottomSheetPortfolioDetailFilter> {
-  int index_transaction;
+  int? index_transaction;
   final DateFormat _dateFormat = DateFormat('yyyy-MM-dd');
-  ValueNotifier<String> _customFromNotifier;
-  ValueNotifier<String> _customToNotifier;
+  ValueNotifier<String>? _customFromNotifier;
+  ValueNotifier<String>? _customToNotifier;
   ValueNotifier<String> _errorNotifier = ValueNotifier<String>('');
 
   @override
@@ -54,18 +58,18 @@ class _BottomSheetPortfolioDetailFilterState
       _customToNotifier = ValueNotifier<String>(widget.to);
     }
 
-    _customFromNotifier.addListener(() {
+    _customFromNotifier!.addListener(() {
       _errorNotifier.value = '';
     });
-    _customToNotifier.addListener(() {
+    _customToNotifier!.addListener(() {
       _errorNotifier.value = '';
     });
   }
 
   @override
   void dispose() {
-    _customFromNotifier.dispose();
-    _customToNotifier.dispose();
+    _customFromNotifier!.dispose();
+    _customToNotifier!.dispose();
     super.dispose();
   }
 
@@ -73,7 +77,7 @@ class _BottomSheetPortfolioDetailFilterState
     DateTime
         initDate; // =  _dateFormat.parse(_customFromNotifier.value, false);
     try {
-      initDate = _dateFormat.parse(_customFromNotifier.value, false);
+      initDate = _dateFormat.parse(_customFromNotifier!.value, false);
     } catch (e) {
       initDate = DateTime.now();
       print(e);
@@ -85,7 +89,7 @@ class _BottomSheetPortfolioDetailFilterState
       print('change $date');
     }, onConfirm: (date) {
       print('confirm $date');
-      _customFromNotifier.value = _dateFormat.format(date);
+      _customFromNotifier!.value = _dateFormat.format(date);
       // if(widget.rangeNotifier != null){
       //   widget.rangeNotifier.setFrom(_customFromNotifier.value);
       // }
@@ -96,7 +100,7 @@ class _BottomSheetPortfolioDetailFilterState
     DateTime
         initDate; // =  _dateFormat.parse(_customFromNotifier.value, false);
     try {
-      initDate = _dateFormat.parse(_customToNotifier.value, false);
+      initDate = _dateFormat.parse(_customToNotifier!.value, false);
     } catch (e) {
       initDate = DateTime.now();
       print(e);
@@ -108,7 +112,7 @@ class _BottomSheetPortfolioDetailFilterState
       print('change $date');
     }, onConfirm: (date) {
       print('confirm $date');
-      _customToNotifier.value = _dateFormat.format(date);
+      _customToNotifier!.value = _dateFormat.format(date);
       // if(widget.rangeNotifier != null){
       //   widget.rangeNotifier.setTo(_customToNotifier.value);
       // }
@@ -119,7 +123,8 @@ class _BottomSheetPortfolioDetailFilterState
     BuildContext context,
     String text,
   ) {
-    TextStyle style = InvestrendTheme.of(context).small_w400_compact_greyDarker;
+    TextStyle? style =
+        InvestrendTheme.of(context).small_w400_compact_greyDarker;
     return Text(
       text,
       style: style,
@@ -128,7 +133,8 @@ class _BottomSheetPortfolioDetailFilterState
 
   Widget createTextField(
       BuildContext context, String text, TextEditingController controller) {
-    TextStyle style = InvestrendTheme.of(context).small_w400_compact_greyDarker;
+    // TextStyle? style =
+    //     InvestrendTheme.of(context).small_w400_compact_greyDarker;
     bool lightTheme = Theme.of(context).brightness == Brightness.light;
     return ComponentCreator.textFieldForm(
         context,
@@ -150,14 +156,14 @@ class _BottomSheetPortfolioDetailFilterState
 
   Widget createButton(BuildContext context, String text, String label,
       String hint, VoidCallback onPressed) {
-    TextStyle styleLabel = InvestrendTheme.of(context)
+    TextStyle? styleLabel = InvestrendTheme.of(context)
         .more_support_w400_compact
-        .copyWith(color: InvestrendTheme.of(context).greyLighterTextColor);
-    TextStyle styleValue =
+        ?.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor);
+    TextStyle? styleValue =
         InvestrendTheme.of(context).small_w400_compact_greyDarker;
-    TextStyle styleValueHint = InvestrendTheme.of(context)
+    TextStyle? styleValueHint = InvestrendTheme.of(context)
         .small_w400_compact
-        .copyWith(color: InvestrendTheme.of(context).greyLighterTextColor);
+        ?.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor);
     return TapableWidget(
       onTap: onPressed,
       child: Column(
@@ -304,7 +310,7 @@ class _BottomSheetPortfolioDetailFilterState
               padding: const EdgeInsets.only(top: 16.0, bottom: 8.0),
               child: Text(
                 'filter_transaction_label'.tr(),
-                style: InvestrendTheme.of(context).small_w400_compact.copyWith(
+                style: InvestrendTheme.of(context).small_w400_compact?.copyWith(
                     color: InvestrendTheme.of(context).greyLighterTextColor),
               ),
             ),
@@ -319,7 +325,7 @@ class _BottomSheetPortfolioDetailFilterState
               padding: const EdgeInsets.only(top: 16.0, bottom: 8.0),
               child: Text(
                 'filter_period_label'.tr(),
-                style: InvestrendTheme.of(context).small_w400_compact.copyWith(
+                style: InvestrendTheme.of(context).small_w400_compact?.copyWith(
                     color: InvestrendTheme.of(context).greyLighterTextColor),
               ),
             ),
@@ -335,10 +341,10 @@ class _BottomSheetPortfolioDetailFilterState
                   Expanded(
                     flex: 1,
                     child: ValueListenableBuilder(
-                        valueListenable: _customFromNotifier,
+                        valueListenable: _customFromNotifier!,
                         builder: (context, value, child) {
-                          return createButton(context, value, 'from_label'.tr(),
-                              'choose_date_label'.tr(), () {
+                          return createButton(context, value.toString(),
+                              'from_label'.tr(), 'choose_date_label'.tr(), () {
                             selectFrom(context);
                           });
 
@@ -365,10 +371,10 @@ class _BottomSheetPortfolioDetailFilterState
                   Expanded(
                     flex: 1,
                     child: ValueListenableBuilder(
-                        valueListenable: _customToNotifier,
+                        valueListenable: _customToNotifier!,
                         builder: (context, value, child) {
-                          return createButton(context, value, 'to_label'.tr(),
-                              'choose_date_label'.tr(), () {
+                          return createButton(context, value.toString(),
+                              'to_label'.tr(), 'choose_date_label'.tr(), () {
                             selectTo(context);
                           });
                           //return createTextField(context, value, null);
@@ -392,17 +398,17 @@ class _BottomSheetPortfolioDetailFilterState
             ValueListenableBuilder(
                 valueListenable: _errorNotifier,
                 builder: (context, value, child) {
-                  if (StringUtils.isEmtpy(value)) {
+                  if (StringUtils.isEmtpy(value.toString())) {
                     return SizedBox(
                       width: 1.0,
                     );
                   }
                   return Center(
                       child: Text(
-                    value,
+                    value.toString(),
                     style: InvestrendTheme.of(context)
                         .more_support_w400_compact
-                        .copyWith(color: InvestrendTheme.redText),
+                        ?.copyWith(color: InvestrendTheme.redText),
                   ));
                 }),
             SizedBox(
@@ -417,8 +423,8 @@ class _BottomSheetPortfolioDetailFilterState
                   Theme.of(context).colorScheme.secondary,
                   Theme.of(context).primaryColor,
                   Theme.of(context).colorScheme.secondary, () {
-                String from = _customFromNotifier.value;
-                String to = _customToNotifier.value;
+                String from = _customFromNotifier!.value;
+                String to = _customToNotifier!.value;
 
                 if (!StringUtils.isEmtpy(from) || !StringUtils.isEmtpy(to)) {
                   if (StringUtils.isEmtpy(from)) {
@@ -436,7 +442,7 @@ class _BottomSheetPortfolioDetailFilterState
 
                 _errorNotifier.value = '';
                 if (widget.callbackRange != null) {
-                  widget.callbackRange(index_transaction, from, to);
+                  widget.callbackRange!(index_transaction!, from, to);
                 }
 
                 // context.read(transactionIntradayFilterChangeNotifier).setIndex(index_transaction, index_status);

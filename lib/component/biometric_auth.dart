@@ -11,7 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
 
 class BiometricAuth extends StatefulWidget {
-  const BiometricAuth({Key key}) : super(key: key);
+  const BiometricAuth({Key? key}) : super(key: key);
 
   @override
   State<BiometricAuth> createState() => _BiometricAuthState();
@@ -20,8 +20,8 @@ class BiometricAuth extends StatefulWidget {
 class _BiometricAuthState extends State<BiometricAuth> {
   final LocalAuthentication auth = LocalAuthentication();
   _SupportState _supportState = _SupportState.unknown;
-  bool _canCheckBiometrics;
-  List<BiometricType> _availableBiometrics;
+  bool? _canCheckBiometrics;
+  List<BiometricType>? _availableBiometrics;
   String _authorized = 'Not Authorized';
   bool _isAuthenticating = false;
 
@@ -78,7 +78,9 @@ class _BiometricAuthState extends State<BiometricAuth> {
       });
       authenticated = await auth.authenticate(
         localizedReason: 'Let OS determine authentication method',
-        stickyAuth: true,
+        options: AuthenticationOptions(
+          stickyAuth: true,
+        ),
       );
       setState(() {
         _isAuthenticating = false;
@@ -109,8 +111,10 @@ class _BiometricAuthState extends State<BiometricAuth> {
       authenticated = await auth.authenticate(
         localizedReason:
             'Scan your fingerprint (or face or whatever) to authenticate',
-        stickyAuth: true,
-        biometricOnly: true,
+        options: AuthenticationOptions(
+          stickyAuth: true,
+          biometricOnly: true,
+        ),
       );
       setState(() {
         _isAuthenticating = false;
@@ -175,8 +179,6 @@ class _BiometricAuthState extends State<BiometricAuth> {
                 if (_isAuthenticating)
                   ElevatedButton(
                     onPressed: _cancelAuthentication,
-                    // TODO(goderbauer): Make this const when this package requires Flutter 3.8 or later.
-                    // ignore: prefer_const_constructors
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: const <Widget>[
@@ -190,8 +192,6 @@ class _BiometricAuthState extends State<BiometricAuth> {
                     children: <Widget>[
                       ElevatedButton(
                         onPressed: _authenticate,
-                        // TODO(goderbauer): Make this const when this package requires Flutter 3.8 or later.
-                        // ignore: prefer_const_constructors
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: const <Widget>[

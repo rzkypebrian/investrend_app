@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'package:Investrend/objects/data_object.dart';
 import 'package:Investrend/objects/riverpod_change_notifier.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
@@ -21,26 +23,20 @@ class AccountBottomSheet extends ConsumerWidget {
   }
 
   //final int selected = 0;
-  Widget createRow(BuildContext context, Account account, int index, AccountStockPosition info) {
-    bool isSelected = index == context
-        .read(accountChangeNotifier)
-        .index;
-    print('index : $index  current : ' + context
-        .read(accountChangeNotifier)
-        .index
-        .toString() + '  isSelected : $isSelected');
+  Widget createRow(BuildContext context, Account account, int index,
+      AccountStockPosition? info) {
+    bool isSelected = index == context.read(accountChangeNotifier).index;
+    print('index : $index  current : ' +
+        context.read(accountChangeNotifier).index.toString() +
+        '  isSelected : $isSelected');
 
-    Color color = isSelected ? Theme
-        .of(context)
-        .colorScheme.secondary : InvestrendTheme
-        .of(context)
-        .blackAndWhiteText;
+    Color? color = isSelected
+        ? Theme.of(context).colorScheme.secondary
+        : InvestrendTheme.of(context).blackAndWhiteText;
 
     // String type = StringUtils.equalsIgnoreCase(account.type, 'R')
     //     ? 'Regular'
     //     : (StringUtils.equalsIgnoreCase(account.type, 'M') ? 'Margin' : 'Don\'t Know : ' + account.type);
-
-
 
     // int portfolio_value = 200005965;
     // int buying_power = 200005789;
@@ -65,40 +61,46 @@ class AccountBottomSheet extends ConsumerWidget {
       creditLimit = info.creditLimit;
     }
 
-    Color colorGain = InvestrendTheme.priceTextColor(gainLossIdr);
+    Color? colorGain = InvestrendTheme.priceTextColor(gainLossIdr);
 
     List<Widget> list = List.empty(growable: true);
 
-
     if (isSelected) {
-
       list.add(Row(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-      //   Expanded(flex: 1, child: RichText(text: TextSpan(
-      //     children: [
-      //       TextSpan(
-      //         text: type, style: InvestrendTheme.of(context).regular_w700_compact.copyWith(color: color),
-      //       ),
-      //       TextSpan(
-      //           text: ' - ' + account.accountcode, style: InvestrendTheme.of(context).regular_w400_compact.copyWith(color: color),
-      //       ),
-      //     ]
-      // ),),),
+          //   Expanded(flex: 1, child: RichText(text: TextSpan(
+          //     children: [
+          //       TextSpan(
+          //         text: type, style: InvestrendTheme.of(context).regular_w700_compact.copyWith(color: color),
+          //       ),
+          //       TextSpan(
+          //           text: ' - ' + account.accountcode, style: InvestrendTheme.of(context).regular_w400_compact.copyWith(color: color),
+          //       ),
+          //     ]
+          // ),),),
 
-        Expanded(flex: 1, child: Text(account.typeString() + ' - ' + account.accountcode, style: InvestrendTheme.of(context).regular_w600_compact.copyWith(color: color),),),
+          Expanded(
+            flex: 1,
+            child: Text(
+              account.typeString() + ' - ' + account.accountcode,
+              style: InvestrendTheme.of(context)
+                  .regular_w600_compact
+                  ?.copyWith(color: color),
+            ),
+          ),
 
-        Image.asset(
-          'images/icons/check.png',
-          width: 20.0,
-          height: 20.0,
-        ),
-        // Icon(
-        //   Icons.check_circle,
-        //   color: Theme.of(context).accentColor,
-        //   //size: 16.0,
-        // ),
+          Image.asset(
+            'images/icons/check.png',
+            width: 20.0,
+            height: 20.0,
+          ),
+          // Icon(
+          //   Icons.check_circle,
+          //   color: Theme.of(context).accentColor,
+          //   //size: 16.0,
+          // ),
         ],
       ));
     } else {
@@ -106,10 +108,9 @@ class AccountBottomSheet extends ConsumerWidget {
           width: double.maxFinite,
           child: Text(
             account.typeString() + ' - ' + account.accountcode,
-            style: InvestrendTheme
-                .of(context)
+            style: InvestrendTheme.of(context)
                 .regular_w600_compact
-                .copyWith(color: color),
+                ?.copyWith(color: color),
             textAlign: TextAlign.left,
           )));
     }
@@ -122,22 +123,17 @@ class AccountBottomSheet extends ConsumerWidget {
         Expanded(
             flex: 1,
             child: Text('trade_account_portfolio_value_label'.tr(),
-                style: InvestrendTheme
-                    .of(context)
+                style: InvestrendTheme.of(context)
                     .support_w400_compact
-                    .copyWith(color: InvestrendTheme
-                    .of(context)
-                    .greyLighterTextColor))),
+                    ?.copyWith(
+                        color:
+                            InvestrendTheme.of(context).greyLighterTextColor))),
         Expanded(
             flex: 1,
             child: Text(
               'trade_account_buyer_power_label'.tr(),
-              style: InvestrendTheme
-                  .of(context)
-                  .support_w400_compact
-                  .copyWith(color: InvestrendTheme
-                  .of(context)
-                  .greyLighterTextColor),
+              style: InvestrendTheme.of(context).support_w400_compact?.copyWith(
+                  color: InvestrendTheme.of(context).greyLighterTextColor),
               textAlign: TextAlign.end,
             )),
       ],
@@ -149,23 +145,16 @@ class AccountBottomSheet extends ConsumerWidget {
       children: [
         Expanded(
             flex: 1,
-            child: Text(InvestrendTheme.formatMoney(portfolioValue, prefixRp: true),
-                style: InvestrendTheme
-                    .of(context)
-                    .small_w400_compact
-                    .copyWith(color: InvestrendTheme
-                    .of(context)
-                    .blackAndWhiteText))),
+            child: Text(
+                InvestrendTheme.formatMoney(portfolioValue, prefixRp: true),
+                style: InvestrendTheme.of(context).small_w400_compact?.copyWith(
+                    color: InvestrendTheme.of(context).blackAndWhiteText))),
         Expanded(
             flex: 1,
             child: Text(
               InvestrendTheme.formatMoneyDouble(buyingPower, prefixRp: true),
-              style: InvestrendTheme
-                  .of(context)
-                  .small_w400_compact
-                  .copyWith(color: InvestrendTheme
-                  .of(context)
-                  .blackAndWhiteText),
+              style: InvestrendTheme.of(context).small_w400_compact?.copyWith(
+                  color: InvestrendTheme.of(context).blackAndWhiteText),
               textAlign: TextAlign.end,
             )),
       ],
@@ -176,19 +165,20 @@ class AccountBottomSheet extends ConsumerWidget {
     list.add(Row(
       children: [
         Text(InvestrendTheme.formatMoney(gainLossIdr, prefixRp: true),
-            style: InvestrendTheme
-                .of(context)
+            style: InvestrendTheme.of(context)
                 .support_w400_compact
-                .copyWith(color: colorGain)),
+                ?.copyWith(color: colorGain)),
         SizedBox(
           width: 4.0,
         ),
         Text(
-          '(' + InvestrendTheme.formatPercentChange(gainLossPercentage, sufixPercent: true) + ')',
-          style: InvestrendTheme
-              .of(context)
+          '(' +
+              InvestrendTheme.formatPercentChange(gainLossPercentage,
+                  sufixPercent: true) +
+              ')',
+          style: InvestrendTheme.of(context)
               .support_w400_compact
-              .copyWith(color: colorGain),
+              ?.copyWith(color: colorGain),
           textAlign: TextAlign.end,
         ),
       ],
@@ -200,12 +190,14 @@ class AccountBottomSheet extends ConsumerWidget {
         //context.read(rdnBalanceStateProvider).state = 0;
         //context.read(buyRdnBuyingPowerChangeNotifier).update(info.outstandingLimit, info.rdnBalance);
 
-
         //context.read(buyRdnBuyingPowerChangeNotifier).update(buying_power, rdnBalance);
-        context.read(buyRdnBuyingPowerChangeNotifier).update(buyingPower, cashBalance, creditLimit);
+        context
+            .read(buyRdnBuyingPowerChangeNotifier)
+            .update(buyingPower, cashBalance, creditLimit);
       },
       child: Padding(
-        padding: const EdgeInsets.only(top: 24.0, bottom: 24.0, left: 24.0, right: 24.0),
+        padding: const EdgeInsets.only(
+            top: 24.0, bottom: 24.0, left: 24.0, right: 24.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           mainAxisAlignment: MainAxisAlignment.start,
@@ -220,14 +212,8 @@ class AccountBottomSheet extends ConsumerWidget {
     final selected = watch(accountChangeNotifier);
     final infos = watch(accountsInfosNotifier);
 
-    double height = MediaQuery
-        .of(context)
-        .size
-        .height;
-    double width = MediaQuery
-        .of(context)
-        .size
-        .width;
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
     double minHeight = height * 0.2;
     double maxHeight = height * 0.5;
     // double heightRowReguler = UIHelper.textSize('WgjLl', InvestrendTheme.of(context).regular_w700_compact).height;
@@ -238,28 +224,22 @@ class AccountBottomSheet extends ConsumerWidget {
     List<Widget> list = List.empty(growable: true);
     //list.add(getIndicator());
     //int count = InvestrendTheme.of(context).user.accountSize();
-    int count = context
-        .read(dataHolderChangeNotifier)
-        .user
-        .accountSize();
+    int count = context.read(dataHolderChangeNotifier).user.accountSize();
 
     print('accountSize : ' + count.toString());
     if (count > 0) {
       for (int i = 0; i < count; i++) {
         //Account account = InvestrendTheme.of(context).user.getAccount(i);
-        Account account = context
-            .read(dataHolderChangeNotifier)
-            .user
-            .getAccount(i);
+        Account? account =
+            context.read(dataHolderChangeNotifier).user.getAccount(i);
 
-        if(account != null){
-          AccountStockPosition info = infos.getInfo(account.accountcode);
+        if (account != null) {
+          AccountStockPosition? info = infos.getInfo(account.accountcode);
           if (i != 0) {
             list.add(Divider());
           }
           list.add(createRow(context, account, i, info));
         }
-
       }
     }
     //
@@ -280,7 +260,8 @@ class AccountBottomSheet extends ConsumerWidget {
       ),
       child: Container(
         // color: Colors.orangeAccent,
-        padding: const EdgeInsets.only(top: 30.0, bottom: 24.0 /*, left: 24.0, right: 24.0*/),
+        padding: const EdgeInsets.only(
+            top: 30.0, bottom: 24.0 /*, left: 24.0, right: 24.0*/),
         width: double.maxFinite,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,

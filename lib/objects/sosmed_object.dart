@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'package:Investrend/utils/string_utils.dart';
 import 'dart:convert';
 import 'package:crypto/crypto.dart';
@@ -32,13 +34,22 @@ class Attachment extends KeysNeeded {
   final String attachment_list;
   final String attachment_small;
   final String attachment_index;
-  final AttachmentInfo attachment_info;
+  final AttachmentInfo? attachment_info;
 
-  Attachment(this.id, this.post_id, this.attachment, this.attachment_type, this.created_at, this.updated_at, this.attachment_list,
-      this.attachment_small, this.attachment_index, this.attachment_info)
+  Attachment(
+      this.id,
+      this.post_id,
+      this.attachment,
+      this.attachment_type,
+      this.created_at,
+      this.updated_at,
+      this.attachment_list,
+      this.attachment_small,
+      this.attachment_index,
+      this.attachment_info)
       : super();
 
-  factory Attachment.fromJson(Map<String, dynamic> parsedJson) {
+  static Attachment? fromJson(Map<String, dynamic>? parsedJson) {
     if (parsedJson == null) {
       return null;
     }
@@ -59,7 +70,7 @@ class Attachment extends KeysNeeded {
   String toString() {
     return '[Attachment  id : $id  post_id : $post_id  attachment : $attachment  attachment_type : $attachment_type  created_at : $created_at  updated_at : $updated_at'
             '  attachment_list : $attachment_list  attachment_small : $attachment_small  attachment_index : $attachment_index  attachment_info : \n' +
-        attachment_info?.toString() +
+        attachment_info.toString() +
         ']';
   }
 
@@ -78,8 +89,8 @@ class Attachment extends KeysNeeded {
   */
   @override
   String membersIncludedInKey() {
-    //String attachment_infoKeyString = attachment_info != null ? attachment_info.keyString : '';
-    List<String> members = [
+    //String attachment_infoKeyString = attachment_info = null ? attachment_info.keyString : '';
+    List<String?> members = [
       id.toString(),
       post_id.toString(),
       StringUtils.noNullString(attachment),
@@ -89,7 +100,7 @@ class Attachment extends KeysNeeded {
       StringUtils.noNullString(attachment_list),
       StringUtils.noNullString(attachment_small),
       StringUtils.noNullString(attachment_index),
-      (attachment_info != null ? attachment_info.keyString : '')
+      (attachment_info != null ? attachment_info?.keyString : '')
     ];
     return members.join('_');
   }
@@ -98,15 +109,16 @@ class Attachment extends KeysNeeded {
 class AttachmentInfo extends KeysNeeded {
   final String mime_type;
   final String url_path;
-  final  size;
+  final size;
 
   AttachmentInfo(this.mime_type, this.url_path, this.size) : super();
 
-  factory AttachmentInfo.fromJson(Map<String, dynamic> parsedJson) {
+  static AttachmentInfo? fromJson(Map<String, dynamic>? parsedJson) {
     if (parsedJson == null) {
       return null;
     }
-    return AttachmentInfo(parsedJson['mime_type'], parsedJson['url_path'], parsedJson['size']);
+    return AttachmentInfo(
+        parsedJson['mime_type'], parsedJson['url_path'], parsedJson['size']);
   }
 
   @override
@@ -116,7 +128,11 @@ class AttachmentInfo extends KeysNeeded {
 
   @override
   String membersIncludedInKey() {
-    List<String> members = [StringUtils.noNullString(mime_type), size.toString(), StringUtils.noNullString(url_path)];
+    List<String?> members = [
+      StringUtils.noNullString(mime_type),
+      size.toString(),
+      StringUtils.noNullString(url_path)
+    ];
     return members.join('_');
   }
 }
@@ -151,7 +167,7 @@ class UserSosMed extends KeysNeeded {
 
   final String thumbnail;
 
-  final AttachmentInfo featured_attachment_info;
+  final AttachmentInfo? featured_attachment_info;
 
   @override
   String toString() {
@@ -188,7 +204,7 @@ class UserSosMed extends KeysNeeded {
       this.featured_attachment_info)
       : super(); // DATA
 
-  factory UserSosMed.fromJson(Map<String, dynamic> parsedJson) {
+  static UserSosMed? fromJson(Map<String, dynamic>? parsedJson) {
     if (parsedJson == null) {
       return null;
     }
@@ -217,7 +233,6 @@ class UserSosMed extends KeysNeeded {
       parsedJson['name'],
       parsedJson['thumbnail_url'],
       parsedJson['thumbnail'],
-
       parsedJson['updated_at'],
       parsedJson['username'],
       AttachmentInfo.fromJson(parsedJson['featured_attachment_info']),
@@ -226,7 +241,7 @@ class UserSosMed extends KeysNeeded {
 
   @override
   String membersIncludedInKey() {
-    List<String> members = [
+    List<String?> members = [
       active.toString(),
       attachment_type.toString(),
       featured_attachment_type.toString(),
@@ -255,7 +270,9 @@ class UserSosMed extends KeysNeeded {
       StringUtils.noNullString(thumbnail),
       StringUtils.noNullString(updated_at),
       StringUtils.noNullString(username),
-      (featured_attachment_info != null ? featured_attachment_info.keyString : '')
+      (featured_attachment_info != null
+          ? featured_attachment_info?.keyString
+          : '')
     ];
     return members.join('_');
   }
@@ -270,11 +287,19 @@ class Poll extends KeysNeeded {
   final String updated_at;
   bool voted;
 
-  Poll(this.count, this.created_at, this.id, this.post_id, this.text, this.updated_at, this.voted) : super();
+  Poll(this.count, this.created_at, this.id, this.post_id, this.text,
+      this.updated_at, this.voted)
+      : super();
 
   factory Poll.fromJson(Map<String, dynamic> parsedJson) {
-    return Poll(parsedJson['count'], parsedJson['created_at'], parsedJson['id'], parsedJson['post_id'], parsedJson['text'],
-        parsedJson['updated_at'], parsedJson['voted']);
+    return Poll(
+        parsedJson['count'],
+        parsedJson['created_at'],
+        parsedJson['id'],
+        parsedJson['post_id'],
+        parsedJson['text'],
+        parsedJson['updated_at'],
+        parsedJson['voted']);
   }
 
   @override
@@ -292,7 +317,7 @@ class Poll extends KeysNeeded {
 
   @override
   String membersIncludedInKey() {
-    List<String> members = [
+    List<String?> members = [
       count.toString(),
       StringUtils.noNullString(created_at),
       id.toString(),
@@ -306,22 +331,24 @@ class Poll extends KeysNeeded {
 }
 
 abstract class KeysNeeded {
-  String _keyString;
+  String? _keyString;
 
-  KeysNeeded() {
+  lateKeysNeeded() {
     generateKeyString();
   }
 
   String membersIncludedInKey();
 
-  String generateKeyString() {
-    String raw = StringUtils.isEmtpy(membersIncludedInKey()) ? DateTime.now().toString() : membersIncludedInKey();
+  String? generateKeyString() {
+    String raw = StringUtils.isEmtpy(membersIncludedInKey())
+        ? DateTime.now().toString()
+        : membersIncludedInKey();
     _keyString = generateMd5(raw);
     print('generateKeyString : $_keyString');
     return keyString;
   }
 
-  String get keyString => _keyString;
+  String? get keyString => _keyString;
 
   String generateMd5(String input) {
     return md5.convert(utf8.encode(input)).toString();
@@ -329,46 +356,45 @@ abstract class KeysNeeded {
 }
 
 class Post extends KeysNeeded {
-  final int id;
-  final String slug;
-  final int user_id;
-  final String type;
-  final String text;
-  final String tag;
-  final int is_featured;
-  final int is_trending;
-  final String code;
-  final int target_price;
-  final String transaction_type;
-  final String expired_at;
-  final String attachment;
-  final int attachment_type;
-  final String attachment_info;
-  int voter_count;
-  int like_count;
-  final int comment_count;
-  final String created_at;
-  final String updated_at;
-  final String deleted_at;
-  final String stock_name;
-  final int start_price;
-  final int sell_price;
-  bool liked;
-  bool voted;
-  final List<Poll> polls;
-  final List<PostComment> top_comments;
-  final UserSosMed user;
-  final List<Attachment> attachments;
+  final int? id;
+  final String? slug;
+  final int? user_id;
+  final String? type;
+  final String? text;
+  final String? tag;
+  final int? is_featured;
+  final int? is_trending;
+  final String? code;
+  final int? target_price;
+  final String? transaction_type;
+  final String? expired_at;
+  final String? attachment;
+  final int? attachment_type;
+  final String? attachment_info;
+  int? voter_count;
+  int? like_count;
+  final int? comment_count;
+  final String? created_at;
+  final String? updated_at;
+  final String? deleted_at;
+  final String? stock_name;
+  final int? start_price;
+  final int? sell_price;
+  bool? liked;
+  bool? voted;
+  final List<Poll>? polls;
+  final List<PostComment>? top_comments;
+  final UserSosMed? user;
+  final List<Attachment?>? attachments;
 
+  final PostType? postType;
 
-
-  final PostType postType;
-
-  int pollsCount() {
-    return polls != null ? polls.length : 0;
+  int? pollsCount() {
+    return polls != null ? polls?.length : 0;
   }
-  int attachmentsCount() {
-    return attachments != null ? attachments.length : 0;
+
+  int? attachmentsCount() {
+    return attachments != null ? attachments?.length : 0;
   }
 
   @override
@@ -377,8 +403,38 @@ class Post extends KeysNeeded {
   }
 
   static Post createSimple() {
-    return Post(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-        null, null, null, null, null, null, null, null, null, null);
+    return Post(
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null);
   }
 
   Post(
@@ -416,27 +472,28 @@ class Post extends KeysNeeded {
       : super();
 
   factory Post.fromJson(Map<String, dynamic> parsedJson) {
-    var listAttachments = parsedJson['attachments'] as List;
+    List<dynamic>? listAttachments = parsedJson['attachments'] as List?;
     print(listAttachments.runtimeType); //returns List<dynamic>
-    List<Attachment> attachments;
+    List<Attachment?>? attachments;
     if (listAttachments != null) {
       attachments = listAttachments.map((i) => Attachment.fromJson(i)).toList();
     }
 
-    var listPolls = parsedJson['polls'] as List;
+    List<dynamic>? listPolls = parsedJson['polls'] as List?;
     print(listPolls.runtimeType); //returns List<dynamic>
-    List<Poll> polls;
+    List<Poll>? polls;
     if (listPolls != null) {
       polls = listPolls.map((i) => Poll.fromJson(i)).toList();
     }
 
     // belum tau structure data cooment kek gimana? tanya TKB
 
-    var listTopComments = parsedJson['top_comments'] as List;
+    var listTopComments = parsedJson['top_comments'] as List?;
     print(listTopComments.runtimeType);
-    List<PostComment> topComments;
+    List<PostComment>? topComments;
     if (listTopComments != null) {
-      topComments = listTopComments.map((i) => PostComment.fromJson(i)).toList();
+      topComments =
+          listTopComments.map((i) => PostComment.fromJson(i)).toList();
     }
 
     String type = parsedJson['type'];
@@ -487,13 +544,14 @@ class Post extends KeysNeeded {
         parsedJson['voted'],
         polls,
         topComments,
-        attachments
-    );
+        attachments);
   }
 
   void likedSuccess() {
     liked = true;
-    like_count++;
+    if (like_count != null) {
+      like_count = like_count! + 1;
+    }
     print('Post OLD likedSuccess keyString : $keyString');
     generateKeyString();
     print('Post NEW likedSuccess keyString : $keyString');
@@ -501,7 +559,9 @@ class Post extends KeysNeeded {
 
   void likedUndoed() {
     liked = false;
-    like_count--;
+    if (like_count != null) {
+      like_count = like_count! - 1;
+    }
     print('Post OLD likedUndoed keyString : $keyString');
     generateKeyString();
     print('Post NEW likedUndoed keyString : $keyString');
@@ -509,7 +569,9 @@ class Post extends KeysNeeded {
 
   void voteSuccess() {
     voted = true;
-    voter_count++;
+    if (voter_count != null) {
+      voter_count = like_count! + 1;
+    }
     print('Post OLD voteSuccess keyString : $keyString');
     generateKeyString();
     print('Post NEW voteSuccess keyString : $keyString');
@@ -517,37 +579,43 @@ class Post extends KeysNeeded {
 
   @override
   String membersIncludedInKey() {
-    String pollsString;
-    if (polls == null || polls.isEmpty) {
+    String? pollsString;
+    if (polls == null || polls!.isEmpty) {
       pollsString = '';
     } else {
-      polls.forEach((poll) {
+      polls?.forEach((poll) {
         if (StringUtils.isEmtpy(pollsString)) {
           pollsString = poll.keyString;
         } else {
-          pollsString += '|' + poll.keyString;
+          if (pollsString != null) {
+            pollsString = pollsString! + '|' + poll.keyString!;
+          }
+          // pollsString += '|' + poll.keyString;
         }
       });
     }
-    String topCommentsString;
-    if (top_comments == null || top_comments.isEmpty) {
+    String? topCommentsString;
+    if (top_comments == null || top_comments!.isEmpty) {
       topCommentsString = '';
     } else {
-      top_comments.forEach((comment) {
+      top_comments?.forEach((comment) {
         if (StringUtils.isEmtpy(topCommentsString)) {
           topCommentsString = comment.keyString;
         } else {
-          topCommentsString += '|' + comment.keyString;
+          if (topCommentsString != null) {
+            topCommentsString = topCommentsString! + '|' + comment.keyString!;
+          }
+          // topCommentsString += '|' + comment.keyString;
         }
       });
     }
 
-    List<String> members = [
+    List<String?> members = [
       id.toString(),
       StringUtils.noNullString(slug),
       user_id.toString(),
       type.toString(),
-      StringUtils.noNullString(text).length.toString(),
+      StringUtils.noNullString(text)?.length.toString(),
       StringUtils.noNullString(tag),
       is_featured.toString(),
       is_trending.toString(),
@@ -571,7 +639,7 @@ class Post extends KeysNeeded {
       voted.toString(),
       pollsString,
       topCommentsString,
-      (user != null ? user.keyString : ''),
+      (user != null ? user?.keyString : ''),
     ];
     return members.join('_');
   }
@@ -593,19 +661,30 @@ class ResultPost {
   final String prev_page_url;
   final int to;
   final int total;
-  final List<Post> posts;
+  final List<Post>? posts;
 
-  ResultPost(this.current_page, this.first_page_url, this.from, this.last_page, this.last_page_url, this.next_page_url, this.path, this.per_page,
-      this.prev_page_url, this.to, this.total, this.posts);
+  ResultPost(
+      this.current_page,
+      this.first_page_url,
+      this.from,
+      this.last_page,
+      this.last_page_url,
+      this.next_page_url,
+      this.path,
+      this.per_page,
+      this.prev_page_url,
+      this.to,
+      this.total,
+      this.posts);
 
-  factory ResultPost.fromJson(Map<String, dynamic> parsedJson) {
+  static ResultPost? fromJson(Map<String, dynamic>? parsedJson) {
     if (parsedJson == null) {
       return null;
     }
 
     var listPost = parsedJson['data'] as List;
     print(listPost.runtimeType); //returns List<dynamic>
-    List<Post> posts = listPost?.map((i) => Post.fromJson(i)).toList();
+    List<Post> posts = listPost.map((i) => Post.fromJson(i)).toList();
 
     return ResultPost(
         parsedJson['current_page'],
@@ -622,8 +701,8 @@ class ResultPost {
         posts);
   }
 
-  int countPost() {
-    return posts != null ? posts.length : 0;
+  int? countPost() {
+    return posts != null ? posts?.length : 0;
   }
 
   @override
@@ -635,7 +714,6 @@ class ResultPost {
         countPost().toString();
   }
 }
-
 
 class ResultComment {
   final int current_page;
@@ -653,22 +731,31 @@ class ResultComment {
   final String prev_page_url;
   final int to;
   final int total;
-  final List<PostComment> comments;
+  final List<PostComment>? comments;
 
+  ResultComment(
+      this.current_page,
+      this.first_page_url,
+      this.from,
+      this.last_page,
+      this.last_page_url,
+      this.next_page_url,
+      this.path,
+      this.per_page,
+      this.prev_page_url,
+      this.to,
+      this.total,
+      this.comments);
 
-
-
-  ResultComment(this.current_page, this.first_page_url, this.from, this.last_page, this.last_page_url, this.next_page_url, this.path, this.per_page,
-      this.prev_page_url, this.to, this.total, this.comments);
-
-  factory ResultComment.fromJson(Map<String, dynamic> parsedJson) {
+  static ResultComment? fromJson(Map<String, dynamic>? parsedJson) {
     if (parsedJson == null) {
       return null;
     }
 
     var listComments = parsedJson['data'] as List;
     print(listComments.runtimeType); //returns List<dynamic>
-    List<PostComment> comments = listComments?.map((i) => PostComment.fromJson(i)).toList();
+    List<PostComment> comments =
+        listComments.map((i) => PostComment.fromJson(i)).toList();
 
     return ResultComment(
         parsedJson['current_page'],
@@ -685,26 +772,24 @@ class ResultComment {
         comments);
   }
 
-  int countComments() {
-    return comments != null ? comments.length : 0;
+  int? countComments() {
+    return comments != null ? comments?.length : 0;
   }
 
   @override
   String toString() {
     return 'ResultComment current_page : $current_page first_page_url : $first_page_url '
-        'from : $from last_page : $last_page last_page_url : $last_page_url'
-        'next_page_url : $next_page_url path : $path per_page : $per_page'
-        'prev_page_url : $prev_page_url to : $to total : $total comments : ' +
+            'from : $from last_page : $last_page last_page_url : $last_page_url'
+            'next_page_url : $next_page_url path : $path per_page : $per_page'
+            'prev_page_url : $prev_page_url to : $to total : $total comments : ' +
         countComments().toString();
   }
 }
 
-
-
 class FetchPost {
   int status;
   String message;
-  ResultPost result;
+  ResultPost? result;
 
   FetchPost(this.status, this.message, this.result);
 
@@ -722,15 +807,15 @@ class FetchPost {
 
   @override
   String toString() {
-    return 'FetchPost status : $status message : $message result : \n' + result.toString();
-
+    return 'FetchPost status : $status message : $message result : \n' +
+        result.toString();
   }
 }
 
 class FetchComment {
   int status;
   String message;
-  ResultComment result;
+  ResultComment? result;
 
   FetchComment(this.status, this.message, this.result);
 
@@ -748,8 +833,8 @@ class FetchComment {
 
   @override
   String toString() {
-    return 'FetchComment status : $status message : $message result : \n' + result.toString();
-
+    return 'FetchComment status : $status message : $message result : \n' +
+        result.toString();
   }
 }
 
@@ -760,15 +845,11 @@ class SubmitBasic {
   SubmitBasic(this.status, this.message);
 
   factory SubmitBasic.fromJson(Map<String, dynamic> parsedJson) {
-
     int status = parsedJson['status'];
     print(status);
     String message = parsedJson['message'];
     print(message);
-    return SubmitBasic(
-      status,
-      message
-    );
+    return SubmitBasic(status, message);
   }
 
   @override
@@ -777,11 +858,10 @@ class SubmitBasic {
   }
 }
 
-
 class SubmitLike {
   int status;
   String message;
-  ResultLike result;
+  ResultLike? result;
 
   SubmitLike(this.status, this.message, this.result);
 
@@ -805,15 +885,15 @@ class SubmitLike {
 
   @override
   String toString() {
-    return 'SubmitLike status : $status message : $message result : \n' + result.toString();
-
+    return 'SubmitLike status : $status message : $message result : \n' +
+        result.toString();
   }
 }
 
 class SubmitVote {
   int status;
   String message;
-  ResultVote result;
+  ResultVote? result;
 
   SubmitVote(this.status, this.message, this.result);
 
@@ -821,7 +901,7 @@ class SubmitVote {
     /*
     {
       "status": 200,
-      "message": "Poll created!",
+      "message": "Poll created",
       "result": {
         "user_id": 1,
         "post_poll_id": "1",
@@ -846,15 +926,15 @@ class SubmitVote {
 
   @override
   String toString() {
-    return 'SubmitVote status : $status message : $message result : \n' + result.toString();
-
+    return 'SubmitVote status : $status message : $message result : \n' +
+        result.toString();
   }
 }
 
 class SubmitCreateComment {
   int status;
   String message;
-  ResultCreateComment result;
+  ResultCreateComment? result;
 
   SubmitCreateComment(this.status, this.message, this.result);
 
@@ -862,7 +942,7 @@ class SubmitCreateComment {
     /*
     {
       "status": 200,
-      "message": "Poll created!",
+      "message": "Poll created",
       "result": {
         "user_id": 1,
         "post_poll_id": "1",
@@ -887,15 +967,15 @@ class SubmitCreateComment {
 
   @override
   String toString() {
-    return 'SubmitVote status : $status message : $message result : \n' + result.toString();
-
+    return 'SubmitVote status : $status message : $message result : \n' +
+        result.toString();
   }
 }
 
 class SubmitCreateText {
   int status;
   String message;
-  ResultCreatePostText result;
+  ResultCreatePostText? result;
 
   SubmitCreateText(this.status, this.message, this.result);
 
@@ -903,7 +983,7 @@ class SubmitCreateText {
     /*
     {
       "status": 200,
-      "message": "Post created!",
+      "message": "Post created",
       "result": {
           "slug": "TEXT-1627456304-2060",
           "user_id": 1,
@@ -934,15 +1014,15 @@ class SubmitCreateText {
 
   @override
   String toString() {
-    return 'SubmitCreateText status : $status message : $message result : \n' + result.toString();
-
+    return 'SubmitCreateText status : $status message : $message result : \n' +
+        result.toString();
   }
 }
 
 class SubmitCreateTransaction {
   int status;
   String message;
-  ResultCreatePostTransaction result;
+  ResultCreatePostTransaction? result;
 
   SubmitCreateTransaction(this.status, this.message, this.result);
 
@@ -950,7 +1030,7 @@ class SubmitCreateTransaction {
     /*
     {
       "status": 200,
-      "message": "Post created!",
+      "message": "Post created",
       "result": {
           "slug": "TEXT-1627456304-2060",
           "user_id": 1,
@@ -981,8 +1061,8 @@ class SubmitCreateTransaction {
 
   @override
   String toString() {
-    return 'SubmitCreateText status : $status message : $message result : \n' + result.toString();
-
+    return 'SubmitCreateText status : $status message : $message result : \n' +
+        result.toString();
   }
 }
 
@@ -1043,7 +1123,6 @@ class SubmitCreatePolls {
   @override
   String toString() {
     return 'SubmitCreatePolls status : $status message : $message';
-
   }
 }
 
@@ -1104,7 +1183,6 @@ class SubmitCreatePrediction {
   @override
   String toString() {
     return 'SubmitCreatePrediction status : $status message : $message';
-
   }
 }
 
@@ -1116,11 +1194,11 @@ class ResultLike {
   //String updated_at;
   int user_id;
 
-  //{"status":200,"message":"Like created!","result":{"user_id":1,"post_id":"31"}}
+  //{"status":200,"message":"Like created","result":{"user_id":1,"post_id":"31"}}
   //ResultLike(this.id, this.post_id, this.user_id, this.created_at, this.updated_at);
   ResultLike(this.post_id, this.user_id);
 
-  factory ResultLike.fromJson(Map<String, dynamic> parsedJson) {
+  static ResultLike? fromJson(Map<String, dynamic>? parsedJson) {
     if (parsedJson == null) {
       return null;
     }
@@ -1143,7 +1221,6 @@ class ResultLike {
   String toString() {
     //return 'ResultLike id : $id  post_id : $post_id  user_id : $user_id  created_at : $created_at  updated_at : $updated_at';
     return 'ResultLike post_id : $post_id  user_id : $user_id';
-
   }
 }
 
@@ -1154,13 +1231,14 @@ class ResultVote {
   String updated_at;
   int user_id;
 
-  ResultVote(this.id, this.post_poll_id, this.user_id, this.created_at, this.updated_at);
+  ResultVote(this.id, this.post_poll_id, this.user_id, this.created_at,
+      this.updated_at);
 
-  factory ResultVote.fromJson(Map<String, dynamic> parsedJson) {
+  static ResultVote? fromJson(Map<String, dynamic>? parsedJson) {
     /*
     {
       "status": 200,
-      "message": "Poll created!",
+      "message": "Poll created",
       "result": {
         "user_id": 1, --
         "post_poll_id": "1",
@@ -1190,12 +1268,10 @@ class ResultVote {
   @override
   String toString() {
     return 'ResultVote id : $id  post_poll_id : $post_poll_id  user_id : $user_id  created_at : $created_at  updated_at : $updated_at';
-
   }
 }
 
 class ResultCreateComment {
-
   int user_id;
   String post_id;
   String text;
@@ -1204,14 +1280,14 @@ class ResultCreateComment {
   int id;
   //"top_replies": []
 
+  ResultCreateComment(this.user_id, this.post_id, this.text, this.updated_at,
+      this.created_at, this.id);
 
-  ResultCreateComment(this.user_id, this.post_id, this.text, this.updated_at, this.created_at, this.id);
-
-  factory ResultCreateComment.fromJson(Map<String, dynamic> parsedJson) {
+  static ResultCreateComment? fromJson(Map<String, dynamic>? parsedJson) {
     /*
     {
         "status": 200,
-        "message": "Comment created!",
+        "message": "Comment created",
         "result": {
             "user_id": 1,
             "post_id": "1",
@@ -1227,13 +1303,18 @@ class ResultCreateComment {
       return null;
     }
 
-    return ResultCreateComment(parsedJson['user_id'], parsedJson['post_id'].toString(), parsedJson['text'], parsedJson['updated_at'], parsedJson['created_at'], parsedJson['id']);
+    return ResultCreateComment(
+        parsedJson['user_id'],
+        parsedJson['post_id'].toString(),
+        parsedJson['text'],
+        parsedJson['updated_at'],
+        parsedJson['created_at'],
+        parsedJson['id']);
   }
 
   @override
   String toString() {
     return 'ResultCreateComment user_id : $user_id  post_id : $post_id  text : $text  updated_at : $updated_at  created_at : $id  created_at : $id';
-
   }
 }
 
@@ -1251,13 +1332,14 @@ class ResultCreatePostText {
   //final String polls; // array
   //final String top_comments; // array
 
-  ResultCreatePostText(this.slug, this.user_id, this.type, this.text, this.updated_at, this.created_at, this.id, this.liked, this.voted);
+  ResultCreatePostText(this.slug, this.user_id, this.type, this.text,
+      this.updated_at, this.created_at, this.id, this.liked, this.voted);
 
-  factory ResultCreatePostText.fromJson(Map<String, dynamic> parsedJson) {
+  static ResultCreatePostText? fromJson(Map<String, dynamic>? parsedJson) {
     /*
     {
       "status": 200,
-      "message": "Post created!",
+      "message": "Post created",
       "result": {
           "slug": "TEXT-1627456304-2060",
           "user_id": 1,
@@ -1276,15 +1358,22 @@ class ResultCreatePostText {
     if (parsedJson == null) {
       return null;
     }
-    return ResultCreatePostText(parsedJson['slug'], parsedJson['user_id'], parsedJson['type'], parsedJson['text'], parsedJson['updated_at'],
-        parsedJson['created_at'], parsedJson['id'], parsedJson['liked'], parsedJson['voted']);
+    return ResultCreatePostText(
+        parsedJson['slug'],
+        parsedJson['user_id'],
+        parsedJson['type'],
+        parsedJson['text'],
+        parsedJson['updated_at'],
+        parsedJson['created_at'],
+        parsedJson['id'],
+        parsedJson['liked'],
+        parsedJson['voted']);
   }
 
   @override
   String toString() {
     return 'ResultCreatePostText slug : $slug  user_id : $user_id  type : $type  text : $text  updated_at : $updated_at'
         '  created_at : $created_at  id : $id  liked : $liked  voted : $voted';
-
   }
 }
 
@@ -1303,10 +1392,23 @@ class ResultCreatePostTransaction {
   final bool liked;
   final bool voted;
 
-  ResultCreatePostTransaction(this.slug, this.user_id, this.type, this.text, this.code, this.start_price, this.transaction_type, this.sell_price,
-      this.updated_at, this.created_at, this.id, this.liked, this.voted);
+  ResultCreatePostTransaction(
+      this.slug,
+      this.user_id,
+      this.type,
+      this.text,
+      this.code,
+      this.start_price,
+      this.transaction_type,
+      this.sell_price,
+      this.updated_at,
+      this.created_at,
+      this.id,
+      this.liked,
+      this.voted);
 
-  factory ResultCreatePostTransaction.fromJson(Map<String, dynamic> parsedJson) {
+  static ResultCreatePostTransaction? fromJson(
+      Map<String, dynamic>? parsedJson) {
     /*
     "result": {
         "slug": "TRANSACTION-1627543115-3919",
@@ -1349,7 +1451,6 @@ class ResultCreatePostTransaction {
   @override
   String toString() {
     return 'ResultCreatePostTransaction  slug : $slug  user_id : $user_id  type : $type  text : $text  code : $code  start_price : $start_price  transaction_type : $transaction_type  sell_price : $sell_price  updated_at : $updated_at  created_at : $created_at  id : $id  liked : $liked  voted : $voted ';
-
   }
 }
 
@@ -1392,8 +1493,17 @@ class Prediction {
   int totalVotes = 0;
   String expires = '';
 
-  Prediction(this.code, this.name, this.targetPrice, this.startPrice, this.upsidePercentage, this.timing, this.countAgree, this.countDisagree,
-      this.totalVotes, this.expires);
+  Prediction(
+      this.code,
+      this.name,
+      this.targetPrice,
+      this.startPrice,
+      this.upsidePercentage,
+      this.timing,
+      this.countAgree,
+      this.countDisagree,
+      this.totalVotes,
+      this.expires);
 }
 
 class CommentOld {
@@ -1404,26 +1514,36 @@ class CommentOld {
   final String datetime;
   final String text;
 
-  CommentOld(this.avatarUrl, this.name, this.username, this.label, this.datetime, this.text);
+  CommentOld(this.avatarUrl, this.name, this.username, this.label,
+      this.datetime, this.text);
 }
 
 class PostComment extends KeysNeeded {
   final String created_at; // --
-  final String deleted_at;  // --
+  final String deleted_at; // --
   final int id; // --
   final int post_comment_id;
-  final int post_id;  // --
-  final int reply_count;  // --
-  final String text;  // --
+  final int post_id; // --
+  final int reply_count; // --
+  final String text; // --
 
   //final String top_replies; // array
-  final String updated_at;  // --
+  final String updated_at; // --
 
-  final int user_id;  // --
-  final UserSosMed user;  // --
+  final int user_id; // --
+  final UserSosMed? user; // --
 
-  PostComment(this.created_at, this.deleted_at, this.id, this.post_comment_id, this.post_id, this.reply_count, this.text, this.updated_at,
-      this.user_id, this.user)
+  PostComment(
+      this.created_at,
+      this.deleted_at,
+      this.id,
+      this.post_comment_id,
+      this.post_id,
+      this.reply_count,
+      this.text,
+      this.updated_at,
+      this.user_id,
+      this.user)
       : super();
 
   factory PostComment.fromJson(Map<String, dynamic> parsedJson) {
@@ -1442,14 +1562,14 @@ class PostComment extends KeysNeeded {
 
   @override
   String membersIncludedInKey() {
-    List<String> members = [
+    List<String?> members = [
       StringUtils.noNullString(created_at),
       StringUtils.noNullString(deleted_at),
       id.toString(),
       post_comment_id.toString(),
       post_id.toString(),
       reply_count.toString(),
-      StringUtils.noNullString(text).length.toString(),
+      StringUtils.noNullString(text)?.length.toString(),
       StringUtils.noNullString(updated_at),
       user_id.toString(),
     ];

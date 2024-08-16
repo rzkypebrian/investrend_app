@@ -21,8 +21,8 @@ class ChartBarLine2State extends State<ChartBarLine2> {
   final Color rightBarColor = const Color(0xffff5182);
   final double width = 7;
 
-  List<BarChartGroupData> rawBarGroups;
-  List<BarChartGroupData> showingBarGroups;
+  List<BarChartGroupData>? rawBarGroups;
+  List<BarChartGroupData>? showingBarGroups;
 
   int touchedGroupIndex = -1;
 
@@ -107,7 +107,7 @@ class ChartBarLine2State extends State<ChartBarLine2> {
                             if (response.spot == null) {
                               setState(() {
                                 touchedGroupIndex = -1;
-                                showingBarGroups = List.of(rawBarGroups);
+                                showingBarGroups = List.of(rawBarGroups!);
                               });
                               return;
                             }
@@ -118,34 +118,35 @@ class ChartBarLine2State extends State<ChartBarLine2> {
                             // richy
                             if (response.spot != null) {
                               touchedGroupIndex =
-                                  response.spot.touchedBarGroupIndex;
+                                  response.spot!.touchedBarGroupIndex;
                             }
 
                             setState(() {
                               if (response.touchInput is PointerExitEvent ||
                                   response.touchInput is PointerUpEvent) {
                                 touchedGroupIndex = -1;
-                                showingBarGroups = List.of(rawBarGroups);
+                                showingBarGroups = List.of(rawBarGroups!);
                               } else {
-                                showingBarGroups = List.of(rawBarGroups);
+                                showingBarGroups = List.of(rawBarGroups!);
                                 if (touchedGroupIndex != -1) {
                                   var sum = 0.0;
                                   for (var rod
-                                      in showingBarGroups[touchedGroupIndex]
+                                      in showingBarGroups![touchedGroupIndex]
                                           .barRods) {
                                     sum += rod.y;
                                   }
                                   final avg = sum /
-                                      showingBarGroups[touchedGroupIndex]
+                                      showingBarGroups![touchedGroupIndex]
                                           .barRods
                                           .length;
 
-                                  showingBarGroups[touchedGroupIndex] =
-                                      showingBarGroups[touchedGroupIndex]
+                                  showingBarGroups![touchedGroupIndex] =
+                                      showingBarGroups![touchedGroupIndex]
                                           .copyWith(
-                                    barRods: showingBarGroups[touchedGroupIndex]
-                                        .barRods
-                                        .map((rod) {
+                                    barRods:
+                                        showingBarGroups![touchedGroupIndex]
+                                            .barRods
+                                            .map((rod) {
                                       return rod.copyWith(y: avg);
                                     }).toList(),
                                   );

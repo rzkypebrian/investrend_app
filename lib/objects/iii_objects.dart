@@ -1,3 +1,4 @@
+// ignore_for_file: unused_local_variable, non_constant_identifier_names
 
 import 'package:Investrend/objects/data_object.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
@@ -27,7 +28,7 @@ abstract class SerializeableSSI {
   //   return [identity, data];
   // }
 
-  static SerializeableSSI unserialize(String serialize) {
+  static SerializeableSSI? unserialize(String serialize) {
     String tag1 = tagIdentity + ":\"";
     String tag2 = tagData + ":\"";
     String tagEnd = "\" ";
@@ -37,19 +38,19 @@ abstract class SerializeableSSI {
     //print('unserialize for identity : $identity  data : $data   $serialize');
 
     if (StringUtils.equalsIgnoreCase(identity, 'Broker')) {
-      Broker broker = Broker.fromPlain(data);
+      Broker broker = Broker.fromPlain(data)!;
       return broker;
     } else if (StringUtils.equalsIgnoreCase(identity, 'Stock')) {
-      Stock stock = Stock.fromPlain(data);
+      Stock stock = Stock.fromPlain(data)!;
       return stock;
     } else if (StringUtils.equalsIgnoreCase(identity, 'Index')) {
-      Index index = Index.fromPlain(data);
+      Index index = Index.fromPlain(data)!;
       return index;
     } else if (StringUtils.equalsIgnoreCase(identity, 'Sector')) {
-      Sector sector = Sector.fromPlain(data);
+      Sector sector = Sector.fromPlain(data)!;
       return sector;
     } else if (StringUtils.equalsIgnoreCase(identity, 'People')) {
-      People people = People.fromPlain(data);
+      People people = People.fromPlain(data)!;
       return people;
     } else {
       print(
@@ -60,8 +61,8 @@ abstract class SerializeableSSI {
 }
 
 abstract class CodeNameSSI extends SerializeableSSI {
-  String code;
-  String name;
+  String? code;
+  String? name;
 
   CodeNameSSI(this.code, this.name);
 
@@ -114,22 +115,22 @@ class Stock extends CodeNameSSI {
 
   // String code;
   // String name;
-  String sector = '    ';
-  String status = ' ';
-  String type = ' ';
-  String sectorText = ' ';
-  String subSectorDescription = '';
-  int ipo_price = 0;
-  int base_price = 0;
-  int listed_share = 0;
-  int tradable_share = 0;
-  bool syariah = false;
-  String papan = '';
-  String typeText = ''; // Pre-opening , Warrant , Acceleration Board
-  String icon = '';
-  double percentChange = 0.0;
+  String? sector = '    ';
+  String? status = ' ';
+  String? type = ' ';
+  String? sectorText = ' ';
+  String? subSectorDescription = '';
+  int? ipo_price = 0;
+  int? base_price = 0;
+  int? listed_share = 0;
+  int? tradable_share = 0;
+  bool? syariah = false;
+  String? papan = '';
+  String? typeText = ''; // Pre-opening , Warrant , Acceleration Board
+  String? icon = '';
+  double? percentChange = 0.0;
 
-  String sectorName = '';
+  String? sectorName = '';
 
   String identity() {
     return 'Stock';
@@ -140,18 +141,18 @@ class Stock extends CodeNameSSI {
   }
 
   bool isAccelerationBoard() {
-    return StringUtils.equalsIgnoreCase(type, 'ACCEL');
+    return StringUtils.equalsIgnoreCase(type!, 'ACCEL');
   }
 
   bool isWarrant() {
-    return StringUtils.equalsIgnoreCase(type, 'WARI');
+    return StringUtils.equalsIgnoreCase(type!, 'WARI');
   }
 
   String get defaultBoard =>
-      StringUtils.equalsIgnoreCase(type, 'RGHI') ? 'TN' : 'RG';
+      StringUtils.equalsIgnoreCase(type!, 'RGHI') ? 'TN' : 'RG';
 
-  static String defaultBoardByCode(String _code) {
-    return StringUtils.isContains(_code, '-R') ? 'TN' : 'RG';
+  static String defaultBoardByCode(String? _code) {
+    return StringUtils.isContains(_code, '-R')! ? 'TN' : 'RG';
   }
 
   /* Asli
@@ -161,7 +162,7 @@ class Stock extends CodeNameSSI {
       )
       : super(code, name);
   */
-  Stock(String code, String name,
+  Stock(String? code, String? name,
       {this.sector,
       this.status,
       this.type,
@@ -176,24 +177,24 @@ class Stock extends CodeNameSSI {
       this.typeText}
       // Pre-opening , Warrant , Acceleration Board
       )
-      : super(code, name);
+      : super(code!, name!);
 
-  factory Stock.fromJson(Map<String, dynamic> parsedJson) {
-    String code = StringUtils.noNullString(parsedJson['code']);
-    String name = StringUtils.noNullString(parsedJson['name']);
-    String sector = StringUtils.noNullString(parsedJson['sector']);
-    String status = StringUtils.noNullString(parsedJson['status']);
-    String type = StringUtils.noNullString(parsedJson['type']);
-    String sectorText = StringUtils.noNullString(parsedJson['sectorText']);
-    String subSectorDescription =
-        StringUtils.noNullString(parsedJson['subSectorDescription']);
-    int ipoPrice = Utils.safeInt(parsedJson['ipo_price']);
-    int basePrice = Utils.safeInt(parsedJson['base_price']);
-    int listedShare = Utils.safeInt(parsedJson['listed_share']);
-    int tradableShare = Utils.safeInt(parsedJson['tradable_share']);
-    bool syariah = Utils.safeBool(parsedJson['syariah']);
-    String papan = StringUtils.noNullString(parsedJson['papan']);
-    String typeText = StringUtils.noNullString(parsedJson['typeText']);
+  factory Stock.fromJson(Map<String, dynamic>? parsedJson) {
+    String? code = StringUtils.noNullString(parsedJson?['code']);
+    String? name = StringUtils.noNullString(parsedJson?['name']);
+    String? sector = StringUtils.noNullString(parsedJson?['sector']);
+    String? status = StringUtils.noNullString(parsedJson?['status']);
+    String? type = StringUtils.noNullString(parsedJson?['type']);
+    String? sectorText = StringUtils.noNullString(parsedJson?['sectorText']);
+    String? subSectorDescription =
+        StringUtils.noNullString(parsedJson?['subSectorDescription']);
+    int ipoPrice = Utils.safeInt(parsedJson?['ipo_price']);
+    int basePrice = Utils.safeInt(parsedJson?['base_price']);
+    int listedShare = Utils.safeInt(parsedJson?['listed_share']);
+    int tradableShare = Utils.safeInt(parsedJson?['tradable_share']);
+    bool syariah = Utils.safeBool(parsedJson?['syariah']);
+    String? papan = StringUtils.noNullString(parsedJson?['papan']);
+    String? typeText = StringUtils.noNullString(parsedJson?['typeText']);
     return Stock(code, name,
         sector: sector,
         status: status,
@@ -212,23 +213,23 @@ class Stock extends CodeNameSSI {
   factory Stock.fromXml(XmlElement element) {
     //return Stock(element.getAttribute('last'), element.getAttribute('code'), double.parse(element.getAttribute('change')), double.parse(element.getAttribute('percentChange')));
 
-    String code = StringUtils.noNullString(element.getAttribute('code'));
-    String name = StringUtils.noNullString(element.getAttribute('name'));
-    String sector = StringUtils.noNullString(element.getAttribute('sector'));
-    String status = StringUtils.noNullString(element.getAttribute('status'));
-    String type = StringUtils.noNullString(element.getAttribute('type'));
-    String sectorText =
-        StringUtils.noNullString(element.getAttribute('sectorText'));
-    String subSectorDescription =
-        StringUtils.noNullString(element.getAttribute('subSectorDescription'));
+    String? code = StringUtils.noNullString(element.getAttribute('code')!);
+    String? name = StringUtils.noNullString(element.getAttribute('name')!);
+    String? sector = StringUtils.noNullString(element.getAttribute('sector')!);
+    String? status = StringUtils.noNullString(element.getAttribute('status')!);
+    String? type = StringUtils.noNullString(element.getAttribute('type')!);
+    String? sectorText =
+        StringUtils.noNullString(element.getAttribute('sectorText')!);
+    String? subSectorDescription =
+        StringUtils.noNullString(element.getAttribute('subSectorDescription')!);
     int ipoPrice = Utils.safeInt(element.getAttribute('ipo_price'));
     int basePrice = Utils.safeInt(element.getAttribute('base_price'));
     int listedShare = Utils.safeInt(element.getAttribute('listed_share'));
     int tradableShare = Utils.safeInt(element.getAttribute('tradable_share'));
     bool syariah = Utils.safeBool(element.getAttribute('syariah'));
-    String papan = StringUtils.noNullString(element.getAttribute('papan'));
-    String typeText = StringUtils.noNullString(element.getAttribute(
-        'typeText')); // Pre-opening , Warrant , Acceleration Board
+    String? papan = StringUtils.noNullString(element.getAttribute('papan')!);
+    String? typeText = StringUtils.noNullString(element.getAttribute(
+        'typeText')!); // Pre-opening , Warrant , Acceleration Board
 
     return Stock(code, name,
         sector: sector,
@@ -245,24 +246,24 @@ class Stock extends CodeNameSSI {
         typeText: typeText);
   }
 
-  factory Stock.fromPlain(String data) {
-    List<String> datas = data.split('|');
+  static Stock? fromPlain(String? data) {
+    List<String>? datas = data?.split('|');
     if (datas != null && datas.isNotEmpty && datas.length >= 14) {
-      String code = StringUtils.noNullString(datas.elementAt(0));
-      String name = StringUtils.noNullString(datas.elementAt(1));
-      String sector = StringUtils.noNullString(datas.elementAt(2));
-      String status = StringUtils.noNullString(datas.elementAt(3));
-      String type = StringUtils.noNullString(datas.elementAt(4));
-      String sectorText = StringUtils.noNullString(datas.elementAt(5));
-      String subSectorDescription =
+      String? code = StringUtils.noNullString(datas.elementAt(0));
+      String? name = StringUtils.noNullString(datas.elementAt(1));
+      String? sector = StringUtils.noNullString(datas.elementAt(2));
+      String? status = StringUtils.noNullString(datas.elementAt(3));
+      String? type = StringUtils.noNullString(datas.elementAt(4));
+      String? sectorText = StringUtils.noNullString(datas.elementAt(5));
+      String? subSectorDescription =
           StringUtils.noNullString(datas.elementAt(6));
       int ipoPrice = Utils.safeInt(datas.elementAt(7));
       int basePrice = Utils.safeInt(datas.elementAt(8));
       int listedShare = Utils.safeInt(datas.elementAt(9));
       int tradableShare = Utils.safeInt(datas.elementAt(10));
       bool syariah = Utils.safeBool(datas.elementAt(11));
-      String papan = StringUtils.noNullString(datas.elementAt(12));
-      String typeText = StringUtils.noNullString(
+      String? papan = StringUtils.noNullString(datas.elementAt(12));
+      String? typeText = StringUtils.noNullString(
           datas.elementAt(13)); // Pre-opening , Warrant , Acceleration Board
 
       // return Stock(code, name, sector, status, type, sectorText, subSectorDescription, ipo_price, base_price, listed_share, tradable_share,
@@ -285,7 +286,7 @@ class Stock extends CodeNameSSI {
     return null;
   }
 
-  bool copyValueFrom(Stock newValue) {
+  bool copyValueFrom(Stock? newValue) {
     bool changedCode = false;
     if (newValue != null) {
       changedCode = !StringUtils.equalsIgnoreCase(this.code, newValue.code);
@@ -329,26 +330,25 @@ class Stock extends CodeNameSSI {
 
   @override
   String asPlain() {
-    String plain = code;
-    plain += '|' + name;
-    plain += '|' + sector;
-    plain += '|' + status;
-    plain += '|' + type;
-    plain += '|' + sectorText;
-    plain += '|' + subSectorDescription;
+    String plain = code!;
+    plain += '|' + name!;
+    plain += '|' + sector!;
+    plain += '|' + status!;
+    plain += '|' + type!;
+    plain += '|' + sectorText!;
+    plain += '|' + subSectorDescription!;
     plain += '|' + ipo_price.toString();
     plain += '|' + base_price.toString();
     plain += '|' + listed_share.toString();
     plain += '|' + tradable_share.toString();
     plain += '|' + syariah.toString();
-    plain += '|' + papan;
-    plain += '|' + typeText;
+    plain += '|' + papan!;
+    plain += '|' + typeText!;
     return plain;
   }
 
   @override
   String toString() {
-    // TODO: implement toString
     return '[Stock --> $code, $name, $sector, $status, $type, $sectorText, $subSectorDescription, $ipo_price, $base_price, $listed_share, $tradable_share, $syariah, $papan, $typeText]';
   }
 }
@@ -358,23 +358,23 @@ class Broker extends CodeNameSSI {
   // code="AF" name="Harita Kencana Sekuritas" status="0" is_local="1"/>
   //String code;
   //String name;
-  String status;
+  String? status;
   int is_local;
 
   Color color(BuildContext context) {
-    Color _color;
+    Color? _color;
     //if(_color == null){
     if (is_local == 0) {
       _color = InvestrendTheme.foreignColor;
     } else {
-      _color = InvestrendTheme.of(context).small_w400.color;
+      _color = InvestrendTheme.of(context).small_w400?.color;
     }
     //}
-    return _color;
+    return _color!;
   }
   //Color get color => _color;
 
-  Broker(String code, String name, this.status, this.is_local)
+  Broker(String? code, String? name, this.status, this.is_local)
       : super(code, name);
 
   String identity() {
@@ -382,29 +382,29 @@ class Broker extends CodeNameSSI {
   }
 
   factory Broker.fromJson(Map<String, dynamic> parsedJson) {
-    String code = StringUtils.noNullString(parsedJson['code']);
-    String name = StringUtils.noNullString(parsedJson['name']);
-    String status = StringUtils.noNullString(parsedJson['status']);
+    String? code = StringUtils.noNullString(parsedJson['code']);
+    String? name = StringUtils.noNullString(parsedJson['name']);
+    String? status = StringUtils.noNullString(parsedJson['status']);
     int isLocal = Utils.safeInt(parsedJson['is_local']);
     return Broker(code, name, status, isLocal);
   }
 
   factory Broker.fromXml(XmlElement element) {
-    String code = StringUtils.noNullString(element.getAttribute('code'));
-    String name = StringUtils.noNullString(element.getAttribute('name'));
-    String status = StringUtils.noNullString(element.getAttribute('status'));
+    String? code = StringUtils.noNullString(element.getAttribute('code')!);
+    String? name = StringUtils.noNullString(element.getAttribute('name')!);
+    String? status = StringUtils.noNullString(element.getAttribute('status')!);
     int isLocal = Utils.safeInt(element.getAttribute('is_local'));
     //return Broker(element.getAttribute('last'), element.getAttribute('code'), double.parse(element.getAttribute('change')), double.parse(element.getAttribute('percentChange')));
     return Broker(code, name, status, isLocal);
   }
 
-  factory Broker.fromPlain(String data) {
-    List<String> datas = data.split('|');
+  static Broker? fromPlain(String? data) {
+    List<String>? datas = data?.split('|');
 
     if (datas != null && datas.isNotEmpty && datas.length >= 4) {
-      String code = StringUtils.noNullString(datas.elementAt(0));
-      String name = StringUtils.noNullString(datas.elementAt(1));
-      String status = StringUtils.noNullString(datas.elementAt(2));
+      String? code = StringUtils.noNullString(datas.elementAt(0));
+      String? name = StringUtils.noNullString(datas.elementAt(1));
+      String? status = StringUtils.noNullString(datas.elementAt(2));
       int isLocal = Utils.safeInt(datas.elementAt(3));
 
       return Broker(code, name, status, isLocal);
@@ -414,67 +414,64 @@ class Broker extends CodeNameSSI {
 
   @override
   String asPlain() {
-    String plain = code;
-    plain += '|' + name;
-    plain += '|' + status;
+    String plain = code!;
+    plain += '|' + name!;
+    plain += '|' + status!;
     plain += '|' + is_local.toString();
     return plain;
   }
 
   @override
   String toString() {
-    // TODO: implement toString
     return '[Broker --> $code, $name, $status, $is_local]';
   }
 }
 
 class Sector extends SerializeableSSI {
-  String code; // "A111"
-  String sector; // "IDXENERGY",
-  String sector_text; //"Energy",
-  String sub_sector; // "Oil, Gas & Coal",
-  String industry; //"Oil & Gas",
-  String sub_industry; //"Oil & Gas Production & Refinery"
+  String? code; // "A111"
+  String? sector; // "IDXENERGY",
+  String? sector_text; //"Energy",
+  String? sub_sector; // "Oil, Gas & Coal",
+  String? industry; //"Oil & Gas",
+  String? sub_industry; //"Oil & Gas Production & Refinery"
 
   Sector(this.code, this.sector, this.sector_text, this.sub_sector,
       this.industry, this.sub_industry);
 
   factory Sector.fromJson(Map<String, dynamic> parsedJson) {
-    String code = StringUtils.noNullString(parsedJson['code']);
-    String sector = StringUtils.noNullString(parsedJson['sector']);
-    String sectorText = StringUtils.noNullString(parsedJson['sector_text']);
-    String subSector = StringUtils.noNullString(parsedJson['sub_sector']);
-    String industry = StringUtils.noNullString(parsedJson['industry']);
-    String subIndustry = StringUtils.noNullString(parsedJson['sub_industry']);
+    String? code = StringUtils.noNullString(parsedJson['code']);
+    String? sector = StringUtils.noNullString(parsedJson['sector']);
+    String? sectorText = StringUtils.noNullString(parsedJson['sector_text']);
+    String? subSector = StringUtils.noNullString(parsedJson['sub_sector']);
+    String? industry = StringUtils.noNullString(parsedJson['industry']);
+    String? subIndustry = StringUtils.noNullString(parsedJson['sub_industry']);
 
-    return Sector(
-        code, sector, sectorText, subSector, industry, subIndustry);
+    return Sector(code, sector, sectorText, subSector, industry, subIndustry);
   }
 
   @override
   String asPlain() {
-    String plain = code;
-    plain += '|' + sector;
-    plain += '|' + sector_text;
-    plain += '|' + sub_sector;
-    plain += '|' + industry;
-    plain += '|' + sub_industry;
+    String plain = code!;
+    plain += '|' + sector!;
+    plain += '|' + sector_text!;
+    plain += '|' + sub_sector!;
+    plain += '|' + industry!;
+    plain += '|' + sub_industry!;
     return plain;
   }
 
-  factory Sector.fromPlain(String data) {
-    List<String> datas = data.split('|');
+  static Sector? fromPlain(String? data) {
+    List<String>? datas = data?.split('|');
 
     if (datas != null && datas.isNotEmpty && datas.length >= 6) {
       // data
-      String code = StringUtils.noNullString(datas.elementAt(0));
-      String sector = StringUtils.noNullString(datas.elementAt(1));
-      String sectorText = StringUtils.noNullString(datas.elementAt(2));
-      String subSector = StringUtils.noNullString(datas.elementAt(3));
-      String industry = StringUtils.noNullString(datas.elementAt(4));
-      String subIndustry = StringUtils.noNullString(datas.elementAt(5));
-      return Sector(
-          code, sector, sectorText, subSector, industry, subIndustry);
+      String? code = StringUtils.noNullString(datas.elementAt(0));
+      String? sector = StringUtils.noNullString(datas.elementAt(1));
+      String? sectorText = StringUtils.noNullString(datas.elementAt(2));
+      String? subSector = StringUtils.noNullString(datas.elementAt(3));
+      String? industry = StringUtils.noNullString(datas.elementAt(4));
+      String? subIndustry = StringUtils.noNullString(datas.elementAt(5));
+      return Sector(code, sector, sectorText, subSector, industry, subIndustry);
     }
 
     return null;
@@ -482,7 +479,6 @@ class Sector extends SerializeableSSI {
 
   @override
   String toString() {
-    // TODO: implement toString
     return '[Sector --> $code, $sector, $sector_text, $sub_sector, $industry, $sub_industry]';
   }
 
@@ -498,14 +494,14 @@ class Index extends CodeNameSSI {
   // grouping="INDEX" color="FFFFFF" color_digit="-"/>
   //String code;
   //String name;
-  String grouping;
-  String color;
-  String color_digit;
+  String? grouping;
+  String? color;
+  String? color_digit;
   bool isSector = false;
   bool isComposite = false;
   List<Stock> listMembers = List<Stock>.empty(growable: true);
 
-  Index(String code, String name, this.grouping, this.color, this.color_digit,
+  Index(String? code, String? name, this.grouping, this.color, this.color_digit,
       this.isSector, this.isComposite)
       : super(code, name);
 
@@ -514,11 +510,11 @@ class Index extends CodeNameSSI {
   }
 
   factory Index.fromJson(Map<String, dynamic> parsedJson) {
-    String code = StringUtils.noNullString(parsedJson['code']);
-    String name = StringUtils.noNullString(parsedJson['name']);
-    String grouping = StringUtils.noNullString(parsedJson['grouping']);
-    String color = StringUtils.noNullString(parsedJson['color']);
-    String colorDigit = StringUtils.noNullString(parsedJson['color_digit']);
+    String? code = StringUtils.noNullString(parsedJson['code']);
+    String? name = StringUtils.noNullString(parsedJson['name']);
+    String? grouping = StringUtils.noNullString(parsedJson['grouping']);
+    String? color = StringUtils.noNullString(parsedJson['color']);
+    String? colorDigit = StringUtils.noNullString(parsedJson['color_digit']);
 
     // logic
     bool isSector = StringUtils.equalsIgnoreCase(grouping, 'JCI SECTOR');
@@ -530,13 +526,13 @@ class Index extends CodeNameSSI {
 
   factory Index.fromXml(XmlElement element) {
     // data
-    String code = StringUtils.noNullString(element.getAttribute('code'));
-    String name = StringUtils.noNullString(element.getAttribute('name'));
-    String grouping =
-        StringUtils.noNullString(element.getAttribute('grouping'));
-    String color = StringUtils.noNullString(element.getAttribute('color'));
-    String colorDigit =
-        StringUtils.noNullString(element.getAttribute('color_digit'));
+    String? code = StringUtils.noNullString(element.getAttribute('code')!);
+    String? name = StringUtils.noNullString(element.getAttribute('name')!);
+    String? grouping =
+        StringUtils.noNullString(element.getAttribute('grouping')!);
+    String? color = StringUtils.noNullString(element.getAttribute('color')!);
+    String? colorDigit =
+        StringUtils.noNullString(element.getAttribute('color_digit')!);
 
     // logic
     bool isSector = StringUtils.equalsIgnoreCase(grouping, 'JCI SECTOR');
@@ -546,16 +542,16 @@ class Index extends CodeNameSSI {
         code, name, grouping, color, colorDigit, isSector, isComposite);
   }
 
-  factory Index.fromPlain(String data) {
-    List<String> datas = data.split('|');
+  static Index? fromPlain(String? data) {
+    List<String>? datas = data?.split('|');
 
     if (datas != null && datas.isNotEmpty && datas.length >= 5) {
       // data
-      String code = StringUtils.noNullString(datas.elementAt(0));
-      String name = StringUtils.noNullString(datas.elementAt(1));
-      String grouping = StringUtils.noNullString(datas.elementAt(2));
-      String color = StringUtils.noNullString(datas.elementAt(3));
-      String colorDigit = StringUtils.noNullString(datas.elementAt(4));
+      String? code = StringUtils.noNullString(datas.elementAt(0));
+      String? name = StringUtils.noNullString(datas.elementAt(1));
+      String? grouping = StringUtils.noNullString(datas.elementAt(2));
+      String? color = StringUtils.noNullString(datas.elementAt(3));
+      String? colorDigit = StringUtils.noNullString(datas.elementAt(4));
 
       // logic
       bool isSector = StringUtils.equalsIgnoreCase(grouping, 'JCI SECTOR');
@@ -570,18 +566,18 @@ class Index extends CodeNameSSI {
 
   @override
   String asPlain() {
-    String plain = code;
-    plain += '|' + name;
-    plain += '|' + grouping;
-    plain += '|' + color;
-    plain += '|' + color_digit;
+    String plain = code!;
+    plain += '|' + name!;
+    plain += '|' + grouping!;
+    plain += '|' + color!;
+    plain += '|' + color_digit!;
 
     return plain;
   }
 
-  void checkAndAddMembers(Stock stock) {
+  void checkAndAddMembers(Stock? stock) {
     if (stock != null) {
-      if (stock.sector.startsWith(color_digit)) {
+      if (stock.sector!.startsWith(color_digit!)) {
         if (!listMembers.contains(stock)) {
           listMembers.add(stock);
           stock.sectorName = name;
@@ -597,7 +593,7 @@ class Index extends CodeNameSSI {
         ']';
   }
 
-  void copyValueFrom(Index newValue) {
+  void copyValueFrom(Index? newValue) {
     if (newValue != null) {
       this.code = newValue.code;
       this.name = newValue.name;
@@ -629,16 +625,16 @@ class MD5StockBrokerIndex {
   // md5indexUpdate="2021-04-26 08:47:42"
   // sharePerLot="100"/>
 
-  String md5broker;
-  String md5stock;
-  String md5index;
-  String md5sector;
-  int sharePerLot;
+  String? md5broker;
+  String? md5stock;
+  String? md5index;
+  String? md5sector;
+  int? sharePerLot;
 
-  String md5brokerUpdate;
-  String md5stockUpdate;
-  String md5indexUpdate;
-  String md5sectorUpdate;
+  String? md5brokerUpdate;
+  String? md5stockUpdate;
+  String? md5indexUpdate;
+  String? md5sectorUpdate;
 
   MD5StockBrokerIndex(
       this.md5broker,
@@ -652,29 +648,30 @@ class MD5StockBrokerIndex {
       this.md5sectorUpdate);
 
   bool isValid() {
-    return !StringUtils.isEmtpy(this.md5broker) &&
-        !StringUtils.isEmtpy(this.md5stock) &&
-        !StringUtils.isEmtpy(this.md5index) &&
-        !StringUtils.isEmtpy(this.md5sector) &&
-        this.sharePerLot > 0;
+    return !StringUtils.isEmtpy(this.md5broker!) &&
+        !StringUtils.isEmtpy(this.md5stock!) &&
+        !StringUtils.isEmtpy(this.md5index!) &&
+        !StringUtils.isEmtpy(this.md5sector!) &&
+        this.sharePerLot! > 0;
   }
 
-  factory MD5StockBrokerIndex.fromJson(Map<String, dynamic> parsedJson) {
+  static MD5StockBrokerIndex? fromJson(Map<String, dynamic>? parsedJson) {
     if (parsedJson == null) {
-      return null;
+      return MD5StockBrokerIndex(
+          null, null, null, null, null, null, null, null, null);
     }
-    String md5broker = StringUtils.noNullString(parsedJson['md5broker']);
-    String md5stock = StringUtils.noNullString(parsedJson['md5stock']);
-    String md5index = StringUtils.noNullString(parsedJson['md5index']);
-    String md5sector = StringUtils.noNullString(parsedJson['md5sector']);
+    String? md5broker = StringUtils.noNullString(parsedJson['md5broker']);
+    String? md5stock = StringUtils.noNullString(parsedJson['md5stock']);
+    String? md5index = StringUtils.noNullString(parsedJson['md5index']);
+    String? md5sector = StringUtils.noNullString(parsedJson['md5sector']);
     int sharePerLot = parsedJson['sharePerLot'];
-    String md5brokerUpdate =
+    String? md5brokerUpdate =
         StringUtils.noNullString(parsedJson['md5brokerUpdate']);
-    String md5stockUpdate =
+    String? md5stockUpdate =
         StringUtils.noNullString(parsedJson['md5stockUpdate']);
-    String md5indexUpdate =
+    String? md5indexUpdate =
         StringUtils.noNullString(parsedJson['md5indexUpdate']);
-    String md5sectorUpdate =
+    String? md5sectorUpdate =
         StringUtils.noNullString(parsedJson['md5sectorUpdate']);
     return MD5StockBrokerIndex(
         md5broker,
@@ -689,23 +686,23 @@ class MD5StockBrokerIndex {
   }
 
   factory MD5StockBrokerIndex.fromXml(XmlElement element) {
-    String md5broker =
-        StringUtils.noNullString(element.getAttribute('md5broker'));
-    String md5stock =
-        StringUtils.noNullString(element.getAttribute('md5stock'));
-    String md5index =
-        StringUtils.noNullString(element.getAttribute('md5index'));
-    String md5sector =
-        StringUtils.noNullString(element.getAttribute('md5sector'));
+    String? md5broker =
+        StringUtils.noNullString(element.getAttribute('md5broker')!);
+    String? md5stock =
+        StringUtils.noNullString(element.getAttribute('md5stock')!);
+    String? md5index =
+        StringUtils.noNullString(element.getAttribute('md5index')!);
+    String? md5sector =
+        StringUtils.noNullString(element.getAttribute('md5sector')!);
     int sharePerLot = Utils.safeInt(element.getAttribute('sharePerLot'));
-    String md5brokerUpdate =
-        StringUtils.noNullString(element.getAttribute('md5brokerUpdate'));
-    String md5stockUpdate =
-        StringUtils.noNullString(element.getAttribute('md5stockUpdate'));
-    String md5indexUpdate =
-        StringUtils.noNullString(element.getAttribute('md5indexUpdate'));
-    String md5sectorUpdate =
-        StringUtils.noNullString(element.getAttribute('md5sectorUpdate'));
+    String? md5brokerUpdate =
+        StringUtils.noNullString(element.getAttribute('md5brokerUpdate')!);
+    String? md5stockUpdate =
+        StringUtils.noNullString(element.getAttribute('md5stockUpdate')!);
+    String? md5indexUpdate =
+        StringUtils.noNullString(element.getAttribute('md5indexUpdate')!);
+    String? md5sectorUpdate =
+        StringUtils.noNullString(element.getAttribute('md5sectorUpdate')!);
 
     return MD5StockBrokerIndex(
         md5broker,
@@ -721,19 +718,19 @@ class MD5StockBrokerIndex {
 
   Future<bool> save(/*SharedPreferences prefs*/) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool savedBroker = await prefs.setString('md5broker', md5broker);
-    bool savedStock = await prefs.setString('md5stock', md5stock);
-    bool savedIndex = await prefs.setString('md5index', md5index);
-    bool savedSector = await prefs.setString('md5sector', md5sector);
-    bool savedLot = await prefs.setInt('sharePerLot', sharePerLot);
+    bool savedBroker = await prefs.setString('md5broker', md5broker!);
+    bool savedStock = await prefs.setString('md5stock', md5stock!);
+    bool savedIndex = await prefs.setString('md5index', md5index!);
+    bool savedSector = await prefs.setString('md5sector', md5sector!);
+    bool savedLot = await prefs.setInt('sharePerLot', sharePerLot!);
     bool savedBrokerUpdate =
-        await prefs.setString('md5brokerUpdate', md5brokerUpdate);
+        await prefs.setString('md5brokerUpdate', md5brokerUpdate!);
     bool savedStockUpdate =
-        await prefs.setString('md5stockUpdate', md5stockUpdate);
+        await prefs.setString('md5stockUpdate', md5stockUpdate!);
     bool savedIndexUpdate =
-        await prefs.setString('md5indexUpdate', md5indexUpdate);
+        await prefs.setString('md5indexUpdate', md5indexUpdate!);
     bool savedSectorUpdate =
-        await prefs.setString('md5sectorUpdate', md5sectorUpdate);
+        await prefs.setString('md5sectorUpdate', md5sectorUpdate!);
     print('save MD5 to SharedPreferences');
     bool saved = savedBroker &&
         savedStock &&
@@ -747,7 +744,7 @@ class MD5StockBrokerIndex {
     return saved;
   }
 
-  void copyValueFrom(MD5StockBrokerIndex newValue) {
+  void copyValueFrom(MD5StockBrokerIndex? newValue) {
     if (newValue != null) {
       this.md5broker = newValue.md5broker;
       this.md5stock = newValue.md5stock;
@@ -784,42 +781,42 @@ class IndexSummary {
   grouping="INDEX" hiMTD="6115.62" lowMTD="5883.52" returnMTD="0.11"/>
   */
 
-  String time;
-  String code;
-  double prev;
-  double last;
-  double open;
-  double hi;
-  double low;
-  double change;
-  double percentChange;
-  int freq;
-  int volume;
-  int value;
+  String? time;
+  String? code;
+  double? prev;
+  double? last;
+  double? open;
+  double? hi;
+  double? low;
+  double? change;
+  double? percentChange;
+  int? freq;
+  int? volume;
+  int? value;
 
-  int up;
-  int down;
-  int unchange;
-  int untrade;
-  String date;
-  double hi52W;
-  double low52W;
-  double return52W;
+  int? up;
+  int? down;
+  int? unchange;
+  int? untrade;
+  String? date;
+  double? hi52W;
+  double? low52W;
+  double? return52W;
 
-  int domesticBuyerValue;
-  int domesticSellerValue;
-  int foreignBuyerValue;
-  int foreignSellerValue;
+  int? domesticBuyerValue;
+  int? domesticSellerValue;
+  int? foreignBuyerValue;
+  int? foreignSellerValue;
 
-  double hiYTD;
-  double lowYTD;
-  double returnYTD;
+  double? hiYTD;
+  double? lowYTD;
+  double? returnYTD;
 
-  String grouping;
+  String? grouping;
 
-  double hiMTD;
-  double lowMTD;
-  double returnMTD;
+  double? hiMTD;
+  double? lowMTD;
+  double? returnMTD;
 
   IndexSummary(this.code,
       {this.time,
@@ -855,8 +852,8 @@ class IndexSummary {
   factory IndexSummary.fromJson(Map<String, dynamic> parsedJson) {
     //String code         = StringUtils.noNullString(parsedJson['code']);
 
-    String time = StringUtils.noNullString(parsedJson['time']);
-    String code = StringUtils.noNullString(parsedJson['indexCode']);
+    String? time = StringUtils.noNullString(parsedJson['time']);
+    String? code = StringUtils.noNullString(parsedJson['indexCode']);
     double prev = Utils.safeDouble(parsedJson['prev']);
     double last = Utils.safeDouble(parsedJson['last']);
     double open = Utils.safeDouble(parsedJson['open']);
@@ -872,7 +869,7 @@ class IndexSummary {
     int down = Utils.safeInt(parsedJson['down']);
     int unchange = Utils.safeInt(parsedJson['unchange']);
     int untrade = Utils.safeInt(parsedJson['untrade']);
-    String date = StringUtils.noNullString(parsedJson['date']);
+    String? date = StringUtils.noNullString(parsedJson['date']);
     double hi52W = Utils.safeDouble(parsedJson['hi52W']);
     double low52W = Utils.safeDouble(parsedJson['low52W']);
     double return52W = Utils.safeDouble(parsedJson['return52W']);
@@ -886,7 +883,7 @@ class IndexSummary {
     double lowYTD = Utils.safeDouble(parsedJson['lowYTD']);
     double returnYTD = Utils.safeDouble(parsedJson['returnYTD']);
 
-    String grouping = StringUtils.noNullString(parsedJson['grouping']);
+    String? grouping = StringUtils.noNullString(parsedJson['grouping']);
 
     double hiMTD = Utils.safeDouble(parsedJson['hiMTD']);
     double lowMTD = Utils.safeDouble(parsedJson['lowMTD']);
@@ -926,8 +923,8 @@ class IndexSummary {
   }
 
   factory IndexSummary.fromXml(XmlElement element) {
-    String time = StringUtils.noNullString(element.getAttribute('time'));
-    String code = StringUtils.noNullString(element.getAttribute('indexCode'));
+    String? time = StringUtils.noNullString(element.getAttribute('time')!);
+    String? code = StringUtils.noNullString(element.getAttribute('indexCode')!);
     double prev = Utils.safeDouble(element.getAttribute('prev'));
     double last = Utils.safeDouble(element.getAttribute('last'));
     double open = Utils.safeDouble(element.getAttribute('open'));
@@ -944,7 +941,7 @@ class IndexSummary {
     int down = Utils.safeInt(element.getAttribute('down'));
     int unchange = Utils.safeInt(element.getAttribute('unchange'));
     int untrade = Utils.safeInt(element.getAttribute('untrade'));
-    String date = StringUtils.noNullString(element.getAttribute('date'));
+    String? date = StringUtils.noNullString(element.getAttribute('date')!);
     double hi52W = Utils.safeDouble(element.getAttribute('hi52W'));
     double low52W = Utils.safeDouble(element.getAttribute('low52W'));
     double return52W = Utils.safeDouble(element.getAttribute('return52W'));
@@ -962,8 +959,8 @@ class IndexSummary {
     double lowYTD = Utils.safeDouble(element.getAttribute('lowYTD'));
     double returnYTD = Utils.safeDouble(element.getAttribute('returnYTD'));
 
-    String grouping =
-        StringUtils.noNullString(element.getAttribute('grouping'));
+    String? grouping =
+        StringUtils.noNullString(element.getAttribute('grouping')!);
 
     double hiMTD = Utils.safeDouble(element.getAttribute('hiMTD'));
     double lowMTD = Utils.safeDouble(element.getAttribute('lowMTD'));
@@ -1003,32 +1000,31 @@ class IndexSummary {
   }
 
   bool isValid() {
-    return !StringUtils.isEmtpy(code);
+    return !StringUtils.isEmtpy(code!);
   }
 
   Color openColor() {
-    return InvestrendTheme.changeTextColor(open, prev: prev);
+    return InvestrendTheme.changeTextColor(open!, prev: prev!);
   }
 
   Color hiColor() {
-    return InvestrendTheme.changeTextColor(hi, prev: prev);
+    return InvestrendTheme.changeTextColor(hi!, prev: prev!);
   }
 
   Color lowColor() {
-    return InvestrendTheme.changeTextColor(low, prev: prev);
+    return InvestrendTheme.changeTextColor(low!, prev: prev!);
   }
 
   Color closeColor() {
-    return InvestrendTheme.changeTextColor(last, prev: prev);
+    return InvestrendTheme.changeTextColor(last!, prev: prev!);
   }
 
   @override
   String toString() {
-    // TODO: implement toString
     return '[Index Summary --> $time, $code, $prev, $last, $open, $hi, $low, $change, $percentChange, $freq, $volume, $value, $up, $down, $unchange, $untrade, $date, $hi52W, $low52W, $return52W, $domesticBuyerValue, $domesticSellerValue, $foreignBuyerValue, $foreignSellerValue, $hiYTD, $lowYTD, $returnYTD, $grouping, $hiMTD, $lowMTD, $returnMTD]';
   }
 
-  void copyValueFrom(IndexSummary newValue) {
+  void copyValueFrom(IndexSummary? newValue) {
     if (newValue != null) {
       this.time = newValue.time;
       this.code = newValue.code;
@@ -1107,20 +1103,20 @@ class TradeBook {
     totalSellerValue="100744085000" totalSellerFreq="2792" totalSellerVol="18186200"/>
   </TRADEBOOK>
   */
-  String time = '';
-  String code = '';
-  String board = '';
-  String tradeBookString = '';
-  int totalBuyerValue = 0;
-  int totalBuyerFreq = 0;
-  int totalBuyerVol = 0;
-  int totalSellerValue = 0;
-  int totalSellerFreq = 0;
-  int totalSellerVol = 0;
-  List<TradeBookRow> listTradeBookRows = List.empty(growable: true);
-  bool loaded = false;
+  String? time = '';
+  String? code = '';
+  String? board = '';
+  String? tradeBookString = '';
+  int? totalBuyerValue = 0;
+  int? totalBuyerFreq = 0;
+  int? totalBuyerVol = 0;
+  int? totalSellerValue = 0;
+  int? totalSellerFreq = 0;
+  int? totalSellerVol = 0;
+  List<TradeBookRow>? listTradeBookRows = List.empty(growable: true);
+  bool? loaded = false;
   int countRows() {
-    return listTradeBookRows != null ? listTradeBookRows.length : 0;
+    return listTradeBookRows != null ? listTradeBookRows!.length : 0;
   }
 
   static TradeBook createBasic() {
@@ -1149,7 +1145,7 @@ class TradeBook {
       this.listTradeBookRows});
 
   bool isValid() {
-    return !StringUtils.isEmtpy(code) && !StringUtils.isEmtpy(board);
+    return !StringUtils.isEmtpy(code!) && !StringUtils.isEmtpy(board!);
   }
 
   factory TradeBook.fromStreaming(List<String> data) {
@@ -1167,15 +1163,15 @@ class TradeBook {
     final int totalSellerFreq = Utils.safeInt(data[10]);
     final int totalSellerValue = Utils.safeInt(data[11]);
     final int totalSellerVol = Utils.safeInt(data[12]);
-    final String tradeBookString = data[13];
+    final String? tradeBookString = data[13];
 
     List<TradeBookRow> listTradeBookRows =
         List<TradeBookRow>.empty(growable: true);
     if (!StringUtils.isEmtpy(tradeBookString)) {
-      List<String> rows = tradeBookString.split('*');
+      List<String?>? rows = tradeBookString?.split('*');
       if (rows != null && rows.isNotEmpty) {
         rows.forEach((row) {
-          List<String> data = row.split('_');
+          List<String>? data = row?.split('_');
           if (data != null && data.isNotEmpty && data.length >= 10) {
             int price = Utils.safeInt(data.elementAt(0));
             int freq = Utils.safeInt(data.elementAt(1));
@@ -1217,12 +1213,12 @@ class TradeBook {
         listTradeBookRows: listTradeBookRows);
   }
   factory TradeBook.fromJson(Map<String, dynamic> parsedJson) {
-    String code = StringUtils.noNullString(parsedJson['stockCode']);
+    String? code = StringUtils.noNullString(parsedJson['stockCode']);
 
-    String time = StringUtils.noNullString(parsedJson['time']);
+    String? time = StringUtils.noNullString(parsedJson['time']);
     //String code = StringUtils.noNullString(parsedJson['stockCode']);
-    String board = StringUtils.noNullString(parsedJson['boardCode']);
-    String tradeBookString =
+    String? board = StringUtils.noNullString(parsedJson['boardCode']);
+    String? tradeBookString =
         StringUtils.noNullString(parsedJson['tradeBookString']);
     int totalBuyerValue = Utils.safeInt(parsedJson['totalBuyerValue']);
     int totalBuyerFreq = Utils.safeInt(parsedJson['totalBuyerFreq']);
@@ -1238,10 +1234,10 @@ class TradeBook {
     List<TradeBookRow> listTradeBookRows =
         List<TradeBookRow>.empty(growable: true);
     if (!StringUtils.isEmtpy(tradeBookString)) {
-      List<String> rows = tradeBookString.split('*');
+      List<String>? rows = tradeBookString?.split('*');
       if (rows != null && rows.isNotEmpty) {
-        rows.forEach((row) {
-          List<String> data = row.split('_');
+        rows.forEach((String? row) {
+          List<String>? data = row?.split('_');
           if (data != null && data.isNotEmpty && data.length >= 10) {
             int price = Utils.safeInt(data.elementAt(0));
             int freq = Utils.safeInt(data.elementAt(1));
@@ -1283,11 +1279,12 @@ class TradeBook {
         listTradeBookRows: listTradeBookRows);
   }
   factory TradeBook.fromXml(XmlElement element) {
-    String time = StringUtils.noNullString(element.getAttribute('time'));
-    String code = StringUtils.noNullString(element.getAttribute('stockCode'));
-    String board = StringUtils.noNullString(element.getAttribute('boardCode'));
-    String tradeBookString =
-        StringUtils.noNullString(element.getAttribute('tradeBookString'));
+    String? time = StringUtils.noNullString(element.getAttribute('time')!);
+    String? code = StringUtils.noNullString(element.getAttribute('stockCode')!);
+    String? board =
+        StringUtils.noNullString(element.getAttribute('boardCode')!);
+    String? tradeBookString =
+        StringUtils.noNullString(element.getAttribute('tradeBookString')!);
     int totalBuyerValue =
         Utils.safeInt(element.getAttribute('totalBuyerValue'));
     int totalBuyerFreq = Utils.safeInt(element.getAttribute('totalBuyerFreq'));
@@ -1305,10 +1302,10 @@ class TradeBook {
     List<TradeBookRow> listTradeBookRows =
         List<TradeBookRow>.empty(growable: true);
     if (!StringUtils.isEmtpy(tradeBookString)) {
-      List<String> rows = tradeBookString.split('*');
+      List<String>? rows = tradeBookString?.split('*');
       if (rows != null && rows.isNotEmpty) {
-        rows.forEach((row) {
-          List<String> data = row.split('_');
+        rows.forEach((String? row) {
+          List<String>? data = row?.split('_');
           if (data != null && data.isNotEmpty && data.length >= 10) {
             int price = Utils.safeInt(data.elementAt(0));
             int freq = Utils.safeInt(data.elementAt(1));
@@ -1350,7 +1347,7 @@ class TradeBook {
         listTradeBookRows: listTradeBookRows);
   }
 
-  void copyValueFrom(TradeBook newValue) {
+  void copyValueFrom(TradeBook? newValue) {
     if (newValue != null) {
       this.loaded = true;
       this.time = newValue.time;
@@ -1432,26 +1429,26 @@ class OrderBook {
     offerQueue_8="398" offerQueue_9="77"/>
 </ORDERBOOK>
   */
-  String time = '';
-  String code = '';
-  String board = '';
+  String? time = '';
+  String? code = '';
+  String? board = '';
 
-  int totalBid = 0;
-  int totalOffer = 0;
+  int? totalBid = 0;
+  int? totalOffer = 0;
 
-  List bids = List.empty(growable: true);
-  List bidsLot = List.empty(growable: true);
-  List bidsQueue = List.empty(growable: true);
-  List offers = List.empty(growable: true);
-  List offersLot = List.empty(growable: true);
-  List offersQueue = List.empty(growable: true);
+  List? bids = List.empty(growable: true);
+  List? bidsLot = List.empty(growable: true);
+  List? bidsQueue = List.empty(growable: true);
+  List? offers = List.empty(growable: true);
+  List? offersLot = List.empty(growable: true);
+  List? offersQueue = List.empty(growable: true);
 
-  List bidsText = List.empty(growable: true);
-  List bidsLotText = List.empty(growable: true);
-  List bidsQueueText = List.empty(growable: true);
-  List offersText = List.empty(growable: true);
-  List offersLotText = List.empty(growable: true);
-  List offersQueueText = List.empty(growable: true);
+  List? bidsText = List.empty(growable: true);
+  List? bidsLotText = List.empty(growable: true);
+  List? bidsQueueText = List.empty(growable: true);
+  List? offersText = List.empty(growable: true);
+  List? offersLotText = List.empty(growable: true);
+  List? offersQueueText = List.empty(growable: true);
 
   static OrderBook createBasic() {
     OrderBook ob = new OrderBook('', '');
@@ -1489,40 +1486,40 @@ class OrderBook {
   int totalVolumeShowedOffer = 0;
 
   bool isValid() {
-    return !StringUtils.isEmtpy(code) && !StringUtils.isEmtpy(board);
+    return !StringUtils.isEmtpy(code!) && !StringUtils.isEmtpy(board!);
   }
 
   int countBids() {
-    return bids == null ? 0 : bids.length;
+    return bids == null ? 0 : bids!.length;
   }
 
   int countOffers() {
-    return offers == null ? 0 : offers.length;
+    return offers == null ? 0 : offers!.length;
   }
 
   int countBidsLot() {
-    return bidsLot == null ? 0 : bidsLot.length;
+    return bidsLot == null ? 0 : bidsLot!.length;
   }
 
   int countOffersLot() {
-    return offersLotText == null ? 0 : offersLotText.length;
+    return offersLotText == null ? 0 : offersLotText!.length;
   }
 
   int countBidsQueue() {
-    return bidsQueue == null ? 0 : bidsQueue.length;
+    return bidsQueue == null ? 0 : bidsQueue!.length;
   }
 
   int countOffersQueue() {
-    return offersQueue == null ? 0 : offersQueue.length;
+    return offersQueue == null ? 0 : offersQueue!.length;
   }
 
-  void generateDataForUI(int maxShowLevel, {BuildContext context}) {
-    bidsText.clear();
-    bidsLotText.clear();
-    bidsQueueText.clear();
-    offersText.clear();
-    offersLotText.clear();
-    offersQueueText.clear();
+  void generateDataForUI(int maxShowLevel, {BuildContext? context}) {
+    bidsText?.clear();
+    bidsLotText?.clear();
+    bidsQueueText?.clear();
+    offersText?.clear();
+    offersLotText?.clear();
+    offersQueueText?.clear();
 
     // int maxLoop = max(bids.length, bidsLot.length);
     // maxLoop = max(maxLoop, bidsQueue.length);
@@ -1538,8 +1535,8 @@ class OrderBook {
 
     print('orderbook generateDataForUI maxLoop : $maxLoop');
     for (int i = 0; i < maxLoop; i++) {
-      bool showBid = bids.elementAt(i) > 0;
-      bool showOffer = offers.elementAt(i) > 0;
+      bool showBid = bids?.elementAt(i) > 0;
+      bool showOffer = offers?.elementAt(i) > 0;
 
       print(
           'orderbook generateDataForUI [$i] showBid : $showBid  showOffer : $showOffer');
@@ -1553,9 +1550,9 @@ class OrderBook {
       String offerPriceText;
 
       if (showBid) {
-        bidQueueText = InvestrendTheme.formatComma(bidsQueue.elementAt(i));
+        bidQueueText = InvestrendTheme.formatComma(bidsQueue?.elementAt(i));
         bidLotText = InvestrendTheme.formatComma(bidLot(i));
-        bidPriceText = InvestrendTheme.formatPrice(bids.elementAt(i));
+        bidPriceText = InvestrendTheme.formatPrice(bids?.elementAt(i));
       } else {
         bidQueueText = ' ';
         bidLotText = ' ';
@@ -1563,9 +1560,9 @@ class OrderBook {
       }
 
       if (showOffer) {
-        offerQueueText = InvestrendTheme.formatComma(offersQueue.elementAt(i));
+        offerQueueText = InvestrendTheme.formatComma(offersQueue?.elementAt(i));
         offerLotText = InvestrendTheme.formatComma(offerLot(i));
-        offerPriceText = InvestrendTheme.formatPrice(offers.elementAt(i));
+        offerPriceText = InvestrendTheme.formatPrice(offers?.elementAt(i));
       } else {
         offerQueueText = ' ';
         offerLotText = ' ';
@@ -1577,16 +1574,16 @@ class OrderBook {
         totalVolumeShowedOffer += offerLot(i);
       }
 
-      bidsText.insert(i, bidPriceText);
-      bidsLotText.insert(i, bidLotText);
-      bidsQueueText.insert(i, bidQueueText);
-      offersText.insert(i, offerPriceText);
-      offersLotText.insert(i, offerLotText);
-      offersQueueText.insert(i, offerQueueText);
+      bidsText?.insert(i, bidPriceText);
+      bidsLotText?.insert(i, bidLotText);
+      bidsQueueText?.insert(i, bidQueueText);
+      offersText?.insert(i, offerPriceText);
+      offersLotText?.insert(i, offerLotText);
+      offersQueueText?.insert(i, offerQueueText);
     }
   }
 
-  void copyValueFrom(OrderBook newValue) {
+  void copyValueFrom(OrderBook? newValue) {
     if (newValue != null) {
       this.time = newValue.time;
       this.code = newValue.code;
@@ -1628,8 +1625,8 @@ class OrderBook {
 
   int bidLot(int index) {
     int sharePerLot = 100;
-    if (bidsLot != null && index < bidsLot.length) {
-      num vol = bidsLot.elementAt(index);
+    if (bidsLot != null && index < bidsLot!.length) {
+      num vol = bidsLot?.elementAt(index);
       int result = vol.toInt() ~/ sharePerLot;
       return result;
     }
@@ -1637,23 +1634,23 @@ class OrderBook {
   }
 
   int bidVol(int index) {
-    if (bidsLot != null && index < bidsLot.length) {
-      return bidsLot.elementAt(index);
+    if (bidsLot != null && index < bidsLot!.length) {
+      return bidsLot?.elementAt(index);
     }
     return 0;
   }
 
   int offerLot(int index) {
-    if (offersLot != null && index < offersLot.length) {
-      num vol = offersLot.elementAt(index);
+    if (offersLot != null && index < offersLot!.length) {
+      num vol = offersLot?.elementAt(index);
       return vol ~/ 100;
     }
     return 0;
   }
 
   int offerVol(int index) {
-    if (offersLot != null && index < offersLot.length) {
-      return offersLot.elementAt(index);
+    if (offersLot != null && index < offersLot!.length) {
+      return offersLot?.elementAt(index);
     }
     return 0;
   }
@@ -1714,9 +1711,9 @@ class OrderBook {
     final String board = data[5];
     final String time = data[6];
     final String bidText = data[7];
-    final String bidRaw = data[8];
+    final String? bidRaw = data[8];
     final String offerText = data[9];
-    final String offerRaw = data[10];
+    final String? offerRaw = data[10];
     final int totalBid = Utils.safeInt(data[11]);
     final int totalOffer = Utils.safeInt(data[12]);
     /*
@@ -1749,8 +1746,8 @@ class OrderBook {
     var offersLot = List.empty(growable: true);
     var offersQueue = List.empty(growable: true);
 
-    List<String> bidsList = bidRaw.split('*');
-    List<String> offersList = offerRaw.split('*');
+    List<String>? bidsList = bidRaw?.split('*');
+    List<String>? offersList = offerRaw?.split('*');
 
     for (int i = 0; i < 10; i++) {
       int bid = 0;
@@ -1804,10 +1801,10 @@ class OrderBook {
         offersQueue: offersQueue);
   }
   factory OrderBook.fromJson(Map<String, dynamic> parsedJson) {
-    String code = StringUtils.noNullString(parsedJson['stockCode']);
-    String time = StringUtils.noNullString(parsedJson['time']);
+    String? code = StringUtils.noNullString(parsedJson['stockCode']);
+    String? time = StringUtils.noNullString(parsedJson['time']);
     //String code = StringUtils.noNullString(parsedJson['stockCode']);
-    String board = StringUtils.noNullString(parsedJson['boardCode']);
+    String? board = StringUtils.noNullString(parsedJson['boardCode']);
 
     int totalBid = Utils.safeInt(parsedJson['totalBid']);
     int totalOffer = Utils.safeInt(parsedJson['totalOffer']);
@@ -1848,9 +1845,10 @@ class OrderBook {
   }
 
   factory OrderBook.fromXml(XmlElement element) {
-    String time = StringUtils.noNullString(element.getAttribute('time'));
-    String code = StringUtils.noNullString(element.getAttribute('stockCode'));
-    String board = StringUtils.noNullString(element.getAttribute('boardCode'));
+    String? time = StringUtils.noNullString(element.getAttribute('time')!);
+    String? code = StringUtils.noNullString(element.getAttribute('stockCode')!);
+    String? board =
+        StringUtils.noNullString(element.getAttribute('boardCode')!);
 
     int totalBid = Utils.safeInt(element.getAttribute('totalBid'));
     int totalOffer = Utils.safeInt(element.getAttribute('totalOffer'));
@@ -1903,34 +1901,34 @@ class OrderBook {
   @override
   String toString() {
     return '[OrderBook --> $time, $code, $board, $totalBid, $totalOffer, ' +
-        bids.length.toString() +
+        bids!.length.toString() +
         ', ' +
-        bidsLot.length.toString() +
+        bidsLot!.length.toString() +
         ', ' +
-        bidsQueue.length.toString() +
+        bidsQueue!.length.toString() +
         ', ' +
-        offers.length.toString() +
+        offers!.length.toString() +
         ', ' +
-        offersLot.length.toString() +
+        offersLot!.length.toString() +
         ', ' +
-        offersQueue.length.toString() +
+        offersQueue!.length.toString() +
         ']';
   }
 }
 
 class People extends SerializeableSSI {
-  String name;
-  String username;
-  String urlTumbnail;
+  String? name;
+  String? username;
+  String? urlTumbnail;
 
   People(this.name, this.username, this.urlTumbnail);
 
-  factory People.fromPlain(String data) {
-    List<String> datas = data.split('|');
+  static People? fromPlain(String? data) {
+    List<String>? datas = data?.split('|');
     if (datas != null && datas.isNotEmpty && datas.length >= 3) {
-      String name = StringUtils.noNullString(datas.elementAt(0));
-      String username = StringUtils.noNullString(datas.elementAt(1));
-      String urlTumbnail = StringUtils.noNullString(datas.elementAt(2));
+      String? name = StringUtils.noNullString(datas.elementAt(0));
+      String? username = StringUtils.noNullString(datas.elementAt(1));
+      String? urlTumbnail = StringUtils.noNullString(datas.elementAt(2));
 
       return People(name, username, urlTumbnail);
     }
@@ -1940,9 +1938,9 @@ class People extends SerializeableSSI {
 
   @override
   String asPlain() {
-    String plain = name;
-    plain += '|' + username;
-    plain += '|' + urlTumbnail;
+    String plain = name!;
+    plain += '|' + username!;
+    plain += '|' + urlTumbnail!;
     return plain;
   }
 
@@ -2017,16 +2015,16 @@ class OrderQueue {
   },
   */
   int no;
-  String time;
-  String order;
-  String linked_time;
-  String linked;
-  String broker;
+  String? time;
+  String? order;
+  String? linked_time;
+  String? linked;
+  String? broker;
   int price;
   int volume;
   int remaining;
   int queue;
-  String type;
+  String? type;
   int lot() {
     if (volume > 0) {
       return volume ~/ 100;
@@ -2071,19 +2069,19 @@ class OrderQueue {
       this.queue,
       this.type);
 
-  factory OrderQueue.fromJson(Map<String, dynamic> parsedJson) {
+  static OrderQueue? fromJson(Map<String, dynamic> parsedJson) {
     print(parsedJson);
     int no = Utils.safeInt(parsedJson['#']);
-    String time = StringUtils.noNullString(parsedJson['time']);
-    String order = StringUtils.noNullString(parsedJson['order']);
-    String linkedTime = StringUtils.noNullString(parsedJson['linked_time']);
-    String linked = StringUtils.noNullString(parsedJson['linked']);
-    String broker = StringUtils.noNullString(parsedJson['broker']);
+    String? time = StringUtils.noNullString(parsedJson['time']);
+    String? order = StringUtils.noNullString(parsedJson['order']);
+    String? linkedTime = StringUtils.noNullString(parsedJson['linked_time']);
+    String? linked = StringUtils.noNullString(parsedJson['linked']);
+    String? broker = StringUtils.noNullString(parsedJson['broker']);
     int price = Utils.safeInt(parsedJson['price']);
     int volume = Utils.safeInt(parsedJson['volume']);
     int remaining = Utils.safeInt(parsedJson['remaining']);
     int queue = Utils.safeInt(parsedJson['queue']);
-    String type = StringUtils.noNullString(parsedJson['type']);
+    String? type = StringUtils.noNullString(parsedJson['type']);
 
     if (StringUtils.isEmtpy(broker)) {
       broker = '-';
@@ -2112,7 +2110,7 @@ class TopStock {
   <a start="2" end="2" code="INPC-W" close="93" change="22" percentChange="30.98" open="72" hi="95" low="72" prev="71" val="5449423600" vol="65765000" freq="2130" marketCap="402368832963" marketCapFreeFloat="0" return52W="3000" returnYTD="3000" returnMTD="47.61"/>
   </TOPSTOCK>
   */
-  String code;
+  String? code;
   int close;
   int change;
   double percentChange;
@@ -2147,8 +2145,8 @@ class TopStock {
       this.returnYTD,
       this.returnMTD);
 
-  factory TopStock.fromJson(Map<String, dynamic> parsedJson) {
-    String code = StringUtils.noNullString(parsedJson['code']);
+  static TopStock? fromJson(Map<String, dynamic> parsedJson) {
+    String? code = StringUtils.noNullString(parsedJson['code']);
 
     int close = Utils.safeInt(parsedJson['close']);
     int change = Utils.safeInt(parsedJson['change']);
@@ -2187,7 +2185,7 @@ class TopStock {
   }
 
   factory TopStock.fromXml(XmlElement element) {
-    String code = StringUtils.noNullString(element.getAttribute('code'));
+    String? code = StringUtils.noNullString(element.getAttribute('code')!);
     int close = Utils.safeInt(element.getAttribute('close'));
     int change = Utils.safeInt(element.getAttribute('change'));
     double percentChange =
@@ -2251,46 +2249,46 @@ class StockSummary {
     />
   </SUMMARY>
   */
-  String tradeDate;
-  String tradeTime;
-  String code;
-  String board;
-  String sector;
-  int prev;
-  int hi;
-  int low;
-  int close;
-  int hi52W;
-  int low52W;
+  String? tradeDate;
+  String? tradeTime;
+  String? code;
+  String? board;
+  String? sector;
+  int? prev;
+  int? hi;
+  int? low;
+  int? close;
+  int? hi52W;
+  int? low52W;
   //String start52W;
   //String end52W;
   //int close52W;
-  double return52W;
-  double change;
-  double percentChange;
-  int volume;
-  int value;
-  int freq;
-  int individualIndex;
-  int availableForForeigners;
-  int open;
-  int bestBidPrice;
-  int bestBidVolume;
-  int bestOfferPrice;
-  int bestOfferVolume;
-  String corporateAction;
-  int marketCap;
-  double averagePrice;
-  int hiYTD;
-  int lowYTD;
-  double returnYTD;
-  int marketCapFreeFloat;
-  int hiMTD;
-  int lowMTD;
-  double returnMTD;
+  double? return52W;
+  double? change;
+  double? percentChange;
+  int? volume;
+  int? value;
+  int? freq;
+  int? individualIndex;
+  int? availableForForeigners;
+  int? open;
+  int? bestBidPrice;
+  int? bestBidVolume;
+  int? bestOfferPrice;
+  int? bestOfferVolume;
+  String? corporateAction;
+  int? marketCap;
+  double? averagePrice;
+  int? hiYTD;
+  int? lowYTD;
+  double? returnYTD;
+  int? marketCapFreeFloat;
+  int? hiMTD;
+  int? lowMTD;
+  double? returnMTD;
 
-  int iep;
-  int iev;
+  int? iep;
+  int? iev;
 
   String PE = '-';
   String PBV = '-';
@@ -2300,47 +2298,48 @@ class StockSummary {
   Color pbvColor = InvestrendTheme.yellowText;
   Color roeColor = InvestrendTheme.yellowText;
 
-  Color openColor() {
-    return InvestrendTheme.priceTextColor(open, prev: prev);
+  Color? openColor() {
+    return InvestrendTheme.priceTextColor(open!, prev: prev!);
   }
 
-  Color hiColor() {
-    return InvestrendTheme.priceTextColor(hi, prev: prev);
+  Color? hiColor() {
+    return InvestrendTheme.priceTextColor(hi!, prev: prev!);
   }
 
-  Color lowColor() {
-    return InvestrendTheme.priceTextColor(low, prev: prev);
+  Color? lowColor() {
+    return InvestrendTheme.priceTextColor(low!, prev: prev!);
   }
 
-  Color closeColor() {
-    return InvestrendTheme.priceTextColor(close, prev: prev);
+  Color? closeColor() {
+    return InvestrendTheme.priceTextColor(close!, prev: prev!);
   }
 
   Color averagePriceColor() {
-    return InvestrendTheme.changeTextColor(averagePrice, prev: prev.toDouble());
+    return InvestrendTheme.changeTextColor(averagePrice!,
+        prev: prev!.toDouble());
   }
 
   Color iepColor() {
     if (iep == 0) {
       return InvestrendTheme.yellowText;
     }
-    return InvestrendTheme.changeTextColor(iep.toDouble(),
-        prev: prev.toDouble());
+    return InvestrendTheme.changeTextColor(iep!.toDouble(),
+        prev: prev!.toDouble());
   }
 
-  void updateCache(BuildContext context, FundamentalCache cache) {
+  void updateCache(BuildContext context, FundamentalCache? cache) {
     if (cache != null) {
       print(cache);
-      if (cache.last_eps > 0) {
-        double pe = close.toDouble() / cache.last_eps;
+      if (cache.last_eps! > 0) {
+        double pe = close!.toDouble() / cache.last_eps!;
         PE = InvestrendTheme.formatPriceDouble(pe, showDecimal: true);
         peColor = InvestrendTheme.changeTextColor(pe);
       } else {
         PE = '-';
         peColor = InvestrendTheme.yellowText;
       }
-      if (cache.last_bvp > 0) {
-        double pbv = close.toDouble() / cache.last_bvp;
+      if (cache.last_bvp! > 0) {
+        double pbv = close!.toDouble() / cache.last_bvp!;
         PBV = InvestrendTheme.formatPriceDouble(pbv, showDecimal: true);
         pbvColor = InvestrendTheme.changeTextColor(pbv);
       } else {
@@ -2348,7 +2347,7 @@ class StockSummary {
         pbvColor = InvestrendTheme.yellowText;
       }
 
-      double roe = cache.last_roe;
+      double roe = cache.last_roe!;
       ROE = InvestrendTheme.formatPriceDouble(roe, showDecimal: true);
       roeColor = InvestrendTheme.changeTextColor(roe);
     } else {
@@ -2485,20 +2484,20 @@ class StockSummary {
         iep: iep,
         iev: iev);
   }
-  factory StockSummary.fromJson(Map<String, dynamic> parsedJson) {
-    String tradeDate = StringUtils.noNullString(parsedJson['tradeDate']);
-    String tradeTime = StringUtils.noNullString(parsedJson['tradeTime']);
-    String stockCode = StringUtils.noNullString(parsedJson['stockCode']);
-    String boardCode = StringUtils.noNullString(parsedJson['boardCode']);
-    String sector = StringUtils.noNullString(parsedJson['sector']);
+  static StockSummary? fromJson(Map<String, dynamic> parsedJson) {
+    String? tradeDate = StringUtils.noNullString(parsedJson['tradeDate']);
+    String? tradeTime = StringUtils.noNullString(parsedJson['tradeTime']);
+    String? stockCode = StringUtils.noNullString(parsedJson['stockCode']);
+    String? boardCode = StringUtils.noNullString(parsedJson['boardCode']);
+    String? sector = StringUtils.noNullString(parsedJson['sector']);
     int prev = Utils.safeInt(parsedJson['prev']);
     int hi = Utils.safeInt(parsedJson['hi']);
     int low = Utils.safeInt(parsedJson['low']);
     int close = Utils.safeInt(parsedJson['close']);
     int hi52W = Utils.safeInt(parsedJson['hi52W']);
     int low52W = Utils.safeInt(parsedJson['low52W']);
-    String start52W = StringUtils.noNullString(parsedJson['start52W']);
-    String end52W = StringUtils.noNullString(parsedJson['end52W']);
+    String? start52W = StringUtils.noNullString(parsedJson['start52W']);
+    String? end52W = StringUtils.noNullString(parsedJson['end52W']);
     int close52W = Utils.safeInt(parsedJson['close52W']);
     double return52W = Utils.safeDouble(parsedJson['return52W']);
     double change = Utils.safeDouble(parsedJson['change']);
@@ -2514,7 +2513,7 @@ class StockSummary {
     int bestBidVolume = Utils.safeInt(parsedJson['bestBidVolume']);
     int bestOfferPrice = Utils.safeInt(parsedJson['bestOfferPrice']);
     int bestOfferVolume = Utils.safeInt(parsedJson['bestOfferVolume']);
-    String corporateAction =
+    String? corporateAction =
         StringUtils.noNullString(parsedJson['corporateAction']);
     int marketCap = Utils.safeInt(parsedJson['marketCap']);
     double averagePrice = Utils.safeDouble(parsedJson['averagePrice']);
@@ -2567,24 +2566,24 @@ class StockSummary {
   }
 
   factory StockSummary.fromXml(XmlElement element) {
-    String tradeDate =
-        StringUtils.noNullString(element.getAttribute('tradeDate'));
-    String tradeTime =
-        StringUtils.noNullString(element.getAttribute('tradeTime'));
-    String stockCode =
-        StringUtils.noNullString(element.getAttribute('stockCode'));
-    String boardCode =
-        StringUtils.noNullString(element.getAttribute('boardCode'));
-    String sector = StringUtils.noNullString(element.getAttribute('sector'));
+    String? tradeDate =
+        StringUtils.noNullString(element.getAttribute('tradeDate')!);
+    String? tradeTime =
+        StringUtils.noNullString(element.getAttribute('tradeTime')!);
+    String? stockCode =
+        StringUtils.noNullString(element.getAttribute('stockCode')!);
+    String? boardCode =
+        StringUtils.noNullString(element.getAttribute('boardCode')!);
+    String? sector = StringUtils.noNullString(element.getAttribute('sector')!);
     int prev = Utils.safeInt(element.getAttribute('prev'));
     int hi = Utils.safeInt(element.getAttribute('hi'));
     int low = Utils.safeInt(element.getAttribute('low'));
     int close = Utils.safeInt(element.getAttribute('close'));
     int hi52W = Utils.safeInt(element.getAttribute('hi52W'));
     int low52W = Utils.safeInt(element.getAttribute('low52W'));
-    String start52W =
-        StringUtils.noNullString(element.getAttribute('start52W'));
-    String end52W = StringUtils.noNullString(element.getAttribute('end52W'));
+    String? start52W =
+        StringUtils.noNullString(element.getAttribute('start52W')!);
+    String? end52W = StringUtils.noNullString(element.getAttribute('end52W')!);
     int close52W = Utils.safeInt(element.getAttribute('close52W'));
     double return52W = Utils.safeDouble(element.getAttribute('return52W'));
     double change = Utils.safeDouble(element.getAttribute('change'));
@@ -2603,8 +2602,8 @@ class StockSummary {
     int bestOfferPrice = Utils.safeInt(element.getAttribute('bestOfferPrice'));
     int bestOfferVolume =
         Utils.safeInt(element.getAttribute('bestOfferVolume'));
-    String corporateAction =
-        StringUtils.noNullString(element.getAttribute('corporateAction'));
+    String? corporateAction =
+        StringUtils.noNullString(element.getAttribute('corporateAction')!);
     int marketCap = Utils.safeInt(element.getAttribute('marketCap'));
     double averagePrice =
         Utils.safeDouble(element.getAttribute('averagePrice'));
@@ -2656,16 +2655,15 @@ class StockSummary {
   }
 
   bool isValid() {
-    return !StringUtils.isEmtpy(code) && !StringUtils.isEmtpy(board);
+    return !StringUtils.isEmtpy(code!) && !StringUtils.isEmtpy(board!);
   }
 
   @override
   String toString() {
-    // TODO: implement toString
     return '[Stock Summary --> $tradeDate, $tradeTime, $code, $board, $sector, $prev, $hi, $low, $close, $hi52W, $low52W, $return52W, $change, $percentChange, $volume, $value, $freq, $individualIndex, $availableForForeigners, $open, $bestBidPrice, $bestBidVolume, $bestOfferPrice, $bestOfferVolume, $corporateAction, $marketCap, $averagePrice, $hiYTD, $lowYTD, $returnYTD, $marketCapFreeFloat, $hiMTD, $lowMTD, $returnMTD]';
   }
 
-  void copyValueFrom(StockSummary newValue) {
+  void copyValueFrom(StockSummary? newValue) {
     if (newValue != null) {
       this.tradeDate = newValue.tradeDate;
       this.tradeTime = newValue.tradeTime;

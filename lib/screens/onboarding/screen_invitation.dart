@@ -10,7 +10,7 @@ import 'package:flutter/services.dart';
 class ScreenInvitation extends StatefulWidget {
   final Invitation invitation;
 
-  const ScreenInvitation(this.invitation, {Key key}) : super(key: key);
+  const ScreenInvitation(this.invitation, {Key? key}) : super(key: key);
 
   @override
   _ScreenInvitationState createState() =>
@@ -51,8 +51,8 @@ class _ScreenInvitationState extends State<ScreenInvitation> {
               'Kode Invitasi',
               style: Theme.of(context)
                   .textTheme
-                  .headline4
-                  .copyWith(fontWeight: FontWeight.w700),
+                  .headlineMedium
+                  ?.copyWith(fontWeight: FontWeight.w700),
             ),
             SizedBox(
               height: 30.0,
@@ -94,15 +94,16 @@ class _ScreenInvitationState extends State<ScreenInvitation> {
             TextButton(
                 onPressed: () {
                   Clipboard.getData(Clipboard.kTextPlain).then((value) {
-                    print(value.text); //value is clipbarod data
-                    controller.text = value.text;
+                    print(value?.text); //value is clipbarod data
+                    controller.text = value!.text!;
                   });
                 },
                 child: Text(
                   'Paste / Tempel',
                   style: InvestrendTheme.of(context)
                       .small_w500_compact
-                      .copyWith(color: Theme.of(context).colorScheme.secondary),
+                      ?.copyWith(
+                          color: Theme.of(context).colorScheme.secondary),
                 )),
             SizedBox(
               height: 20.0,

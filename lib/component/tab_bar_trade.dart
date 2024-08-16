@@ -1,20 +1,25 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:Investrend/component/button_order.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:flutter/material.dart';
 
-
 class TabBarTrade extends StatefulWidget implements PreferredSizeWidget {
   final double indicatorWeight;
-  List<Widget> tabs;
-  TabController tabController;
+  List<Widget>? tabs;
+  TabController? tabController;
 
-  TabBarTrade(this.tabs, this.tabController, {Key key, this.indicatorWeight = 2.0,}) : super(key: key);
+  TabBarTrade(
+    this.tabs,
+    this.tabController, {
+    Key? key,
+    this.indicatorWeight = 2.0,
+  }) : super(key: key);
 
   @override
   _TabBarTradeState createState() => _TabBarTradeState();
   @override
   Size get preferredSize {
-
     // for (final Widget item in tabs) {
     //   if (item is Tab) {
     //     final Tab tab = item;
@@ -24,13 +29,12 @@ class TabBarTrade extends StatefulWidget implements PreferredSizeWidget {
     // }
     //return Size.fromHeight(_kTabHeight + indicatorWeight);
     return Size.fromHeight(InvestrendTheme.appBarTabHeight);
-
   }
 }
 
-class _TabBarTradeState extends State<TabBarTrade> with SingleTickerProviderStateMixin {
-  ValueNotifier _indexNotifier;
-
+class _TabBarTradeState extends State<TabBarTrade>
+    with SingleTickerProviderStateMixin {
+  ValueNotifier? _indexNotifier;
 
   @override
   void initState() {
@@ -38,9 +42,9 @@ class _TabBarTradeState extends State<TabBarTrade> with SingleTickerProviderStat
 
     _indexNotifier = ValueNotifier<int>(0);
 
-    widget.tabController.addListener(() {
-      print('changed tab :'+widget.tabController.index.toString());
-      _indexNotifier.value = widget.tabController.index;
+    widget.tabController?.addListener(() {
+      print('changed tab :' + widget.tabController!.index.toString());
+      _indexNotifier!.value = widget.tabController?.index;
       // setState(() {
       //
       // });
@@ -50,14 +54,14 @@ class _TabBarTradeState extends State<TabBarTrade> with SingleTickerProviderStat
   @override
   void dispose() {
     //_tabController.dispose();
-    _indexNotifier.dispose();
+    _indexNotifier!.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-        valueListenable: _indexNotifier,
+        valueListenable: _indexNotifier!,
         builder: (context, value, child) {
           return createTabs(context);
         });
@@ -66,14 +70,16 @@ class _TabBarTradeState extends State<TabBarTrade> with SingleTickerProviderStat
   }
 
   Widget createTabs(BuildContext context) {
-
-
-    bool isBuy = widget.tabController.index == OrderType.Buy.index;
-    Color color = isBuy ? Theme.of(context).colorScheme.secondary : InvestrendTheme.sellColor;
-    Color borderColor = isBuy ? Theme.of(context).colorScheme.secondary : InvestrendTheme.sellColor;
+    bool isBuy = widget.tabController?.index == OrderType.Buy.index;
+    Color color = isBuy
+        ? Theme.of(context).colorScheme.secondary
+        : InvestrendTheme.sellColor;
+    Color borderColor = isBuy
+        ? Theme.of(context).colorScheme.secondary
+        : InvestrendTheme.sellColor;
     print('isBuy : $isBuy');
-    print('tabController : '+(widget.tabController == null ? 'NULL' : 'ADA'));
-    print('tabs : '+(widget.tabs == null ? 'NULL' : 'ADA'));
+    print('tabController : ' + (widget.tabController == null ? 'NULL' : 'ADA'));
+    print('tabs : ' + (widget.tabs == null ? 'NULL' : 'ADA'));
 
     // return ValueListenableBuilder(
     //   valueListenable: _indexNotifier,
@@ -98,11 +104,18 @@ class _TabBarTradeState extends State<TabBarTrade> with SingleTickerProviderStat
     return TabBar(
       controller: widget.tabController,
       labelColor: color,
-      labelStyle: Theme.of(context).tabBarTheme.labelStyle.copyWith(height: null,),
-      unselectedLabelStyle: Theme.of(context).tabBarTheme.labelStyle.copyWith(height: null,),
-      indicatorPadding: EdgeInsets.only( top: padding, bottom: padding,),
-      labelPadding: EdgeInsets.only( top: padding, bottom: 4.0, left: 15.0, right: 15.0),
-
+      labelStyle: Theme.of(context).tabBarTheme.labelStyle!.copyWith(
+            height: null,
+          ),
+      unselectedLabelStyle: Theme.of(context).tabBarTheme.labelStyle!.copyWith(
+            height: null,
+          ),
+      indicatorPadding: EdgeInsets.only(
+        top: padding,
+        bottom: padding,
+      ),
+      labelPadding:
+          EdgeInsets.only(top: padding, bottom: 4.0, left: 15.0, right: 15.0),
       indicator: BoxDecoration(
         borderRadius: BorderRadius.circular(8.0),
         border: Border.all(
@@ -111,7 +124,7 @@ class _TabBarTradeState extends State<TabBarTrade> with SingleTickerProviderStat
         ),
       ),
       isScrollable: true,
-        tabs: widget.tabs,
+      tabs: widget.tabs!,
     );
   }
 }

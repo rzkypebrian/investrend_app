@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_null_comparison
+
 import 'package:Investrend/objects/class_value_notifier.dart';
 import 'package:Investrend/screens/base/base_state.dart';
 import 'package:Investrend/screens/tab_search/screen_search_bond_yield.dart';
@@ -14,8 +16,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class ScreenSearch extends StatefulWidget {
-  final BaseValueNotifier<bool> visibilityNotifier;
-  const ScreenSearch({Key key, this.visibilityNotifier}) : super(key: key);
+  final BaseValueNotifier<bool>? visibilityNotifier;
+  const ScreenSearch({Key? key, this.visibilityNotifier}) : super(key: key);
 
   @override
   _ScreenSearchState createState() =>
@@ -27,8 +29,8 @@ class _ScreenSearchState extends BaseStateWithTabs<ScreenSearch>
 {
   String timeCreation = '-';
 
-  _ScreenSearchState({BaseValueNotifier<bool> visibilityNotifier})
-      : super('/search',
+  _ScreenSearchState({BaseValueNotifier<bool>? visibilityNotifier})
+      : super('/search', null, null,
             screenAware: false, visibilityNotifier: visibilityNotifier);
   //TabController _tabController;
 
@@ -39,9 +41,9 @@ class _ScreenSearchState extends BaseStateWithTabs<ScreenSearch>
     print(routeName + '.initState ');
     timeCreation = DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.now());
     //_tabController = new TabController(vsync: this, length: tabs.length);
-    pTabController.addListener(_tabListener);
+    pTabController?.addListener(_tabListener);
 
-    if (visibilityNotifier.value) {
+    if (visibilityNotifier!.value!) {
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         onActive();
       });
@@ -51,7 +53,7 @@ class _ScreenSearchState extends BaseStateWithTabs<ScreenSearch>
   void _tabListener() {
     print(routeName +
         ' pTabController onChange : ' +
-        pTabController.index.toString());
+        pTabController!.index.toString());
     runPostFrame(() {
       if (mounted && context != null) {
         FocusScope.of(context).requestFocus(new FocusNode());
@@ -80,10 +82,10 @@ class _ScreenSearchState extends BaseStateWithTabs<ScreenSearch>
   void dispose() {
     //_tabController.dispose();
     print(routeName + '.dispose ');
-    for (int i = 0; i < _visibilityNotifiers.length; i++) {
-      _visibilityNotifiers.elementAt(i).dispose();
+    for (int i = 0; i < _visibilityNotifiers!.length; i++) {
+      _visibilityNotifiers?.elementAt(i).dispose();
     }
-    pTabController.removeListener(_tabListener);
+    pTabController?.removeListener(_tabListener);
 
     super.dispose();
   }
@@ -100,7 +102,7 @@ class _ScreenSearchState extends BaseStateWithTabs<ScreenSearch>
     'search_tabs_bond_title'.tr(),
   ];
 
-  List<ValueNotifier<bool>> _visibilityNotifiers = [
+  List<ValueNotifier<bool>>? _visibilityNotifiers = [
     ValueNotifier<bool>(false),
     ValueNotifier<bool>(false),
     ValueNotifier<bool>(false),
@@ -112,7 +114,7 @@ class _ScreenSearchState extends BaseStateWithTabs<ScreenSearch>
     ValueNotifier<bool>(false),
   ];
 
-  Widget createAppBar(BuildContext context) {
+  PreferredSizeWidget? createAppBar(BuildContext context) {
     return null;
   }
 
@@ -143,55 +145,55 @@ class _ScreenSearchState extends BaseStateWithTabs<ScreenSearch>
             return ScreenSearchMarket(
               0,
               pTabController,
-              visibilityNotifier: _visibilityNotifiers.elementAt(index),
+              visibilityNotifier: _visibilityNotifiers?.elementAt(index),
             );
           } else if (index == 1) {
             return ScreenSearchGlobal(
               1,
               pTabController,
-              visibilityNotifier: _visibilityNotifiers.elementAt(index),
+              visibilityNotifier: _visibilityNotifiers?.elementAt(index),
             );
           } else if (index == 2) {
             return ScreenSearchWatchlist(
               2,
               pTabController,
-              visibilityNotifier: _visibilityNotifiers.elementAt(index),
+              visibilityNotifier: _visibilityNotifiers?.elementAt(index),
             );
           } else if (index == 3) {
             return ScreenSearchMovers(
               3,
               pTabController,
-              visibilityNotifier: _visibilityNotifiers.elementAt(index),
+              visibilityNotifier: _visibilityNotifiers?.elementAt(index),
             );
           } else if (index == 4) {
             return ScreenSearchThemes(
               4,
               pTabController,
-              visibilityNotifier: _visibilityNotifiers.elementAt(index),
+              visibilityNotifier: _visibilityNotifiers?.elementAt(index),
             );
           } else if (index == 5) {
             return ScreenSearchCurrency(
               5,
               pTabController,
-              visibilityNotifier: _visibilityNotifiers.elementAt(index),
+              visibilityNotifier: _visibilityNotifiers?.elementAt(index),
             );
           } else if (index == 6) {
             return ScreenSearchCryptocurrency(
               6,
               pTabController,
-              visibilityNotifier: _visibilityNotifiers.elementAt(index),
+              visibilityNotifier: _visibilityNotifiers?.elementAt(index),
             );
           } else if (index == 7) {
             return ScreenSearchCommodities(
               7,
               pTabController,
-              visibilityNotifier: _visibilityNotifiers.elementAt(index),
+              visibilityNotifier: _visibilityNotifiers?.elementAt(index),
             );
           } else if (index == 8) {
             return ScreenSearchBondYield(
               8,
               pTabController,
-              visibilityNotifier: _visibilityNotifiers.elementAt(index),
+              visibilityNotifier: _visibilityNotifiers?.elementAt(index),
             );
           }
           return Container(
@@ -223,7 +225,7 @@ class _ScreenSearchState extends BaseStateWithTabs<ScreenSearch>
     return ChoiceChip(
       label: Text(
         text,
-        style: Theme.of(context).textTheme.bodyText2.copyWith(
+        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
             fontSize: 12.0,
             color: selected
                 ? InvestrendTheme.of(context).textWhite /*Colors.white*/
@@ -243,7 +245,7 @@ class _ScreenSearchState extends BaseStateWithTabs<ScreenSearch>
   }
 
   @override
-  Widget createTabs(BuildContext context) {
+  PreferredSizeWidget createTabs(BuildContext context) {
     return TabBar(
       controller: pTabController,
       labelPadding: InvestrendTheme.paddingTab,
@@ -266,16 +268,18 @@ class _ScreenSearchState extends BaseStateWithTabs<ScreenSearch>
 
   @override
   void onActive() {
-    // TODO: implement onActive
     print(routeName +
         '  onActive pTabController.index : ' +
-        pTabController.index.toString() +
+        pTabController!.index.toString() +
         '  value : ' +
-        _visibilityNotifiers.elementAt(pTabController.index).value.toString());
-    for (int i = 0; i < _visibilityNotifiers.length; i++) {
-      ValueNotifier childNotifier = _visibilityNotifiers.elementAt(i);
+        _visibilityNotifiers!
+            .elementAt(pTabController!.index)
+            .value
+            .toString());
+    for (int i = 0; i < _visibilityNotifiers!.length; i++) {
+      ValueNotifier? childNotifier = _visibilityNotifiers?.elementAt(i);
       if (childNotifier != null) {
-        if (pTabController.index == i) {
+        if (pTabController!.index == i) {
           childNotifier.value = true;
         } else {
           childNotifier.value = false;
@@ -289,14 +293,16 @@ class _ScreenSearchState extends BaseStateWithTabs<ScreenSearch>
 
   @override
   void onInactive() {
-    // TODO: implement onInactive
     print(routeName +
         '  onInactive pTabController.index : ' +
-        pTabController.index.toString() +
+        pTabController!.index.toString() +
         '  value : ' +
-        _visibilityNotifiers.elementAt(pTabController.index).value.toString());
-    for (int i = 0; i < _visibilityNotifiers.length; i++) {
-      ValueNotifier childNotifier = _visibilityNotifiers.elementAt(i);
+        _visibilityNotifiers!
+            .elementAt(pTabController!.index)
+            .value
+            .toString());
+    for (int i = 0; i < _visibilityNotifiers!.length; i++) {
+      ValueNotifier? childNotifier = _visibilityNotifiers?.elementAt(i);
       if (childNotifier != null) {
         childNotifier.value = false;
       }

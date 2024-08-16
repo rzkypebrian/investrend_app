@@ -15,31 +15,43 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ScreenTradeSell extends StatefulWidget {
-  final ValueNotifier<bool> _fastModeNotifier;
-  final TabController _tabController;
+  final ValueNotifier<bool>? _fastModeNotifier;
+  final TabController? _tabController;
   final OrderbookNotifier _orderbookNotifier;
 
   final ValueNotifier<bool> _updateDataNotifier;
   final bool _onlyFastOrder;
-  final PriceLot initialPriceLot;
-  final ValueNotifier<bool> keyboardNotifier;
+  final PriceLot? initialPriceLot;
+  final ValueNotifier<bool>? keyboardNotifier;
 
-  const ScreenTradeSell(this._fastModeNotifier, this._tabController, this._orderbookNotifier, this._updateDataNotifier, this._onlyFastOrder,
-      {Key key, this.initialPriceLot, this.keyboardNotifier})
+  const ScreenTradeSell(this._fastModeNotifier, this._tabController,
+      this._orderbookNotifier, this._updateDataNotifier, this._onlyFastOrder,
+      {Key? key, this.initialPriceLot, this.keyboardNotifier})
       : super(key: key);
 
   //const ScreenTradeSell( this._fastModeNotifier, this._tabController, this._orderbookNotifier, {Key key}) : super(key: key);
   @override
-  _ScreenTradeSellState createState() =>
-      _ScreenTradeSellState(_fastModeNotifier, _tabController, _orderbookNotifier, _updateDataNotifier, _onlyFastOrder,
-          initialPriceLot: initialPriceLot, keyboardNotifier: keyboardNotifier);
+  _ScreenTradeSellState createState() => _ScreenTradeSellState(
+      _fastModeNotifier!,
+      _tabController!,
+      _orderbookNotifier,
+      _updateDataNotifier,
+      _onlyFastOrder,
+      initialPriceLot: initialPriceLot!,
+      keyboardNotifier: keyboardNotifier!);
 }
 
-class _ScreenTradeSellState extends BaseTradeState<ScreenTradeSell> //with AutomaticKeepAliveClientMixin<ScreenTradeSell>
+class _ScreenTradeSellState extends BaseTradeState<
+    ScreenTradeSell> //with AutomaticKeepAliveClientMixin<ScreenTradeSell>
 {
-  _ScreenTradeSellState(ValueNotifier<bool> fastModeNotifier, TabController tabController, OrderbookNotifier orderbookNotifier,
-      ValueNotifier<bool> updateDataNotifier, bool onlyFastOrder,
-      {PriceLot initialPriceLot, ValueNotifier<bool> keyboardNotifier})
+  _ScreenTradeSellState(
+      ValueNotifier<bool> fastModeNotifier,
+      TabController tabController,
+      OrderbookNotifier orderbookNotifier,
+      ValueNotifier<bool> updateDataNotifier,
+      bool onlyFastOrder,
+      {PriceLot? initialPriceLot,
+      ValueNotifier<bool>? keyboardNotifier})
       : super(
           OrderType.Sell,
           fastModeNotifier,
@@ -47,8 +59,8 @@ class _ScreenTradeSellState extends BaseTradeState<ScreenTradeSell> //with Autom
           orderbookNotifier,
           updateDataNotifier,
           onlyFastOrder,
-          initialPriceLot: initialPriceLot,
-          keyboardNotifier: keyboardNotifier,
+          initialPriceLot: initialPriceLot!,
+          keyboardNotifier: keyboardNotifier!,
         );
 
   @override
@@ -63,11 +75,13 @@ class _ScreenTradeSellState extends BaseTradeState<ScreenTradeSell> //with Autom
           TableRow(children: [
             Text(
               'trade_sell_label_total_lot'.tr(),
-              style: InvestrendTheme.of(context).support_w400.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor),
+              style: InvestrendTheme.of(context).support_w400?.copyWith(
+                  color: InvestrendTheme.of(context).greyDarkerTextColor),
             ),
             Text(
               'trade_sell_label_average_price'.tr(),
-              style: InvestrendTheme.of(context).support_w400.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor),
+              style: InvestrendTheme.of(context).support_w400?.copyWith(
+                  color: InvestrendTheme.of(context).greyDarkerTextColor),
             ),
           ]),
           TableRow(children: [
@@ -125,46 +139,53 @@ class _ScreenTradeSellState extends BaseTradeState<ScreenTradeSell> //with Autom
         "  active : $active  mounted : $mounted  pullToRefresh : $pullToRefresh");
     onProgressAccount = true;
 
-    Stock stock = context.read(primaryStockChangeNotifier).stock;
+    Stock? stock = context.read(primaryStockChangeNotifier).stock;
     int selected = context.read(accountChangeNotifier).index;
     //Account account = InvestrendTheme.of(context).user.getAccount(selected);
-    Account account = context.read(dataHolderChangeNotifier).user.getAccount(selected);
+    Account? account =
+        context.read(dataHolderChangeNotifier).user.getAccount(selected);
 
     if (account == null) {
       //String text = 'No Account Selected. accountSize : ' + InvestrendTheme.of(context).user.accountSize().toString();
       //String text = 'No Account Selected. accountSize : ' + context.read(dataHolderChangeNotifier).user.accountSize().toString();
       String errorNoAccount = 'error_no_account_selected'.tr();
-      String text = '$errorNoAccount. accountSize : ' + context.read(dataHolderChangeNotifier).user.accountSize().toString();
+      String text = '$errorNoAccount. accountSize : ' +
+          context.read(dataHolderChangeNotifier).user.accountSize().toString();
       InvestrendTheme.of(context).showSnackBar(context, text);
       onProgressAccount = false;
       return false;
     } else {
       try {
         print(orderType.routeName + ' try stockPosition');
-        final stockPosition = await InvestrendTheme.tradingHttp.stock_position(
-            account.brokercode,
-            account.accountcode,
-            //InvestrendTheme.of(context).user.username,
-            context.read(dataHolderChangeNotifier).user.username,
-            InvestrendTheme.of(context).applicationPlatform,
-            InvestrendTheme.of(context).applicationVersion);
+        final StockPosition? stockPosition =
+            await InvestrendTheme.tradingHttp.stock_position(
+                account.brokercode,
+                account.accountcode,
+                //InvestrendTheme.of(context).user.username,
+                context.read(dataHolderChangeNotifier).user.username,
+                InvestrendTheme.of(context).applicationPlatform,
+                InvestrendTheme.of(context).applicationVersion);
         DebugWriter.information(orderType.routeName +
             ' Got stockPosition ' +
-            stockPosition.accountcode +
+            stockPosition!.accountcode! +
             '   stockList.size : ' +
             stockPosition.stockListSize().toString());
         if (!mounted) {
           onProgressAccount = false;
           return false;
         }
-        StockPositionDetail detail = stockPosition.getStockPositionDetailByCode(stock?.code);
+        StockPositionDetail? detail =
+            stockPosition.getStockPositionDetailByCode(stock?.code);
         if (detail != null) {
-          context.read(sellLotAvgChangeNotifier).update(detail.netBalance.toInt(), detail.avgPrice);
+          context
+              .read(sellLotAvgChangeNotifier)
+              .update(detail.netBalance.toInt(), detail.avgPrice);
         } else {
           context.read(sellLotAvgChangeNotifier).update(0, 0.0);
         }
       } catch (e) {
-        DebugWriter.information(orderType.routeName + ' stockPosition Exception : ' + e.toString());
+        DebugWriter.information(
+            orderType.routeName + ' stockPosition Exception : ' + e.toString());
         if (!mounted) {
           onProgressAccount = false;
           return false;
@@ -180,8 +201,10 @@ class _ScreenTradeSellState extends BaseTradeState<ScreenTradeSell> //with Autom
             return false;
           } else {
             String networkErrorLabel = 'network_error_label'.tr();
-            networkErrorLabel = networkErrorLabel.replaceFirst("#CODE#", e.code.toString());
-            InvestrendTheme.of(context).showSnackBar(context, networkErrorLabel);
+            networkErrorLabel =
+                networkErrorLabel.replaceFirst("#CODE#", e.code.toString());
+            InvestrendTheme.of(context)
+                .showSnackBar(context, networkErrorLabel);
             onProgressAccount = false;
             return false;
           }
@@ -921,5 +944,4 @@ class _ScreenTradeSellState extends BaseTradeState<ScreenTradeSell> //with Autom
   }
 
    */
-
 }

@@ -1,19 +1,20 @@
+// ignore_for_file: unused_field, unused_local_variable, unnecessary_null_comparison
+
 import 'dart:async';
 import 'dart:io';
 
-import 'package:Investrend/component/animation_creator.dart';
 import 'package:Investrend/component/broker_rank.dart';
 import 'package:Investrend/component/broker_trade_summary.dart';
 import 'package:Investrend/component/charts/trading_view_chart.dart';
 import 'package:Investrend/component/component_creator.dart';
 import 'package:Investrend/component/filter/filter.dart';
 import 'package:Investrend/component/trade_done.dart';
+import 'package:Investrend/new_component/webview_new.dart';
 import 'package:Investrend/objects/data_object.dart';
 import 'package:Investrend/objects/riverpod_change_notifier.dart';
 import 'package:Investrend/objects/iii_objects.dart';
 import 'package:Investrend/screens/onboarding/screen_friends.dart';
 import 'package:Investrend/screens/onboarding/screen_register_pin.dart';
-import 'package:Investrend/screens/onboarding/screen_register_rdn.dart';
 import 'package:Investrend/screens/onboarding/screen_register.dart';
 import 'package:Investrend/screens/trade/component/bottom_sheet_loading.dart';
 import 'package:Investrend/utils/connection_services.dart';
@@ -52,8 +53,8 @@ class _ScreenLoginState extends State<ScreenLogin> {
   LoginConfig config = LoginConfig();
   final LoadingBottomNotifier _loadingNotifier = LoadingBottomNotifier();
   final _formLoginKey = GlobalKey<FormState>();
-  TextEditingController fieldEmailController;
-  TextEditingController fieldPasswordController;
+  TextEditingController? fieldEmailController;
+  TextEditingController? fieldPasswordController;
   final ValueNotifier<bool> _rememberMeNotifier = ValueNotifier<bool>(false);
   final ValueNotifier<bool> _hidePasswordNotifier = ValueNotifier<bool>(true);
   final ValueNotifier<List<String>> listOverViewNotifier =
@@ -71,8 +72,8 @@ class _ScreenLoginState extends State<ScreenLogin> {
   @override
   void dispose() {
     // Clean up the controller when the widget is disposed.
-    fieldEmailController.dispose();
-    fieldPasswordController.dispose();
+    fieldEmailController?.dispose();
+    fieldPasswordController?.dispose();
     _rememberMeNotifier.dispose();
     _loadingNotifier.dispose();
     _versionNotifier.dispose();
@@ -136,16 +137,16 @@ class _ScreenLoginState extends State<ScreenLogin> {
         //bool production = context.read(propertiesNotifier).properties.getBool(routeName, 'production', true);
 
         if (!StringUtils.isEmtpy(widget.initialEmail)) {
-          fieldEmailController.text = widget.initialEmail;
+          fieldEmailController?.text = widget.initialEmail;
           DebugWriter.info('loadFirstTime rememberMe using initialEmail : ' +
               widget.initialEmail);
         } else {
-          fieldEmailController.text = config.email;
+          fieldEmailController?.text = config.email;
           DebugWriter.info(
               'loadFirstTime rememberMe using savedEmail : ' + config.email);
         }
         if (hasToken) {
-          fieldPasswordController.text = 'refresh_token';
+          fieldPasswordController?.text = 'refresh_token';
           if (widget.autoLogon) {
             refreshToken(token.refresh_token);
           }
@@ -156,12 +157,12 @@ class _ScreenLoginState extends State<ScreenLogin> {
         //bool production = context.read(propertiesNotifier).properties.getBool(routeName, 'production', true);
 
         if (!StringUtils.isEmtpy(widget.initialEmail)) {
-          fieldEmailController.text = widget.initialEmail;
+          fieldEmailController?.text = widget.initialEmail;
           DebugWriter.info(
               'loadFirstTime NOT rememberMe using initialEmail : ' +
                   widget.initialEmail);
         } else {
-          fieldEmailController.text = config.email;
+          fieldEmailController?.text = config.email;
           DebugWriter.info('loadFirstTime NOT rememberMe using savedEmail : ' +
               config.email);
         }
@@ -177,9 +178,9 @@ class _ScreenLoginState extends State<ScreenLogin> {
 
   void saveConfig() {
     if (_rememberMeNotifier.value) {
-      config.update(true, '', fieldEmailController.text);
+      config.update(true, '', fieldEmailController!.text);
     } else {
-      config.update(false, '', fieldEmailController.text);
+      config.update(false, '', fieldEmailController!.text);
     }
     config.save();
   }
@@ -204,9 +205,11 @@ class _ScreenLoginState extends State<ScreenLogin> {
         availableBiometrics.contains(BiometricType.face)) {
       bool authenticated = await _localAuth.authenticate(
         localizedReason: 'Please authenticate to login',
-        biometricOnly: true,
-        stickyAuth: true,
-        useErrorDialogs: true,
+        options: AuthenticationOptions(
+          biometricOnly: true,
+          stickyAuth: true,
+          useErrorDialogs: true,
+        ),
       );
       setState(() {
         _authenticated = authenticated;
@@ -230,8 +233,8 @@ class _ScreenLoginState extends State<ScreenLogin> {
 
   void launchURL(BuildContext context, String _url) async {
     try {
-      await canLaunch(_url)
-          ? await launch(_url)
+      await canLaunchUrl(Uri.dataFromString(_url))
+          ? await launchUrl(Uri.dataFromString(_url))
           : throw 'Could not launch $_url';
     } catch (error) {
       //InvestrendTheme.of(context).showSnackBar(context, error.toString());
@@ -244,7 +247,7 @@ class _ScreenLoginState extends State<ScreenLogin> {
     double top = height * 0.07;
     double imageSize = width * 0.7;
     bool lightTheme = Theme.of(context).brightness == Brightness.light;
-    bool accentColorIsNull = Theme.of(context).colorScheme.secondary == null;
+    bool? accentColorIsNull = Theme.of(context).colorScheme.secondary == null;
     print('lightTheme : $lightTheme  accentColorIsNull : $accentColorIsNull');
 
     double spacerHeight = 10.0;
@@ -276,7 +279,7 @@ class _ScreenLoginState extends State<ScreenLogin> {
         SizedBox(
           height: top,
         ),
-        Center(child: Image.asset(InvestrendTheme.of(context).ic_launcher)),
+        Center(child: Image.asset(InvestrendTheme.of(context).ic_launcher!)),
         Container(
           width: double.maxFinite,
           height: elevation,
@@ -353,6 +356,13 @@ class _ScreenLoginState extends State<ScreenLogin> {
             //     Icons.fingerprint,
             //   ),
             // ),
+
+            IconButton(
+              onPressed: () {
+                showWebviewPage(context);
+              },
+              icon: Icon(Icons.wine_bar_sharp),
+            ),
             IconButton(
               onPressed: () {
                 showTradingViewPage(context);
@@ -389,9 +399,9 @@ class _ScreenLoginState extends State<ScreenLogin> {
               Theme.of(context).colorScheme.secondary,
               Theme.of(context).primaryColor,
               Theme.of(context).colorScheme.secondary, () {
-            if (_formLoginKey.currentState.validate()) {
+            if (_formLoginKey.currentState!.validate()) {
               if (StringUtils.equalsIgnoreCase(
-                      fieldPasswordController.text, 'refresh_token') &&
+                      fieldPasswordController!.text, 'refresh_token') &&
                   !StringUtils.isEmtpy(token.refresh_token)) {
                 refreshToken(token.refresh_token);
               } else {
@@ -405,11 +415,11 @@ class _ScreenLoginState extends State<ScreenLogin> {
           children: [
             Text(
               'login_question_text'.tr(),
-              style: Theme.of(context).textTheme.bodyText2,
+              style: Theme.of(context).textTheme.bodyMedium,
             ),
             TextButton(
               style: TextButton.styleFrom(
-                  primary: InvestrendTheme.of(context).hyperlink,
+                  foregroundColor: InvestrendTheme.of(context).hyperlink,
                   animationDuration: Duration(milliseconds: 500),
                   backgroundColor: Colors.transparent,
                   textStyle: InvestrendTheme.of(context).small_w400_greyDarker),
@@ -426,7 +436,7 @@ class _ScreenLoginState extends State<ScreenLogin> {
           children: [
             TextButton(
               style: TextButton.styleFrom(
-                  primary: InvestrendTheme.of(context).hyperlink,
+                  foregroundColor: InvestrendTheme.of(context).hyperlink,
                   animationDuration: Duration(milliseconds: 500),
                   backgroundColor: Colors.transparent,
                   textStyle: InvestrendTheme.of(context)
@@ -448,10 +458,10 @@ class _ScreenLoginState extends State<ScreenLogin> {
           builder: (context, value, child) {
             return Center(
                 child: Text(
-              value,
+              value as String,
               style: InvestrendTheme.of(context)
                   .more_support_w400_compact
-                  .copyWith(
+                  ?.copyWith(
                       color: InvestrendTheme.of(context).greyLighterTextColor),
             ));
           },
@@ -475,7 +485,7 @@ class _ScreenLoginState extends State<ScreenLogin> {
               'register_field_email_validation_error'.tr(),
               textInputAction: TextInputAction.next,
               keyboardType: TextInputType.emailAddress,
-              controller: fieldEmailController,
+              controller: fieldEmailController!,
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'register_field_email_validation_error'.tr();
@@ -520,7 +530,7 @@ class _ScreenLoginState extends State<ScreenLogin> {
                           _hidePasswordNotifier.value = !value;
                         },
                         icon: icon),
-                    controller: fieldPasswordController,
+                    controller: fieldPasswordController!,
                   );
                 }),
           ],
@@ -543,7 +553,7 @@ class _ScreenLoginState extends State<ScreenLogin> {
                   text: 'Build',
                   style: InvestrendTheme.of(context)
                       .small_w600
-                      .copyWith(color: Colors.orange),
+                      ?.copyWith(color: Colors.orange),
                 ),
                 TextSpan(
                   text: '" ',
@@ -561,7 +571,7 @@ class _ScreenLoginState extends State<ScreenLogin> {
                   text: 'no longer valid',
                   style: InvestrendTheme.of(context)
                       .small_w600
-                      .copyWith(color: Colors.red),
+                      ?.copyWith(color: Colors.red),
                 ),
                 TextSpan(
                   text: '\n\nPlease update the app!',
@@ -628,7 +638,7 @@ class _ScreenLoginState extends State<ScreenLogin> {
     }
   }
 
-  void refreshToken(String refreshToken) {
+  void refreshToken(String? refreshToken) {
     context.read(propertiesNotifier).setNeedPinTrading(true);
 
     showLoading('loading_refresh_token_label'.tr());
@@ -639,26 +649,27 @@ class _ScreenLoginState extends State<ScreenLogin> {
         refresh_token: refreshToken);
     result.then((value) {
       print('refresh--------------------');
-      DebugWriter.info('username = ' + value.username);
-      DebugWriter.info('realname = ' + value.realname);
+      DebugWriter.info('username = ' + value.username!);
+      DebugWriter.info('realname = ' + value.realname!);
       DebugWriter.info('feepct = ' + value.feepct.toString());
       DebugWriter.info('lotsize = ' + value.lotsize.toString());
-      DebugWriter.info('access_token = ' + value.token.access_token);
-      DebugWriter.info('refresh_token = ' + value.token.refresh_token);
-      DebugWriter.info('accounts.length = ' + value.accounts.length.toString());
-      DebugWriter.info('b_ip = ' + value.b_ip);
-      DebugWriter.info('b_multi = ' + value.b_multi);
-      DebugWriter.info('b_pass = ' + value.b_pass);
+      DebugWriter.info('access_token = ' + value.token!.access_token!);
+      DebugWriter.info('refresh_token = ' + value.token!.refresh_token!);
+      DebugWriter.info(
+          'accounts.length = ' + value.accounts!.length.toString());
+      DebugWriter.info('b_ip = ' + value.b_ip!);
+      DebugWriter.info('b_multi = ' + value.b_multi!);
+      DebugWriter.info('b_pass = ' + value.b_pass!);
       DebugWriter.info('b_port = ' + value.b_port.toString());
-      DebugWriter.info('r_ip = ' + value.r_ip);
-      DebugWriter.info('r_multi = ' + value.r_multi);
+      DebugWriter.info('r_ip = ' + value.r_ip!);
+      DebugWriter.info('r_multi = ' + value.r_multi!);
       DebugWriter.info('r_port = ' + value.r_port.toString());
       processResponseLoginRefresh(value);
     }).onError((error, stackTrace) {
       Future.delayed(Duration(milliseconds: 700), () {
         if (error is TradingHttpException) {
           if (error.isUnauthorized()) {
-            fieldPasswordController.text = '';
+            fieldPasswordController?.text = '';
             InvestrendTheme.of(context).showDialogInvalidSession(context,
                 onClosePressed: () {
               Navigator.pop(context);
@@ -686,6 +697,7 @@ class _ScreenLoginState extends State<ScreenLogin> {
     });
   }
 
+/*
   void showRegisterRDNPage(BuildContext context) {
     // InvestrendTheme.pushReplacement(context, ScreenMain(), ScreenTransition.SlideUp, '/main');
 
@@ -707,58 +719,65 @@ class _ScreenLoginState extends State<ScreenLogin> {
           ),
     );
   }
+  */
 
   void processResponseLoginRefresh(User value) async {
-    InvestrendTheme.datafeedHttp.serverAddress.update(value.b_ip, value.b_multi,
-        value.b_pass, value.b_port, value.r_ip, value.r_multi, value.r_port);
+    InvestrendTheme.datafeedHttp.serverAddress.update(
+        value.b_ip!,
+        value.b_multi!,
+        value.b_pass!,
+        value.b_port!,
+        value.r_ip!,
+        value.r_multi!,
+        value.r_port!);
     await InvestrendTheme.datafeedHttp.serverAddress.save();
     await InvestrendTheme.datafeedHttp.serverAddress.load();
 
     DebugWriter.info(
         "ONLOGIN " + InvestrendTheme.datafeedHttp.serverAddress.toString());
 
-    config.update(_rememberMeNotifier.value, value.username, value.email);
+    config.update(_rememberMeNotifier.value, value.username!, value.email!);
     context.read(dataHolderChangeNotifier).user.update(
-        value.username,
-        value.realname,
-        value.feepct,
-        value.lotsize,
-        value.accounts,
-        value.token,
-        value.message,
-        value.email,
-        value.b_ip,
-        value.b_multi,
-        value.b_pass,
-        value.b_port,
-        value.r_ip,
-        value.r_multi,
-        value.r_port);
+        value.username!,
+        value.realname!,
+        value.feepct!,
+        value.lotsize!,
+        value.accounts!,
+        value.token!,
+        value.message!,
+        value.email!,
+        value.b_ip!,
+        value.b_multi!,
+        value.b_pass!,
+        value.b_port!,
+        value.r_ip!,
+        value.r_multi!,
+        value.r_port!);
     DebugWriter.info(context.read(dataHolderChangeNotifier).user.toString());
     context.read(dataHolderChangeNotifier).isLogged = true;
     context.read(dataHolderChangeNotifier).isForeground = true;
     String urlProfile = 'https://' +
         InvestrendTheme.tradingHttp.tradingBaseUrl +
         '/getpic?username=' +
-        value.username +
+        value.username! +
         '&url=&nocache=' +
         DateTime.now().toString();
     context.read(avatarChangeNotifier).setUrl(urlProfile);
     context.read(accountChangeNotifier).setIndex(0);
 
     context.read(managerDatafeedNotifier).initiate(
-          clientUsername: value.username,
-          ip: value.b_ip, //'36.89.110.91',
-          port: value.b_port, //3911,
-          password: value.b_pass, //'b1aae845890dd94829ea48d3cdd1dede1',
+          clientUsername: value.username!,
+          ip: value.b_ip!, //'36.89.110.91',
+          port: value.b_port!, //3911,
+          password: value.b_pass!, //'b1aae845890dd94829ea48d3cdd1dede1',
           platform: InvestrendTheme.of(context).applicationPlatform,
           version: InvestrendTheme.of(context).applicationVersion,
         );
     context.read(managerEventNotifier).initiate(
-          clientUsername: value.username,
-          ip: value.b_ip, //'36.89.110.91',
-          port: value.b_port, //3911,
-          password: value.b_pass, //'b1aae845890dd94829ea48d3cdd1dede1',
+          clientUsername: value.username!,
+          ip: value.b_ip!, //'36.89.110.91',
+          port: value.b_port!, //3911,
+          password: value.b_pass!, //'b1aae845890dd94829ea48d3cdd1dede1',
           platform: InvestrendTheme.of(context).applicationPlatform,
           version: InvestrendTheme.of(context).applicationVersion,
         );
@@ -776,8 +795,8 @@ class _ScreenLoginState extends State<ScreenLogin> {
       showLoading('loading_loging_in_label'.tr());
 
       saveConfig();
-      String username = fieldEmailController.text;
-      String password = fieldPasswordController.text;
+      String username = fieldEmailController!.text;
+      String password = fieldPasswordController!.text;
       Future<User> result = InvestrendTheme.tradingHttp.login(
           username,
           password,
@@ -788,21 +807,21 @@ class _ScreenLoginState extends State<ScreenLogin> {
         step = 1;
         print('step = $step');
         print('login--------------------');
-        DebugWriter.info('username = ' + value.username);
-        DebugWriter.info('realname = ' + value.realname);
+        DebugWriter.info('username = ' + value.username!);
+        DebugWriter.info('realname = ' + value.realname!);
         DebugWriter.info('feepct = ' + value.feepct.toString());
         DebugWriter.info('lotsize = ' + value.lotsize.toString());
-        DebugWriter.info('access_token = ' + value.token.access_token);
-        DebugWriter.info('refresh_token = ' + value.token.refresh_token);
+        DebugWriter.info('access_token = ' + value.token!.access_token!);
+        DebugWriter.info('refresh_token = ' + value.token!.refresh_token!);
         DebugWriter.info(
-            'accounts.length = ' + value.accounts.length.toString());
+            'accounts.length = ' + value.accounts!.length.toString());
 
-        DebugWriter.info('b_ip = ' + value.b_ip);
-        DebugWriter.info('b_multi = ' + value.b_multi);
-        DebugWriter.info('b_pass = ' + value.b_pass);
+        DebugWriter.info('b_ip = ' + value.b_ip!);
+        DebugWriter.info('b_multi = ' + value.b_multi!);
+        DebugWriter.info('b_pass = ' + value.b_pass!);
         DebugWriter.info('b_port = ' + value.b_port.toString());
-        DebugWriter.info('r_ip = ' + value.r_ip);
-        DebugWriter.info('r_multi = ' + value.r_multi);
+        DebugWriter.info('r_ip = ' + value.r_ip!);
+        DebugWriter.info('r_multi = ' + value.r_multi!);
         DebugWriter.info('r_port = ' + value.r_port.toString());
         processResponseLoginRefresh(value);
       }).onError((error, stackTrace) {
@@ -855,7 +874,7 @@ class _ScreenLoginState extends State<ScreenLogin> {
               text: 'Login',
               style: InvestrendTheme.of(context)
                   .small_w600
-                  .copyWith(color: Colors.orange),
+                  ?.copyWith(color: Colors.orange),
               children: [
                 TextSpan(
                   text: ' and ',
@@ -865,7 +884,7 @@ class _ScreenLoginState extends State<ScreenLogin> {
                   text: 'Order',
                   style: InvestrendTheme.of(context)
                       .small_w600
-                      .copyWith(color: Colors.orange),
+                      ?.copyWith(color: Colors.orange),
                 ),
                 TextSpan(
                   text: ' is ',
@@ -875,7 +894,7 @@ class _ScreenLoginState extends State<ScreenLogin> {
                   text: 'DISABLED!',
                   style: InvestrendTheme.of(context)
                       .small_w600
-                      .copyWith(color: InvestrendTheme.redText),
+                      ?.copyWith(color: InvestrendTheme.redText),
                 ),
               ]),
         ),
@@ -919,6 +938,11 @@ class _ScreenLoginState extends State<ScreenLogin> {
       ),
     );
      */
+  }
+
+  void showWebviewPage(BuildContext context) {
+    InvestrendTheme.push(
+        context, WebviewNew(), ScreenTransition.SlideDown, '/WebviewNew');
   }
 
   void showTradingViewPage(BuildContext context) {
@@ -970,16 +994,16 @@ class _ScreenLoginState extends State<ScreenLogin> {
     const String routeName = '/login';
 
     try {
-      await context.read(helpNotifier).data.load();
+      await context.read(helpNotifier).data?.load();
     } catch (error) {
       print(routeName + ' Future help load Error');
       print(error);
     }
 
     try {
-      String md5HelpContents =
-          context.read(helpNotifier).data.md5_help_contents;
-      String md5HelpMenus = context.read(helpNotifier).data.md5_help_menus;
+      String? md5HelpContents =
+          context.read(helpNotifier).data?.md5_help_contents;
+      String? md5HelpMenus = context.read(helpNotifier).data?.md5_help_menus;
       final help = await InvestrendTheme.datafeedHttp.fetchHelp(
           md5_help_contents: md5HelpContents, md5_help_menus: md5HelpMenus);
       if (help != null) {
@@ -988,27 +1012,28 @@ class _ScreenLoginState extends State<ScreenLogin> {
         bool menusChanged =
             !StringUtils.equalsIgnoreCase(md5HelpMenus, help.md5_help_menus) &&
                 help.menus != null &&
-                help.menus.isNotEmpty;
+                help.menus!.isNotEmpty;
         bool contentChanged = !StringUtils.equalsIgnoreCase(
                 md5HelpContents, help.md5_help_contents) &&
             help.contents != null &&
-            help.md5_help_contents.isNotEmpty;
+            help.md5_help_contents!.isNotEmpty;
 
         if (menusChanged) {
           context
               .read(helpNotifier)
               .data
-              .updateMenus(help.md5_help_menus, help.menus);
+              ?.updateMenus(help.md5_help_menus, help.menus);
         }
         if (contentChanged) {
           context
               .read(helpNotifier)
               .data
-              .updateContents(help.md5_help_contents, help.contents);
+              ?.updateContents(help.md5_help_contents, help.contents);
         }
         if (menusChanged || contentChanged) {
-          context.read(helpNotifier).data.save();
+          context.read(helpNotifier).data?.save();
         }
+        // ignore: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
         context.read(helpNotifier).notifyListeners();
       } else {
         print(routeName + ' Future help NO DATA');
@@ -1029,7 +1054,8 @@ class _ScreenLoginState extends State<ScreenLogin> {
 
       showLoading('loading_version_label'.tr());
       String platform = Platform.isIOS ? 'ios' : 'android';
-      final version = InvestrendTheme.datafeedHttp.checkVersion(platform);
+      final Future<Version>? version =
+          InvestrendTheme.datafeedHttp.checkVersion(platform);
       if (version != null) {
         version.then((server) {
           if (!server.isEmpty()) {
@@ -1037,7 +1063,7 @@ class _ScreenLoginState extends State<ScreenLogin> {
 
             print('Device versionCode   : $versionCode');
             print('Device versionNumber : $versionNumber');
-            print('Server versionCode   : ' + server.version_code);
+            print('Server versionCode   : ' + server.version_code!);
             print('Server versionNumber : ' + server.version_number.toString());
             print('Server minimum_version_code : ' +
                 server.minimum_version_code.toString());
@@ -1080,15 +1106,15 @@ class _ScreenLoginState extends State<ScreenLogin> {
 
             print('version isMandatory : $isMandatory');
             print('version isMinor : $isMinor');
-            if (isMandatory) {
+            if (isMandatory == true) {
               // major upgrade
               String title = 'version_label'.tr() +
                   ' ' +
-                  server.version_code +
+                  server.version_code! +
                   ' ' +
                   server.version_number.toString();
               String content = 'version_major_upgrade_label'.tr();
-              content = content + '\n\n' + server.changes_notes;
+              content = content + '\n\n' + server.changes_notes!;
               //InvestrendTheme.of(context).showInfoDialog(context, title: title, content: content);
 
               String buttonYes = 'button_update'.tr();
@@ -1123,15 +1149,15 @@ class _ScreenLoginState extends State<ScreenLogin> {
                   buttonNo: buttonNo,
                   onPressedYes: onPressedYes,
                   onPressedNo: onPressedNo);
-            } else if (isMinor) {
+            } else if (isMinor == isMinor) {
               // minor upgrade
               String title = 'version_label'.tr() +
                   ' ' +
-                  server.version_code +
+                  server.version_code! +
                   ' ' +
                   server.version_number.toString();
               String content = 'version_minor_upgrade_label'.tr();
-              content = content + '\n\n' + server.changes_notes;
+              content = content + '\n\n' + server.changes_notes!;
               // InvestrendTheme.of(context).showInfoDialog(context, title: title, content: content, onClose: () {
               //   loadDataStockBrokerIndex(context, noLogin: noLogin);
               //   loadHelps(context);
@@ -1250,7 +1276,7 @@ class _ScreenLoginState extends State<ScreenLogin> {
     */
     showLoading('loading_data_market_label'.tr());
 
-    MD5StockBrokerIndex md5 = InvestrendTheme.storedData.md5;
+    MD5StockBrokerIndex? md5 = InvestrendTheme.storedData?.md5;
     if (md5 != null) {
       //futureStockBrokerIndex = HttpSSI.fetchStockBrokerIndex(md5.md5broker, md5.md5stock, md5.md5index);
       //final result =  HttpSSI.fetchStockBrokerIndex(md5.md5broker, md5.md5stock, md5.md5index);
@@ -1273,65 +1299,65 @@ class _ScreenLoginState extends State<ScreenLogin> {
         print('future md5 isValid : $isValid');
 
         if (isValid) {
-          InvestrendTheme.storedData.md5.sharePerLot = md5.sharePerLot;
+          InvestrendTheme.storedData?.md5.sharePerLot = md5.sharePerLot;
         }
 
         if (validStockChanged && isValid) {
-          InvestrendTheme.storedData.md5.md5stock = md5.md5stock;
-          InvestrendTheme.storedData.md5.md5stockUpdate = md5.md5stockUpdate;
-          InvestrendTheme.storedData.listStock.clear();
+          InvestrendTheme.storedData?.md5.md5stock = md5.md5stock;
+          InvestrendTheme.storedData?.md5.md5stockUpdate = md5.md5stockUpdate;
+          InvestrendTheme.storedData?.listStock?.clear();
           if (value['stocks'] != null) {
-            InvestrendTheme.storedData.listStock.addAll(value['stocks']);
+            InvestrendTheme.storedData?.listStock?.addAll(value['stocks']);
           }
         }
 
         if (validBrokerChanged && isValid) {
-          InvestrendTheme.storedData.md5.md5broker = md5.md5broker;
-          InvestrendTheme.storedData.md5.md5brokerUpdate = md5.md5brokerUpdate;
-          InvestrendTheme.storedData.listBroker.clear();
+          InvestrendTheme.storedData?.md5.md5broker = md5.md5broker;
+          InvestrendTheme.storedData?.md5.md5brokerUpdate = md5.md5brokerUpdate;
+          InvestrendTheme.storedData?.listBroker?.clear();
           if (value['brokers'] != null) {
-            InvestrendTheme.storedData.listBroker.addAll(value['brokers']);
+            InvestrendTheme.storedData?.listBroker?.addAll(value['brokers']);
           }
         }
 
         if (validIndexChanged && isValid) {
-          InvestrendTheme.storedData.md5.md5index = md5.md5index;
-          InvestrendTheme.storedData.md5.md5indexUpdate = md5.md5indexUpdate;
-          InvestrendTheme.storedData.listIndex.clear();
+          InvestrendTheme.storedData?.md5.md5index = md5.md5index;
+          InvestrendTheme.storedData?.md5.md5indexUpdate = md5.md5indexUpdate;
+          InvestrendTheme.storedData?.listIndex?.clear();
           if (value['indexs'] != null) {
-            InvestrendTheme.storedData.listIndex.addAll(value['indexs']);
+            InvestrendTheme.storedData?.listIndex?.addAll(value['indexs']);
           }
         }
 
         if (validSectorChanged && isValid) {
-          InvestrendTheme.storedData.md5.md5sector = md5.md5sector;
-          InvestrendTheme.storedData.md5.md5sectorUpdate = md5.md5sectorUpdate;
-          InvestrendTheme.storedData.listSector.clear();
+          InvestrendTheme.storedData?.md5.md5sector = md5.md5sector;
+          InvestrendTheme.storedData?.md5.md5sectorUpdate = md5.md5sectorUpdate;
+          InvestrendTheme.storedData?.listSector?.clear();
           if (value['sectors'] != null) {
-            InvestrendTheme.storedData.listSector.addAll(value['sectors']);
+            InvestrendTheme.storedData?.listSector?.addAll(value['sectors']);
           }
         }
 
-        int countIndex = InvestrendTheme.storedData.listIndex.length;
-        InvestrendTheme.storedData.listStock.forEach((stock) {
-          for (int i = 0; i < countIndex; i++) {
-            Index index = InvestrendTheme.storedData.listIndex.elementAt(i);
-            if (index.isSector) {
+        int? countIndex = InvestrendTheme.storedData?.listIndex?.length;
+        InvestrendTheme.storedData?.listStock?.forEach((stock) {
+          for (int i = 0; i < countIndex!; i++) {
+            Index? index = InvestrendTheme.storedData?.listIndex?.elementAt(i);
+            if (index!.isSector) {
               index.checkAndAddMembers(stock);
             }
           }
         });
 
         print('future stocks : ' +
-            InvestrendTheme.storedData.listStock.length.toString());
+            InvestrendTheme.storedData!.listStock!.length.toString());
         print('future brokers : ' +
-            InvestrendTheme.storedData.listBroker.length.toString());
+            InvestrendTheme.storedData!.listBroker!.length.toString());
         print('future indexs : ' +
-            InvestrendTheme.storedData.listIndex.length.toString());
+            InvestrendTheme.storedData!.listIndex!.length.toString());
         print('future sectors : ' +
-            InvestrendTheme.storedData.listSector.length.toString());
+            InvestrendTheme.storedData!.listSector!.length.toString());
 
-        Future<bool> savedFuture = InvestrendTheme.storedData.save();
+        Future<bool>? savedFuture = InvestrendTheme.storedData?.save();
         //_loadingNotifier.closeLoading();
         closeLoading();
 
@@ -1346,12 +1372,12 @@ class _ScreenLoginState extends State<ScreenLogin> {
 
           if (user.needRegisterPin()) {
             // show register pin
-            print('needRegisterPin : ' + user.message);
+            print('needRegisterPin : ' + user.message!);
             InvestrendTheme.pushReplacement(
                 context,
                 ScreenRegisterPin(
-                    user.username,
-                    user.email,
+                    user.username!,
+                    user.email!,
                     '', //fieldPasswordController.text,
                     'main'),
                 ScreenTransition.SlideLeft,
@@ -1418,14 +1444,14 @@ class _ScreenLoginState extends State<ScreenLogin> {
     String hintText,
     String helperText,
     String errorText, {
-    bool obscureText,
-    TextInputType keyboardType,
-    TextInputAction textInputAction,
-    FormFieldValidator<String> validator,
-    TextEditingController controller,
-    GestureTapCallback onTap,
-    FocusNode focusNode,
-    Widget suffixIcon,
+    bool? obscureText,
+    TextInputType? keyboardType,
+    TextInputAction? textInputAction,
+    FormFieldValidator<String>? validator,
+    TextEditingController? controller,
+    GestureTapCallback? onTap,
+    FocusNode? focusNode,
+    Widget? suffixIcon,
   }) {
     if (obscureText == null) obscureText = false;
     if (keyboardType == null) keyboardType = TextInputType.text;
@@ -1450,15 +1476,15 @@ class _ScreenLoginState extends State<ScreenLogin> {
   }
 
   int step = 0;
-  User userLogged;
+  User? userLogged;
 
   void test() {
     if (step == 0) {
       // test LOGIN
       String dataText = 'Login with :\n   ' +
-          fieldEmailController.text +
+          fieldEmailController!.text +
           '\n   ' +
-          fieldPasswordController.text +
+          fieldPasswordController!.text +
           '\n   rembember : ' +
           (_rememberMeNotifier.value ? 'true' : 'false');
       ScaffoldMessenger.of(context)
@@ -1471,10 +1497,10 @@ class _ScreenLoginState extends State<ScreenLogin> {
         step = 1;
         print('step = $step');
         print('login--------------------');
-        print('username = ' + value.username);
-        print('access_token = ' + value.token.access_token);
-        print('refresh_token = ' + value.token.refresh_token);
-        print('accounts.length = ' + value.accounts.length.toString());
+        print('username = ' + value.username!);
+        print('access_token = ' + value.token!.access_token!);
+        print('refresh_token = ' + value.token!.refresh_token!);
+        print('accounts.length = ' + value.accounts!.length.toString());
         userLogged = value;
       }).onError((error, stackTrace) {
         ScaffoldMessenger.of(context)
@@ -1482,24 +1508,24 @@ class _ScreenLoginState extends State<ScreenLogin> {
       });
     } else if (step == 1) {
       // test PIN
-      Future<String> resultPin =
+      Future<String?>? resultPin =
           InvestrendTheme.tradingHttp.loginPin('123456', 'mobile', '0.0.1');
       resultPin.then((value) {
         step = 2;
         print('step = $step');
         print('pin--------------------');
-        print('login pin : ' + value);
+        print('login pin : ' + value!);
       }).onError((error, stackTrace) {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(error.toString())));
       });
     } else if (step == 2) {
       // test Order New
-      Account accountFirst = userLogged.accounts.first;
+      Account accountFirst = userLogged!.accounts!.first;
 
       String broker = accountFirst.brokercode;
       String account = accountFirst.accountcode;
-      String user = userLogged.username;
+      String user = userLogged!.username!;
       String buySell = 'B';
       String stock = 'PWON';
       String board = 'RG';
@@ -1542,10 +1568,10 @@ class _ScreenLoginState extends State<ScreenLogin> {
         step = 3;
         print('step = $step');
         print('refresh--------------------');
-        print('username = ' + value.username);
-        print('access_token = ' + value.token.access_token);
-        print('refresh_token = ' + value.token.refresh_token);
-        print('accounts.length = ' + value.accounts.length.toString());
+        print('username = ' + value.username!);
+        print('access_token = ' + value.token!.access_token!);
+        print('refresh_token = ' + value.token!.refresh_token!);
+        print('accounts.length = ' + value.accounts!.length.toString());
         //showFriendsPage(context);
         userLogged = value;
       }).onError((error, stackTrace) {

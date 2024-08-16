@@ -1,19 +1,19 @@
 import 'package:html_unescape/html_unescape.dart';
 
 class StringUtils {
-  static bool equalsIgnoreCase(String text_1, String text_2) {
+  static bool equalsIgnoreCase(String? text_1, String? text_2) {
     if (text_1 == null || text_2 == null) {
       return false;
     }
     return text_1.toLowerCase() == text_2.toLowerCase();
   }
 
-  static bool contains(String find, List<String> list) {
-    bool contains = false;
-    int count = list != null ? list.length : 0;
-    for (int i = 0; i < list.length; i++) {
+  static bool? contains(String? find, List<String>? list) {
+    bool? contains = false;
+    // int? count = list != null ? list.length : 0;
+    for (int i = 0; i < list!.length; i++) {
       String pattern = list.elementAt(i);
-      if (StringUtils.equalsIgnoreCase(pattern, find)) {
+      if (StringUtils.equalsIgnoreCase(pattern, find)) {  
         contains = true;
         break;
       }
@@ -21,7 +21,7 @@ class StringUtils {
     return contains;
   }
 
-  static bool isEmtpy(String value) {
+  static bool isEmtpy(String? value) {
     if ((value == null) || value.length == 0) {
       return true;
     } else {
@@ -29,22 +29,22 @@ class StringUtils {
     }
   }
 
-  static bool isContains(String text, String find) {
+  static bool? isContains(String? text, String? find) {
     if (StringUtils.isEmtpy(text)) {
       return false;
     }
-    return text.contains(find);
+    return text?.contains(find!);
   }
 
   static String removeHtml(String text) {
     return text.replaceAll(RegExp(r'<[^>]*>|&[^;]+;'), ' ');
   }
 
-  static String decodeHtmlString(String encodedHtmlString) {
-    return HtmlUnescape().convert(encodedHtmlString);
+  static String decodeHtmlString(String? encodedHtmlString) {
+    return HtmlUnescape().convert(encodedHtmlString!);
   }
 
-  static String between(String text, String tagStart, String tagEnd) {
+  static String? between(String text, String tagStart, String tagEnd) {
     int indexStart = text.indexOf(tagStart, 0);
     if (indexStart != -1) {
       indexStart = indexStart + tagStart.length;
@@ -56,14 +56,14 @@ class StringUtils {
     return '';
   }
 
-  static String noNullString(String string) {
+  static String? noNullString(String? string) {
     if (string == null)
       return "";
     else
       return string;
   }
 
-  static bool isNullOrEmpty(String string) {
+  static bool isNullOrEmpty(String? string) {
     if (string != null && string.isNotEmpty) {
       return false;
     } else {
@@ -71,9 +71,9 @@ class StringUtils {
     }
   }
 
-  static String getFirstDigitNameTwo(String name) {
+  static String getFirstDigitNameTwo(String? name) {
     if (!StringUtils.isEmtpy(name)) {
-      List<String> splitted = name.split(' ');
+      List<String>? splitted = name?.split(' ');
       if (splitted == null || splitted.isEmpty) {
         return "--";
       }

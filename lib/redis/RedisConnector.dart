@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'dart:io';
 import 'dart:convert';
 import 'dart:async';
@@ -13,44 +15,44 @@ import 'query/RedisResult.dart';
 class RedisConnector implements RedisProtocol, RedisReceiver {
   String connectorId;
 
-  String authPass;
-  String ip;
-  int port;
-  String clientCode;
-  String clientDevice;
-  String clientVersion;
+  String? authPass;
+  String? ip;
+  int? port;
+  String? clientCode;
+  String? clientDevice;
+  String? clientVersion;
 
-  Socket socket;
-  RawSocket rawSocket;
-  bool authRequired;
+  Socket? socket;
+  RawSocket? rawSocket;
+  bool? authRequired;
 
   //bool authWaitingReply;
-  bool pingWaitingReply;
+  bool? pingWaitingReply;
   bool autoPing = true;
-  DateTime last_receive;
+  DateTime? last_receive;
 
   final delayEachPing = const Duration(seconds: 30);
   final delayEachReconnect = const Duration(seconds: 5); // 5 second
   final socketConnectTimeout = const Duration(seconds: 10); // 10 second
-  Timer pingTimer;
-  Timer reconnectTimer;
+  Timer? pingTimer;
+  Timer? reconnectTimer;
 
-  bool autoReconnect = true;
-  bool _onReconnecting = false;
+  bool? autoReconnect = true;
+  bool? _onReconnecting = false;
   bool _isReady = false;
-  RedisConnectionListener _connectionListener;
+  RedisConnectionListener? _connectionListener;
 
-  RedisQuery currentQuery;
-  MultipleResult currentResult;
+  RedisQuery? currentQuery;
+  MultipleResult? currentResult;
 
   //var commandNeedReply = <String>{};
-  List<RedisQuery> queryList = List<RedisQuery>();
+  List<RedisQuery> queryList = <RedisQuery>[];
 
   // Constructor, with syntactic sugar for assignment to members.
   RedisConnector(this.connectorId, this.ip, this.port,
       {this.authPass, this.clientCode, this.clientDevice, this.clientVersion}) {
     // Initialization code goes here.
-    authRequired = this.authPass != null && this.authPass.isNotEmpty;
+    authRequired = this.authPass != null && this.authPass!.isNotEmpty;
     //authWaitingReply = false;
     pingWaitingReply = false;
   }
@@ -59,11 +61,12 @@ class RedisConnector implements RedisProtocol, RedisReceiver {
     this._connectionListener = null;
   }
 
-  void setConnectionListener(RedisConnectionListener connectionListener){
+  void setConnectionListener(RedisConnectionListener connectionListener) {
     this._connectionListener = connectionListener;
   }
+
   /// ONLY outside this class usage -- to remove Connection Listener call removeConnectionListener
-  void connectRedis({RedisConnectionListener connectionListener}) {
+  void connectRedis({RedisConnectionListener? connectionListener}) {
     if (connectionListener != null) {
       this._connectionListener = connectionListener;
     }
@@ -79,14 +82,13 @@ class RedisConnector implements RedisProtocol, RedisReceiver {
   }
 
   void _reconnectRedis() {
-    DebugWriter.info("$connectorId _reconnectRedis : $autoReconnect  ${DateTime.now()}  ");
+    DebugWriter.info(
+        "$connectorId _reconnectRedis : $autoReconnect  ${DateTime.now()}  ");
     if (_connectionListener != null) {
-      _connectionListener.onReConnecting(
-          this,
-          "Reconnecting" );
+      _connectionListener?.onReConnecting(this, "Reconnecting");
     }
 
-    if (autoReconnect) {
+    if (autoReconnect!) {
       if (socket != null || pingTimer != null) {
         _stopPingTimer();
         _disconnectSocket();
@@ -96,7 +98,7 @@ class RedisConnector implements RedisProtocol, RedisReceiver {
   }
 
   // ONLY outside this class usage
-  void disconnectRedis({String info}) {
+  void disconnectRedis({String? info}) {
     DebugWriter.info("$connectorId disconnectRedis : " + (info ?? '-'));
     autoReconnect = false;
     _disconnectSocket();
@@ -107,8 +109,8 @@ class RedisConnector implements RedisProtocol, RedisReceiver {
     _isReady = false;
     if (socket != null) {
       DebugWriter.info("$connectorId _disconnectSocket");
-      socket.add(utf8.encode('QUIT\r\n'));
-      socket.destroy();
+      socket?.add(utf8.encode('QUIT\r\n'));
+      socket?.destroy();
       socket = null;
     }
   }
@@ -116,15 +118,19 @@ class RedisConnector implements RedisProtocol, RedisReceiver {
   void _ping() {
     DebugWriter.info("$connectorId ping  _onReconnecting $_onReconnecting");
     if (this.socket != null) {
-
-      int gapLastMessage = last_receive == null ? delayEachPing.inSeconds : DateTime.now().difference(last_receive).inSeconds;
+      int gapLastMessage = last_receive == null
+          ? delayEachPing.inSeconds
+          : DateTime.now().difference(last_receive!).inSeconds;
 
       int maxWaitingData = delayEachPing.inSeconds + 10;
       bool noRecentlyMessageReceived = gapLastMessage >= maxWaitingData;
-      DebugWriter.info("$connectorId ping  noRecentlyMessageReceived : $noRecentlyMessageReceived   gapLastMessage : $gapLastMessage in seconds,  Max is : "+maxWaitingData.toString()+' seconds');
+      DebugWriter.info(
+          "$connectorId ping  noRecentlyMessageReceived : $noRecentlyMessageReceived   gapLastMessage : $gapLastMessage in seconds,  Max is : " +
+              maxWaitingData.toString() +
+              ' seconds');
       //if (pingWaitingReply) {
       if (noRecentlyMessageReceived) {
-        if (!_onReconnecting) {
+        if (!_onReconnecting!) {
           _onReconnecting = true;
           _disconnectSocket();
           _stopPingTimer();
@@ -135,17 +141,16 @@ class RedisConnector implements RedisProtocol, RedisReceiver {
       } else {
         DebugWriter.info("$connectorId send ping");
         pingWaitingReply = true;
-        socket.add(utf8.encode('PING\r\n'));
+        socket?.add(utf8.encode('PING\r\n'));
       }
     }
   }
 
-  void _connectSocket(Socket socket) async {
+  void _connectSocket(Socket? socket) async {
     // 'trialb2.e-samuel.com'
     _onReconnecting = false;
 
-
-    Socket.connect(ip, port, timeout: socketConnectTimeout)
+    Socket.connect(ip, port!, timeout: socketConnectTimeout)
         .then((Socket socket) {
       this.socket = socket;
 
@@ -153,7 +158,7 @@ class RedisConnector implements RedisProtocol, RedisReceiver {
           onError: errorHandler, onDone: doneHandler, cancelOnError: false);
       onConnected();
 
-      if (authRequired) {
+      if (authRequired!) {
 //        authWaitingReply = true;
 //        String authPacket =
 //            'AUTH $authPass $clientCode $clientDevice $clientVersion\r\n';
@@ -161,11 +166,11 @@ class RedisConnector implements RedisProtocol, RedisReceiver {
 //        socket.add(utf8.encode(authPacket));
 
         currentQuery =
-            Auth(authPass, clientCode, clientDevice, clientVersion, this);
+            Auth(authPass!, clientCode!, clientDevice!, clientVersion!, this);
         //DebugWriter.info('--> ' + currentQuery.pa);
         //socket.add(utf8.encode(currentQuery.packet));
 
-        writeToServer(currentQuery.parameter);
+        writeToServer(currentQuery!.parameter);
       }
 
       //socket.flush();
@@ -187,7 +192,7 @@ class RedisConnector implements RedisProtocol, RedisReceiver {
       pingWaitingReply = false;
       if (pingTimer != null) {
         DebugWriter.info('$connectorId _stopPingTimer autoPing : $autoPing');
-        pingTimer.cancel();
+        pingTimer?.cancel();
         pingTimer = null;
       }
     }
@@ -203,21 +208,22 @@ class RedisConnector implements RedisProtocol, RedisReceiver {
 
   void onConnected() {
     DebugWriter.info('$connectorId onConnected');
-    if (!authRequired) {
+    if (!authRequired!) {
       _startPingTimer();
       _isReady = true;
     }
     if (_connectionListener != null) {
-      _connectionListener.onConnected(this, "Connected", _isReady);
+      _connectionListener?.onConnected(this, "Connected", _isReady);
     }
   }
 
   void onConnectionFailed() {
-    DebugWriter.info('$connectorId onConnectionFailed _onReconnecting $_onReconnecting');
+    DebugWriter.info(
+        '$connectorId onConnectionFailed _onReconnecting $_onReconnecting');
     if (_connectionListener != null) {
-      _connectionListener.onConnectionFailed(this, "Connection Failed");
+      _connectionListener?.onConnectionFailed(this, "Connection Failed");
     }
-    if (!_onReconnecting) {
+    if (!_onReconnecting!) {
       _onReconnecting = true;
       _disconnectSocket();
       _stopPingTimer();
@@ -231,7 +237,7 @@ class RedisConnector implements RedisProtocol, RedisReceiver {
   bool writeToServer(String data) {
     if (socket != null) {
       DebugWriter.info("$connectorId --> $data");
-      socket.add(utf8.encode('$data\r\n'));
+      socket?.add(utf8.encode('$data\r\n'));
       //socket.flush();
       return true;
     }
@@ -251,7 +257,7 @@ class RedisConnector implements RedisProtocol, RedisReceiver {
 //    }
     _isReady = true;
     if (_connectionListener != null) {
-      _connectionListener.onAuthenticated(this, "Authenticated", _isReady);
+      _connectionListener?.onAuthenticated(this, "Authenticated", _isReady);
     }
   }
 
@@ -268,11 +274,11 @@ class RedisConnector implements RedisProtocol, RedisReceiver {
     _disconnectSocket();
 
     if (_connectionListener != null) {
-      _connectionListener.onAuthenticationFailed(this, error);
+      _connectionListener?.onAuthenticationFailed(this, error);
     }
   }
 
-  void _startReconnectTimer({String callerInfo}) async {
+  void _startReconnectTimer({String? callerInfo}) async {
     _cancelReconnectTimer();
     //const delay = const Duration(seconds:5); // 5 second
     //reconnectTimer = Timer(delay, () => ());
@@ -291,21 +297,23 @@ class RedisConnector implements RedisProtocol, RedisReceiver {
 
   void _cancelReconnectTimer() {
     if (reconnectTimer != null) {
-      reconnectTimer.cancel();
+      reconnectTimer?.cancel();
       reconnectTimer = null;
     }
   }
 
   void onMessage(String message) {
     last_receive = DateTime.now();
-    DebugWriter.info("$connectorId "+last_receive.toString()+' onMessage received $message');
+    DebugWriter.info("$connectorId " +
+        last_receive.toString() +
+        ' onMessage received $message');
     pingWaitingReply = false;
 
     if (currentQuery != null) {
-      bool finished = currentQuery.result.addReply(message);
+      bool finished = currentQuery!.result!.addReply(message);
       if (finished) {
-        if (currentQuery.listener != null) {
-          currentQuery.listener.onGetterResponse("", currentQuery.result);
+        if (currentQuery!.listener != null) {
+          currentQuery!.listener!.onGetterResponse("", currentQuery!.result!);
         }
         currentQuery = null;
       }
@@ -313,10 +321,10 @@ class RedisConnector implements RedisProtocol, RedisReceiver {
       if (currentResult == null) {
         currentResult = new MultipleResult(null);
       }
-      bool finished = currentResult.addReply(message);
+      bool finished = currentResult!.addReply(message);
       if (finished) {
         //onGetterResponse("", currentResult);
-        onRedisMessage("", currentResult);
+        onRedisMessage("", currentResult!);
         currentResult = null;
       }
     }
@@ -337,6 +345,7 @@ class RedisConnector implements RedisProtocol, RedisReceiver {
     }
     */
   }
+
   String excessData = "";
   void dataHandler(List<int> event) {
     //print(new String.fromCharCodes(data).trim());
@@ -345,19 +354,14 @@ class RedisConnector implements RedisProtocol, RedisReceiver {
     //event.sub
 
     String data = utf8.decode(event);
-    if(excessData.length > 0){
+    if (excessData.length > 0) {
       data = excessData + data;
       excessData = "";
     }
 
     //print("dataHandler new : $data");
 
-
     int offset = 0;
-
-
-
-
 
     int indexBreak = data.indexOf(RedisProtocol.CR_LF);
 
@@ -368,7 +372,7 @@ class RedisConnector implements RedisProtocol, RedisReceiver {
       onMessage(line.trim());
       indexBreak = data.indexOf(RedisProtocol.CR_LF);
     }
-    if(data.length > 0){
+    if (data.length > 0) {
       excessData += data;
     }
     /*
@@ -385,9 +389,10 @@ class RedisConnector implements RedisProtocol, RedisReceiver {
   }
 
   void errorHandler(error, StackTrace trace) {
-    DebugWriter.info("$connectorId errorHandler : $error  _onReconnecting $_onReconnecting");
+    DebugWriter.info(
+        "$connectorId errorHandler : $error  _onReconnecting $_onReconnecting");
     //disconnectRedis( info: 'errorHandler');
-    if (!_onReconnecting) {
+    if (!_onReconnecting!) {
       _onReconnecting = true;
       _stopPingTimer();
       _disconnectSocket();
@@ -401,10 +406,11 @@ class RedisConnector implements RedisProtocol, RedisReceiver {
   }
 
   void doneHandler() {
-    DebugWriter.info("$connectorId doneHandler  _onReconnecting $_onReconnecting");
+    DebugWriter.info(
+        "$connectorId doneHandler  _onReconnecting $_onReconnecting");
     //disconnectRedis( info: 'doneHandler');
 
-    if (!_onReconnecting) {
+    if (!_onReconnecting!) {
       _onReconnecting = true;
       _stopPingTimer();
       _disconnectSocket();
@@ -413,9 +419,7 @@ class RedisConnector implements RedisProtocol, RedisReceiver {
     }
   }
 
-  void onRedisMessage(String id, RedisResult result) {
-
-  }
+  void onRedisMessage(String id, RedisResult result) {}
 
   @override
   void onGetterException(String id, RedisQuery req, String exception) {}

@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable, non_constant_identifier_names
+
 import 'dart:math';
 
 import 'package:Investrend/component/bottom_sheet/bottom_sheet_transaction_filter.dart';
@@ -30,10 +32,10 @@ class ScreenTransactionHistorical extends StatefulWidget {
   ScreenTransactionHistorical(this.tabIndex,this.tabController, {Key key}):super(key: key);
   */
 
-  final TabController tabController;
+  final TabController? tabController;
   final int tabIndex;
 
-  ScreenTransactionHistorical(this.tabIndex, this.tabController, {Key key})
+  ScreenTransactionHistorical(this.tabIndex, this.tabController, {Key? key})
       : super(key: key);
 
   @override
@@ -43,7 +45,7 @@ class ScreenTransactionHistorical extends StatefulWidget {
 
 class _ScreenTransactionHistoricalState
     extends BaseStateNoTabsWithParentTab<ScreenTransactionHistorical> {
-  _ScreenTransactionHistoricalState(int tabIndex, TabController tabController)
+  _ScreenTransactionHistoricalState(int tabIndex, TabController? tabController)
       : super('/transaction_historical', tabIndex, tabController,
             parentTabIndex: Tabs.Transaction.index);
 
@@ -213,7 +215,7 @@ class _ScreenTransactionHistoricalState
 
     return InkWell(
       onTap: () {
-        Account account = context
+        Account? account = context
             .read(dataHolderChangeNotifier)
             .user
             .getAccountByCode(os.brokercode, os.accountcode);
@@ -235,7 +237,7 @@ class _ScreenTransactionHistoricalState
           data.brokerCode = os.brokercode;
           data.stock_code = os.stockCode;
 
-          Stock stock = InvestrendTheme.storedData.findStock(os.stockCode);
+          Stock? stock = InvestrendTheme.storedData?.findStock(os.stockCode);
           data.stock_name = stock != null ? stock.name : '-';
           //data.normalTotalValue = os.price * os.orderQty;
           data.fastTotalValue = 0;
@@ -258,7 +260,7 @@ class _ScreenTransactionHistoricalState
           String error = 'validation_account_not_related_to_user'.tr();
           error = error.replaceAll('#account#', os.accountcode);
           error = error.replaceAll(
-              '#user#', context.read(dataHolderChangeNotifier).user.username);
+              '#user#', context.read(dataHolderChangeNotifier).user.username!);
           InvestrendTheme.of(context).showSnackBar(context, error);
         }
       },
@@ -299,7 +301,7 @@ class _ScreenTransactionHistoricalState
                         group: groupStatus,
                         style: InvestrendTheme.of(context)
                             .more_support_w400_compact
-                            .copyWith(
+                            ?.copyWith(
                                 color: InvestrendTheme.of(context)
                                     .greyDarkerTextColor),
                       ),
@@ -314,7 +316,7 @@ class _ScreenTransactionHistoricalState
                         group: groupStatus,
                         style: InvestrendTheme.of(context)
                             .more_support_w400_compact
-                            .copyWith(
+                            ?.copyWith(
                                 color: InvestrendTheme.of(context)
                                     .greyDarkerTextColor),
                       ),
@@ -334,7 +336,7 @@ class _ScreenTransactionHistoricalState
                       bs,
                       style: InvestrendTheme.of(context)
                           .small_w400_compact
-                          .copyWith(color: bsColor),
+                          ?.copyWith(color: bsColor),
                     ),
                   ],
                 ),
@@ -368,7 +370,7 @@ class _ScreenTransactionHistoricalState
                             prefixRp: true),
                         style: InvestrendTheme.of(context)
                             .more_support_w400_compact
-                            .copyWith(
+                            ?.copyWith(
                                 color: InvestrendTheme.of(context)
                                     .greyDarkerTextColor),
                       ),
@@ -403,7 +405,7 @@ class _ScreenTransactionHistoricalState
                           group: groupStatus,
                           style: InvestrendTheme.of(context)
                               .more_support_w400_compact
-                              .copyWith(
+                              ?.copyWith(
                                   color: InvestrendTheme.of(context)
                                       .greyDarkerTextColor),
                         ),
@@ -438,7 +440,7 @@ class _ScreenTransactionHistoricalState
                       os.message,
                       style: InvestrendTheme.of(context)
                           .more_support_w400_compact
-                          .copyWith(
+                          ?.copyWith(
                               fontSize: 10.0,
                               color: InvestrendTheme.of(context)
                                   .greyLighterTextColor),
@@ -471,15 +473,15 @@ class _ScreenTransactionHistoricalState
                     'ELSA',
                     style: Theme.of(context)
                         .textTheme
-                        .bodyText1
-                        .copyWith(fontWeight: FontWeight.bold),
+                        .bodyLarge
+                        ?.copyWith(fontWeight: FontWeight.bold),
                   ),
                   SizedBox(
                     height: 4.0,
                   ),
                   Text(
                     'Jual',
-                    style: Theme.of(context).textTheme.bodyText1.copyWith(
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                         fontWeight: FontWeight.w300,
                         color: InvestrendTheme.redText),
                   ),
@@ -497,8 +499,8 @@ class _ScreenTransactionHistoricalState
                       '10 Lot',
                       style: Theme.of(context)
                           .textTheme
-                          .bodyText2
-                          .copyWith(fontWeight: FontWeight.bold),
+                          .bodyMedium
+                          ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     SizedBox(
                       width: 2.0,
@@ -507,8 +509,8 @@ class _ScreenTransactionHistoricalState
                       'Rp 900',
                       style: Theme.of(context)
                           .textTheme
-                          .bodyText2
-                          .copyWith(fontWeight: FontWeight.bold),
+                          .bodyMedium
+                          ?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     SizedBox(
                       width: 2.0,
@@ -517,8 +519,8 @@ class _ScreenTransactionHistoricalState
                       'Rp 900.000',
                       style: Theme.of(context)
                           .textTheme
-                          .bodyText2
-                          .copyWith(fontWeight: FontWeight.w300),
+                          .bodyMedium
+                          ?.copyWith(fontWeight: FontWeight.w300),
                     ),
                   ],
                 ),
@@ -553,7 +555,7 @@ class _ScreenTransactionHistoricalState
   }
 
   @override
-  Widget createAppBar(BuildContext context) {
+  PreferredSizeWidget? createAppBar(BuildContext context) {
     return null;
   }
 
@@ -584,7 +586,7 @@ class _ScreenTransactionHistoricalState
 
       User user = context.read(dataHolderChangeNotifier).user;
       int selected = context.read(accountChangeNotifier).index;
-      Account account = user.getAccount(selected);
+      Account? account = user.getAccount(selected);
       if (account == null) {
         InvestrendTheme.of(context)
             .showSnackBar(context, 'error_no_account_selected'.tr());
@@ -592,18 +594,19 @@ class _ScreenTransactionHistoricalState
         return false;
       }
 
-      final orderStatus = await InvestrendTheme.tradingHttp.orderStatus(
-          account.brokercode /*''*/,
-          account.accountcode /*''*/,
-          user.username,
-          InvestrendTheme.of(context).applicationPlatform,
-          InvestrendTheme.of(context).applicationVersion,
-          historical: true,
-          historicalFilterTransaction: FilterTransaction.values
-              .elementAt(notifier.index_transaction)
-              .filter,
-          historicalFilterPeriod:
-              FilterPeriod.values.elementAt(notifier.index_period).filter);
+      final List<OrderStatus>? orderStatus = await InvestrendTheme.tradingHttp
+          .orderStatus(
+              account.brokercode /*''*/,
+              account.accountcode /*''*/,
+              user.username,
+              InvestrendTheme.of(context).applicationPlatform,
+              InvestrendTheme.of(context).applicationVersion,
+              historical: true,
+              historicalFilterTransaction: FilterTransaction.values
+                  .elementAt(notifier.index_transaction)
+                  .filter,
+              historicalFilterPeriod:
+                  FilterPeriod.values.elementAt(notifier.index_period).filter);
 
       int orderStatusCount = orderStatus != null ? orderStatus.length : 0;
       print('Got orderStatus historical : ' + orderStatusCount.toString());
@@ -670,7 +673,7 @@ class _ScreenTransactionHistoricalState
   }
   */
 
-  AutoSizeGroup groupStatus;
+  AutoSizeGroup? groupStatus;
   @override
   Widget createBody(BuildContext context, double paddingBottom) {
     double statusWidth = UIHelper.textSize('Withdraw-P',
@@ -752,7 +755,7 @@ class _ScreenTransactionHistoricalState
             }
 
             int count = listDisplay.length + 1;
-            String filtered;
+            String? filtered;
             if (filterTransaction || filterPeriod) {
               //count = count + 1;
               //filtered  = 'transaction_today_filter_description'.tr();
@@ -766,12 +769,12 @@ class _ScreenTransactionHistoricalState
                 filtered =
                     'transaction_historical_filter_period_description'.tr();
               }
-              filtered = filtered.replaceFirst(
+              filtered = filtered?.replaceFirst(
                   '#TRX#',
                   FilterTransaction.values
                       .elementAt(filter.index_transaction)
                       .text);
-              filtered = filtered.replaceFirst('#PRD#',
+              filtered = filtered?.replaceFirst('#PRD#',
                   FilterPeriod.values.elementAt(filter.index_period).text);
             }
 
@@ -821,56 +824,6 @@ class _ScreenTransactionHistoricalState
     );
   }
 
-  /*
-  @override
-  Widget createBody(BuildContext context, double paddingBottom) {
-    // TODO: implement createBody
-    return Padding(
-      padding: const EdgeInsets.all(InvestrendTheme.cardMargin),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // OutlinedButton(
-          //   onPressed: () {},
-          //   child: Row(
-          //     mainAxisSize: MainAxisSize.min,
-          //     children: [
-          //       Icon(
-          //         Icons.filter_alt,
-          //         size: 15,
-          //         color: Colors.grey,
-          //       ),
-          //       SizedBox(width: 4.0,),
-          //       Text(
-          //         'button_filter'.tr(),
-          //         style: Theme.of(context).textTheme.bodyText2,
-          //       ),
-          //     ],
-          //   ),
-          // ),
-          _options(context),
-
-          Expanded(
-            flex: 1,
-            child: ListView.builder(
-                shrinkWrap: false,
-                padding: const EdgeInsets.all(8),
-                itemCount: 20,
-                itemBuilder: (BuildContext context, int index) {
-                  return tileHistorical(context);
-                  // return Container(
-                  //   height: 50,
-                  //   color: Colors.amber[colorCodes[index]],
-                  //   child: Center(child: Text('Entry ${entries[index]}')),
-                  // );
-                }),
-          ),
-        ],
-      ),
-    );
-  }
-  */
-
   final String PROP_SELECTED_FILTER_TRANSACTION = 'filterTransaction';
   final String PROP_SELECTED_FILTER_PERIOD = 'filterPeriod';
   @override
@@ -913,15 +866,15 @@ class _ScreenTransactionHistoricalState
     });
   }
 
-  VoidCallback filterApplied;
-  VoidCallback onAccountChanged;
+  VoidCallback? filterApplied;
+  VoidCallback? onAccountChanged;
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
     final notifier = context.read(transactionHistoricalFilterChangeNotifier);
     if (filterApplied != null) {
-      notifier.removeListener(filterApplied);
+      notifier.removeListener(filterApplied!);
     } else {
       filterApplied = () {
         if (mounted) {
@@ -941,11 +894,11 @@ class _ScreenTransactionHistoricalState
         }
       };
     }
-    notifier.addListener(filterApplied);
+    notifier.addListener(filterApplied!);
 
     final notifierAccount = context.read(accountChangeNotifier);
     if (onAccountChanged != null) {
-      notifierAccount.removeListener(onAccountChanged);
+      notifierAccount.removeListener(onAccountChanged!);
     } else {
       onAccountChanged = () {
         if (mounted) {
@@ -953,7 +906,7 @@ class _ScreenTransactionHistoricalState
         }
       };
     }
-    notifierAccount.addListener(onAccountChanged);
+    notifierAccount.addListener(onAccountChanged!);
   }
 
   @override
@@ -964,13 +917,13 @@ class _ScreenTransactionHistoricalState
     if (filterApplied != null) {
       container
           .read(transactionIntradayFilterChangeNotifier)
-          .removeListener(filterApplied);
+          .removeListener(filterApplied!);
     }
     filterApplied = null;
     //_stopTimer();
 
     if (onAccountChanged != null) {
-      container.read(accountChangeNotifier).removeListener(onAccountChanged);
+      container.read(accountChangeNotifier).removeListener(onAccountChanged!);
     }
     onAccountChanged = null;
 
@@ -990,7 +943,5 @@ class _ScreenTransactionHistoricalState
   }
 
   @override
-  void onInactive() {
-    // TODO: implement onInactive
-  }
+  void onInactive() {}
 }

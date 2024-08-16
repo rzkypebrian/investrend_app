@@ -6,10 +6,10 @@ import 'package:easy_localization/easy_localization.dart';
 
 class BottomSheetAlert extends StatelessWidget {
   final List<Widget> childs;
-  final String title;
+  final String? title;
   final double childsHeight;
   const BottomSheetAlert(this.childs,
-      {this.title, Key key, this.childsHeight = 0})
+      {this.title, Key? key, this.childsHeight = 0})
       : super(key: key);
 
   @override

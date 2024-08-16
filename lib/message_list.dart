@@ -38,7 +38,7 @@ class _MessageList extends State<MessageList> {
 
           String title = '';
           if (message.notification != null) {
-            title += message.notification.title;
+            title += message.notification!.title!;
           } else {
             title +=
                 message.messageId ?? 'no RemoteMessage.messageId available';

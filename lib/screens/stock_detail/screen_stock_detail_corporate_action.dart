@@ -1,3 +1,4 @@
+// ignore_for_file: non_constant_identifier_names
 
 import 'package:Investrend/component/button_rounded.dart';
 import 'package:Investrend/component/cards/card_label_value.dart';
@@ -15,21 +16,30 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
 
 class ScreenStockDetailCorporateAction extends StatefulWidget {
-  final TabController tabController;
+  final TabController? tabController;
   final int tabIndex;
-  final ValueNotifier<bool> visibilityNotifier;
-  ScreenStockDetailCorporateAction(this.tabIndex, this.tabController, {Key key, this.visibilityNotifier}) : super(key: key);
+  final ValueNotifier<bool>? visibilityNotifier;
+  ScreenStockDetailCorporateAction(this.tabIndex, this.tabController,
+      {Key? key, this.visibilityNotifier})
+      : super(key: key);
 
   @override
-  _ScreenStockDetailCorporateActionState createState() => _ScreenStockDetailCorporateActionState(tabIndex, tabController, visibilityNotifier: visibilityNotifier);
+  _ScreenStockDetailCorporateActionState createState() =>
+      _ScreenStockDetailCorporateActionState(tabIndex, tabController!,
+          visibilityNotifier: visibilityNotifier);
 }
 
-class _ScreenStockDetailCorporateActionState extends BaseStateNoTabsWithParentTab<ScreenStockDetailCorporateAction> {
-  ValueNotifier _caTypeNotifier = ValueNotifier<int>(0);
-  CorporateActionNotifier _dataNotifier = CorporateActionNotifier(CorporateActionData());
+class _ScreenStockDetailCorporateActionState
+    extends BaseStateNoTabsWithParentTab<ScreenStockDetailCorporateAction> {
+  ValueNotifier<int>? _caTypeNotifier = ValueNotifier<int>(0);
+  CorporateActionNotifier? _dataNotifier =
+      CorporateActionNotifier(CorporateActionData());
 
-  _ScreenStockDetailCorporateActionState(int tabIndex, TabController tabController, {ValueNotifier<bool> visibilityNotifier})
-      : super('/stock_detail_corporate_actions', tabIndex, tabController,notifyStockChange: true, visibilityNotifier: visibilityNotifier);
+  _ScreenStockDetailCorporateActionState(
+      int tabIndex, TabController tabController,
+      {ValueNotifier<bool>? visibilityNotifier})
+      : super('/stock_detail_corporate_actions', tabIndex, tabController,
+            notifyStockChange: true, visibilityNotifier: visibilityNotifier);
 
   List<String> _corporate_action_options_others = [
     'corporate_action_dividend'.tr(),
@@ -52,12 +62,7 @@ class _ScreenStockDetailCorporateActionState extends BaseStateNoTabsWithParentTa
     'corporate_action_stock_split'.tr(),
   ];
 
-  List<String> _types = [
-    'DIVIDEND',
-    'RIGHT_ISSUE',
-    'RUPS',
-    'STOCK_SPLIT'
-  ];
+  List<String> _types = ['DIVIDEND', 'RIGHT_ISSUE', 'RUPS', 'STOCK_SPLIT'];
 
   List<String> _corporate_action_warrant_options = [
     'corporate_action_warrant'.tr(),
@@ -68,14 +73,14 @@ class _ScreenStockDetailCorporateActionState extends BaseStateNoTabsWithParentTa
   ];
 
   @override
-  void onStockChanged(Stock newStock) {
+  void onStockChanged(Stock? newStock) {
     super.onStockChanged(newStock);
-    if(newStock != null){
-      if(newStock.isWarrant()){
+    if (newStock != null) {
+      if (newStock.isWarrant()) {
         _types = _types_warrant;
         _corporate_action_options = _corporate_action_warrant_options;
-        _caTypeNotifier.value = 0;
-      }else{
+        _caTypeNotifier?.value = 0;
+      } else {
         _types = _types_others;
         _corporate_action_options = _corporate_action_options_others;
       }
@@ -83,25 +88,31 @@ class _ScreenStockDetailCorporateActionState extends BaseStateNoTabsWithParentTa
     setState(() {
       doUpdate(pullToRefresh: true);
     });
-
   }
 
   // @override
   // bool get wantKeepAlive => true;
 
   @override
-  Widget createAppBar(BuildContext context) {
+  PreferredSizeWidget? createAppBar(BuildContext context) {
     return null;
   }
 
   Widget _title(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral, top: InvestrendTheme.cardPaddingVertical),
+      padding: const EdgeInsets.only(
+          left: InvestrendTheme.cardPaddingGeneral,
+          right: InvestrendTheme.cardPaddingGeneral,
+          top: InvestrendTheme.cardPaddingVertical),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           ComponentCreator.subtitle(context, 'segment_label'.tr()),
-          ButtonDropdown(_caTypeNotifier, _corporate_action_options, clickAndClose: true,),
+          ButtonDropdown(
+            _caTypeNotifier,
+            _corporate_action_options,
+            clickAndClose: true,
+          ),
           /*
           ValueListenableBuilder(
             valueListenable: _caTypeNotifier,
@@ -150,38 +161,45 @@ class _ScreenStockDetailCorporateActionState extends BaseStateNoTabsWithParentTa
     );
   }
 
-
-
-
   Future doUpdate({bool pullToRefresh = false}) async {
     print(routeName + '.doUpdate : ' + DateTime.now().toString());
-    if( !active ){
-      print(routeName + '.doUpdate aborted active : $active' );
+    if (!active) {
+      print(routeName + '.doUpdate aborted active : $active');
       return;
     }
-    Stock stock = context.read(primaryStockChangeNotifier).stock;
+    Stock? stock = context.read(primaryStockChangeNotifier).stock;
     if (stock == null || !stock.isValid()) {
-      Stock stockDefault = InvestrendTheme.storedData.listStock.isEmpty ? null : InvestrendTheme.storedData.listStock.first;
-      context.read(primaryStockChangeNotifier).setStock(stockDefault);
+      Stock? stockDefault = InvestrendTheme.storedData!.listStock!.isEmpty
+          ? null
+          : InvestrendTheme.storedData?.listStock?.first;
+      context.read(primaryStockChangeNotifier).setStock(stockDefault!);
       stock = context.read(primaryStockChangeNotifier).stock;
     }
 
-    String type = _types.elementAt(_caTypeNotifier.value);
+    String type = _types.elementAt(_caTypeNotifier!.value);
 
-    String code = stock != null ? stock.code : "";
-    if( !StringUtils.isEmtpy(code) ) {
+    String? code = stock != null ? stock.code : "";
+    if (!StringUtils.isEmtpy(code)) {
       setNotifierLoading(_dataNotifier);
       try {
-        final result = await InvestrendTheme.datafeedHttp.fetchCorporateAction(code, type);
+        final CorporateActionData? result =
+            await InvestrendTheme.datafeedHttp.fetchCorporateAction(code, type);
         if (result != null && !result.isEmpty()) {
           if (mounted) {
-            Stock stockNow = context.read(primaryStockChangeNotifier).stock;
-            String typeNow = _types.elementAt(_caTypeNotifier.value);
-            if(StringUtils.equalsIgnoreCase(result.code, stockNow?.code) && StringUtils.equalsIgnoreCase(result.type, typeNow) ){
+            Stock? stockNow = context.read(primaryStockChangeNotifier).stock;
+            String typeNow = _types.elementAt(_caTypeNotifier!.value);
+            if (StringUtils.equalsIgnoreCase(result.code!, stockNow?.code) &&
+                StringUtils.equalsIgnoreCase(result.type!, typeNow)) {
               print('Got CorporateActionData : ' + result.toString());
-              _dataNotifier.setValue(result);
-            }else{
-              print('Got CorporateActionData : IGNORED  result.code : '+result.code+'  stock_now : '+stockNow?.code+'  result.type : '+result.type+'  type_now : $typeNow');
+              _dataNotifier?.setValue(result);
+            } else {
+              print('Got CorporateActionData : IGNORED  result.code : ' +
+                  result.code! +
+                  '  stock_now : ' +
+                  stockNow!.code! +
+                  '  result.type : ' +
+                  result.type! +
+                  '  type_now : $typeNow');
             }
           } else {
             print('ignored CorporateActionData, mounted : $mounted');
@@ -198,93 +216,136 @@ class _ScreenStockDetailCorporateActionState extends BaseStateNoTabsWithParentTa
     print(routeName + '.doUpdate finished. pullToRefresh : $pullToRefresh');
     return true;
   }
+
   Future onRefresh() {
     context.read(stockDetailRefreshChangeNotifier).setRoute(routeName);
-    if(!active){
+    if (!active) {
       active = true;
       //onActive();
-      context.read(stockDetailScreenVisibilityChangeNotifier).setActive(tabIndex, true);
+      context
+          .read(stockDetailScreenVisibilityChangeNotifier)
+          .setActive(tabIndex, true);
     }
     return doUpdate(pullToRefresh: true);
     // return Future.delayed(Duration(seconds: 3));
   }
 
-  void constructData(BuildContext context, CorporateActionData result, List<Widget> list){
+  void constructData(
+      BuildContext context, CorporateActionData result, List<Widget> list) {
+    LabelValueData? datas;
+    String? year = '--';
 
-    LabelValueData datas ;
-    String year = '--';
-
-    for(var ca in result.datas){
-      if(!StringUtils.equalsIgnoreCase(ca.year, year)){
-        if(datas != null){
-          list.add(CardLabelValue(year,datas,paddingTop: 10.0,));
+    for (var ca in result.datas!) {
+      if (!StringUtils.equalsIgnoreCase(ca.year, year)) {
+        if (datas != null) {
+          list.add(CardLabelValue(
+            year,
+            datas,
+            paddingTop: 10.0,
+          ));
         }
         year = ca.year;
         datas = new LabelValueData();
       }
-      if(ca is Dividend){
-        datas.datas.add(LabelValue('ca_dividend_total_value'.tr(), ca.totalValue));
-        datas.datas.add(LabelValue('ca_dividend_price'.tr(), ca.price));
-        datas.datas.add(LabelValue('ca_dividend_cum_date'.tr(), ca.cumDate));
-        datas.datas.add(LabelValue('ca_dividend_ex_date'.tr(), ca.exDate));
-        datas.datas.add(LabelValue('ca_dividend_recording_date'.tr(), ca.recordingDate));
-        datas.datas.add(LabelValue('ca_dividend_payment_date'.tr(), ca.paymentDate));
-        datas.datas.add(LabelValueDivider());
-      }else if(ca is RightIssue){
-        datas.datas.add(LabelValue('ca_right_issue_ratio'.tr(), ca.ratio1+' : '+ca.ratio2+' ('+ca.ratioPercentage+')'));
-        datas.datas.add(LabelValue('ca_right_issue_price'.tr(), ca.price));
-        datas.datas.add(LabelValue('ca_right_issue_cum_date'.tr(), ca.cumDate));
-        datas.datas.add(LabelValue('ca_right_issue_ex_date'.tr(), ca.exDate));
-        datas.datas.add(LabelValue('ca_right_issue_recording_date'.tr(), ca.recordingDate));
-        datas.datas.add(LabelValue('ca_right_issue_trading_start'.tr(), ca.tradingStart));
-        datas.datas.add(LabelValue('ca_right_issue_trading_end'.tr(), ca.tradingEnd));
-        datas.datas.add(LabelValue('ca_right_issue_subscription_date'.tr(), ca.subscriptionDate));
-        datas.datas.add(LabelValueDivider());
-      }else if(ca is RUPS){
-        datas.datas.add(ContentPlaceInfo(ca.type, ca.dateTime, ca.address, ca.city));
-        datas.datas.add(LabelValueDivider());
-      }else if(ca is StockSplit){
-        datas.datas.add(LabelValue('ca_stock_split_ratio'.tr(), ca.ratio1+' : '+ca.ratio2+' ('+ca.ratioPercentage+')'));
-        datas.datas.add(LabelValue('ca_stock_split_cum_date'.tr(), ca.cumDate));
-        datas.datas.add(LabelValue('ca_stock_split_ex_date'.tr(), ca.exDate));
-        datas.datas.add(LabelValue('ca_stock_split_recording_date'.tr(), ca.recordingDate));
-        datas.datas.add(LabelValue('ca_stock_split_trading_date'.tr(), ca.tradingDate));
-        datas.datas.add(LabelValueDivider());
-      }else if(ca is Warrant){
-        datas.datas.add(LabelValue('ca_warrant_ratio'.tr(), ca.ratio1+' : '+ca.ratio2));
-        datas.datas.add(LabelValue('ca_warrant_price'.tr(), ca.price));
-        if(ca.isValidData(ca.tradingStart)){
-          datas.datas.add(LabelValue('ca_warrant_trading_start'.tr(), ca.tradingStart));
+      if (ca is Dividend) {
+        datas!.datas
+            ?.add(LabelValue('ca_dividend_total_value'.tr(), ca.totalValue));
+        datas.datas?.add(LabelValue('ca_dividend_price'.tr(), ca.price));
+        datas.datas?.add(LabelValue('ca_dividend_cum_date'.tr(), ca.cumDate));
+        datas.datas?.add(LabelValue('ca_dividend_ex_date'.tr(), ca.exDate));
+        datas.datas?.add(
+            LabelValue('ca_dividend_recording_date'.tr(), ca.recordingDate));
+        datas.datas
+            ?.add(LabelValue('ca_dividend_payment_date'.tr(), ca.paymentDate));
+        datas.datas?.add(LabelValueDivider());
+      } else if (ca is RightIssue) {
+        datas!.datas?.add(LabelValue(
+            'ca_right_issue_ratio'.tr(),
+            ca.ratio1! +
+                ' : ' +
+                ca.ratio2! +
+                ' (' +
+                ca.ratioPercentage! +
+                ')'));
+        datas.datas?.add(LabelValue('ca_right_issue_price'.tr(), ca.price));
+        datas.datas
+            ?.add(LabelValue('ca_right_issue_cum_date'.tr(), ca.cumDate));
+        datas.datas?.add(LabelValue('ca_right_issue_ex_date'.tr(), ca.exDate));
+        datas.datas?.add(
+            LabelValue('ca_right_issue_recording_date'.tr(), ca.recordingDate));
+        datas.datas?.add(
+            LabelValue('ca_right_issue_trading_start'.tr(), ca.tradingStart));
+        datas.datas
+            ?.add(LabelValue('ca_right_issue_trading_end'.tr(), ca.tradingEnd));
+        datas.datas?.add(LabelValue(
+            'ca_right_issue_subscription_date'.tr(), ca.subscriptionDate));
+        datas.datas?.add(LabelValueDivider());
+      } else if (ca is RUPS) {
+        datas!.datas?.add(
+            ContentPlaceInfo(ca.type!, ca.dateTime!, ca.address!, ca.city!));
+        datas.datas?.add(LabelValueDivider());
+      } else if (ca is StockSplit) {
+        datas?.datas?.add(LabelValue(
+            'ca_stock_split_ratio'.tr(),
+            ca.ratio1! +
+                ' : ' +
+                ca.ratio2! +
+                ' (' +
+                ca.ratioPercentage! +
+                ')'));
+        datas?.datas
+            ?.add(LabelValue('ca_stock_split_cum_date'.tr(), ca.cumDate));
+        datas?.datas?.add(LabelValue('ca_stock_split_ex_date'.tr(), ca.exDate));
+        datas?.datas?.add(
+            LabelValue('ca_stock_split_recording_date'.tr(), ca.recordingDate));
+        datas?.datas?.add(
+            LabelValue('ca_stock_split_trading_date'.tr(), ca.tradingDate));
+        datas?.datas?.add(LabelValueDivider());
+      } else if (ca is Warrant) {
+        datas!.datas?.add(LabelValue(
+            'ca_warrant_ratio'.tr(), ca.ratio1! + ' : ' + ca.ratio2!));
+        datas.datas?.add(LabelValue('ca_warrant_price'.tr(), ca.price));
+        if (ca.isValidData(ca.tradingStart!)) {
+          datas.datas?.add(
+              LabelValue('ca_warrant_trading_start'.tr(), ca.tradingStart));
         }
-        if(ca.isValidData(ca.tradingEnd)) {
-          datas.datas.add(LabelValue('ca_warrant_trading_end'.tr(), ca.tradingEnd));
+        if (ca.isValidData(ca.tradingEnd!)) {
+          datas.datas
+              ?.add(LabelValue('ca_warrant_trading_end'.tr(), ca.tradingEnd));
         }
-        if(ca.isValidData(ca.maturityDate)) {
-          datas.datas.add(LabelValue('ca_warrant_maturity_date'.tr(), ca.maturityDate));
+        if (ca.isValidData(ca.maturityDate!)) {
+          datas.datas?.add(
+              LabelValue('ca_warrant_maturity_date'.tr(), ca.maturityDate));
         }
-        if(ca.isValidData(ca.exDate)) {
-          datas.datas.add(LabelValue('ca_warrant_ex_date'.tr(), ca.exDate));
+        if (ca.isValidData(ca.exDate!)) {
+          datas.datas?.add(LabelValue('ca_warrant_ex_date'.tr(), ca.exDate));
         }
-        if(ca.isValidData(ca.cumDate)) {
-          datas.datas.add(LabelValue('ca_warrant_cum_date'.tr(), ca.cumDate));
+        if (ca.isValidData(ca.cumDate!)) {
+          datas.datas?.add(LabelValue('ca_warrant_cum_date'.tr(), ca.cumDate));
         }
-        if(ca.isValidData(ca.recordingDate)) {
-          datas.datas.add(LabelValue('ca_warrant_recording_date'.tr(), ca.recordingDate));
+        if (ca.isValidData(ca.recordingDate!)) {
+          datas.datas?.add(
+              LabelValue('ca_warrant_recording_date'.tr(), ca.recordingDate));
         }
-        if(ca.isValidData(ca.subscriptionDate)) {
-          datas.datas.add(LabelValue('ca_warrant_subscription_date'.tr(), ca.subscriptionDate));
+        if (ca.isValidData(ca.subscriptionDate!)) {
+          datas.datas?.add(LabelValue(
+              'ca_warrant_subscription_date'.tr(), ca.subscriptionDate));
         }
-        if(ca.isValidData(ca.description)) {
-          datas.datas.add(LabelValue('ca_warrant_description'.tr(), ca.description));
+        if (ca.isValidData(ca.description!)) {
+          datas.datas
+              ?.add(LabelValue('ca_warrant_description'.tr(), ca.description));
         }
 
-        datas.datas.add(LabelValueDivider());
+        datas.datas?.add(LabelValueDivider());
       }
     }
 
-
-    if(datas != null && datas.count() > 0 ){
-      list.add(CardLabelValue(year,datas, paddingTop: 10.0,));
+    if (datas != null && datas.count() > 0) {
+      list.add(CardLabelValue(
+        year,
+        datas,
+        paddingTop: 10.0,
+      ));
     }
 
     //return list;
@@ -294,21 +355,25 @@ class _ScreenStockDetailCorporateActionState extends BaseStateNoTabsWithParentTa
   Widget createBody(BuildContext context, double paddingBottom) {
     List<Widget> childs = [
       _title(context),
-      SizedBox(height: 10.0,),
+      SizedBox(
+        height: 10.0,
+      ),
       ValueListenableBuilder(
-        valueListenable: _dataNotifier,
+        valueListenable: _dataNotifier!,
         builder: (context, data, child) {
           List<Widget> list = List.empty(growable: true);
-          Widget noWidget = _dataNotifier.currentState.getNoWidget(onRetry: (){
+          Widget? noWidget =
+              _dataNotifier?.currentState.getNoWidget(onRetry: () {
             doUpdate(pullToRefresh: true);
           });
-          if(noWidget != null){
+          if (noWidget != null) {
             list.add(Padding(
-              padding: EdgeInsets.only(top: MediaQuery.of(context).size.width / 4),
+              padding:
+                  EdgeInsets.only(top: MediaQuery.of(context).size.width / 4),
               child: noWidget,
             ));
-          }else{
-            constructData(context, data, list);
+          } else {
+            constructData(context, data as CorporateActionData, list);
           }
 
           return Column(
@@ -332,6 +397,7 @@ class _ScreenStockDetailCorporateActionState extends BaseStateNoTabsWithParentTa
       ),
     );
   }
+
   /*
   @override
   Widget createBody(BuildContext context, double paddingBottom) {
@@ -445,9 +511,12 @@ class _ScreenStockDetailCorporateActionState extends BaseStateNoTabsWithParentTa
   @override
   void onActive() {
     //print(routeName + ' onActive');
-    context.read(stockDetailScreenVisibilityChangeNotifier).setActive(tabIndex, true);
+    context
+        .read(stockDetailScreenVisibilityChangeNotifier)
+        .setActive(tabIndex, true);
     doUpdate();
   }
+
   /*
   List<CADividend> dividend = [
     CADividend(250000000000, 50955, '16 Jun 2020', '17 Jun 2020', '18 Jun 2020', '9 Jul 2020', '2020'),
@@ -487,8 +556,8 @@ class _ScreenStockDetailCorporateActionState extends BaseStateNoTabsWithParentTa
   void initState() {
     super.initState();
 
-    _caTypeNotifier.addListener(() {
-      _dataNotifier.setValue(null);
+    _caTypeNotifier?.addListener(() {
+      _dataNotifier?.setValue(null);
       doUpdate(pullToRefresh: true);
     });
     /*
@@ -521,12 +590,12 @@ class _ScreenStockDetailCorporateActionState extends BaseStateNoTabsWithParentTa
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    Stock newStock = context.read(primaryStockChangeNotifier).stock;
-    if(newStock != null){
-      if(newStock.isWarrant()){
+    Stock? newStock = context.read(primaryStockChangeNotifier).stock;
+    if (newStock != null) {
+      if (newStock.isWarrant()) {
         _types = _types_warrant;
         _corporate_action_options = _corporate_action_warrant_options;
-      }else{
+      } else {
         _types = _types_others;
         _corporate_action_options = _corporate_action_options_others;
       }
@@ -535,17 +604,21 @@ class _ScreenStockDetailCorporateActionState extends BaseStateNoTabsWithParentTa
 
   @override
   void dispose() {
-    _caTypeNotifier.dispose();
-    _dataNotifier.dispose();
+    _caTypeNotifier?.dispose();
+    _dataNotifier?.dispose();
     final container = ProviderContainer();
-    container.read(stockDetailScreenVisibilityChangeNotifier).setActive(tabIndex, false);
+    container
+        .read(stockDetailScreenVisibilityChangeNotifier)
+        .setActive(tabIndex, false);
     super.dispose();
   }
 
   @override
   void onInactive() {
     //print(routeName + ' onInactive');
-    context.read(stockDetailScreenVisibilityChangeNotifier).setActive(tabIndex, false);
+    context
+        .read(stockDetailScreenVisibilityChangeNotifier)
+        .setActive(tabIndex, false);
   }
 }
 /*

@@ -2,12 +2,12 @@ import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-
 class ColapsedText extends StatefulWidget {
-  final String text;
+  final String? text;
   final int maxLines;
 
-  const ColapsedText({Key key, this.text, this.maxLines = 10}) : super(key: key);
+  const ColapsedText({Key? key, this.text, this.maxLines = 10})
+      : super(key: key);
 
   @override
   _ColapsedTextState createState() => _ColapsedTextState();
@@ -32,14 +32,15 @@ class _ColapsedTextState extends State<ColapsedText> {
     return ValueListenableBuilder(
         valueListenable: colapseNotifier,
         builder: (context, bool showMore, child) {
-          if(showMore){
+          if (showMore) {
             return Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  widget.text,
+                  widget.text!,
                   maxLines: showMore ? 10 : null,
-                  style: InvestrendTheme.of(context).small_w400.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor),
+                  style: InvestrendTheme.of(context).small_w400?.copyWith(
+                      color: InvestrendTheme.of(context).greyDarkerTextColor),
                 ),
                 Material(
                   color: Colors.transparent,
@@ -51,24 +52,27 @@ class _ColapsedTextState extends State<ColapsedText> {
                       // });
                     },
                     child: Text(
-                      showMore ? "button_show_more".tr() : "button_show_less".tr(),
+                      showMore
+                          ? "button_show_more".tr()
+                          : "button_show_less".tr(),
                       textAlign: TextAlign.end,
-                      style: InvestrendTheme.of(context)
-                          .small_w600
-                          .copyWith(color: InvestrendTheme.of(context).investrendPurple/*, fontWeight: FontWeight.bold*/),
+                      style: InvestrendTheme.of(context).small_w600?.copyWith(
+                          color: InvestrendTheme.of(context)
+                              .investrendPurple /*, fontWeight: FontWeight.bold*/),
                     ),
                   ),
                 ),
               ],
             );
-          }else{
+          } else {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  widget.text,
+                  widget.text!,
                   maxLines: showMore ? 10 : null,
-                  style: InvestrendTheme.of(context).small_w400.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor),
+                  style: InvestrendTheme.of(context).small_w400?.copyWith(
+                      color: InvestrendTheme.of(context).greyDarkerTextColor),
                 ),
                 Material(
                   color: Colors.transparent,
@@ -80,18 +84,19 @@ class _ColapsedTextState extends State<ColapsedText> {
                       // });
                     },
                     child: Text(
-                      showMore ? "button_show_more".tr() : "button_show_less".tr(),
+                      showMore
+                          ? "button_show_more".tr()
+                          : "button_show_less".tr(),
                       textAlign: TextAlign.end,
-                      style: InvestrendTheme.of(context)
-                          .small_w600
-                          .copyWith(color: InvestrendTheme.of(context).investrendPurple/*, fontWeight: FontWeight.bold*/),
+                      style: InvestrendTheme.of(context).small_w600?.copyWith(
+                          color: InvestrendTheme.of(context)
+                              .investrendPurple /*, fontWeight: FontWeight.bold*/),
                     ),
                   ),
                 ),
               ],
             );
           }
-
         });
   }
 }

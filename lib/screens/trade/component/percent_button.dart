@@ -4,13 +4,15 @@ import 'package:flutter/material.dart';
 class PercentButton extends StatelessWidget {
   final int percentValue;
   final int selected;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
-  const PercentButton(this.percentValue, this.selected, {Key key, this.onPressed}) : super(key: key);
+  const PercentButton(this.percentValue, this.selected,
+      {Key? key, this.onPressed})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    Color color = InvestrendTheme.of(context).support_w400.color;
+    Color? color = InvestrendTheme.of(context).support_w400?.color;
     if (percentValue == selected) {
       color = Theme.of(context).colorScheme.secondary;
     }
@@ -22,7 +24,8 @@ class PercentButton extends StatelessWidget {
         // },
         child: Text(
           '$percentValue%',
-          style: InvestrendTheme.of(context).support_w600.copyWith(color: color),
+          style:
+              InvestrendTheme.of(context).support_w600?.copyWith(color: color),
         ));
   }
 }

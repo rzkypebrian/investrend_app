@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable, non_constant_identifier_names
+
 import 'package:Investrend/component/button_tab_switch.dart';
 import 'package:Investrend/component/cards/card_social_media.dart';
 import 'package:Investrend/component/component_creator.dart';
@@ -17,10 +19,11 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ComposeActivityBuyWidget extends StatelessWidget {
-  final VoidCallback onDelete;
-  final BuySell orderData;
+  final VoidCallback? onDelete;
+  final BuySell? orderData;
 
-  const ComposeActivityBuyWidget(this.orderData,{this.onDelete, Key key}) : super(key: key);
+  const ComposeActivityBuyWidget(this.orderData, {this.onDelete, Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -31,16 +34,21 @@ class ComposeActivityBuyWidget extends StatelessWidget {
           onPressed: onDelete,
           icon: Image.asset('images/icons/delete_circle.png'),
           visualDensity: VisualDensity.compact,
-          padding: EdgeInsets.only(left: 1.0, bottom: 1.0, top: 1.0, right: 1.0),
+          padding:
+              EdgeInsets.only(left: 1.0, bottom: 1.0, top: 1.0, right: 1.0),
         ),
-        ActivityWidget(orderData.isBuy() ? ActivityType.Invested : ActivityType.Unknown, orderData.stock_code, ''),
+        ActivityWidget(
+            orderData!.isBuy() ? ActivityType.Invested : ActivityType.Unknown,
+            orderData?.stock_code,
+            ''),
         SizedBox(
           height: 30.0,
         ),
         Text(
           'sosmed_activity_information'.tr(),
           textAlign: TextAlign.end,
-          style: InvestrendTheme.of(context).more_support_w400.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor),
+          style: InvestrendTheme.of(context).more_support_w400?.copyWith(
+              color: InvestrendTheme.of(context).greyLighterTextColor),
         ),
       ],
     );
@@ -48,20 +56,23 @@ class ComposeActivityBuyWidget extends StatelessWidget {
 }
 
 class ComposeActivitySellWidget extends StatefulWidget {
-  final VoidCallback onDelete;
-  final BuySell orderData;
+  final VoidCallback? onDelete;
+  final BuySell? orderData;
 
   StateActivityTransaction stateTransaction;
-  ComposeActivitySellWidget(this.stateTransaction, this.orderData, { this.onDelete, Key key}) : super(key: key);
+  ComposeActivitySellWidget(this.stateTransaction, this.orderData,
+      {this.onDelete, Key? key})
+      : super(key: key);
 
   @override
-  _ComposeActivitySellWidgetState createState() => _ComposeActivitySellWidgetState();
+  _ComposeActivitySellWidgetState createState() =>
+      _ComposeActivitySellWidgetState();
 }
 
 class _ComposeActivitySellWidgetState extends State<ComposeActivitySellWidget> {
   //final int startPrice;
   double activityPercent = 0.0;
-  ActivityType activityType;
+  ActivityType? activityType;
   ValueNotifier<int> _averagePriceNotifier = ValueNotifier<int>(0);
 
   @override
@@ -69,23 +80,23 @@ class _ComposeActivitySellWidgetState extends State<ComposeActivitySellWidget> {
     super.initState();
     _averagePriceNotifier.addListener(() {
       widget.stateTransaction.averagePrice = _averagePriceNotifier.value;
-      if(_averagePriceNotifier.value != IntFlag.error_value
-        || _averagePriceNotifier.value != IntFlag.loading_value){
+      if (_averagePriceNotifier.value != IntFlag.error_value ||
+          _averagePriceNotifier.value != IntFlag.loading_value) {
         updateParameter();
       }
-
     });
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       retrieveCostFromPortfolio();
     });
   }
-  void updateParameter({int cost}){
+
+  void updateParameter({int? cost}) {
     int buyPrice = cost ?? widget.stateTransaction.averagePrice;
-    int sellPrice = widget.orderData.normalPriceLot.price;
-    int change = sellPrice - buyPrice;
+    int? sellPrice = widget.orderData?.normalPriceLot?.price;
+    int change = sellPrice! - buyPrice;
     activityPercent = Utils.calculatePercent(buyPrice, sellPrice);
 
-    if (widget.orderData.isSell()) {
+    if (widget.orderData!.isSell()) {
       if (change > 0) {
         activityType = ActivityType.Gain;
       } else if (change < 0) {
@@ -98,35 +109,41 @@ class _ComposeActivitySellWidgetState extends State<ComposeActivitySellWidget> {
     }
   }
 
-  void retrieveCostFromPortfolio() async{
+  void retrieveCostFromPortfolio() async {
     try {
       _averagePriceNotifier.value = IntFlag.loading_value;
       print('ComposeActivityWidget try retrieveCostFromPortfolio');
-      final stockPosition = await InvestrendTheme.tradingHttp.stock_position(
-          widget.orderData.brokerCode,
-          widget.orderData.accountCode,
-          context.read(dataHolderChangeNotifier).user.username,
-          InvestrendTheme.of(context).applicationPlatform,
-          InvestrendTheme.of(context).applicationVersion);
-      DebugWriter.information('ComposeActivityWidget  Got stockPosition ' + stockPosition.accountcode + '   stockList.size : ' + stockPosition.stockListSize().toString());
-      if(stockPosition == null){
+      final StockPosition? stockPosition = await InvestrendTheme.tradingHttp
+          .stock_position(
+              widget.orderData?.brokerCode,
+              widget.orderData?.accountCode,
+              context.read(dataHolderChangeNotifier).user.username!,
+              InvestrendTheme.of(context).applicationPlatform,
+              InvestrendTheme.of(context).applicationVersion);
+      // DebugWriter.information('ComposeActivityWidget  Got stockPosition ' +
+      //     stockPosition.accountcode! +
+      //     '   stockList.size : ' +
+      //     stockPosition.stockListSize().toString());
+      if (stockPosition == null) {
         _averagePriceNotifier.value = IntFlag.error_value;
-      }else{
+      } else {
         int averagePrice = 0;
-        for(int i = 0 ; i < stockPosition.stockListSize(); i++){
-          StockPositionDetail detail = stockPosition.stocksList.elementAt(i);
-          if(detail != null && StringUtils.equalsIgnoreCase(detail.stockCode, widget.orderData.stock_code)){
+        for (int i = 0; i < stockPosition.stockListSize(); i++) {
+          StockPositionDetail? detail = stockPosition.stocksList?.elementAt(i);
+          if (detail != null &&
+              StringUtils.equalsIgnoreCase(
+                  detail.stockCode, widget.orderData?.stock_code)) {
             averagePrice = detail.avgPrice.toInt();
             break;
           }
         }
         updateParameter(cost: averagePrice);
         _averagePriceNotifier.value = averagePrice;
-
       }
       //_stockPositionNotifier.setValue(stockPosition);
     } catch (e) {
-      DebugWriter.information('ComposeActivityWidget stockPosition Exception : ' + e.toString());
+      DebugWriter.information(
+          'ComposeActivityWidget stockPosition Exception : ' + e.toString());
       _averagePriceNotifier.value = IntFlag.error_value;
       /*
       if(e is TradingHttpException){
@@ -141,24 +158,24 @@ class _ComposeActivitySellWidgetState extends State<ComposeActivitySellWidget> {
         }
       }
       */
-      if(e is TradingHttpException){
-        if(e.isUnauthorized()){
+      if (e is TradingHttpException) {
+        if (e.isUnauthorized()) {
           InvestrendTheme.of(context).showDialogInvalidSession(context);
           return;
-        }else if(e.isErrorTrading()){
+        } else if (e.isErrorTrading()) {
           InvestrendTheme.of(context).showSnackBar(context, e.message());
           return;
-        }else{
+        } else {
           String networkErrorLabel = 'network_error_label'.tr();
-          networkErrorLabel = networkErrorLabel.replaceFirst("#CODE#", e.code.toString());
+          networkErrorLabel =
+              networkErrorLabel.replaceFirst("#CODE#", e.code.toString());
           InvestrendTheme.of(context).showSnackBar(context, networkErrorLabel);
           return;
         }
-      }else{
+      } else {
         InvestrendTheme.of(context).showSnackBar(context, e.toString());
         return;
       }
-
     }
   }
 
@@ -171,7 +188,8 @@ class _ComposeActivitySellWidgetState extends State<ComposeActivitySellWidget> {
           onPressed: widget.onDelete,
           icon: Image.asset('images/icons/delete_circle.png'),
           visualDensity: VisualDensity.compact,
-          padding: EdgeInsets.only(left: 1.0, bottom: 1.0, top: 1.0, right: 1.0),
+          padding:
+              EdgeInsets.only(left: 1.0, bottom: 1.0, top: 1.0, right: 1.0),
         ),
         ValueListenableBuilder<int>(
             valueListenable: _averagePriceNotifier,
@@ -183,7 +201,9 @@ class _ComposeActivitySellWidgetState extends State<ComposeActivitySellWidget> {
                     },
                     child: Text(
                       'button_retry'.tr(),
-                      style: InvestrendTheme.of(context).more_support_w600_compact.copyWith(color: Colors.red),
+                      style: InvestrendTheme.of(context)
+                          .more_support_w600_compact
+                          ?.copyWith(color: Colors.red),
                     ));
               } else if (avgPrice == IntFlag.loading_value) {
                 return CircularProgressIndicator();
@@ -191,27 +211,42 @@ class _ComposeActivitySellWidgetState extends State<ComposeActivitySellWidget> {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  ActivityWidget(activityType, widget.orderData.stock_code, InvestrendTheme.formatPercent(activityPercent)),
-
+                  ActivityWidget(activityType!, widget.orderData?.stock_code,
+                      InvestrendTheme.formatPercent(activityPercent)),
                   SizedBox(
                     height: 12.0,
                   ),
-                  RichText(text: TextSpan(
-                    text: 'sosmed_label_average_price'.tr(), style: InvestrendTheme.of(context).more_support_w400.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor),
-                    children: [
-                      TextSpan(
-                        text: '   '+InvestrendTheme.formatMoney(avgPrice, prefixRp: true),
-                        style: InvestrendTheme.of(context).more_support_w400.copyWith(color: Theme.of(context).colorScheme.secondary),
-                      ),
-                    ]
-                  )),
+                  RichText(
+                      text: TextSpan(
+                          text: 'sosmed_label_average_price'.tr(),
+                          style: InvestrendTheme.of(context)
+                              .more_support_w400
+                              ?.copyWith(
+                                  color: InvestrendTheme.of(context)
+                                      .greyLighterTextColor),
+                          children: [
+                        TextSpan(
+                          text: '   ' +
+                              InvestrendTheme.formatMoney(avgPrice,
+                                  prefixRp: true),
+                          style: InvestrendTheme.of(context)
+                              .more_support_w400
+                              ?.copyWith(
+                                  color:
+                                      Theme.of(context).colorScheme.secondary),
+                        ),
+                      ])),
                   SizedBox(
                     height: 30.0,
                   ),
                   Text(
                     'sosmed_activity_information'.tr(),
                     textAlign: TextAlign.end,
-                    style: InvestrendTheme.of(context).more_support_w400.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor),
+                    style: InvestrendTheme.of(context)
+                        .more_support_w400
+                        ?.copyWith(
+                            color: InvestrendTheme.of(context)
+                                .greyLighterTextColor),
                   ),
                 ],
               );
@@ -222,13 +257,16 @@ class _ComposeActivitySellWidgetState extends State<ComposeActivitySellWidget> {
 }
 
 class ComposePredictionWidget extends StatefulWidget {
-  final VoidCallback onDelete;
+  final VoidCallback? onDelete;
   final StateComposePrediction state_prediction;
 
-  const ComposePredictionWidget(this.state_prediction, {this.onDelete, Key key}) : super(key: key);
+  const ComposePredictionWidget(this.state_prediction,
+      {this.onDelete, Key? key})
+      : super(key: key);
 
   @override
-  _ComposePredictionWidgetState createState() => _ComposePredictionWidgetState();
+  _ComposePredictionWidgetState createState() =>
+      _ComposePredictionWidgetState();
 }
 
 class _ComposePredictionWidgetState extends State<ComposePredictionWidget> {
@@ -236,7 +274,7 @@ class _ComposePredictionWidgetState extends State<ComposePredictionWidget> {
   TextEditingController controllerPrice = TextEditingController();
   FocusNode priceFocusNode = FocusNode();
   FocusNode codeFocusNode = FocusNode();
-  ValueNotifier<int> _buttonOrdersNotifier; // = ValueNotifier<int>(0);
+  ValueNotifier<int>? _buttonOrdersNotifier; // = ValueNotifier<int>(0);
   ValueNotifier<int> _marketPriceNotifier = ValueNotifier<int>(0);
   final Key keyCode = UniqueKey();
   final Key keyPrice = UniqueKey();
@@ -251,16 +289,16 @@ class _ComposePredictionWidgetState extends State<ComposePredictionWidget> {
     'sosmed_label_polling_6_month'.tr(),
     'sosmed_label_polling_1_year'.tr(),
   ];
-  ValueNotifier<int> timingNotifier; // = ValueNotifier<int>(1);
+  ValueNotifier<int>? timingNotifier; // = ValueNotifier<int>(1);
   final double padding = 12.0;
 
   @override
   void dispose() {
     _marketPriceNotifier.dispose();
-    _buttonOrdersNotifier.dispose();
+    _buttonOrdersNotifier?.dispose();
     priceFocusNode.dispose();
     codeFocusNode.dispose();
-    timingNotifier.dispose();
+    timingNotifier?.dispose();
     controllerCode.dispose();
     controllerPrice.dispose();
     super.dispose();
@@ -281,25 +319,27 @@ class _ComposePredictionWidgetState extends State<ComposePredictionWidget> {
     _buttonOrdersNotifier = ValueNotifier<int>(0);
     updateTransactionType();
     controllerCode.addListener(() {
-      bool changed = !StringUtils.equalsIgnoreCase(widget.state_prediction.code, controllerCode.text);
+      bool changed = !StringUtils.equalsIgnoreCase(
+          widget.state_prediction.code, controllerCode.text);
       widget.state_prediction.code = controllerCode.text;
       if (changed) {
         _marketPriceNotifier.value = 0;
       }
     });
     controllerPrice.addListener(() {
-      widget.state_prediction.target_price = Utils.safeInt(controllerPrice.text);
+      widget.state_prediction.target_price =
+          Utils.safeInt(controllerPrice.text);
     });
-    _buttonOrdersNotifier.addListener(() {
+    _buttonOrdersNotifier?.addListener(() {
       updateTransactionType();
     });
 
-    timingNotifier.addListener(() {
+    timingNotifier?.addListener(() {
       updateExpireAt();
     });
-    _marketPriceNotifier.addListener(() {
-      int startPrice = 0;
-      if (_marketPriceNotifier.value == IntFlag.loading_value || _marketPriceNotifier.value == IntFlag.error_value) {
+    _marketPriceNotifier.addListener(({int startPrice = 0}) {
+      if (_marketPriceNotifier.value == IntFlag.loading_value ||
+          _marketPriceNotifier.value == IntFlag.error_value) {
         startPrice = 0;
       } else {
         startPrice = _marketPriceNotifier.value;
@@ -309,9 +349,9 @@ class _ComposePredictionWidgetState extends State<ComposePredictionWidget> {
   }
 
   void updateTransactionType() {
-    if (_buttonOrdersNotifier.value == 0) {
+    if (_buttonOrdersNotifier?.value == 0) {
       widget.state_prediction.transaction_type = 'BUY';
-    } else if (_buttonOrdersNotifier.value == 1) {
+    } else if (_buttonOrdersNotifier?.value == 1) {
       widget.state_prediction.transaction_type = 'SELL';
     } else {
       widget.state_prediction.transaction_type = '?';
@@ -327,19 +367,25 @@ class _ComposePredictionWidgetState extends State<ComposePredictionWidget> {
     // 'sosmed_label_polling_1_year'.tr(),  4
     DateTime now = DateTime.now().toUtc();
     DateTime expiredAt;
-    int index = timingNotifier.value;
+    int? index = timingNotifier?.value;
     if (index == 0) {
-      expiredAt = new DateTime.utc(now.year, now.month, now.day + 7, now.hour, now.minute, now.second, now.millisecond, now.microsecond);
+      expiredAt = new DateTime.utc(now.year, now.month, now.day + 7, now.hour,
+          now.minute, now.second, now.millisecond, now.microsecond);
     } else if (index == 1) {
-      expiredAt = new DateTime.utc(now.year, now.month + 1, now.day, now.hour, now.minute, now.second, now.millisecond, now.microsecond);
+      expiredAt = new DateTime.utc(now.year, now.month + 1, now.day, now.hour,
+          now.minute, now.second, now.millisecond, now.microsecond);
     } else if (index == 2) {
-      expiredAt = new DateTime.utc(now.year, now.month + 3, now.day, now.hour, now.minute, now.second, now.millisecond, now.microsecond);
+      expiredAt = new DateTime.utc(now.year, now.month + 3, now.day, now.hour,
+          now.minute, now.second, now.millisecond, now.microsecond);
     } else if (index == 3) {
-      expiredAt = new DateTime.utc(now.year, now.month + 6, now.day, now.hour, now.minute, now.second, now.millisecond, now.microsecond);
+      expiredAt = new DateTime.utc(now.year, now.month + 6, now.day, now.hour,
+          now.minute, now.second, now.millisecond, now.microsecond);
     } else if (index == 4) {
-      expiredAt = new DateTime.utc(now.year + 1, now.month, now.day, now.hour, now.minute, now.second, now.millisecond, now.microsecond);
+      expiredAt = new DateTime.utc(now.year + 1, now.month, now.day, now.hour,
+          now.minute, now.second, now.millisecond, now.microsecond);
     } else {
-      expiredAt = new DateTime.utc(now.year, now.month + 1, now.day, now.hour, now.minute, now.second, now.millisecond, now.microsecond);
+      expiredAt = new DateTime.utc(now.year, now.month + 1, now.day, now.hour,
+          now.minute, now.second, now.millisecond, now.microsecond);
     }
     print('now : ' + now.toString());
     print('expired_at : ' + expiredAt.toString());
@@ -349,20 +395,24 @@ class _ComposePredictionWidgetState extends State<ComposePredictionWidget> {
 
   void validateStockCode() {
     String code = controllerCode.text.trim();
-    Stock stock = InvestrendTheme.storedData.findStock(code);
+    Stock? stock = InvestrendTheme.storedData?.findStock(code);
     if (stock != null) {
-      controllerCode.text = stock?.code;
+      controllerCode.text = stock.code!;
       _marketPriceNotifier.value = IntFlag.loading_value;
-      final stockSummary = InvestrendTheme.datafeedHttp.fetchStockSummary(stock.code, stock.defaultBoard);
+      final stockSummary = InvestrendTheme.datafeedHttp
+          .fetchStockSummary(stock.code, stock.defaultBoard);
       stockSummary.then((summary) {
         if (summary != null) {
           print('Result Summary DATA : ' + stockSummary.toString());
           //_summaryNotifier.setData(stockSummary);
           //context.read(stockSummaryChangeNotifier).setData(stockSummary);
-          if (StringUtils.equalsIgnoreCase(controllerCode.text, summary.code)) {
-            _marketPriceNotifier.value = summary.close;
+          if (StringUtils.equalsIgnoreCase(
+              controllerCode.text, summary.code!)) {
+            _marketPriceNotifier.value = summary.close!;
           } else {
-            print('Result Summary no longer valid for code: $controllerCode.text --> receive : ' + summary.code);
+            print(
+                'Result Summary no longer valid for code: $controllerCode.text --> receive : ' +
+                    summary.code!);
             //_marketPriceNotifier.value = 0;
           }
         } else {
@@ -373,7 +423,8 @@ class _ComposePredictionWidgetState extends State<ComposePredictionWidget> {
         _marketPriceNotifier.value = IntFlag.error_value;
       });
     } else {
-      InvestrendTheme.of(context).showSnackBar(context, 'sosmed_label_invalid_stock'.tr());
+      InvestrendTheme.of(context)
+          .showSnackBar(context, 'sosmed_label_invalid_stock'.tr());
       _marketPriceNotifier.value = 0;
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         controllerCode.text = '';
@@ -416,7 +467,8 @@ class _ComposePredictionWidgetState extends State<ComposePredictionWidget> {
                 onPressed: widget.onDelete,
                 icon: Image.asset('images/icons/delete_circle.png'),
                 visualDensity: VisualDensity.compact,
-                padding: EdgeInsets.only(left: 1.0, bottom: 1.0, top: 1.0, right: 1.0),
+                padding: EdgeInsets.only(
+                    left: 1.0, bottom: 1.0, top: 1.0, right: 1.0),
               ),
             ],
           ),
@@ -478,12 +530,15 @@ class _ComposePredictionWidgetState extends State<ComposePredictionWidget> {
                         showModalBottomSheet(
                             isScrollControlled: true,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(topLeft: Radius.circular(24.0), topRight: Radius.circular(24.0)),
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(24.0),
+                                  topRight: Radius.circular(24.0)),
                             ),
                             //backgroundColor: Colors.transparent,
                             context: context,
                             builder: (context) {
-                              return ListBottomSheet(timingNotifier, timingOptions);
+                              return ListBottomSheet(
+                                  timingNotifier!, timingOptions);
                             });
                       },
                       child: Column(
@@ -492,16 +547,23 @@ class _ComposePredictionWidgetState extends State<ComposePredictionWidget> {
                           Text('sosmed_label_prediction_time'.tr(),
                               style: InvestrendTheme.of(context)
                                   .more_support_w400_compact
-                                  .copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor /*, fontSize: 10.0*/)),
+                                  ?.copyWith(
+                                      color: InvestrendTheme.of(context)
+                                          .greyDarkerTextColor /*, fontSize: 10.0*/)),
                           SizedBox(
                             height: 5.0,
                           ),
                           ValueListenableBuilder<int>(
-                              valueListenable: timingNotifier,
+                              valueListenable: timingNotifier!,
                               builder: (context, index, child) {
                                 return Text(
                                   timingOptions.elementAt(index),
-                                  style: InvestrendTheme.of(context).more_support_w400_compact.copyWith(color: Theme.of(context).colorScheme.secondary),
+                                  style: InvestrendTheme.of(context)
+                                      .more_support_w400_compact
+                                      ?.copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .secondary),
                                 );
                               }),
                         ],
@@ -519,7 +581,9 @@ class _ComposePredictionWidgetState extends State<ComposePredictionWidget> {
                             },
                             child: Text(
                               'button_retry'.tr(),
-                              style: InvestrendTheme.of(context).more_support_w600_compact.copyWith(color: Colors.red),
+                              style: InvestrendTheme.of(context)
+                                  .more_support_w600_compact
+                                  ?.copyWith(color: Colors.red),
                             ));
                       } else if (closePrice == IntFlag.loading_value) {
                         return CircularProgressIndicator();
@@ -531,13 +595,22 @@ class _ComposePredictionWidgetState extends State<ComposePredictionWidget> {
                           Text('sosmed_label_market_price'.tr(),
                               style: InvestrendTheme.of(context)
                                   .more_support_w400_compact
-                                  .copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor /*, fontSize: 10.0*/)),
+                                  ?.copyWith(
+                                      color: InvestrendTheme.of(context)
+                                          .greyDarkerTextColor /*, fontSize: 10.0*/)),
                           SizedBox(
                             height: 5.0,
                           ),
                           Text(
-                            closePrice > 0 ? InvestrendTheme.formatPrice(closePrice) : '-',
-                            style: InvestrendTheme.of(context).more_support_w400_compact.copyWith(color: Theme.of(context).colorScheme.secondary),
+                            closePrice > 0
+                                ? InvestrendTheme.formatPrice(closePrice)
+                                : '-',
+                            style: InvestrendTheme.of(context)
+                                .more_support_w400_compact
+                                ?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .secondary),
                           ),
                         ],
                       );
@@ -554,10 +627,11 @@ class _ComposePredictionWidgetState extends State<ComposePredictionWidget> {
 }
 
 class ComposePollWidget extends StatefulWidget {
-  final VoidCallback onDelete;
+  final VoidCallback? onDelete;
   final StateComposePoll state_polls;
 
-  const ComposePollWidget(this.state_polls, {this.onDelete, Key key}) : super(key: key);
+  const ComposePollWidget(this.state_polls, {this.onDelete, Key? key})
+      : super(key: key);
 
   @override
   _ComposePollWidgetState createState() => _ComposePollWidgetState();
@@ -571,7 +645,7 @@ class _ComposePollWidgetState extends State<ComposePollWidget> {
     'sosmed_label_polling_6_month'.tr(),
     'sosmed_label_polling_1_year'.tr(),
   ];
-  ValueNotifier<int> timingNotifier; // = ValueNotifier<int>(1);
+  ValueNotifier<int>? timingNotifier; // = ValueNotifier<int>(1);
   final int maxOption = 5;
 
   //TextEditingController controller = new TextEditingController();
@@ -586,7 +660,7 @@ class _ComposePollWidgetState extends State<ComposePollWidget> {
     timingNotifier = ValueNotifier<int>(1);
     updateExpireAt();
 
-    timingNotifier.addListener(() {
+    timingNotifier?.addListener(() {
       updateExpireAt();
     });
   }
@@ -600,19 +674,25 @@ class _ComposePollWidgetState extends State<ComposePollWidget> {
     // 'sosmed_label_polling_1_year'.tr(),  4
     DateTime now = DateTime.now().toUtc();
     DateTime expiredAt;
-    int index = timingNotifier.value;
+    int? index = timingNotifier?.value;
     if (index == 0) {
-      expiredAt = new DateTime.utc(now.year, now.month, now.day + 7, now.hour, now.minute, now.second, now.millisecond, now.microsecond);
+      expiredAt = new DateTime.utc(now.year, now.month, now.day + 7, now.hour,
+          now.minute, now.second, now.millisecond, now.microsecond);
     } else if (index == 1) {
-      expiredAt = new DateTime.utc(now.year, now.month + 1, now.day, now.hour, now.minute, now.second, now.millisecond, now.microsecond);
+      expiredAt = new DateTime.utc(now.year, now.month + 1, now.day, now.hour,
+          now.minute, now.second, now.millisecond, now.microsecond);
     } else if (index == 2) {
-      expiredAt = new DateTime.utc(now.year, now.month + 3, now.day, now.hour, now.minute, now.second, now.millisecond, now.microsecond);
+      expiredAt = new DateTime.utc(now.year, now.month + 3, now.day, now.hour,
+          now.minute, now.second, now.millisecond, now.microsecond);
     } else if (index == 3) {
-      expiredAt = new DateTime.utc(now.year, now.month + 6, now.day, now.hour, now.minute, now.second, now.millisecond, now.microsecond);
+      expiredAt = new DateTime.utc(now.year, now.month + 6, now.day, now.hour,
+          now.minute, now.second, now.millisecond, now.microsecond);
     } else if (index == 4) {
-      expiredAt = new DateTime.utc(now.year + 1, now.month, now.day, now.hour, now.minute, now.second, now.millisecond, now.microsecond);
+      expiredAt = new DateTime.utc(now.year + 1, now.month, now.day, now.hour,
+          now.minute, now.second, now.millisecond, now.microsecond);
     } else {
-      expiredAt = new DateTime.utc(now.year, now.month + 1, now.day, now.hour, now.minute, now.second, now.millisecond, now.microsecond);
+      expiredAt = new DateTime.utc(now.year, now.month + 1, now.day, now.hour,
+          now.minute, now.second, now.millisecond, now.microsecond);
     }
     print('now : ' + now.toString());
     print('expired_at : ' + expiredAt.toString());
@@ -622,7 +702,7 @@ class _ComposePollWidgetState extends State<ComposePollWidget> {
 
   @override
   void dispose() {
-    timingNotifier.dispose();
+    timingNotifier?.dispose();
     //controller.dispose();
     controllers.forEach((controller) {
       controller.dispose();
@@ -665,7 +745,9 @@ class _ComposePollWidgetState extends State<ComposePollWidget> {
       int nextIndex = i + 1;
       TextEditingController controller = controllers.elementAt(i);
       FocusNode focusNode = focusNodes.elementAt(i);
-      FocusNode nextFocusNode = nextIndex < controllers.length ? focusNodes.elementAt(nextIndex) : null;
+      FocusNode? nextFocusNode = nextIndex < controllers.length
+          ? focusNodes.elementAt(nextIndex)
+          : null;
       String hint = 'sosmed_label_option'.tr() + ' $nextIndex';
       list.add(Padding(
         padding: EdgeInsets.only(left: padding, right: padding),
@@ -674,7 +756,7 @@ class _ComposePollWidgetState extends State<ComposePollWidget> {
           hint: hint,
           key: Key('polls_' + nextIndex.toString()),
           focusNode: focusNode,
-          nextFocusNode: nextFocusNode,
+          nextFocusNode: nextFocusNode!,
         ),
       ));
     }
@@ -715,7 +797,10 @@ class _ComposePollWidgetState extends State<ComposePollWidget> {
                 ),
                 Text(
                   'sosmed_label_add_option'.tr(),
-                  style: InvestrendTheme.of(context).small_w400_compact.copyWith(color: Theme.of(context).colorScheme.secondary),
+                  style: InvestrendTheme.of(context)
+                      .small_w400_compact
+                      ?.copyWith(
+                          color: Theme.of(context).colorScheme.secondary),
                 ),
               ],
             )),
@@ -741,12 +826,14 @@ class _ComposePollWidgetState extends State<ComposePollWidget> {
               showModalBottomSheet(
                   isScrollControlled: true,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(topLeft: Radius.circular(24.0), topRight: Radius.circular(24.0)),
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(24.0),
+                        topRight: Radius.circular(24.0)),
                   ),
                   //backgroundColor: Colors.transparent,
                   context: context,
                   builder: (context) {
-                    return ListBottomSheet(timingNotifier, timingOptions);
+                    return ListBottomSheet(timingNotifier!, timingOptions);
                   });
             },
             child: Column(
@@ -755,16 +842,21 @@ class _ComposePollWidgetState extends State<ComposePollWidget> {
                 Text('sosmed_label_polling_time'.tr(),
                     style: InvestrendTheme.of(context)
                         .more_support_w400_compact
-                        .copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor /*, fontSize: 10.0*/)),
+                        ?.copyWith(
+                            color: InvestrendTheme.of(context)
+                                .greyDarkerTextColor /*, fontSize: 10.0*/)),
                 SizedBox(
                   height: 5.0,
                 ),
                 ValueListenableBuilder<int>(
-                    valueListenable: timingNotifier,
+                    valueListenable: timingNotifier!,
                     builder: (context, index, child) {
                       return Text(
                         timingOptions.elementAt(index),
-                        style: InvestrendTheme.of(context).more_support_w400_compact.copyWith(color: Theme.of(context).colorScheme.secondary),
+                        style: InvestrendTheme.of(context)
+                            .more_support_w400_compact
+                            ?.copyWith(
+                                color: Theme.of(context).colorScheme.secondary),
                       );
                     }),
               ],
@@ -838,16 +930,16 @@ class _ComposePollWidgetState extends State<ComposePollWidget> {
 
 class TextFieldCounter extends StatefulWidget {
   final TextEditingController controller;
-  final int maxLength;
-  final String hint;
+  final int? maxLength;
+  final String? hint;
   final bool showCounter;
-  final String prefix;
+  final String? prefix;
 
   //final TextInputAction textInputAction;
-  final FocusNode nextFocusNode;
-  final FocusNode focusNode;
+  final FocusNode? nextFocusNode;
+  final FocusNode? focusNode;
   final TextInputType keyboardType;
-  final VoidCallback onEditingComplete;
+  final VoidCallback? onEditingComplete;
 
   const TextFieldCounter(this.controller,
       {this.onEditingComplete,
@@ -858,7 +950,7 @@ class TextFieldCounter extends StatefulWidget {
       this.prefix,
       this.maxLength = 25,
       this.showCounter = true,
-      /*this.textInputAction,*/ Key key})
+      /*this.textInputAction,*/ Key? key})
       : super(key: key);
 
   @override
@@ -876,7 +968,7 @@ class _TextFieldCounterState extends State<TextFieldCounter> {
 
   @override
   Widget build(BuildContext context) {
-    int characterLeft = widget.maxLength - widget.controller.text.length;
+    int characterLeft = widget.maxLength! - widget.controller.text.length;
     //TextInputAction textInputAction = widget.textInputAction ?? TextInputAction.done ;
 
     return Padding(
@@ -950,24 +1042,27 @@ class _TextFieldCounterState extends State<TextFieldCounter> {
       //textCapitalization: TextCapitalization.characters,
       maxLength: widget.maxLength,
       focusNode: widget.focusNode,
-      textInputAction: widget.nextFocusNode != null ? TextInputAction.next : TextInputAction.done,
+      textInputAction: widget.nextFocusNode != null
+          ? TextInputAction.next
+          : TextInputAction.done,
       keyboardType: widget.keyboardType,
-      style: InvestrendTheme.of(context).small_w400_compact.copyWith(height: 1.0),
+      style:
+          InvestrendTheme.of(context).small_w400_compact?.copyWith(height: 1.0),
       onEditingComplete: () {
         if (widget.nextFocusNode != null) {
-          widget.nextFocusNode.requestFocus();
+          widget.nextFocusNode?.requestFocus();
         } else {
           FocusScope.of(context).unfocus();
         }
         if (widget.onEditingComplete != null) {
-          widget.onEditingComplete();
+          widget.onEditingComplete!();
         }
       },
       decoration: InputDecoration(
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(14.0),
             borderSide: BorderSide(
-              color: InvestrendTheme.of(context).greyLighterTextColor,
+              color: InvestrendTheme.of(context).greyLighterTextColor!,
               width: 0.5,
             ),
           ),
@@ -981,20 +1076,31 @@ class _TextFieldCounterState extends State<TextFieldCounter> {
           counterText: '',
           filled: true,
           suffixText: widget.showCounter ? characterLeft.toString() : null,
-          suffixStyle: InvestrendTheme.of(context).small_w400_compact.copyWith(color: Colors.transparent, height: 1.0),
-          hintStyle:
-              InvestrendTheme.of(context).small_w400_compact.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor, height: 1.0),
+          suffixStyle: InvestrendTheme.of(context)
+              .small_w400_compact
+              ?.copyWith(color: Colors.transparent, height: 1.0),
+          hintStyle: InvestrendTheme.of(context).small_w400_compact?.copyWith(
+              color: InvestrendTheme.of(context).greyLighterTextColor,
+              height: 1.0),
           hintText: widget.hint,
           prefixText: widget.prefix,
-          prefixStyle: InvestrendTheme.of(context).small_w400_compact.copyWith(color: Colors.transparent, height: 1.0),
-          helperStyle:
-              InvestrendTheme.of(context).small_w400_compact.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor, height: 1.0),
-          labelStyle:
-              InvestrendTheme.of(context).small_w400_compact.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor, height: 1.0),
-          counterStyle:
-              InvestrendTheme.of(context).small_w400_compact.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor, height: 1.0),
-          errorStyle:
-              InvestrendTheme.of(context).small_w400_compact.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor, height: 1.0),
+          prefixStyle: InvestrendTheme.of(context)
+              .small_w400_compact
+              ?.copyWith(color: Colors.transparent, height: 1.0),
+          helperStyle: InvestrendTheme.of(context).small_w400_compact?.copyWith(
+              color: InvestrendTheme.of(context).greyLighterTextColor,
+              height: 1.0),
+          labelStyle: InvestrendTheme.of(context).small_w400_compact?.copyWith(
+              color: InvestrendTheme.of(context).greyLighterTextColor,
+              height: 1.0),
+          counterStyle: InvestrendTheme.of(context)
+              .small_w400_compact
+              ?.copyWith(
+                  color: InvestrendTheme.of(context).greyLighterTextColor,
+                  height: 1.0),
+          errorStyle: InvestrendTheme.of(context).small_w400_compact?.copyWith(
+              color: InvestrendTheme.of(context).greyLighterTextColor,
+              height: 1.0),
           fillColor: Colors.transparent),
 
       cursorHeight: 24.0,
@@ -1007,13 +1113,16 @@ class _TextFieldCounterState extends State<TextFieldCounter> {
     );
   }
 
-  Widget createTextFieldCounterInvisible(BuildContext context, int characterLeft) {
+  Widget createTextFieldCounterInvisible(
+      BuildContext context, int characterLeft) {
     return TextField(
       controller: controllerInvisible,
       maxLines: 1,
       maxLength: widget.maxLength,
       //textInputAction: widget.textInputAction ?? TextInputAction.done ,
-      style: InvestrendTheme.of(context).small_w400_compact.copyWith(height: 1.0, color: Colors.transparent),
+      style: InvestrendTheme.of(context)
+          .small_w400_compact
+          ?.copyWith(height: 1.0, color: Colors.transparent),
       decoration: InputDecoration(
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(14.0),
@@ -1032,17 +1141,29 @@ class _TextFieldCounterState extends State<TextFieldCounter> {
           counterText: '',
           filled: true,
           suffixText: widget.showCounter ? characterLeft.toString() : null,
-          suffixStyle:
-              InvestrendTheme.of(context).small_w400_compact.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor, height: 1.0),
-          hintStyle: InvestrendTheme.of(context).small_w400_compact.copyWith(color: Colors.transparent, height: 1.0),
+          suffixStyle: InvestrendTheme.of(context).small_w400_compact?.copyWith(
+              color: InvestrendTheme.of(context).greyLighterTextColor,
+              height: 1.0),
+          hintStyle: InvestrendTheme.of(context)
+              .small_w400_compact
+              ?.copyWith(color: Colors.transparent, height: 1.0),
           hintText: widget.hint,
           prefixText: widget.prefix,
-          prefixStyle:
-              InvestrendTheme.of(context).small_w400_compact.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor, height: 1.0),
-          helperStyle: InvestrendTheme.of(context).small_w400_compact.copyWith(color: Colors.transparent, height: 1.0),
-          labelStyle: InvestrendTheme.of(context).small_w400_compact.copyWith(color: Colors.transparent, height: 1.0),
-          counterStyle: InvestrendTheme.of(context).small_w400_compact.copyWith(color: Colors.transparent, height: 1.0),
-          errorStyle: InvestrendTheme.of(context).small_w400_compact.copyWith(color: Colors.transparent, height: 1.0),
+          prefixStyle: InvestrendTheme.of(context).small_w400_compact?.copyWith(
+              color: InvestrendTheme.of(context).greyDarkerTextColor,
+              height: 1.0),
+          helperStyle: InvestrendTheme.of(context)
+              .small_w400_compact
+              ?.copyWith(color: Colors.transparent, height: 1.0),
+          labelStyle: InvestrendTheme.of(context)
+              .small_w400_compact
+              ?.copyWith(color: Colors.transparent, height: 1.0),
+          counterStyle: InvestrendTheme.of(context)
+              .small_w400_compact
+              ?.copyWith(color: Colors.transparent, height: 1.0),
+          errorStyle: InvestrendTheme.of(context)
+              .small_w400_compact
+              ?.copyWith(color: Colors.transparent, height: 1.0),
           fillColor: Colors.transparent),
 
       cursorHeight: 24.0,

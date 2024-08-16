@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable, non_constant_identifier_names
+
 import 'package:Investrend/component/animation_creator.dart';
 import 'package:Investrend/component/button_order.dart';
 import 'package:Investrend/message.dart';
@@ -45,7 +47,7 @@ class InvestrendTheme extends InheritedWidget {
   //static SosMedHttp sosMedHttp = SosMedHttp();
 
   //User user = User('', '', 0.0, 1, null, null);
-  static StoredData storedData = StoredData();
+  static StoredData? storedData = StoredData();
   static const double cardPadding = 8.0;
   static const double cardMargin = 8.0;
   static const double cardPaddingGeneral = 12.0;
@@ -71,23 +73,23 @@ class InvestrendTheme extends InheritedWidget {
 
   final Color _greyLighterTextColorLightTheme = Color(0xFF8C979F);
   final Color _greyLighterTextColorDarkTheme = Color(0xFFA8B0B5);
-  Color greyLighterTextColor;
+  Color? greyLighterTextColor;
 
   final Color _greyDarkerTextColorLightTheme = Color(0xFF394B55);
   final Color _greyDarkerTextColorDarkTheme = Color(0xFF8C979F);
-  Color greyDarkerTextColor;
+  Color? greyDarkerTextColor;
 
   final Color _settingsColorLightTheme = Color(0xFF394B55);
   final Color _settingsColorDarkTheme = Color(0xFFEBEBEB); // 0xFFFAFAFA
-  Color settingsColor;
+  Color? settingsColor;
 
   final Color _greyIconColorLightTheme = Color(0xFFACACAC);
   final Color _greyIconColorDarkTheme = Color(0xFFACACAC);
-  Color greyIconColor;
+  Color? greyIconColor;
 
   final Color _oddColorLightTheme = Color(0xFFF4F2F9);
   final Color _oddColorDarkTheme = Color(0xFF1B1A1D);
-  Color oddColor;
+  Color? oddColor;
 
   //Stock stock;
   // StockNotifier stockNotifier = StockNotifier(null);
@@ -95,20 +97,20 @@ class InvestrendTheme extends InheritedWidget {
   // OrderBookNotifier orderbookNotifier = OrderBookNotifier(null, null);
   // TradeBookNotifier tradebookNotifier = TradeBookNotifier(null, null);
 
-  TextStyle textValueStyle;
-  TextStyle textLabelStyle;
+  TextStyle? textValueStyle;
+  TextStyle? textLabelStyle;
 
   final Color _colorSoftLight = Color(0xFFF5F0FF);
   final Color _colorSoftDark = Color(0xFFF5F0FF);
-  Color colorSoft;
+  Color? colorSoft;
 
   final Color _chipBorderLight = Color(0xFFEAE9EC);
   final Color _chipBorderDark = Colors.white24; // need to define
-  Color chipBorder;
+  Color? chipBorder;
 
   final Color _pollBackgroundLight = Colors.white;
   final Color _pollBackgroundDark = Color(0xFF1B1A1D); // need to define
-  Color pollBackground;
+  Color? pollBackground;
 
   /*
   final Color _pollProgressLight = Color(0xFFE6DEF6);
@@ -119,32 +121,32 @@ class InvestrendTheme extends InheritedWidget {
 
   final Color _hyperlinkLight = Color(0xFF5414db);
   final Color _hyperlinkDark = Color(0xFF5414db); // need to define
-  Color hyperlink;
+  Color? hyperlink;
 
   // final String _ic_launcherLight = "images/icons/ic_launcher.png";
   // final String _ic_launcherDark = "images/icons/ic_launcher_inverted.png";
 
   final String _ic_launcherLight = "images/icons/icon_name_black.png";
   final String _ic_launcherDark = "images/icons/icon_name_white.png";
-  String ic_launcher;
+  String? ic_launcher;
 
-  Color blackAndWhite;
-  Color blackAndWhiteLite;
+  Color? blackAndWhite;
+  Color? blackAndWhiteLite;
 
-  Color blackAndWhiteText;
-  Color blackAndWhiteTextLite;
-  Color blackAndWhiteTextInactive;
+  Color? blackAndWhiteText;
+  Color? blackAndWhiteTextLite;
+  Color? blackAndWhiteTextInactive;
   final Color _investrendPurpleLight = Color(0xFF5414DB);
   final Color _investrendPurpleDark = Color(0xFF5414DB);
-  Color investrendPurple;
+  Color? investrendPurple;
 
   final Color _investrendPurpleTextLight = Color(0xFF5414DB);
   final Color _investrendPurpleTextDark = Color(0xFFb49afc);
-  Color investrendPurpleText;
+  Color? investrendPurpleText;
 
   static final Color _textWhiteLight = Color(0xFFFAFAFA);
   static final Color _textWhiteDark = Color(0xFFEBEBEB);
-  Color textWhite; // = Color(0xFFFAFAFA);
+  Color? textWhite; // = Color(0xFFFAFAFA);
 
   static final Color greenText = Color(0xFF25B792); //Color(0xFF25B792);
   static final Color greenBackground = Color(0xFFBFF5EB); //Color(0xFFB3F3E8);
@@ -155,24 +157,24 @@ class InvestrendTheme extends InheritedWidget {
   static final Color yellowText = Color(0xFFFAA043);
   static final Color yellowBackground = Color(0xFFFEE7D0);
 
-  Color tileBackground;
+  Color? tileBackground;
   final Color _tileBackgroundLight = Color(0xFFF2F0F8);
   //final Color _tileBackgroundDark = Color(0xFF1A191B);
   final Color _tileBackgroundDark = Color(0xFF222124);
 
-  Color accelerationBackground;
+  Color? accelerationBackground;
   final Color _accelerationBackgroundLight = Color(0xFFF2F0F8);
   final Color _accelerationBackgroundDark = Color(0xFF222124);
 
-  Color accelerationTextColor;
+  Color? accelerationTextColor;
   final Color _accelerationTextLight = Color(0xFF5414DB);
   final Color _accelerationTextDark = Color(0xFFb49afc);
 
-  Color tileBorder;
+  Color? tileBorder;
   final Color _tileBorderLight = Color(0xFFEAE6F6);
   final Color _tileBorderDark = Color(0xFF353436);
 
-  Color tileSplashColor;
+  Color? tileSplashColor;
   final Color _tileSplashColorLight = Color(0xFF9e86d1);
 
   //final Color _tileBackgroundDark = Colors.black26; // need to define
@@ -188,7 +190,7 @@ class InvestrendTheme extends InheritedWidget {
 
   final Color _appBarActionTextColorLight = Color(0xFF394B55);
   final Color _appBarActionTextColorDark = Color(0xFFF4F2F9);
-  Color appBarActionTextColor;
+  Color? appBarActionTextColor;
 
   final Color whiteColor = Color(0xFFF4F2F9);
 
@@ -198,91 +200,91 @@ class InvestrendTheme extends InheritedWidget {
   static final EdgeInsets paddingTab =
       EdgeInsets.symmetric(horizontal: cardPaddingGeneral);
 
-  TextStyle headline3;
-  TextStyle regular_w400;
-  TextStyle regular_w500;
-  TextStyle regular_w600;
+  TextStyle? headline3;
+  TextStyle? regular_w400;
+  TextStyle? regular_w500;
+  TextStyle? regular_w600;
 
-  TextStyle regular_w400_compact;
-  TextStyle regular_w500_compact;
-  TextStyle regular_w600_compact;
+  TextStyle? regular_w400_compact;
+  TextStyle? regular_w500_compact;
+  TextStyle? regular_w600_compact;
 
-  TextStyle regular_w400_greyDarker;
-  TextStyle regular_w500_greyDarker;
-  TextStyle regular_w600_greyDarker;
+  TextStyle? regular_w400_greyDarker;
+  TextStyle? regular_w500_greyDarker;
+  TextStyle? regular_w600_greyDarker;
 
-  TextStyle regular_w400_compact_greyDarker;
-  TextStyle regular_w500_compact_greyDarker;
-  TextStyle regular_w600_compact_greyDarker;
+  TextStyle? regular_w400_compact_greyDarker;
+  TextStyle? regular_w500_compact_greyDarker;
+  TextStyle? regular_w600_compact_greyDarker;
 
-  TextStyle medium_w400;
-  TextStyle medium_w500;
-  TextStyle medium_w600;
+  TextStyle? medium_w400;
+  TextStyle? medium_w500;
+  TextStyle? medium_w600;
 
-  TextStyle medium_w400_compact;
-  TextStyle medium_w500_compact;
-  TextStyle medium_w600_compact;
+  TextStyle? medium_w400_compact;
+  TextStyle? medium_w500_compact;
+  TextStyle? medium_w600_compact;
 
-  TextStyle small_w600;
-  TextStyle small_w500;
-  TextStyle small_w400;
+  TextStyle? small_w600;
+  TextStyle? small_w500;
+  TextStyle? small_w400;
 
-  TextStyle small_w600_compact;
-  TextStyle small_w500_compact;
-  TextStyle small_w400_compact;
+  TextStyle? small_w600_compact;
+  TextStyle? small_w500_compact;
+  TextStyle? small_w400_compact;
 
-  TextStyle small_w600_greyDarker;
-  TextStyle small_w500_greyDarker;
-  TextStyle small_w400_greyDarker;
+  TextStyle? small_w600_greyDarker;
+  TextStyle? small_w500_greyDarker;
+  TextStyle? small_w400_greyDarker;
 
-  TextStyle small_w600_compact_greyDarker;
-  TextStyle small_w500_compact_greyDarker;
-  TextStyle small_w400_compact_greyDarker;
+  TextStyle? small_w600_compact_greyDarker;
+  TextStyle? small_w500_compact_greyDarker;
+  TextStyle? small_w400_compact_greyDarker;
 
-  TextStyle support_w600;
-  TextStyle support_w500;
-  TextStyle support_w400;
-  TextStyle more_support_w600;
-  TextStyle more_support_w500;
-  TextStyle more_support_w400;
+  TextStyle? support_w600;
+  TextStyle? support_w500;
+  TextStyle? support_w400;
+  TextStyle? more_support_w600;
+  TextStyle? more_support_w500;
+  TextStyle? more_support_w400;
 
-  TextStyle support_w600_compact;
-  TextStyle support_w500_compact;
-  TextStyle support_w400_compact;
+  TextStyle? support_w600_compact;
+  TextStyle? support_w500_compact;
+  TextStyle? support_w400_compact;
 
-  TextStyle support_w600_compact_greyDarker;
-  TextStyle support_w500_compact_greyDarker;
-  TextStyle support_w400_compact_greyDarker;
+  TextStyle? support_w600_compact_greyDarker;
+  TextStyle? support_w500_compact_greyDarker;
+  TextStyle? support_w400_compact_greyDarker;
 
-  TextStyle support_w600_compact_greyLighter;
-  TextStyle support_w500_compact_greyLighter;
-  TextStyle support_w400_compact_greyLighter;
+  TextStyle? support_w600_compact_greyLighter;
+  TextStyle? support_w500_compact_greyLighter;
+  TextStyle? support_w400_compact_greyLighter;
 
-  TextStyle more_support_w600_compact;
-  TextStyle more_support_w500_compact;
-  TextStyle more_support_w400_compact;
+  TextStyle? more_support_w600_compact;
+  TextStyle? more_support_w500_compact;
+  TextStyle? more_support_w400_compact;
 
-  TextStyle more_support_w600_compact_greyDarker;
-  TextStyle more_support_w500_compact_greyDarker;
-  TextStyle more_support_w400_compact_greyDarker;
+  TextStyle? more_support_w600_compact_greyDarker;
+  TextStyle? more_support_w500_compact_greyDarker;
+  TextStyle? more_support_w400_compact_greyDarker;
 
-  TextStyle inputLabelStyle;
-  TextStyle inputHintStyle;
-  TextStyle inputHelperStyle;
-  TextStyle inputPrefixStyle;
-  TextStyle inputStyle;
-  TextStyle inputErrorStyle;
+  TextStyle? inputLabelStyle;
+  TextStyle? inputHintStyle;
+  TextStyle? inputHelperStyle;
+  TextStyle? inputPrefixStyle;
+  TextStyle? inputStyle;
+  TextStyle? inputErrorStyle;
 
-  String applicationName = '';
-  String applicationVersion = '';
-  String applicationBuild = '';
-  String applicationPlatform = 'Mobile';
+  String? applicationName = '';
+  String? applicationVersion = '';
+  String? applicationBuild = '';
+  String? applicationPlatform = 'Mobile';
   // String applicationDeviceType = 'Mobile';
 
-  InvestrendTheme({BuildContext context, Widget child, Key key})
-      : super(child: child, key: key) {
+  InvestrendTheme({BuildContext? context, Widget? child, Key? key})
+      : super(child: child!, key: key) {
     print('InvestrendTheme created ' + DateTime.now().toString());
-    constructTheme(context);
+    constructTheme(context!);
   }
 
   // void platformInfo() async{
@@ -352,85 +354,85 @@ class InvestrendTheme extends InheritedWidget {
     chipBorder = lightTheme ? _chipBorderLight : _chipBorderDark;
     colorSoft = lightTheme ? _colorSoftLight : _colorSoftDark;
 
-    headline3 = Theme.of(context).textTheme.headline3;
+    headline3 = Theme.of(context).textTheme.displaySmall;
 
     medium_w600 = Theme.of(context)
         .textTheme
-        .subtitle1
-        .copyWith(fontSize: 20.0, fontWeight: FontWeight.w600);
+        .titleMedium
+        ?.copyWith(fontSize: 20.0, fontWeight: FontWeight.w600);
     medium_w500 = Theme.of(context)
         .textTheme
-        .subtitle1
-        .copyWith(fontSize: 20.0, fontWeight: FontWeight.w500);
+        .titleMedium
+        ?.copyWith(fontSize: 20.0, fontWeight: FontWeight.w500);
     medium_w400 = Theme.of(context)
         .textTheme
-        .subtitle1
-        .copyWith(fontSize: 20.0, fontWeight: FontWeight.w400);
+        .titleMedium
+        ?.copyWith(fontSize: 20.0, fontWeight: FontWeight.w400);
 
     regular_w600 = Theme.of(context)
         .textTheme
-        .bodyText1
-        .copyWith(fontWeight: FontWeight.w600);
+        .bodyLarge
+        ?.copyWith(fontWeight: FontWeight.w600);
     regular_w500 = Theme.of(context)
         .textTheme
-        .bodyText1
-        .copyWith(fontWeight: FontWeight.w500);
-    regular_w400 = Theme.of(context).textTheme.bodyText1;
+        .bodyLarge
+        ?.copyWith(fontWeight: FontWeight.w500);
+    regular_w400 = Theme.of(context).textTheme.bodyLarge;
 
     small_w600 = Theme.of(context)
         .textTheme
-        .bodyText2
-        .copyWith(fontWeight: FontWeight.w600);
+        .bodyMedium
+        ?.copyWith(fontWeight: FontWeight.w600);
     small_w500 = Theme.of(context)
         .textTheme
-        .bodyText2
-        .copyWith(fontWeight: FontWeight.w500);
-    small_w400 = Theme.of(context).textTheme.bodyText2;
+        .bodyMedium
+        ?.copyWith(fontWeight: FontWeight.w500);
+    small_w400 = Theme.of(context).textTheme.bodyMedium;
 
     support_w600 = Theme.of(context)
         .textTheme
-        .caption
-        .copyWith(fontWeight: FontWeight.w600);
+        .bodySmall
+        ?.copyWith(fontWeight: FontWeight.w600);
     support_w500 = Theme.of(context)
         .textTheme
-        .caption
-        .copyWith(fontWeight: FontWeight.w500);
-    support_w400 = Theme.of(context).textTheme.caption;
+        .bodySmall
+        ?.copyWith(fontWeight: FontWeight.w500);
+    support_w400 = Theme.of(context).textTheme.bodySmall;
 
     more_support_w600 = Theme.of(context)
         .textTheme
-        .overline
-        .copyWith(fontWeight: FontWeight.w600);
+        .labelSmall
+        ?.copyWith(fontWeight: FontWeight.w600);
     more_support_w500 = Theme.of(context)
         .textTheme
-        .overline
-        .copyWith(fontWeight: FontWeight.w500);
-    more_support_w400 = Theme.of(context).textTheme.overline;
+        .labelSmall
+        ?.copyWith(fontWeight: FontWeight.w500);
+    more_support_w400 = Theme.of(context).textTheme.labelSmall;
 
-    regular_w400_compact = regular_w400.copyWith(height: 1.0);
-    regular_w500_compact = regular_w500.copyWith(height: 1.0);
-    regular_w600_compact = regular_w600.copyWith(height: 1.0);
-    medium_w400_compact = medium_w400.copyWith(height: 1.0);
-    medium_w500_compact = medium_w500.copyWith(height: 1.0);
-    medium_w600_compact = medium_w600.copyWith(height: 1.0);
-    small_w600_compact = small_w600.copyWith(height: 1.0);
-    small_w500_compact = small_w500.copyWith(height: 1.0);
-    small_w400_compact = small_w400.copyWith(height: 1.0);
-    support_w600_compact = support_w600.copyWith(height: 1.0);
-    support_w500_compact = support_w500.copyWith(height: 1.0);
-    support_w400_compact = support_w400.copyWith(height: 1.0);
+    regular_w400_compact = regular_w400?.copyWith(height: 1.0);
+    regular_w500_compact = regular_w500?.copyWith(height: 1.0);
+    regular_w600_compact = regular_w600?.copyWith(height: 1.0);
+    medium_w400_compact = medium_w400?.copyWith(height: 1.0);
+    medium_w500_compact = medium_w500?.copyWith(height: 1.0);
+    medium_w600_compact = medium_w600?.copyWith(height: 1.0);
+    small_w600_compact = small_w600?.copyWith(height: 1.0);
+    small_w500_compact = small_w500?.copyWith(height: 1.0);
+    small_w400_compact = small_w400?.copyWith(height: 1.0);
+    support_w600_compact = support_w600?.copyWith(height: 1.0);
+    support_w500_compact = support_w500?.copyWith(height: 1.0);
+    support_w400_compact = support_w400?.copyWith(height: 1.0);
 
-    more_support_w600_compact = more_support_w600.copyWith(height: 1.0);
-    more_support_w500_compact = more_support_w500.copyWith(height: 1.0);
-    more_support_w400_compact = more_support_w400.copyWith(height: 1.0);
+    more_support_w600_compact = more_support_w600?.copyWith(height: 1.0);
+    more_support_w500_compact = more_support_w500?.copyWith(height: 1.0);
+    more_support_w400_compact = more_support_w400?.copyWith(height: 1.0);
 
-    inputLabelStyle = support_w400.copyWith(height: 0.1);
-    inputHintStyle = small_w400.copyWith(color: greyLighterTextColor);
-    inputHelperStyle = support_w400.copyWith(color: greyLighterTextColor);
+    inputLabelStyle = support_w400?.copyWith(height: 0.1);
+    inputHintStyle = small_w400?.copyWith(color: greyLighterTextColor);
+    inputHelperStyle = support_w400?.copyWith(color: greyLighterTextColor);
     inputPrefixStyle = small_w400;
     inputStyle = small_w400;
     inputErrorStyle =
-        support_w400.copyWith(color: Theme.of(context).colorScheme.error);
+        support_w400?.copyWith(color: Theme.of(context).colorScheme.error);
 
     appBarActionTextColor =
         lightTheme ? _appBarActionTextColorLight : _appBarActionTextColorDark;
@@ -444,7 +446,7 @@ class InvestrendTheme extends InheritedWidget {
     // textLabelStyle = Theme.of(context).textTheme.bodyText2.copyWith(color: greyLighterTextColor, fontWeight: FontWeight.w300);
 
     textValueStyle = support_w400;
-    textLabelStyle = support_w400.copyWith(color: greyLighterTextColor);
+    textLabelStyle = support_w400?.copyWith(color: greyLighterTextColor);
 
     oddColor = lightTheme ? _oddColorLightTheme : _oddColorDarkTheme;
 
@@ -456,48 +458,51 @@ class InvestrendTheme extends InheritedWidget {
     investrendPurpleText =
         lightTheme ? _investrendPurpleTextLight : _investrendPurpleTextDark;
 
-    small_w600_greyDarker = small_w600.copyWith(color: greyDarkerTextColor);
-    small_w500_greyDarker = small_w500.copyWith(color: greyDarkerTextColor);
-    small_w400_greyDarker = small_w400.copyWith(color: greyDarkerTextColor);
+    small_w600_greyDarker = small_w600?.copyWith(color: greyDarkerTextColor);
+    small_w500_greyDarker = small_w500?.copyWith(color: greyDarkerTextColor);
+    small_w400_greyDarker = small_w400?.copyWith(color: greyDarkerTextColor);
 
     small_w600_compact_greyDarker =
-        small_w600.copyWith(height: 1.0, color: greyDarkerTextColor);
+        small_w600?.copyWith(height: 1.0, color: greyDarkerTextColor);
     small_w500_compact_greyDarker =
-        small_w500.copyWith(height: 1.0, color: greyDarkerTextColor);
+        small_w500?.copyWith(height: 1.0, color: greyDarkerTextColor);
     small_w400_compact_greyDarker =
-        small_w400.copyWith(height: 1.0, color: greyDarkerTextColor);
+        small_w400?.copyWith(height: 1.0, color: greyDarkerTextColor);
 
-    regular_w400_greyDarker = regular_w400.copyWith(color: greyDarkerTextColor);
-    regular_w500_greyDarker = regular_w500.copyWith(color: greyDarkerTextColor);
-    regular_w600_greyDarker = regular_w600.copyWith(color: greyDarkerTextColor);
+    regular_w400_greyDarker =
+        regular_w400?.copyWith(color: greyDarkerTextColor);
+    regular_w500_greyDarker =
+        regular_w500?.copyWith(color: greyDarkerTextColor);
+    regular_w600_greyDarker =
+        regular_w600?.copyWith(color: greyDarkerTextColor);
 
     regular_w400_compact_greyDarker =
-        regular_w400.copyWith(height: 1.0, color: greyDarkerTextColor);
+        regular_w400?.copyWith(height: 1.0, color: greyDarkerTextColor);
     regular_w500_compact_greyDarker =
-        regular_w500.copyWith(height: 1.0, color: greyDarkerTextColor);
+        regular_w500?.copyWith(height: 1.0, color: greyDarkerTextColor);
     regular_w600_compact_greyDarker =
-        regular_w600.copyWith(height: 1.0, color: greyDarkerTextColor);
+        regular_w600?.copyWith(height: 1.0, color: greyDarkerTextColor);
 
     more_support_w600_compact_greyDarker =
-        more_support_w600_compact.copyWith(color: greyDarkerTextColor);
+        more_support_w600_compact?.copyWith(color: greyDarkerTextColor);
     more_support_w500_compact_greyDarker =
-        more_support_w500_compact.copyWith(color: greyDarkerTextColor);
+        more_support_w500_compact?.copyWith(color: greyDarkerTextColor);
     more_support_w400_compact_greyDarker =
-        more_support_w400_compact.copyWith(color: greyDarkerTextColor);
+        more_support_w400_compact?.copyWith(color: greyDarkerTextColor);
 
     support_w600_compact_greyDarker =
-        support_w600_compact.copyWith(color: greyDarkerTextColor);
+        support_w600_compact?.copyWith(color: greyDarkerTextColor);
     support_w500_compact_greyDarker =
-        support_w500_compact.copyWith(color: greyDarkerTextColor);
+        support_w500_compact?.copyWith(color: greyDarkerTextColor);
     support_w400_compact_greyDarker =
-        support_w400_compact.copyWith(color: greyDarkerTextColor);
+        support_w400_compact?.copyWith(color: greyDarkerTextColor);
 
     support_w600_compact_greyLighter =
-        support_w600_compact.copyWith(color: greyLighterTextColor);
+        support_w600_compact?.copyWith(color: greyLighterTextColor);
     support_w500_compact_greyLighter =
-        support_w500_compact.copyWith(color: greyLighterTextColor);
+        support_w500_compact?.copyWith(color: greyLighterTextColor);
     support_w400_compact_greyLighter =
-        support_w400_compact.copyWith(color: greyLighterTextColor);
+        support_w400_compact?.copyWith(color: greyLighterTextColor);
   }
 
   static Color darkenColor(Color color, [double amount = .1]) {
@@ -536,10 +541,10 @@ class InvestrendTheme extends InheritedWidget {
     return true;
   }
 
-  static Future<Object> showFinderScreen(BuildContext context,
+  static Future<dynamic> showFinderScreen(BuildContext context,
       {bool showStockOnly = false,
-      String watchlistName,
-      List<Stock> fromListStocks}) {
+      String? watchlistName,
+      List<Stock>? fromListStocks}) {
     return Navigator.push(
       context,
       PageRouteBuilder(
@@ -586,9 +591,9 @@ class InvestrendTheme extends InheritedWidget {
      */
   }
 
-  static Color changeTextColor(double value, {double prev = 0.0}) {
+  static Color changeTextColor(double? value, {double? prev = 0.0}) {
     if (prev == 0.0) {
-      if (value > 0.0) {
+      if (value! > 0.0) {
         return greenText;
       } else if (value < 0.0) {
         return redText;
@@ -596,7 +601,7 @@ class InvestrendTheme extends InheritedWidget {
         return yellowText;
       }
     } else {
-      if (value > prev) {
+      if (value! > prev!) {
         return greenText;
       } else if (value < prev) {
         return redText;
@@ -606,9 +611,9 @@ class InvestrendTheme extends InheritedWidget {
     }
   }
 
-  static Color priceTextColor(int value, {int prev = 0}) {
+  static Color? priceTextColor(int? value, {int? prev = 0}) {
     if (prev == 0) {
-      if (value > 0) {
+      if (value! > 0) {
         return greenText;
       } else if (value < 0) {
         return redText;
@@ -616,7 +621,7 @@ class InvestrendTheme extends InheritedWidget {
         return yellowText;
       }
     } else {
-      if (value > prev) {
+      if (value! > prev!) {
         return greenText;
       } else if (value < prev) {
         return redText;
@@ -662,9 +667,9 @@ class InvestrendTheme extends InheritedWidget {
 
    */
 
-  static Color priceBackgroundColorDouble(double value, {double prev = 0.0}) {
+  static Color priceBackgroundColorDouble(double? value, {double prev = 0.0}) {
     if (prev == 0) {
-      if (value > 0.0) {
+      if (value! > 0.0) {
         return greenBackground;
       } else if (value < 0.0) {
         return redBackground;
@@ -672,7 +677,7 @@ class InvestrendTheme extends InheritedWidget {
         return yellowBackground;
       }
     } else {
-      if (value > prev) {
+      if (value! > prev) {
         return greenBackground;
       } else if (value < prev) {
         return redBackground;
@@ -702,11 +707,11 @@ class InvestrendTheme extends InheritedWidget {
     }
   }
 
-  static String formatPrice(int price) {
+  static String formatPrice(int? price) {
     return _formatterNumber.format(price);
   }
 
-  static String formatComma(int number) {
+  static String formatComma(int? number) {
     return _formatterNumber.format(number);
   }
 
@@ -727,8 +732,8 @@ class InvestrendTheme extends InheritedWidget {
     return frontText + endText;
   }
 
-  static String formatCompact(BuildContext context, int number) {
-    if (number >= 100000) {
+  static String formatCompact(BuildContext context, int? number) {
+    if (number! >= 100000) {
       return InvestrendTheme.formatValue(context, number);
     }
     return _formatterNumber.format(number);
@@ -738,11 +743,11 @@ class InvestrendTheme extends InheritedWidget {
     return _formatterNumberDouble.format(number);
   }
 
-  static String formatValue(BuildContext context, int value) {
+  static String formatValue(BuildContext context, int? value) {
     //String text = NumberFormat.compact(locale: 'en_US').format(value);
 
     String text = NumberFormat.compact(
-            locale: EasyLocalization.of(context).locale.languageCode)
+            locale: EasyLocalization.of(context)?.locale.languageCode)
         .format(value);
 
     //String text = NumberFormat.compactSimpleCurrency(locale: 'en_US',decimalDigits: 2).format(value);
@@ -757,7 +762,7 @@ class InvestrendTheme extends InheritedWidget {
     return NumberFormat.compactLong(locale: 'en_US').format(value);
   }
 
-  static String formatMoneyDouble(double money,
+  static String formatMoneyDouble(double? money,
       {bool prefixPlus = false, bool prefixRp = true, bool decimal = false}) {
     // String prefix = 'Rp ';
     // if (money > 0.0 && prefixPlus) {
@@ -770,7 +775,7 @@ class InvestrendTheme extends InheritedWidget {
     }
 
     String prefix = textRP;
-    if (money > 0.0 && prefixPlus) {
+    if (money! > 0.0 && prefixPlus) {
       prefix = '+$textRP';
     } else if (money < 0.0 && prefixPlus) {
       prefix = '-$textRP';
@@ -791,10 +796,10 @@ class InvestrendTheme extends InheritedWidget {
     */
   }
 
-  static String formatMoney(int money,
+  static String formatMoney(int? money,
       {bool prefixPlus = false, bool prefixRp = true}) {
-    String prefix = 'Rp ';
-    if (money > 0.0 && prefixPlus) {
+    String? prefix = 'Rp ';
+    if (money! > 0.0 && prefixPlus) {
       prefix = '+Rp ';
     } else if (money < 0.0 && prefixPlus) {
       prefix = '-Rp ';
@@ -825,25 +830,25 @@ class InvestrendTheme extends InheritedWidget {
   //   */
   // }
 
-  static String formatPriceDouble(double price,
-      {bool showDecimal = true, bool threeDecimal = false}) {
-    if (showDecimal) {
-      if (threeDecimal) {
+  static String formatPriceDouble(double? price,
+      {bool? showDecimal = true, bool? threeDecimal = false}) {
+    if (showDecimal!) {
+      if (threeDecimal!) {
         return _formatterNumberDoubleThreeDecimal.format(price);
       } else {
         return _formatterNumberDouble.format(price);
       }
     } else {
-      return _formatterNumber.format(price.truncate());
+      return _formatterNumber.format(price?.truncate());
     }
   }
 
-  static String formatPercentChange(double number,
-      {bool sufixPercent = true, bool threeDecimal = false}) {
+  static String formatPercentChange(double? number,
+      {bool sufixPercent = true, bool? threeDecimal = false}) {
     String prefix = '';
     String sufix = '';
     //String formmated  = '';
-    if (number > 0.0) {
+    if (number! > 0.0) {
       prefix = '+';
     }
     if (sufixPercent) {
@@ -852,19 +857,19 @@ class InvestrendTheme extends InheritedWidget {
 
     //return prefix + _formatterNumberDouble.format(number) + sufix;
 
-    if (threeDecimal) {
+    if (threeDecimal!) {
       return prefix + _formatterNumberDoubleThreeDecimal.format(number) + sufix;
     } else {
       return prefix + _formatterNumberDouble.format(number) + sufix;
     }
   }
 
-  static String formatPercent(double number,
+  static String formatPercent(double? number,
       {bool sufixPercent = true, bool prefixPlus = false}) {
     String prefix = '';
     String sufix = '';
     //String formmated  = '';
-    if (number > 0.0 && prefixPlus) {
+    if (number! > 0.0 && prefixPlus) {
       prefix = '+';
     }
     if (sufixPercent) {
@@ -874,7 +879,7 @@ class InvestrendTheme extends InheritedWidget {
     return prefix + _formatterNumberDoubleDecimal.format(number) + sufix;
   }
 
-  static String formatChange(double number, {bool threeDecimal = false}) {
+  static String formatChange(double? number, {bool? threeDecimal = false}) {
     return formatPercentChange(number,
         sufixPercent: false, threeDecimal: threeDecimal);
   }
@@ -1043,7 +1048,7 @@ class InvestrendTheme extends InheritedWidget {
       NumberFormat("#,##0.000", 'en_US'); //"id"
 
   static InvestrendTheme of(BuildContext context) =>
-      context.dependOnInheritedWidgetOfExactType<InvestrendTheme>();
+      context.dependOnInheritedWidgetOfExactType<InvestrendTheme>()!;
 
   Future showDialogTooltips(
       BuildContext context, String title, String content) {
@@ -1060,7 +1065,7 @@ class InvestrendTheme extends InheritedWidget {
           buttonYes,
           style: InvestrendTheme.of(context)
               .small_w600_compact
-              .copyWith(color: Theme.of(context).colorScheme.secondary),
+              ?.copyWith(color: Theme.of(context).colorScheme.secondary),
         ),
         onPressed: onPressedYes,
       ));
@@ -1076,13 +1081,13 @@ class InvestrendTheme extends InheritedWidget {
                 title,
                 style: InvestrendTheme.of(context)
                     .regular_w600_compact
-                    .copyWith(fontSize: 19.0),
+                    ?.copyWith(fontSize: 19.0),
               ),
               content: Padding(
                 padding: const EdgeInsets.only(top: 8.0),
                 child: Text(
                   content,
-                  style: InvestrendTheme.of(context).small_w400.copyWith(
+                  style: InvestrendTheme.of(context).small_w400?.copyWith(
                       color: InvestrendTheme.of(context).greyDarkerTextColor),
                 ),
               ),
@@ -1091,10 +1096,10 @@ class InvestrendTheme extends InheritedWidget {
   }
 
   Future showDialogPlatform(BuildContext context, String title, String content,
-      {String buttonYes,
-      String buttonNo,
-      VoidCallback onPressedYes,
-      VoidCallback onPressedNo}) {
+      {String? buttonYes,
+      String? buttonNo,
+      VoidCallback? onPressedYes,
+      VoidCallback? onPressedNo}) {
     bool showYes = !StringUtils.isEmtpy(buttonYes);
     bool showNo = !StringUtils.isEmtpy(buttonNo);
     if (!showYes && !showNo) {
@@ -1109,13 +1114,13 @@ class InvestrendTheme extends InheritedWidget {
       // iOS-specific code
       if (showYes) {
         listActions.add(CupertinoDialogAction(
-          child: Text(buttonYes),
+          child: Text(buttonYes!),
           onPressed: onPressedYes,
         ));
       }
       if (showNo) {
         listActions.add(CupertinoDialogAction(
-          child: Text(buttonNo),
+          child: Text(buttonNo!),
           isDestructiveAction: true,
           onPressed: onPressedNo,
         ));
@@ -1132,7 +1137,7 @@ class InvestrendTheme extends InheritedWidget {
                   padding: const EdgeInsets.only(top: 8.0),
                   child: Text(
                     content,
-                    style: InvestrendTheme.of(context).support_w400.copyWith(
+                    style: InvestrendTheme.of(context).support_w400?.copyWith(
                         color: InvestrendTheme.of(context).greyDarkerTextColor),
                   ),
                 ),
@@ -1142,7 +1147,7 @@ class InvestrendTheme extends InheritedWidget {
       if (showYes) {
         listActions.add(TextButton(
           child: Text(
-            buttonYes,
+            buttonYes!,
             style: InvestrendTheme.of(context).small_w500_compact,
           ),
           onPressed: onPressedYes,
@@ -1151,10 +1156,10 @@ class InvestrendTheme extends InheritedWidget {
       if (showNo) {
         listActions.add(TextButton(
           child: Text(
-            buttonNo,
+            buttonNo!,
             style: InvestrendTheme.of(context)
                 .small_w500_compact
-                .copyWith(color: InvestrendTheme.redText),
+                ?.copyWith(color: InvestrendTheme.redText),
           ),
           onPressed: onPressedNo,
         ));
@@ -1171,7 +1176,7 @@ class InvestrendTheme extends InheritedWidget {
                   padding: const EdgeInsets.only(top: 8.0),
                   child: Text(
                     content,
-                    style: InvestrendTheme.of(context).support_w400.copyWith(
+                    style: InvestrendTheme.of(context).support_w400?.copyWith(
                         color: InvestrendTheme.of(context).greyDarkerTextColor),
                   ),
                 ),
@@ -1180,13 +1185,13 @@ class InvestrendTheme extends InheritedWidget {
     }
   }
 
-  Future showDialogInputPlatform(
+  Future? showDialogInputPlatform(
       BuildContext context, TextEditingController controller, String title,
-      {String buttonYes,
-      String buttonNo,
-      VoidCallback onPressedYes,
-      VoidCallback onPressedNo,
-      int maxInputLength}) {
+      {String? buttonYes,
+      String? buttonNo,
+      VoidCallback? onPressedYes,
+      VoidCallback? onPressedNo,
+      int? maxInputLength}) {
     bool showYes = !StringUtils.isEmtpy(buttonYes);
     bool showNo = !StringUtils.isEmtpy(buttonNo);
     if (!showYes && !showNo) {
@@ -1201,13 +1206,13 @@ class InvestrendTheme extends InheritedWidget {
       // iOS-specific code
       if (showYes) {
         listActions.add(CupertinoDialogAction(
-          child: Text(buttonYes),
+          child: Text(buttonYes!),
           onPressed: onPressedYes,
         ));
       }
       if (showNo) {
         listActions.add(CupertinoDialogAction(
-          child: Text(buttonNo),
+          child: Text(buttonNo!),
           isDestructiveAction: true,
           onPressed: onPressedNo,
         ));
@@ -1234,7 +1239,7 @@ class InvestrendTheme extends InheritedWidget {
       if (showYes) {
         listActions.add(TextButton(
           child: Text(
-            buttonYes,
+            buttonYes!,
             style: InvestrendTheme.of(context).small_w500_compact,
           ),
           onPressed: onPressedYes,
@@ -1243,10 +1248,10 @@ class InvestrendTheme extends InheritedWidget {
       if (showNo) {
         listActions.add(TextButton(
           child: Text(
-            buttonNo,
+            buttonNo!,
             style: InvestrendTheme.of(context)
                 .small_w500_compact
-                .copyWith(color: InvestrendTheme.redText),
+                ?.copyWith(color: InvestrendTheme.redText),
           ),
           onPressed: onPressedNo,
         ));
@@ -1271,12 +1276,13 @@ class InvestrendTheme extends InheritedWidget {
                 ));
       }
     }
+    return null;
   }
 
   Future<void> showInfoDialog(BuildContext context,
       {String title = 'Info',
       String content = '',
-      VoidCallback onClose}) async {
+      VoidCallback? onClose}) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -1305,21 +1311,21 @@ class InvestrendTheme extends InheritedWidget {
     );
   }
 
-  void showSnackBar(BuildContext context, String text,
-      {VoidCallback buttonOnPress,
-      String buttonLabel,
-      Color buttonColor,
+  void showSnackBar(BuildContext context, String? text,
+      {VoidCallback? buttonOnPress,
+      String? buttonLabel,
+      Color? buttonColor,
       int seconds = 2}) {
-    SnackBarAction button;
+    SnackBarAction? button;
     if (!StringUtils.isEmtpy(buttonLabel)) {
       button = SnackBarAction(
-        label: buttonLabel,
-        onPressed: buttonOnPress,
+        label: buttonLabel!,
+        onPressed: buttonOnPress!,
         textColor: buttonColor ?? Theme.of(context).colorScheme.secondary,
       );
     }
     final snackBar = SnackBar(
-      content: Text(text),
+      content: Text(text!),
       duration: Duration(seconds: seconds),
       action: button,
     );
@@ -1356,12 +1362,12 @@ class InvestrendTheme extends InheritedWidget {
               message.fcm_title,
               style: InvestrendTheme.of(context)
                   .small_w500_compact
-                  .copyWith(color: InvestrendTheme.of(context).textWhite),
+                  ?.copyWith(color: InvestrendTheme.of(context).textWhite),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
             Text(message.fcm_body,
-                style: InvestrendTheme.of(context).small_w400_compact.copyWith(
+                style: InvestrendTheme.of(context).small_w400_compact?.copyWith(
                     color: InvestrendTheme.of(context).greyLighterTextColor),
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis),
@@ -1393,7 +1399,7 @@ class InvestrendTheme extends InheritedWidget {
       BuildContext context, Tabs tab, int childTabIndex) {
     Navigator.popUntil(context, (route) {
       print('popUntil : ' + route.toString());
-      if (StringUtils.equalsIgnoreCase(route?.settings?.name, '/main')) {
+      if (StringUtils.equalsIgnoreCase(route.settings.name, '/main')) {
         return true;
       }
       return route.isFirst;
@@ -1467,12 +1473,18 @@ class InvestrendTheme extends InheritedWidget {
               settings: RouteSettings(name: routeName),
               transitionDuration: Duration(milliseconds: 1000),
               pageBuilder: (context, animation1, animation2) => screen,
-              transitionsBuilder:
-                  (context, animation, secondaryAnimation, child) =>
-                      FadeTransition(
-                opacity: animation,
-                child: child,
-              ),
+              // transitionsBuilder:
+              //     (context, animation, secondaryAnimation, Widget? child) {
+              //   return FadeTransition(
+              //     opacity: animation,
+              //     child: child,
+              //   );
+              // },
+              //     (context, animation, secondaryAnimation, child) =>
+              //         FadeTransition(
+              //   opacity: animation,
+              //   child: child,
+              // ),
             ),
           );
         }
@@ -1480,8 +1492,8 @@ class InvestrendTheme extends InheritedWidget {
     }
   }
 
-  static Future<Object> pushScreenTrade(BuildContext context, bool hasAccount,
-      {OrderType type = OrderType.Buy, PriceLot initialPriceLot}) {
+  static Future<dynamic>? pushScreenTrade(BuildContext context, bool hasAccount,
+      {OrderType type = OrderType.Buy, PriceLot? initialPriceLot}) {
     //bool hasAccount = context.read(dataHolderChangeNotifier).user.accountSize() > 0;
     if (hasAccount) {
       if (context.read(propertiesNotifier).isNeedPinTrading()) {
@@ -1523,11 +1535,12 @@ class InvestrendTheme extends InheritedWidget {
       InvestrendTheme.of(context).showInfoDialog(context,
           title: 'info_label'.tr(), content: 'no_account_found_message'.tr());
     }
+    return null;
   }
 
-  static Future<Object> push(BuildContext context, Widget screen,
+  static Future<dynamic> push(BuildContext context, Widget screen,
       ScreenTransition transition, String routeName,
-      {int durationMilisecond}) {
+      {int? durationMilisecond}) {
     switch (transition) {
       case ScreenTransition.SlideLeft:
         {
@@ -1546,7 +1559,7 @@ class InvestrendTheme extends InheritedWidget {
             ),
           );
         }
-        break;
+      // break;
       case ScreenTransition.SlideRight:
         {
           return Navigator.push(
@@ -1564,7 +1577,7 @@ class InvestrendTheme extends InheritedWidget {
             ),
           );
         }
-        break;
+      // break;
 
       case ScreenTransition.SlideUp:
         {
@@ -1583,7 +1596,7 @@ class InvestrendTheme extends InheritedWidget {
             ),
           );
         }
-        break;
+      // break;
       case ScreenTransition.SlideDown:
         {
           return Navigator.push(
@@ -1601,7 +1614,7 @@ class InvestrendTheme extends InheritedWidget {
             ),
           );
         }
-        break;
+      // break;
 
       default:
         {
@@ -1622,7 +1635,7 @@ class InvestrendTheme extends InheritedWidget {
             ),
           );
         }
-        break;
+      // break;
     }
   }
 
@@ -1668,9 +1681,9 @@ class InvestrendTheme extends InheritedWidget {
   }
 
   void showDialogInvalidSession(BuildContext context,
-      {VoidCallback onClosePressed,
-      String message,
-      String title,
+      {VoidCallback? onClosePressed,
+      String? message,
+      String? title,
       bool checkLogged = true}) {
     if (checkLogged && !context.read(dataHolderChangeNotifier).isLogged) {
       return;
@@ -1709,9 +1722,9 @@ class InvestrendTheme extends InheritedWidget {
   }
 
   void showDialogLogout(BuildContext context,
-      {VoidCallback onClosePressed,
-      String message,
-      String title,
+      {VoidCallback? onClosePressed,
+      String? message,
+      String? title,
       bool checkLogged = true}) {
     if (checkLogged && !context.read(dataHolderChangeNotifier).isLogged) {
       return;

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 // import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:flutter/services.dart';
@@ -18,9 +17,9 @@ import 'package:flutter/services.dart';
 // }
 
 class TradingViewChartPage extends StatefulWidget {
-  TradingViewChartPage({Key key, this.title}) : super(key: key);
+  TradingViewChartPage({Key? key, this.title}) : super(key: key);
 
-  final String title;
+  final String? title;
 
   @override
   _TradingViewChartPageState createState() => _TradingViewChartPageState();

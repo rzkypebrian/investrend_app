@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'package:Investrend/component/component_app_bar.dart';
 import 'package:Investrend/objects/riverpod_change_notifier.dart';
 import 'package:Investrend/utils/connection_services.dart';
@@ -9,7 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ScreenLoginPin extends StatefulWidget {
-  const ScreenLoginPin({Key key}) : super(key: key);
+  const ScreenLoginPin({Key? key}) : super(key: key);
 
   @override
   _ScreenLoginPinState createState() => _ScreenLoginPinState();
@@ -27,7 +29,6 @@ class _ScreenLoginPinState extends State<ScreenLoginPin> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     _loadingNotifier.dispose();
     _pinNotifier.dispose();
     focusNode.dispose();
@@ -371,16 +372,16 @@ class _ScreenLoginPinState extends State<ScreenLoginPin> {
                       labelStyle: TextStyle(color: Colors.transparent),
                       prefixStyle: InvestrendTheme.of(context)
                           .inputPrefixStyle
-                          .copyWith(color: Colors.transparent),
+                          ?.copyWith(color: Colors.transparent),
                       hintStyle: InvestrendTheme.of(context)
                           .inputHintStyle
-                          .copyWith(color: Colors.transparent),
+                          ?.copyWith(color: Colors.transparent),
                       helperStyle: InvestrendTheme.of(context)
                           .inputHelperStyle
-                          .copyWith(color: Colors.transparent),
+                          ?.copyWith(color: Colors.transparent),
                       errorStyle: InvestrendTheme.of(context)
                           .inputErrorStyle
-                          .copyWith(color: Colors.transparent),
+                          ?.copyWith(color: Colors.transparent),
                       fillColor: Colors.transparent,
                       hoverColor: Colors.transparent,
                       counter: SizedBox(
@@ -427,7 +428,7 @@ class _ScreenLoginPinState extends State<ScreenLoginPin> {
                 children: [
                   TextButton(
                     style: TextButton.styleFrom(
-                        primary: InvestrendTheme.of(context).hyperlink,
+                        foregroundColor: InvestrendTheme.of(context).hyperlink,
                         animationDuration: Duration(milliseconds: 500),
                         backgroundColor: Colors.transparent,
                         textStyle: InvestrendTheme.of(context)
@@ -461,8 +462,8 @@ class _ScreenLoginPinState extends State<ScreenLoginPin> {
 
   void launchURL(BuildContext context, String _url) async {
     try {
-      await canLaunch(_url)
-          ? await launch(_url)
+      await canLaunchUrl(Uri.dataFromString(_url))
+          ? await launchUrl(Uri.dataFromString(_url))
           : throw 'Could not launch $_url';
     } catch (error) {
       //InvestrendTheme.of(context).showSnackBar(context, error.toString());

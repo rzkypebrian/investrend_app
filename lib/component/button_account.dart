@@ -15,7 +15,9 @@ class ButtonAccount extends StatelessWidget {
   //final VoidCallback onTap;
 
   final bool shortDisplay;
-  const ButtonAccount(/*this.notifier,this.onTap,*/{this.shortDisplay = false, Key key}) : super(key: key);
+  const ButtonAccount(
+      /*this.notifier,this.onTap,*/ {this.shortDisplay = false, Key? key})
+      : super(key: key);
   void updateAccountCashPosition(BuildContext context) {
     int accountSize = context.read(dataHolderChangeNotifier).user.accountSize();
     if (accountSize > 0) {
@@ -23,63 +25,88 @@ class ButtonAccount extends StatelessWidget {
       // InvestrendTheme.of(context).user.accounts.forEach((account) {
       //   listAccountCode.add(account.accountcode);
       // });
-      context.read(dataHolderChangeNotifier).user.accounts.forEach((account) {
+      context.read(dataHolderChangeNotifier).user.accounts!.forEach((account) {
         listAccountCode.add(account.accountcode);
       });
 
       print('ButtonAccount try accountStockPosition');
-      final accountStockPosition = InvestrendTheme.tradingHttp.accountStockPosition('' /*account.brokercode*/, listAccountCode, context.read(dataHolderChangeNotifier).user.username, InvestrendTheme.of(context).applicationPlatform, InvestrendTheme.of(context).applicationVersion);
-      accountStockPosition.then((value) {
-        DebugWriter.information('ButtonAccount Got accountStockPosition  accountStockPosition.size : ' + value.length.toString());
+      final accountStockPosition = InvestrendTheme.tradingHttp
+          .accountStockPosition(
+              '' /*account.brokercode*/,
+              listAccountCode,
+              context.read(dataHolderChangeNotifier).user.username!,
+              InvestrendTheme.of(context).applicationPlatform,
+              InvestrendTheme.of(context).applicationVersion);
+      accountStockPosition.then((List<AccountStockPosition>? value) {
+        // DebugWriter.information(
+        //     'ButtonAccount Got accountStockPosition  accountStockPosition.size : ' +
+        //         value.length.toString());
 
-        AccountStockPosition first = (value != null && value.length > 0) ?  value.first : null;
-        if(first != null && first.ignoreThis()){
+        AccountStockPosition? first =
+            (value != null && value.length > 0) ? value.first : null;
+        if (first != null && first.ignoreThis()) {
           // ignore in aja
-          print('ButtonAccount accountStockPosition ignored.  message : '+first.message);
-        }else {
+          print('ButtonAccount accountStockPosition ignored.  message : ' +
+              first.message);
+        } else {
           context.read(accountsInfosNotifier).updateList(value);
-          Account activeAccount = context.read(dataHolderChangeNotifier).user.getAccount(context.read(accountChangeNotifier).index);
-          if(activeAccount != null){
-            AccountStockPosition accountInfo = context.read(accountsInfosNotifier).getInfo(activeAccount.accountcode);
-            if(accountInfo != null){
+          Account? activeAccount = context
+              .read(dataHolderChangeNotifier)
+              .user
+              .getAccount(context.read(accountChangeNotifier).index);
+          if (activeAccount != null) {
+            AccountStockPosition? accountInfo = context
+                .read(accountsInfosNotifier)
+                .getInfo(activeAccount.accountcode);
+            if (accountInfo != null) {
               //context.read(buyRdnBuyingPowerChangeNotifier).update(accountInfo.outstandingLimit, accountInfo.rdnBalance);
               //context.read(buyRdnBuyingPowerChangeNotifier).update(accountInfo.outstandingLimit, accountInfo.cashBalance);
-              context.read(buyRdnBuyingPowerChangeNotifier).update(accountInfo.outstandingLimit, accountInfo.availableCash, accountInfo.creditLimit);
+              context.read(buyRdnBuyingPowerChangeNotifier).update(
+                  accountInfo.outstandingLimit,
+                  accountInfo.availableCash,
+                  accountInfo.creditLimit);
             }
           }
         }
-
       }).onError((error, stackTrace) {
-        DebugWriter.information('ButtonAccount accountStockPosition Exception : ' + error.toString());
-        try{
-          if(error is TradingHttpException){
-            if(error.isUnauthorized()){
+        DebugWriter.information(
+            'ButtonAccount accountStockPosition Exception : ' +
+                error.toString());
+        try {
+          if (error is TradingHttpException) {
+            if (error.isUnauthorized()) {
               InvestrendTheme.of(context).showDialogInvalidSession(context);
               return;
-            }else{
+            } else {
               String networkErrorLabel = 'network_error_label'.tr();
-              networkErrorLabel  = networkErrorLabel.replaceFirst("#CODE#", error.code.toString());
-              InvestrendTheme.of(context).showSnackBar(context, networkErrorLabel);
+              networkErrorLabel = networkErrorLabel.replaceFirst(
+                  "#CODE#", error.code.toString());
+              InvestrendTheme.of(context)
+                  .showSnackBar(context, networkErrorLabel);
               return;
             }
           }
-        }catch(errorAfter){
-          DebugWriter.information('ButtonAccount accountStockPosition Exception errorAfter : ' + error.toString());
+        } catch (errorAfter) {
+          DebugWriter.information(
+              'ButtonAccount accountStockPosition Exception errorAfter : ' +
+                  error.toString());
         }
-
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-
     double paddingVertical = 8.0;
 
     return TextButton(
         style: TextButton.styleFrom(
-          visualDensity: shortDisplay ? VisualDensity.compact : null,
-            padding: EdgeInsets.only(left: shortDisplay ? 0.0 : InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral, top: paddingVertical, bottom: paddingVertical),
+            visualDensity: shortDisplay ? VisualDensity.compact : null,
+            padding: EdgeInsets.only(
+                left: shortDisplay ? 0.0 : InvestrendTheme.cardPaddingGeneral,
+                right: InvestrendTheme.cardPaddingGeneral,
+                top: paddingVertical,
+                bottom: paddingVertical),
             //minimumSize: Size(50, 30),
             alignment: Alignment.centerLeft),
         onPressed: () {
@@ -87,7 +114,9 @@ class ButtonAccount extends StatelessWidget {
           showModalBottomSheet(
               isScrollControlled: true,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(topLeft: Radius.circular(24.0), topRight: Radius.circular(24.0)),
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(24.0),
+                    topRight: Radius.circular(24.0)),
               ),
               //backgroundColor: Colors.transparent,
               context: context,
@@ -99,7 +128,13 @@ class ButtonAccount extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            shortDisplay ? SizedBox(width: InvestrendTheme.cardPaddingGeneral,) : SizedBox(height: 1.0,),
+            shortDisplay
+                ? SizedBox(
+                    width: InvestrendTheme.cardPaddingGeneral,
+                  )
+                : SizedBox(
+                    height: 1.0,
+                  ),
             /*
             ValueListenableBuilder(
               valueListenable: notifier,
@@ -114,29 +149,29 @@ class ButtonAccount extends StatelessWidget {
             Consumer(builder: (context, watch, child) {
               final notifier = watch(accountChangeNotifier);
 
-              User user = context
-                  .read(dataHolderChangeNotifier)
-                  .user;
-              Account active = user.getAccount(notifier.index);
+              User? user = context.read(dataHolderChangeNotifier).user;
+              Account? active = user.getAccount(notifier.index);
               String nameAndAccount;
-              if(active != null){
-                if(shortDisplay){
+              if (active != null) {
+                if (shortDisplay) {
                   nameAndAccount = active.typeShortString();
-                }else{
-                  nameAndAccount = user.realname + ' - ' + active.typeString() + ' ' + active.accountcode;
+                } else {
+                  nameAndAccount = user.realname! +
+                      ' - ' +
+                      active.typeString() +
+                      ' ' +
+                      active.accountcode;
                 }
-              }else{
-                  nameAndAccount = ' - ' ;
+              } else {
+                nameAndAccount = ' - ';
               }
 
               return AutoSizeText(
-                StringUtils.noNullString(nameAndAccount),
-                style: InvestrendTheme
-                    .of(context)
+                StringUtils.noNullString(nameAndAccount)!,
+                style: InvestrendTheme.of(context)
                     .regular_w400_compact
-                    .copyWith(color: InvestrendTheme
-                    .of(context)
-                    .greyDarkerTextColor),
+                    ?.copyWith(
+                        color: InvestrendTheme.of(context).greyDarkerTextColor),
                 maxLines: 1,
               );
             }),

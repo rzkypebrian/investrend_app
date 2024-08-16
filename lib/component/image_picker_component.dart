@@ -14,20 +14,20 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class ImagePickerComponent extends StatefulWidget {
-  final ImagePickerController controller;
+  final ImagePickerController? controller;
   final BuildContext context;
   final double height;
   final double width;
   final String placeHolderImageAsset;
-  final ValueChanged<ImagePickerController> onImageLoaded;
-  final String camera;
-  final String frame;
-  final String status;
+  final ValueChanged<ImagePickerController?>? onImageLoaded;
+  final String? camera;
+  final String? frame;
+  final String? status;
 
   const ImagePickerComponent({
-    Key key,
-    @required this.context,
-    @required this.controller,
+    Key? key,
+    required this.context,
+    required this.controller,
     this.height = 120,
     this.width = 120,
     this.placeHolderImageAsset = "images/icon_camera.png",
@@ -77,9 +77,9 @@ class ImagePickerComponentState extends State<ImagePickerComponent>
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<ImagePickerValue>(
-      valueListenable: widget.controller,
+      valueListenable: widget.controller!,
       builder: (context, value, child) {
-        widget.controller.value.context = context;
+        widget.controller!.value.context = context;
         return GestureDetector(
           onTap: () {
             print("CAMERA CEK");
@@ -87,7 +87,7 @@ class ImagePickerComponentState extends State<ImagePickerComponent>
             if (value.imagePickerState == ImagePickerState.onUpload) return;
             print("Camera cek = ${widget.camera}");
             sendToBackGround = false;
-            widget.controller.getImages(
+            widget.controller!.getImages(
               frame: widget.frame,
               cameraCheck: widget.camera,
             );
@@ -107,7 +107,6 @@ class ImagePickerComponentState extends State<ImagePickerComponent>
                   //     : Colors.blue,
                   ),
               image: DecorationImage(
-                //TODO : PERUBAHAN
                 image: widget.status == "NOT DONE"
                     ? AssetImage(
                         "images/icon_camera.png",
@@ -130,20 +129,20 @@ class ImagePickerComponentState extends State<ImagePickerComponent>
     switch (imagePickerState) {
       case ImagePickerState.onUpload:
         return progressUpload(
-          totalSize: widget.controller.value.fileSize,
-          uploadedSize: widget.controller.value.uploadedSize ?? 0,
-          percentage: widget.controller.value.percentageUpload,
+          totalSize: widget.controller!.value.fileSize,
+          uploadedSize: widget.controller!.value.uploadedSize ?? 0,
+          percentage: widget.controller!.value.percentageUpload,
         );
       case ImagePickerState.uploaded:
         if (widget.onImageLoaded != null) {
-          widget.onImageLoaded(widget.controller);
+          widget.onImageLoaded!(widget.controller);
         }
         return loadedImage();
       case ImagePickerState.uploadFiled:
         return const SizedBox();
       case ImagePickerState.loaded:
         if (widget.onImageLoaded != null) {
-          widget.onImageLoaded(widget.controller);
+          widget.onImageLoaded!(widget.controller);
         }
         return loadedImage();
       case ImagePickerState.empty:
@@ -156,7 +155,6 @@ class ImagePickerComponentState extends State<ImagePickerComponent>
   Widget loadedImage() {
     return Padding(
       padding: const EdgeInsets.all(30),
-      //TODO : PERUBAHAN
       child: widget.status == "NOT DONE"
           ? Image.asset(
               "images/icon_camera.png",
@@ -171,14 +169,14 @@ class ImagePickerComponentState extends State<ImagePickerComponent>
   Widget uploadedImage() {
     return Padding(
       padding: const EdgeInsets.all(3),
-      child: Image.network(widget.controller.value.uploadedUrl ?? ""),
+      child: Image.network(widget.controller!.value.uploadedUrl ?? ""),
     );
   }
 
   Widget progressUpload(
-      {@required int totalSize,
-      @required int uploadedSize,
-      @required percentage}) {
+      {required int? totalSize,
+      required int uploadedSize,
+      required percentage}) {
     return Container(
       color: Colors.transparent,
       child: Stack(
@@ -224,22 +222,22 @@ class ImagePickerComponentState extends State<ImagePickerComponent>
 }
 
 class ImagePickerController extends ValueNotifier<ImagePickerValue> {
-  ImagePickerController({ImagePickerValue value})
+  ImagePickerController({ImagePickerValue? value})
       : super(value ?? ImagePickerValue());
 
   Future<ImagePickerValue> getImages({
-    BuildContext context,
-    String cameraCheck,
+    BuildContext? context,
+    String? cameraCheck,
     bool camera = true,
     int imageQuality = 100,
     int compresedQuality = 5,
-    String frame,
+    String? frame,
   }) async {
     try {
       File _image;
       String _valueBase64Compress = "";
-      Uint8List _uint8Listcompressed;
-      PickedFile _picker;
+      Uint8List? _uint8Listcompressed;
+      PickedFile? _picker;
       if (camera) {
         bool isFront = StringUtils.equalsIgnoreCase(cameraCheck, 'front');
         print("KAMERA TEST DEPAN BELAKANG = $isFront");
@@ -280,24 +278,25 @@ class ImagePickerController extends ValueNotifier<ImagePickerValue> {
       } else {
         _picker = await ImagePicker()
             // ignore: deprecated_member_use
-            .getImage(source: ImageSource.gallery, imageQuality: imageQuality);
+            .pickImage(
+                source: ImageSource.gallery,
+                imageQuality: imageQuality) as PickedFile;
       }
 
-      _image = File(_picker.path);
+      _image = File(_picker!.path);
 
       value.fileImage = _image;
       value.fileBase64 = getExtension(_image.toString()) +
           base64.encode(_image.readAsBytesSync());
       notifyListeners();
 
-      //TODO : Minor change compressed
       _uint8Listcompressed = await FlutterImageCompress.compressWithFile(
         _image.absolute.path,
         quality: compresedQuality,
       );
 
-      _valueBase64Compress =
-          getExtension(_image.toString()) + base64.encode(_uint8Listcompressed);
+      _valueBase64Compress = getExtension(_image.toString()) +
+          base64.encode(_uint8Listcompressed!);
       value.fileBase64Compresed = _valueBase64Compress;
       value.fileUri = Uri.parse(_valueBase64Compress).data;
 
@@ -311,9 +310,9 @@ class ImagePickerController extends ValueNotifier<ImagePickerValue> {
   }
 
   Future<String> uploadFile({
-    @required String url,
-    String field,
-    Map<String, dynamic> header,
+    required String url,
+    String? field,
+    Map<String, dynamic>? header,
   }) async {
     if (value.fileImage == null) {
       value.imagePickerState = ImagePickerState.error;
@@ -326,7 +325,7 @@ class ImagePickerController extends ValueNotifier<ImagePickerValue> {
     value.imagePickerState = ImagePickerState.onInitUpload;
     commit();
     return FileServiceUtil.fileUploadMultipart(
-      file: value.fileImage,
+      file: value.fileImage!,
       field: field,
       url: url,
       header: header,
@@ -353,7 +352,7 @@ class ImagePickerController extends ValueNotifier<ImagePickerValue> {
     commit();
   }
 
-  void setUploaded(String result) {
+  void setUploaded(String? result) {
     value.uploadedSize = 0;
     value.fileSize = 0;
     value.imagePickerState = ImagePickerState.uploaded;
@@ -377,12 +376,12 @@ class ImagePickerController extends ValueNotifier<ImagePickerValue> {
     return result;
   }
 
-  static Future<PickedFile> openCamera(
+  static Future<PickedFile?> openCamera(
     BuildContext context, {
-    CameraDescription cameraDescription,
-    CameraMode cameraMode,
+    CameraDescription? cameraDescription,
+    CameraMode? cameraMode,
     // int cameraIndex = 0,
-    String frame,
+    String? frame,
   }) {
     CameraComponentController _cameraComponentController =
         new CameraComponentController();
@@ -402,20 +401,20 @@ class ImagePickerController extends ValueNotifier<ImagePickerValue> {
                   ? _cameraComponentController
                       .cropImage(image?.path)
                       .then((value) {
-                      Navigator.of(ctx).pop(PickedFile(value?.path));
+                      Navigator.of(ctx).pop(PickedFile(value!.path));
                     }).whenComplete(
                       () {
                         _cameraComponentController
-                            ?.setState(CameraComponensStates.onLoadedImage);
+                            .setState(CameraComponensStates.onLoadedImage);
                       },
                     )
-                  : Navigator.of(ctx).pop(PickedFile(image?.path));
+                  : Navigator.of(ctx).pop(PickedFile(image!.path));
             },
           ),
         );
       },
     ).whenComplete(() {
-      _cameraComponentController?.value.cameraController
+      _cameraComponentController.value.cameraController
           ?.dispose()
           .then((value) => null);
     });
@@ -427,18 +426,18 @@ class ImagePickerController extends ValueNotifier<ImagePickerValue> {
 }
 
 class ImagePickerValue {
-  BuildContext context;
-  String imageHandler;
+  late BuildContext context;
+  String? imageHandler;
   ImagePickerState imagePickerState = ImagePickerState.empty;
   bool firstLoad = true;
-  File fileImage;
-  String fileBase64;
-  String fileBase64Compresed;
-  UriData fileUri;
-  int uploadedSize;
-  int fileSize;
-  String uploadedResponse;
-  String uploadedUrl;
+  File? fileImage;
+  String? fileBase64;
+  String? fileBase64Compresed;
+  UriData? fileUri;
+  int? uploadedSize;
+  int? fileSize;
+  String? uploadedResponse;
+  String? uploadedUrl;
 
   double get percentageUpload {
     return (fileSize == 0 ? 0 : ((uploadedSize ?? 0) / (fileSize ?? 0)) * 100)

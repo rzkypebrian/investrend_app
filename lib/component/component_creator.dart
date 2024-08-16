@@ -15,7 +15,8 @@ extension Utility on BuildContext {
   void nextEditableTextFocus() {
     do {
       FocusScope.of(this).nextFocus();
-    } while (FocusScope.of(this).focusedChild.context.widget is! EditableText);
+    } while (
+        FocusScope.of(this).focusedChild!.context!.widget is! EditableText);
   }
 }
 
@@ -49,7 +50,7 @@ class ComponentCreator {
                   border: Border.all(
                       color: selected
                           ? Theme.of(context).colorScheme.secondary
-                          : Colors.grey[300],
+                          : Colors.grey[300]!,
                       width: selected ? dotSelectedWidth : dotWidth),
                   // added
                   borderRadius: BorderRadius.circular(2.0),
@@ -65,7 +66,7 @@ class ComponentCreator {
 
   static Widget roundedButtonSolid(BuildContext context, String text,
       Color color, Color textColor, VoidCallback onPressed,
-      {EdgeInsets padding, OutlinedBorder border}) {
+      {EdgeInsets? padding, OutlinedBorder? border}) {
     if (padding == null) {
       padding = EdgeInsets.all(10.0);
     }
@@ -95,7 +96,10 @@ class ComponentCreator {
       ),
       onPressed: onPressed,
       child: Text(text,
-          style: Theme.of(context).textTheme.button.copyWith(color: textColor)),
+          style: Theme.of(context)
+              .textTheme
+              .labelLarge!
+              .copyWith(color: textColor)),
     );
   }
 
@@ -136,7 +140,10 @@ class ComponentCreator {
       ),
       onPressed: onPressed,
       child: Text(text,
-          style: Theme.of(context).textTheme.button.copyWith(color: textColor)),
+          style: Theme.of(context)
+              .textTheme
+              .labelLarge!
+              .copyWith(color: textColor)),
     );
   }
 
@@ -157,7 +164,7 @@ class ComponentCreator {
       bool lightTheme,
       String label,
       String hint,
-      ValueChanged<String> onChanged,
+      ValueChanged<String?>? onChanged,
       List<String> items,
       bool validatorError,
       String validatorErrorText) {
@@ -250,7 +257,7 @@ class ComponentCreator {
                 validatorErrorText,
                 key: UniqueKey(),
                 //style: Theme.of(context).textTheme.caption.copyWith(color: validatorError ? Theme.of(context).errorColor : Colors.transparent),
-                style: InvestrendTheme.of(context).inputErrorStyle.copyWith(
+                style: InvestrendTheme.of(context).inputErrorStyle?.copyWith(
                     color: validatorError
                         ? Theme.of(context).colorScheme.error
                         : Colors.transparent),
@@ -271,9 +278,10 @@ class ComponentCreator {
       String imageAsset,
       VoidCallback onPressed,
       {double borderWidth = 1.0,
-      TextStyle textStyle}) {
+      TextStyle? textStyle}) {
     if (textStyle == null) {
-      textStyle = Theme.of(context).textTheme.button.copyWith(color: textColor);
+      textStyle =
+          Theme.of(context).textTheme.labelLarge!.copyWith(color: textColor);
     }
     return OutlinedButton(
       style: ButtonStyle(
@@ -358,8 +366,8 @@ class ComponentCreator {
   */
 
   static Widget roundedButton(BuildContext context, String text, Color color,
-      Color textColor, Color borderColor, VoidCallback onPressed,
-      {EdgeInsets padding, Color disabledColor, double radius}) {
+      Color textColor, Color borderColor, VoidCallback? onPressed,
+      {EdgeInsets? padding, Color? disabledColor, double? radius}) {
     if (padding == null) {
       padding = EdgeInsets.all(10.0);
     }
@@ -384,7 +392,7 @@ class ComponentCreator {
             child: Text(text,
                 style: Theme.of(context)
                     .textTheme
-                    .button
+                    .labelLarge!
                     .copyWith(color: textColor)),
             shape: RoundedRectangleBorder(
               borderRadius: new BorderRadius.circular(radius ?? 16.0),
@@ -457,7 +465,7 @@ class ComponentCreator {
         textColor: textColor,
         child: Text(
           text,
-          style: Theme.of(context).textTheme.bodyText2,
+          style: Theme.of(context).textTheme.bodyMedium,
         ),
         onPressed: onPressed,
       ),
@@ -500,7 +508,7 @@ class ComponentCreator {
                   text,
                   style: Theme.of(context)
                       .textTheme
-                      .button
+                      .labelLarge!
                       .copyWith(color: textColor),
                 ),
               ],
@@ -518,30 +526,30 @@ class ComponentCreator {
 
   static Widget textFieldForm(
     BuildContext context,
-    bool lightTheme,
-    String prefixText,
-    String labelText,
-    String hintText,
-    String helperText,
-    String errorText,
-    bool obscureText,
-    TextInputType keyboardType,
-    TextInputAction textInputAction,
-    FormFieldValidator<String> validator,
-    TextEditingController controller,
-    GestureTapCallback onTap,
-    FocusNode focusNode,
-    Widget suffixIcon, {
+    bool? lightTheme,
+    String? prefixText,
+    String? labelText,
+    String? hintText,
+    String? helperText,
+    String? errorText,
+    bool? obscureText,
+    TextInputType? keyboardType,
+    TextInputAction? textInputAction,
+    FormFieldValidator<String>? validator,
+    TextEditingController? controller,
+    GestureTapCallback? onTap,
+    FocusNode? focusNode,
+    Widget? suffixIcon, {
     bool enabled = true,
-    String initialValue,
-    EdgeInsets padding,
-    List<TextInputFormatter> inputFormatters,
+    String? initialValue,
+    EdgeInsets? padding,
+    List<TextInputFormatter>? inputFormatters,
     int maxLenght = TextField.noMaxLength,
   }) {
     if (obscureText == null) obscureText = false;
     if (keyboardType == null) keyboardType = TextInputType.text;
     if (textInputAction == null) textInputAction = TextInputAction.done;
-    if (validator == null && !StringUtils.isEmtpy(errorText)) {
+    if (validator == null && !StringUtils.isEmtpy(errorText!)) {
       validator = (value) {
         if (value == null || value.isEmpty) {
           return errorText;
@@ -598,8 +606,8 @@ class ComponentCreator {
         enabled: enabled,
       ),
     );
-    Widget stack;
-    if (!StringUtils.isEmtpy(prefixText)) {
+    Widget? stack;
+    if (!StringUtils.isEmtpy(prefixText!)) {
       stack = Stack(
         children: [
           AbsorbPointer(
@@ -638,13 +646,13 @@ class ComponentCreator {
                 prefixText: prefixText,
                 hintStyle: InvestrendTheme.of(context)
                     .inputHintStyle
-                    .copyWith(color: Colors.transparent),
+                    ?.copyWith(color: Colors.transparent),
                 helperStyle: InvestrendTheme.of(context)
                     .inputHelperStyle
-                    .copyWith(color: Colors.transparent),
+                    ?.copyWith(color: Colors.transparent),
                 errorStyle: InvestrendTheme.of(context)
                     .inputErrorStyle
-                    .copyWith(color: Colors.transparent),
+                    ?.copyWith(color: Colors.transparent),
                 errorMaxLines: 2,
                 //floatingLabelBehavior: FloatingLabelBehavior.always,
                 hintText: hintText,
@@ -668,7 +676,7 @@ class ComponentCreator {
         //mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            labelText,
+            labelText!,
             style: InvestrendTheme.of(context).inputLabelStyle,
           ),
           stack == null ? textField : stack,
@@ -866,7 +874,7 @@ class ComponentCreator {
     */
   }
 
-  static Widget textFieldSearch(BuildContext context, {VoidCallback onTap}) {
+  static Widget textFieldSearch(BuildContext context, {VoidCallback? onTap}) {
     if (onTap == null) {
       onTap = () {
         FocusScope.of(context).requestFocus(new FocusNode());
@@ -879,9 +887,9 @@ class ComponentCreator {
 
             context.read(primaryStockChangeNotifier).setStock(value);
             InvestrendTheme.of(context).showStockDetail(context);
-            print('result finder = ' + value.code);
+            print('result finder = ' + value.code!);
           } else if (value is People) {
-            print('result finder = ' + value.name);
+            print('result finder = ' + value.name!);
           }
         });
       };
@@ -941,10 +949,10 @@ class ComponentCreator {
     String hintText,
     String helperText,
     String errorText,
-    bool obscureText,
-    TextInputType keyboardType,
-    TextInputAction textInputAction,
-    FormFieldValidator<String> validator,
+    bool? obscureText,
+    TextInputType? keyboardType,
+    TextInputAction? textInputAction,
+    FormFieldValidator<String>? validator,
     TextEditingController controller,
     GestureTapCallback onTap,
     FocusNode focusNode,
@@ -1052,7 +1060,7 @@ class ComponentCreator {
                 focusNode: focusNode,
                 style: InvestrendTheme.of(context)
                     .inputStyle
-                    .copyWith(color: Colors.transparent),
+                    ?.copyWith(color: Colors.transparent),
 
                 //prefixStyle: InvestrendTheme.of(context).small_w500,
                 //style: Theme.of(context).textTheme.bodyText2,
@@ -1078,18 +1086,18 @@ class ComponentCreator {
 
                   labelStyle: InvestrendTheme.of(context)
                       .inputLabelStyle
-                      .copyWith(color: Colors.transparent),
+                      ?.copyWith(color: Colors.transparent),
                   hintStyle: InvestrendTheme.of(context)
                       .inputHintStyle
-                      .copyWith(color: Colors.transparent),
+                      ?.copyWith(color: Colors.transparent),
                   //labelStyle: Theme.of(context).inputDecorationTheme.labelStyle.copyWith(color: InvestrendTheme.of(context).blackAndWhiteText),
                   //hintStyle: Theme.of(context).inputDecorationTheme.hintStyle.copyWith(color: InvestrendTheme.of(context).blackAndWhiteText),
                   errorStyle: InvestrendTheme.of(context)
                       .inputErrorStyle
-                      .copyWith(color: Colors.transparent),
+                      ?.copyWith(color: Colors.transparent),
                   helperStyle: InvestrendTheme.of(context)
                       .inputHelperStyle
-                      .copyWith(color: Colors.transparent),
+                      ?.copyWith(color: Colors.transparent),
                   //labelStyle: InvestrendTheme.of(context).support_w400,
                   // labelStyle: TextStyle(
                   //   color: Theme.of(context).textTheme.bodyText1.color,
@@ -1138,7 +1146,7 @@ class ComponentCreator {
                 //prefixStyle: TextStyle(fontSize: Theme.of(context).textTheme.bodyText1.fontSize, color: Colors.transparent),
                 prefixStyle: InvestrendTheme.of(context)
                     .inputPrefixStyle
-                    .copyWith(color: Colors.transparent),
+                    ?.copyWith(color: Colors.transparent),
                 prefixText: prefixText,
                 labelText: labelText,
 
@@ -1189,7 +1197,7 @@ class ComponentCreator {
   }
 
   static Widget tableCellValueBold(BuildContext context, String text,
-      {Color color}) {
+      {Color? color}) {
     return Padding(
         padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
         child: ComponentCreator.textFit(
@@ -1199,10 +1207,10 @@ class ComponentCreator {
           style: (color == null
               ? InvestrendTheme.of(context)
                   .textValueStyle
-                  .copyWith(fontWeight: FontWeight.bold)
+                  ?.copyWith(fontWeight: FontWeight.bold)
               : InvestrendTheme.of(context)
                   .textValueStyle
-                  .copyWith(fontWeight: FontWeight.bold, color: color)),
+                  ?.copyWith(fontWeight: FontWeight.bold, color: color)),
         ));
     /*
     return Padding(
@@ -1234,13 +1242,13 @@ class ComponentCreator {
   }
 
   static Widget tableCellRight(BuildContext context, String text,
-      {double padding = 0.0, Color color}) {
+      {double padding = 0.0, Color? color}) {
     TextStyle textStyle;
     if (color == null) {
-      textStyle = InvestrendTheme.of(context).textValueStyle;
+      textStyle = InvestrendTheme.of(context).textValueStyle!;
     } else {
       textStyle =
-          InvestrendTheme.of(context).textValueStyle.copyWith(color: color);
+          InvestrendTheme.of(context).textValueStyle!.copyWith(color: color);
     }
     return Padding(
       padding: EdgeInsets.only(right: padding, top: 5.0, bottom: 5.0),
@@ -1254,13 +1262,14 @@ class ComponentCreator {
   }
 
   static Widget tableCellLeftHeader(BuildContext context, String text,
-      {double padding = 0.0, Color color}) {
-    TextStyle textStyle;
+      {double padding = 0.0, Color? color}) {
+    TextStyle? textStyle;
     if (color == null) {
       //textStyle = InvestrendTheme.of(context).textValueStyle.copyWith(fontWeight: FontWeight.w500);
       textStyle = InvestrendTheme.of(context).small_w500;
     } else {
-      textStyle = InvestrendTheme.of(context).small_w500.copyWith(color: color);
+      textStyle =
+          InvestrendTheme.of(context).small_w500?.copyWith(color: color);
     }
     /*
     return Padding(padding: EdgeInsets.only(left: padding, top: 5.0, bottom: 5.0),
@@ -1283,12 +1292,13 @@ class ComponentCreator {
   }
 
   static Widget tableCellCenterHeader(BuildContext context, String text,
-      {double padding = 0.0, Color color}) {
-    TextStyle textStyle;
+      {double padding = 0.0, Color? color}) {
+    TextStyle? textStyle;
     if (color == null) {
       textStyle = InvestrendTheme.of(context).small_w500;
     } else {
-      textStyle = InvestrendTheme.of(context).small_w500.copyWith(color: color);
+      textStyle =
+          InvestrendTheme.of(context).small_w500?.copyWith(color: color);
     }
     /*
     return Padding(padding: EdgeInsets.only(left: padding, top: 5.0, bottom: 5.0),
@@ -1311,12 +1321,13 @@ class ComponentCreator {
   }
 
   static Widget tableCellRightHeader(BuildContext context, String text,
-      {double padding = 0.0, Color color}) {
-    TextStyle textStyle;
+      {double padding = 0.0, Color? color}) {
+    TextStyle? textStyle;
     if (color == null) {
       textStyle = InvestrendTheme.of(context).small_w500;
     } else {
-      textStyle = InvestrendTheme.of(context).small_w500.copyWith(color: color);
+      textStyle =
+          InvestrendTheme.of(context).small_w500?.copyWith(color: color);
     }
     return Padding(
       padding: EdgeInsets.only(right: padding, top: 5.0, bottom: 5.0),
@@ -1331,20 +1342,20 @@ class ComponentCreator {
 
   static Widget tableCellLeftValue(BuildContext context, String text,
       {double padding = 0.0,
-      Color color,
-      FontWeight fontWeight,
+      Color? color,
+      FontWeight? fontWeight,
       double height = 1.0}) {
     TextStyle textStyle;
     if (fontWeight == null) {
-      fontWeight = InvestrendTheme.of(context).textValueStyle.fontWeight;
+      fontWeight = InvestrendTheme.of(context).textValueStyle!.fontWeight;
     }
     if (color == null) {
       textStyle = InvestrendTheme.of(context)
-          .textValueStyle
+          .textValueStyle!
           .copyWith(fontWeight: fontWeight, height: height);
     } else {
       textStyle = InvestrendTheme.of(context)
-          .textValueStyle
+          .textValueStyle!
           .copyWith(fontWeight: fontWeight, color: color, height: height);
     }
 
@@ -1372,20 +1383,20 @@ class ComponentCreator {
 
   static Widget tableCellRightValue(BuildContext context, String text,
       {double padding = 0.0,
-      Color color,
-      FontWeight fontWeight,
+      Color? color,
+      FontWeight? fontWeight,
       double height = 1.0}) {
     TextStyle textStyle;
     if (fontWeight == null) {
-      fontWeight = InvestrendTheme.of(context).textValueStyle.fontWeight;
+      fontWeight = InvestrendTheme.of(context).textValueStyle?.fontWeight;
     }
     if (color == null) {
       textStyle = InvestrendTheme.of(context)
-          .textValueStyle
+          .textValueStyle!
           .copyWith(fontWeight: fontWeight, height: height);
     } else {
       textStyle = InvestrendTheme.of(context)
-          .textValueStyle
+          .textValueStyle!
           .copyWith(fontWeight: fontWeight, color: color, height: height);
     }
     return Padding(
@@ -1412,20 +1423,20 @@ class ComponentCreator {
 
   static Widget tableCellCenterValue(BuildContext context, String text,
       {double padding = 0.0,
-      Color color,
-      FontWeight fontWeight,
+      Color? color,
+      FontWeight? fontWeight,
       double height = 1.0}) {
     TextStyle textStyle;
     if (fontWeight == null) {
-      fontWeight = InvestrendTheme.of(context).textValueStyle.fontWeight;
+      fontWeight = InvestrendTheme.of(context).textValueStyle?.fontWeight;
     }
     if (color == null) {
       textStyle = InvestrendTheme.of(context)
-          .textValueStyle
+          .textValueStyle!
           .copyWith(fontWeight: fontWeight, height: height);
     } else {
       textStyle = InvestrendTheme.of(context)
-          .textValueStyle
+          .textValueStyle!
           .copyWith(fontWeight: fontWeight, color: color, height: height);
     }
     return Padding(
@@ -1459,8 +1470,8 @@ class ComponentCreator {
   }
 
   static Widget textFit(BuildContext context, String text,
-      {Alignment alignment = Alignment.center,
-      TextStyle style /*, ValueNotifier valueNotifier */
+      {Alignment? alignment = Alignment.center,
+      TextStyle? style /*, ValueNotifier valueNotifier */
       }) {
     /*
     Widget contentWidget;
@@ -1517,28 +1528,28 @@ class ComponentCreator {
     */
   }
 
-  static Widget subtitle(BuildContext context, String text, {Color color}) {
-    TextStyle style = InvestrendTheme.of(context).regular_w600_compact;
+  static Widget subtitle(BuildContext context, String? text, {Color? color}) {
+    TextStyle? style = InvestrendTheme.of(context).regular_w600_compact;
     if (color != null) {
-      style = style.copyWith(color: color);
+      style = style!.copyWith(color: color);
     }
     return Text(
-      text,
+      text!,
       //style: Theme.of(context).textTheme.headline6.copyWith(fontWeight: FontWeight.bold),
       style: style,
     );
   }
 
   static Widget imageNetwork(
-    String src, {
-    Key key,
-    double width,
-    double height,
-    BoxFit fit,
-    Widget errorWidget,
+    String? src, {
+    Key? key,
+    double? width,
+    double? height,
+    BoxFit? fit,
+    Widget? errorWidget,
   }) {
     return Image.network(
-      src,
+      src!,
       width: width,
       height: height,
       fit: fit,
@@ -1559,15 +1570,15 @@ class ComponentCreator {
   }
 
   static Widget imageNetworkCached(
-    String src, {
-    Key key,
-    double width,
-    double height,
-    BoxFit fit,
-    Widget errorWidget,
+    String? src, {
+    Key? key,
+    double? width,
+    double? height,
+    BoxFit? fit,
+    Widget? errorWidget,
   }) {
     return CachedNetworkImage(
-      imageUrl: src,
+      imageUrl: src!,
       width: width,
       height: height,
       fit: fit,
@@ -1603,7 +1614,7 @@ class ComponentCreator {
 
   static Widget subtitleButtonMore(
       BuildContext context, String text, VoidCallback callback,
-      {String image = 'images/icons/arrow_forward.png', String textButton}) {
+      {String image = 'images/icons/arrow_forward.png', String? textButton}) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -1632,7 +1643,7 @@ class ComponentCreator {
   }
 
   static Widget getButtonIconHorizontal(BuildContext context, String image,
-      String text, Color textColor, VoidCallback onPressed) {
+      String text, Color textColor, VoidCallback? onPressed) {
     return Material(
         color: Colors.transparent,
         borderRadius: BorderRadius.zero,
@@ -1663,7 +1674,7 @@ class ComponentCreator {
                     //style: TextStyle(fontSize: 13.0, color: textColor, fontWeight: FontWeight.bold),
                     style: InvestrendTheme.of(context)
                         .small_w600_compact
-                        .copyWith(color: textColor),
+                        ?.copyWith(color: textColor),
                   ),
                 ),
                 StringUtils.isEmtpy(image)
@@ -1689,16 +1700,17 @@ class ComponentCreator {
         ));
   }
 
-  static Widget tileNews(BuildContext context, HomeNews news,
-      {VoidCallback onClick,
-      VoidCallback commentClick,
-      VoidCallback likeClick,
-      VoidCallback shareClick}) {
+  static Widget tileNews(BuildContext context, HomeNews? news,
+      {VoidCallback? onClick,
+      VoidCallback? commentClick,
+      VoidCallback? likeClick,
+      VoidCallback? shareClick}) {
     if (onClick == null) {
       onClick = () async {
         try {
-          await canLaunch(news.url_news)
-              ? await launch(news.url_news)
+          await canLaunchUrl(Uri.parse(news!.url_news))
+              // canLaunchUrl('${news.url_news}')
+              ? await launchUrl(Uri.parse(news.url_news))
               : throw 'Could not launch ' + news.url_news;
         } catch (error) {
           InvestrendTheme.of(context).showSnackBar(context, error.toString());
@@ -1730,7 +1742,7 @@ class ComponentCreator {
                               InvestrendTheme.of(context)
                                   .tileSmallRoundedRadius),
                           child: ComponentCreator.imageNetwork(
-                              news.url_tumbnail,
+                              news?.url_tumbnail,
                               width: 60,
                               height: 60,
                               fit: BoxFit.fill)),
@@ -1742,11 +1754,11 @@ class ComponentCreator {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              news.title,
+                              news!.title,
                               maxLines: 2,
                               style: InvestrendTheme.of(context)
                                   .small_w600_compact
-                                  .copyWith(height: 1.2),
+                                  ?.copyWith(height: 1.2),
                             ),
                             SizedBox(
                               height: 4.0,
@@ -1756,7 +1768,7 @@ class ComponentCreator {
                               maxLines: 1,
                               style: InvestrendTheme.of(context)
                                   .more_support_w400_compact
-                                  .copyWith(letterSpacing: 0.1),
+                                  ?.copyWith(letterSpacing: 0.1),
                             ),
                           ],
                         ),
@@ -1773,7 +1785,7 @@ class ComponentCreator {
                     news.description,
                     style: InvestrendTheme.of(context)
                         .small_w400_compact
-                        .copyWith(
+                        ?.copyWith(
                             color: InvestrendTheme.of(context)
                                 .greyLighterTextColor,
                             height: 1.5),

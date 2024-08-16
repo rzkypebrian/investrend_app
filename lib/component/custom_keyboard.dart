@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+// import 'package:intl/intl.dart';
 
 import 'custom_keyboard_model.dart';
 
 class CustomKeyboard extends StatefulWidget {
-  const CustomKeyboard({Key key}) : super(key: key);
+  const CustomKeyboard({Key? key}) : super(key: key);
 
   @override
   _CustomKeyboardState createState() => _CustomKeyboardState();
 }
 
 class _CustomKeyboardState extends State<CustomKeyboard> {
-  List<List<dynamic>> keys;
-  String amount;
+  List<List<dynamic>>? keys;
+  String? amount;
 
   @override
   void initState() {
@@ -34,26 +34,26 @@ class _CustomKeyboardState extends State<CustomKeyboard> {
   }
 
   onKeyTap(val) {
-    if (val == '0' && amount.isEmpty) {
+    if (val == '0' && amount!.isEmpty) {
       return;
     }
     setState(() {
-      amount = amount + val;
+      amount = amount! + val;
     });
   }
 
   onBackspacePress() {
-    if (amount.isEmpty) {
+    if (amount!.isEmpty) {
       return;
     }
 
     setState(() {
-      amount = amount.substring(0, amount.length - 1);
+      amount = amount!.substring(0, amount!.length - 1);
     });
   }
 
   renderKeyboard() {
-    return keys
+    return keys!
         .map(
           (x) => Row(
             children: x.map(
@@ -86,9 +86,9 @@ class _CustomKeyboardState extends State<CustomKeyboard> {
       color: Colors.grey,
     );
 
-    if (amount.isNotEmpty) {
+    if (amount!.isNotEmpty) {
       // NumberFormat f = NumberFormat('#,###');
-      display = amount;
+      display = amount!;
       // display = f.format(int.parse(amount));
       style = style.copyWith(
         color: Colors.black,
@@ -109,19 +109,19 @@ class _CustomKeyboardState extends State<CustomKeyboard> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
       child: GestureDetector(
-        onTap: amount.isNotEmpty ? () {} : null,
+        onTap: amount!.isNotEmpty ? () {} : null,
         child: Container(
           height: 50.0,
           width: double.infinity,
           decoration: BoxDecoration(
-            color: amount.isNotEmpty ? Colors.blue : Colors.grey,
+            color: amount!.isNotEmpty ? Colors.blue : Colors.grey,
             borderRadius: BorderRadius.circular(8.0),
           ),
           child: Center(
             child: Text(
               'Submit',
               style: TextStyle(
-                color: amount.isNotEmpty ? Colors.white : Colors.black,
+                color: amount!.isNotEmpty ? Colors.white : Colors.black,
                 fontWeight: FontWeight.bold,
               ),
             ),

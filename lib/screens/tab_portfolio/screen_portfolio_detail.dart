@@ -5,13 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 class ScreenPortfolioDetail extends StatelessWidget {
-  final String title;
+  final String? title;
   final double value;
-  final String date;
-  final List<LabelValueColor> list;
+  final String? date;
+  final List<LabelValueColor>? list;
 
   const ScreenPortfolioDetail(this.title, this.value, this.date, this.list,
-      {Key key})
+      {Key? key})
       : super(key: key);
 
   @override
@@ -41,16 +41,16 @@ class ScreenPortfolioDetail extends StatelessWidget {
   }
 
   Widget createBody(BuildContext context, double paddingBottom) {
-    TextStyle styleLabel = InvestrendTheme.of(context)
+    TextStyle? styleLabel = InvestrendTheme.of(context)
         .small_w400_compact
-        .copyWith(color: InvestrendTheme.of(context).greyLighterTextColor);
-    TextStyle styleValue = InvestrendTheme.of(context).small_w400_compact;
-    TextStyle subtitle = InvestrendTheme.of(context).regular_w600_compact;
+        ?.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor);
+    TextStyle? styleValue = InvestrendTheme.of(context).small_w400_compact;
+    TextStyle? subtitle = InvestrendTheme.of(context).regular_w600_compact;
 
     double paddingTopBottom = 8.0;
     double paddingTopBottomDouble = 16.0;
 
-    int countData = list != null ? list.length : 0;
+    int? countData = list != null ? list?.length : 0;
 
     List<Widget> listWidget = List.empty(growable: true);
     //listWidget.add(SizedBox(height: InvestrendTheme.cardPaddingPlusMargin,));
@@ -67,7 +67,7 @@ class ScreenPortfolioDetail extends StatelessWidget {
         Text(
           InvestrendTheme.formatMoneyDouble(value,
               prefixPlus: true, prefixRp: true),
-          style: Theme.of(context).textTheme.headline4.copyWith(
+          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
               color: InvestrendTheme.changeTextColor(value),
               fontWeight: FontWeight.w600),
         ));
@@ -76,8 +76,8 @@ class ScreenPortfolioDetail extends StatelessWidget {
         listWidget, Text('portfolio_detail_date_label'.tr(), style: subtitle));
     addWidgetWithPadding(
         listWidget,
-        Text(date,
-            style: styleValue.copyWith(
+        Text(date!,
+            style: styleValue?.copyWith(
                 color: InvestrendTheme.of(context).greyDarkerTextColor)),
         paddingBottom: paddingTopBottomDouble);
     listWidget.add(ComponentCreator.divider(context));
@@ -89,10 +89,10 @@ class ScreenPortfolioDetail extends StatelessWidget {
     // "portfolio_detail_date_label": "Date",
     // "portfolio_detail_detail_label": "Detail",
     //
-    List<Widget> listContent = List<Widget>.generate(
-      countData,
+    List<Widget>? listContent = List<Widget>.generate(
+      countData!,
       (int index) {
-        LabelValueColor lbc = list.elementAt(index);
+        LabelValueColor? lbc = list?.elementAt(index);
         return Padding(
           padding: EdgeInsets.only(
               left: InvestrendTheme.cardPaddingGeneral,
@@ -103,13 +103,13 @@ class ScreenPortfolioDetail extends StatelessWidget {
             //mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text(lbc.label, style: styleLabel),
+              Text(lbc!.label, style: styleLabel),
               Expanded(
                 flex: 1,
                 child: Text(
                   lbc.value,
                   style: lbc.color != null
-                      ? styleValue.copyWith(color: lbc.color)
+                      ? styleValue?.copyWith(color: lbc.color)
                       : styleValue,
                   textAlign: TextAlign.right,
                 ),
@@ -119,7 +119,8 @@ class ScreenPortfolioDetail extends StatelessWidget {
         );
       },
     );
-    int countContent = listContent != null ? listContent.length : 0;
+    // ignore: unnecessary_null_comparison
+    int? countContent = listContent != null ? listContent.length : 0;
     if (countContent > 0) {
       listWidget.addAll(listContent);
     }
@@ -151,7 +152,7 @@ class ScreenPortfolioDetail extends StatelessWidget {
     */
   }
 
-  Widget createAppBar(BuildContext context) {
+  PreferredSizeWidget createAppBar(BuildContext context) {
     return AppBar(
       elevation: 0.0,
       backgroundColor: Theme.of(context).colorScheme.background,
@@ -163,7 +164,7 @@ class ScreenPortfolioDetail extends StatelessWidget {
 class LabelValueColor {
   String label = '';
   String value = '';
-  Color color;
+  Color? color;
   bool isShown;
 
   LabelValueColor(

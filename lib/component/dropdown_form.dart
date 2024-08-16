@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:Investrend/utils/string_utils.dart';
 import 'package:flutter/material.dart';
 
@@ -18,7 +20,7 @@ class DropdownForm extends StatefulWidget {
 
   DropdownForm(
       this.label, this.hint, this.validatorErrorText, this.list, this.onChanged,
-      {Key key}
+      {Key? key}
       //{this.validatorError: false}
       );
 }
@@ -36,9 +38,9 @@ class _DropdownFormState extends State<DropdownForm> {
           children: [
             Text(
               widget.label,
-              style: Theme.of(context).textTheme.caption.copyWith(
+              style: Theme.of(context).textTheme.bodySmall!.copyWith(
                     //  color: InvestrendCustomTheme.textfield_labelTextColor(lightTheme),
-                    color: Theme.of(context).textTheme.bodyText1.color,
+                    color: Theme.of(context).textTheme.bodyLarge!.color,
                     fontSize: 12.6,
                     //wordSpacing: 1.1
                   ),
@@ -72,7 +74,7 @@ class _DropdownFormState extends State<DropdownForm> {
               //onChanged: widget.onChanged,
               onChanged: (newValue) {
                 //widget.value = newValue;
-                widget.value = newValue;
+                widget.value = newValue!;
                 //myFocusNode.requestFocus();
                 setState(() {});
                 //widget.onChanged(newValue);
@@ -94,7 +96,7 @@ class _DropdownFormState extends State<DropdownForm> {
             ),
             Text(
               widget.validatorErrorText,
-              style: Theme.of(context).textTheme.caption.copyWith(
+              style: Theme.of(context).textTheme.bodySmall!.copyWith(
                   color:
                       widget.validatorError ? Colors.red : Colors.transparent),
             ),

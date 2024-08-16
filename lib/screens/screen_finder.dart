@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_null_comparison, non_constant_identifier_names
+
 import 'package:Investrend/component/avatar.dart';
 import 'package:Investrend/component/component_creator.dart';
 import 'package:Investrend/objects/riverpod_change_notifier.dart';
@@ -13,30 +15,30 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ScreenFinder extends StatefulWidget {
   final bool showStockOnly;
-  final String watchlistName;
-  final List<Stock> fromListStocks;
+  final String? watchlistName;
+  final List<Stock>? fromListStocks;
   const ScreenFinder(
       {this.showStockOnly = false,
       this.watchlistName,
       this.fromListStocks,
-      Key key})
+      Key? key})
       : super(key: key);
 
   @override
   _ScreenFinderState createState() => _ScreenFinderState(
-      this.showStockOnly, this.watchlistName, this.fromListStocks);
+      this.showStockOnly, this.watchlistName!, this.fromListStocks!);
 }
 
 class _ScreenFinderState extends BaseStateWithTabs<ScreenFinder> {
   final bool showStockOnly;
   final String watchlistName;
-  final List<Stock> fromListStocks;
+  final List<Stock>? fromListStocks;
   _ScreenFinderState(
       this.showStockOnly, this.watchlistName, this.fromListStocks)
-      : super('/finder');
+      : super('/finder', null, null);
 
   String timeCreation = '-';
-  TextEditingController _searchFilterController;
+  TextEditingController? _searchFilterController;
   List<Stock> listStocks = List<Stock>.empty(growable: true);
   List<People> listPeoples = List<People>.empty(growable: true);
   bool watchlistMode = false;
@@ -48,9 +50,9 @@ class _ScreenFinderState extends BaseStateWithTabs<ScreenFinder> {
 
     if (showStockOnly) {
       if (fromListStocks != null) {
-        listStocks.addAll(fromListStocks);
+        listStocks.addAll(fromListStocks!);
       } else {
-        listStocks.addAll(InvestrendTheme.storedData.listStock);
+        listStocks.addAll(InvestrendTheme.storedData!.listStock!);
       }
     }
     //watchlistMode = watchlist != null;
@@ -100,7 +102,7 @@ class _ScreenFinderState extends BaseStateWithTabs<ScreenFinder> {
 
   @override
   void dispose() {
-    _searchFilterController.dispose();
+    _searchFilterController?.dispose();
     super.dispose();
   }
 
@@ -117,14 +119,14 @@ class _ScreenFinderState extends BaseStateWithTabs<ScreenFinder> {
   void onTextChanged(String textToSearch) {
     textToSearch = textToSearch.toLowerCase();
     print('onTextChanged : [$textToSearch] size : ' +
-        InvestrendTheme.storedData.listStock.length.toString());
+        InvestrendTheme.storedData!.listStock!.length.toString());
     if (StringUtils.isEmtpy(textToSearch)) {
       listStocks.clear();
       if (showStockOnly) {
         if (fromListStocks != null) {
-          listStocks.addAll(fromListStocks);
+          listStocks.addAll(fromListStocks!);
         } else {
-          listStocks.addAll(InvestrendTheme.storedData.listStock);
+          listStocks.addAll(InvestrendTheme.storedData!.listStock!);
         }
       }
     } else {
@@ -134,24 +136,24 @@ class _ScreenFinderState extends BaseStateWithTabs<ScreenFinder> {
       List<Stock> byContainsCode = List<Stock>.empty(growable: true);
       List<Stock> byContainsName = List<Stock>.empty(growable: true);
 
-      List<Stock> source;
+      List<Stock>? source;
       if (fromListStocks != null) {
         source = fromListStocks;
       } else {
-        source = InvestrendTheme.storedData.listStock;
+        source = InvestrendTheme.storedData?.listStock;
       }
 
       //InvestrendTheme.storedData.listStock.forEach((stock) {
-      source.forEach((stock) {
-        String code = stock.code;
-        String name = stock.name;
-        code = code.toLowerCase();
-        name = name.toLowerCase();
+      source?.forEach((stock) {
+        String? code = stock.code;
+        String? name = stock.name;
+        code = code?.toLowerCase();
+        name = name?.toLowerCase();
         //print(code);
         print('onTextChanged : [$textToSearch] [code:$code] [name:$name]');
-        if (code.startsWith(textToSearch)) {
+        if (code!.startsWith(textToSearch)) {
           byCodes.add(stock);
-        } else if (name.startsWith(textToSearch)) {
+        } else if (name!.startsWith(textToSearch)) {
           byName.add(stock);
         } else if (code.contains(textToSearch)) {
           byContainsCode.add(stock);
@@ -178,15 +180,15 @@ class _ScreenFinderState extends BaseStateWithTabs<ScreenFinder> {
   }
 
   Widget createStockRow(BuildContext context, Stock stock,
-      {VoidCallback onDelete}) {
-    String code = stock.code;
+      {VoidCallback? onDelete}) {
+    String? code = stock.code;
 
     List<Widget> rows = [
       AvatarIconStocks(
         size: 50,
         imageUrl:
             'https://www.investrend.co.id/mobile/assets/stocks_logo/$code.jpg',
-        label: code.substring(0, 2),
+        label: code!.substring(0, 2),
         cached: true,
       ),
       SizedBox(
@@ -198,13 +200,14 @@ class _ScreenFinderState extends BaseStateWithTabs<ScreenFinder> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              stock.code,
-              style: Theme.of(context).textTheme.subtitle2,
+              stock.code!,
+              style: Theme.of(context).textTheme.titleSmall,
             ),
             Text(
-              stock.name,
-              style: Theme.of(context).textTheme.bodyText2.copyWith(
-                  fontSize: Theme.of(context).textTheme.bodyText2.fontSize - 1),
+              stock.name!,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  fontSize:
+                      Theme.of(context).textTheme.bodyMedium!.fontSize! - 1),
             ),
           ],
         ),
@@ -240,8 +243,8 @@ class _ScreenFinderState extends BaseStateWithTabs<ScreenFinder> {
   }
 
   Widget createPeopleRow(BuildContext context, People people,
-      {VoidCallback onDelete}) {
-    String name = people.name;
+      {VoidCallback? onDelete}) {
+    String? name = people.name;
     String label = StringUtils.getFirstDigitNameTwo(name);
 
     List<Widget> rows = [
@@ -260,13 +263,14 @@ class _ScreenFinderState extends BaseStateWithTabs<ScreenFinder> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              people.name,
-              style: Theme.of(context).textTheme.subtitle2,
+              people.name!,
+              style: Theme.of(context).textTheme.titleSmall,
             ),
             Text(
-              people.username,
-              style: Theme.of(context).textTheme.bodyText2.copyWith(
-                  fontSize: Theme.of(context).textTheme.bodyText2.fontSize - 1),
+              people.username!,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  fontSize:
+                      Theme.of(context).textTheme.bodyMedium!.fontSize! - 1),
             ),
           ],
         ),
@@ -301,7 +305,7 @@ class _ScreenFinderState extends BaseStateWithTabs<ScreenFinder> {
     );
   }
 
-  Widget createAppBar(BuildContext context) {
+  PreferredSizeWidget createAppBar(BuildContext context) {
     double elevation = 0.0;
     Color shadowColor = Theme.of(context).shadowColor;
     if (!InvestrendTheme.tradingHttp.is_production) {
@@ -394,7 +398,7 @@ class _ScreenFinderState extends BaseStateWithTabs<ScreenFinder> {
             watchlistMode
                 ? 'finder_button_save'.tr()
                 : 'finder_button_cancel'.tr(),
-            style: Theme.of(context).textTheme.button.copyWith(
+            style: Theme.of(context).textTheme.labelLarge?.copyWith(
                 color: InvestrendTheme.of(context).appBarActionTextColor,
                 fontWeight: FontWeight.normal),
           ),
@@ -424,7 +428,7 @@ class _ScreenFinderState extends BaseStateWithTabs<ScreenFinder> {
     );
   }
 
-  Widget createTabs(BuildContext context) {
+  PreferredSizeWidget createTabs(BuildContext context) {
     return TabBar(
       labelPadding:
           InvestrendTheme.paddingTab, //EdgeInsets.symmetric(horizontal: 12.0),
@@ -500,17 +504,17 @@ class _ScreenFinderState extends BaseStateWithTabs<ScreenFinder> {
   final int MAX_RECENT = 25;
   void saveToRecent(var recent) {
     int foundIndex = -1;
-    int count = InvestrendTheme.storedData.listFinderRecent.length;
-    for (int i = 0; i < count; i++) {
-      var existing = InvestrendTheme.storedData.listFinderRecent.elementAt(i);
+    int? count = InvestrendTheme.storedData?.listFinderRecent?.length;
+    for (int i = 0; i < count!; i++) {
+      var existing = InvestrendTheme.storedData?.listFinderRecent?.elementAt(i);
       if (existing is Stock && recent is Stock) {
-        String code = existing.code;
+        String? code = existing.code;
         if (StringUtils.equalsIgnoreCase(recent.code, code)) {
           foundIndex = i;
           break;
         }
       } else if (existing is People && recent is People) {
-        String username = existing.username;
+        String? username = existing.username;
         if (StringUtils.equalsIgnoreCase(recent.username, username)) {
           foundIndex = i;
           break;
@@ -518,13 +522,13 @@ class _ScreenFinderState extends BaseStateWithTabs<ScreenFinder> {
       }
     }
     if (foundIndex >= 0) {
-      InvestrendTheme.storedData.listFinderRecent.removeAt(foundIndex);
+      InvestrendTheme.storedData?.listFinderRecent?.removeAt(foundIndex);
     }
-    InvestrendTheme.storedData.listFinderRecent.insert(0, recent);
-    if (InvestrendTheme.storedData.listFinderRecent.length >= MAX_RECENT) {
-      InvestrendTheme.storedData.listFinderRecent.removeLast();
+    InvestrendTheme.storedData?.listFinderRecent?.insert(0, recent);
+    if (InvestrendTheme.storedData!.listFinderRecent!.length >= MAX_RECENT) {
+      InvestrendTheme.storedData?.listFinderRecent?.removeLast();
     }
-    InvestrendTheme.storedData.save();
+    InvestrendTheme.storedData?.save();
     /*
     if(!InvestrendTheme.storedData.listFinderRecent.contains(recent)){
       InvestrendTheme.storedData.listFinderRecent.insert(0, recent);
@@ -542,7 +546,7 @@ class _ScreenFinderState extends BaseStateWithTabs<ScreenFinder> {
     if (showStockOnly) {
       countStock += 1;
     }
-    Watchlist watchlist;
+    Watchlist? watchlist;
     if (watchlistMode) {
       watchlist = context
           .read(watchlistChangeNotifier)
@@ -584,27 +588,27 @@ class _ScreenFinderState extends BaseStateWithTabs<ScreenFinder> {
                 'finder_stocks_list_label'.tr(),
                 style: InvestrendTheme.of(context)
                     .regular_w400_compact
-                    .copyWith(
+                    ?.copyWith(
                         color:
                             InvestrendTheme.of(context).greyLighterTextColor),
               ),
             );
           }
           Stock stock = listStocks.elementAt(index - 1);
-          String code = stock.code;
-          Widget addRemove;
+          String? code = stock.code;
+          Widget? addRemove;
           if (watchlistMode && watchlist != null) {
             bool canAdd = !StringUtils.isEmtpy(stock.code) &&
-                !watchlist.stocks.contains(code);
+                !watchlist.stocks!.contains(code);
 
             if (canAdd) {
               addRemove = TextButton(
                   onPressed: () {
-                    if (watchlist.count() <
+                    if (watchlist!.count() <
                         InvestrendTheme.MAX_STOCK_PER_WATCHLIST) {
                       watchlist.addStock(stock.code);
                       Watchlist.save(
-                              context.read(watchlistChangeNotifier).getAll())
+                              context.read(watchlistChangeNotifier).getAll()!)
                           .then((value) {
                         setState(() {});
                       });
@@ -621,9 +625,9 @@ class _ScreenFinderState extends BaseStateWithTabs<ScreenFinder> {
             } else {
               addRemove = TextButton(
                   onPressed: () {
-                    watchlist.removeStock(stock.code);
+                    watchlist?.removeStock(stock.code);
                     Watchlist.save(
-                            context.read(watchlistChangeNotifier).getAll())
+                            context.read(watchlistChangeNotifier).getAll()!)
                         .then((value) {
                       setState(() {});
                     });
@@ -641,20 +645,21 @@ class _ScreenFinderState extends BaseStateWithTabs<ScreenFinder> {
             contentPadding: InvestrendTheme.paddingTab,
             //title: Text(stock.code,style: InvestrendTheme.of(context).regular_w600_compact,),
             title: Text(
-              stock.code,
+              stock.code!,
               style: InvestrendTheme.of(context).regular_w500_compact,
             ),
             subtitle: Text(
-              stock.name,
+              stock.name!,
               //style: Theme.of(context).textTheme.bodyText2.copyWith(fontSize: Theme.of(context).textTheme.bodyText2.fontSize - 1, height: 1.3, color: InvestrendTheme.of(context).greyDarkerTextColor),
-              style: Theme.of(context).textTheme.bodyText2.copyWith(
-                  fontSize: Theme.of(context).textTheme.bodyText2.fontSize - 1,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  fontSize:
+                      Theme.of(context).textTheme.bodyMedium!.fontSize! - 1,
                   height: 1.3,
                   color: InvestrendTheme.of(context).greyDarkerTextColor),
             ),
             trailing: addRemove,
             onTap: () {
-              print('clicked : ' + code);
+              print('clicked : ' + code!);
               if (watchlistMode && watchlist != null) {
               } else {
                 saveToRecent(stock);
@@ -666,11 +671,11 @@ class _ScreenFinderState extends BaseStateWithTabs<ScreenFinder> {
           );
         }
         Stock stock = listStocks.elementAt(index);
-        String code = stock.code;
+        String? code = stock.code;
         return InkWell(
           child: createStockRow(context, stock),
           onTap: () {
-            print('clicked : ' + code);
+            print('clicked : ' + code!);
             saveToRecent(stock);
             /*
             if(!InvestrendTheme.storedData.listFinderRecent.contains(stock)){
@@ -700,11 +705,11 @@ class _ScreenFinderState extends BaseStateWithTabs<ScreenFinder> {
       },
       itemBuilder: (BuildContext context, int index) {
         People people = listPeoples.elementAt(index);
-        String name = people.name;
+        String? name = people.name;
         return InkWell(
           child: createPeopleRow(context, people),
           onTap: () {
-            print('clicked : ' + name);
+            print('clicked : ' + name!);
 
             saveToRecent(people);
 
@@ -720,7 +725,7 @@ class _ScreenFinderState extends BaseStateWithTabs<ScreenFinder> {
     return ListView.separated(
       shrinkWrap: false,
       //padding: const EdgeInsets.all(8),
-      itemCount: InvestrendTheme.storedData.listFinderRecent.length + 1,
+      itemCount: InvestrendTheme.storedData!.listFinderRecent!.length + 1,
       separatorBuilder: (BuildContext context, int index) {
         if (index == 0) {
           return SizedBox(
@@ -738,46 +743,46 @@ class _ScreenFinderState extends BaseStateWithTabs<ScreenFinder> {
             padding: EdgeInsets.all(InvestrendTheme.cardPaddingGeneral),
             child: Text(
               'finder_recent_search_label'.tr(),
-              style: InvestrendTheme.of(context).small_w400_compact.copyWith(
+              style: InvestrendTheme.of(context).small_w400_compact?.copyWith(
                   color: InvestrendTheme.of(context).greyLighterTextColor),
             ),
           );
         } else {
           int realIndex = index - 1;
-          var object =
-              InvestrendTheme.storedData.listFinderRecent.elementAt(realIndex);
+          var object = InvestrendTheme.storedData?.listFinderRecent
+              ?.elementAt(realIndex);
           if (object is People) {
-            String name = object.name;
+            String? name = object.name;
             return InkWell(
               child: createPeopleRow(context, object, onDelete: () {
-                print('onDelete : ' + name);
-                InvestrendTheme.storedData.listFinderRecent.remove(object);
-                var future = InvestrendTheme.storedData.save();
-                future.then((value) => {setState(() {})});
+                print('onDelete : ' + name!);
+                InvestrendTheme.storedData?.listFinderRecent?.remove(object);
+                var future = InvestrendTheme.storedData?.save();
+                future?.then((value) => {setState(() {})});
               }),
               // onTap: ()=> onChooseFromRecent(object, realIndex),
               onTap: () {
-                print('clicked : ' + name);
-                InvestrendTheme.storedData.listFinderRecent.remove(object);
+                print('clicked : ' + name!);
+                InvestrendTheme.storedData?.listFinderRecent?.remove(object);
                 saveToRecent(object);
                 FocusScope.of(context).requestFocus(new FocusNode());
                 Navigator.pop(context, object);
               },
             );
           } else if (object is Stock) {
-            String code = object.code;
+            String? code = object.code;
             return InkWell(
               child: createStockRow(context, object, onDelete: () {
-                print('onDelete : ' + code);
-                InvestrendTheme.storedData.listFinderRecent.remove(object);
-                var future = InvestrendTheme.storedData.save();
-                future.then((value) => {setState(() {})});
+                print('onDelete : ' + code!);
+                InvestrendTheme.storedData?.listFinderRecent?.remove(object);
+                var future = InvestrendTheme.storedData?.save();
+                future?.then((value) => {setState(() {})});
               }),
               onTap: () {
-                print('clicked : ' + code);
-                Stock stock = InvestrendTheme.storedData.findStock(code);
+                print('clicked : ' + code!);
+                Stock? stock = InvestrendTheme.storedData?.findStock(code);
                 if (stock != null) {
-                  InvestrendTheme.storedData.listFinderRecent.remove(object);
+                  InvestrendTheme.storedData?.listFinderRecent?.remove(object);
                   saveToRecent(object);
                   FocusScope.of(context).requestFocus(new FocusNode());
                   Navigator.pop(context, stock);
@@ -793,12 +798,8 @@ class _ScreenFinderState extends BaseStateWithTabs<ScreenFinder> {
   }
 
   @override
-  void onActive() {
-    // TODO: implement onActive
-  }
+  void onActive() {}
 
   @override
-  void onInactive() {
-    // TODO: implement onInactive
-  }
+  void onInactive() {}
 }

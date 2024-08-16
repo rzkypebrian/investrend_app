@@ -1,4 +1,4 @@
-import 'package:easy_localization/easy_localization.dart';
+// import 'package:easy_localization/easy_localization.dart';
 /*
 class ScreenTrade extends StatefulWidget {
   const ScreenTrade({Key key}) : super(key: key);

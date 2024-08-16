@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 class UnknownResponseSheet extends BaseTradeBottomSheet {
   final BuySell data;
-  final String response;
+  final String? response;
 
   UnknownResponseSheet(this.data, this.response);
 
@@ -22,8 +22,12 @@ class UnknownResponseSheet extends BaseTradeBottomSheet {
               //   Icons.clear,
               //   color: InvestrendTheme.redText,
               // ),
-              icon: Image.asset('images/icons/action_clear.png', color: InvestrendTheme.redText, width: 12.0, height: 12.0,),
-
+              icon: Image.asset(
+                'images/icons/action_clear.png',
+                color: InvestrendTheme.redText,
+                width: 12.0,
+                height: 12.0,
+              ),
               visualDensity: VisualDensity.compact,
               onPressed: () {
                 //Navigator.pop(context);

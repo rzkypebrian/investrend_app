@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names, unused_field, unused_local_variable
+
 import 'dart:math';
 
 import 'package:Investrend/component/button_rounded.dart';
@@ -13,26 +15,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
+// import 'package:flutter_slidable/flutter_slidable.dart';
 
 class ScreenPortfolioRealized extends StatefulWidget {
-  final TabController tabController;
+  final TabController? tabController;
   final int tabIndex;
 
-  ScreenPortfolioRealized(this.tabIndex, this.tabController, {Key key})
+  ScreenPortfolioRealized(this.tabIndex, this.tabController, {Key? key})
       : super(key: key);
 
   @override
   _ScreenPortfolioRealizedState createState() =>
-      _ScreenPortfolioRealizedState(tabIndex, tabController);
+      _ScreenPortfolioRealizedState(tabIndex, tabController!);
 }
 
 class _ScreenPortfolioRealizedState
     extends BaseStateNoTabsWithParentTab<ScreenPortfolioRealized> {
-  final RealizedNotifier _realizedDataNotifier =
+  final RealizedNotifier? _realizedDataNotifier =
       RealizedNotifier(new RealizedStockData());
   final ValueNotifier<bool> _accountNotifier = ValueNotifier<bool>(false);
-  final ValueNotifier _rangeNotifier = ValueNotifier<int>(0);
+  final ValueNotifier<int>? _rangeNotifier = ValueNotifier<int>(0);
   final ValueNotifier<int> _sortNotifier = ValueNotifier<int>(0);
   //final ValueNotifier _filterNotifier = ValueNotifier<int>(0);
 
@@ -81,14 +83,14 @@ class _ScreenPortfolioRealizedState
     switch (_sortNotifier.value) {
       case 0: //a_to_z
         {
-          _realizedDataNotifier.value.datas
-              .sort((a, b) => a.stockCode.compareTo(b.stockCode));
+          _realizedDataNotifier?.value?.datas
+              ?.sort((a, b) => a.stockCode!.compareTo(b.stockCode!));
         }
         break;
       case 1: // z_to_a
         {
-          _realizedDataNotifier.value.datas
-              .sort((a, b) => b.stockCode.compareTo(a.stockCode));
+          _realizedDataNotifier?.value?.datas
+              ?.sort((a, b) => b.stockCode!.compareTo(a.stockCode!));
         }
         break;
       /*
@@ -130,14 +132,14 @@ class _ScreenPortfolioRealizedState
        */
       case 2: // return_highest
         {
-          _realizedDataNotifier.value.datas
-              .sort((a, b) => b.gl.compareTo(a.gl));
+          _realizedDataNotifier?.value?.datas
+              ?.sort((a, b) => b.gl.compareTo(a.gl));
         }
         break;
       case 3: // return_lowest
         {
-          _realizedDataNotifier.value.datas
-              .sort((a, b) => a.gl.compareTo(b.gl));
+          _realizedDataNotifier?.value?.datas
+              ?.sort((a, b) => a.gl.compareTo(b.gl));
         }
         break;
       /*
@@ -154,7 +156,7 @@ class _ScreenPortfolioRealizedState
         */
     }
     //_updateListNotifier.value = !_updateListNotifier.value;
-    _realizedDataNotifier.mustNotifyListeners();
+    _realizedDataNotifier?.mustNotifyListeners();
     context
         .read(propertiesNotifier)
         .properties
@@ -233,7 +235,7 @@ class _ScreenPortfolioRealizedState
   }
   */
   @override
-  Widget createAppBar(BuildContext context) {
+  PreferredSizeWidget? createAppBar(BuildContext context) {
     return null;
   }
 
@@ -248,28 +250,29 @@ class _ScreenPortfolioRealizedState
     final notifier = context.read(accountChangeNotifier);
 
     User user = context.read(dataHolderChangeNotifier).user;
-    Account activeAccount = user.getAccount(notifier.index);
+    Account? activeAccount = user.getAccount(notifier.index);
     if (activeAccount == null) {
       print(routeName + '  active Account is NULL');
       return false;
     }
 
     try {
-      if (_realizedDataNotifier.value.isEmpty() || pullToRefresh) {
+      if (_realizedDataNotifier!.value!.isEmpty() || pullToRefresh) {
         setNotifierLoading(_realizedDataNotifier);
       }
-      String range = _range_type.elementAt(_rangeNotifier.value);
-      final result = await InvestrendTheme.tradingHttp.realizedStock(
-          activeAccount.brokercode,
-          activeAccount.accountcode,
-          user.username,
-          range,
-          InvestrendTheme.of(context).applicationPlatform,
-          InvestrendTheme.of(context).applicationVersion);
+      String? range = _range_type.elementAt(_rangeNotifier!.value);
+      final RealizedStockData? result = await InvestrendTheme.tradingHttp
+          .realizedStock(
+              activeAccount.brokercode,
+              activeAccount.accountcode,
+              user.username,
+              range,
+              InvestrendTheme.of(context).applicationPlatform,
+              InvestrendTheme.of(context).applicationVersion);
       if (result != null) {
         print(routeName + ' Future realizedStock DATA : ' + result.toString());
         if (mounted) {
-          _realizedDataNotifier.setValue(result);
+          _realizedDataNotifier?.setValue(result);
           sort();
         }
       } else {
@@ -320,7 +323,7 @@ class _ScreenPortfolioRealizedState
               'net_gain_loss_label'.tr(),
               style: InvestrendTheme.of(context)
                   .more_support_w400_compact
-                  .copyWith(
+                  ?.copyWith(
                       color: InvestrendTheme.of(context).greyDarkerTextColor),
             ),
             SizedBox(
@@ -363,10 +366,10 @@ class _ScreenPortfolioRealizedState
             left: InvestrendTheme.cardPaddingGeneral,
             right: InvestrendTheme.cardPaddingGeneral),
         child: ValueListenableBuilder(
-          valueListenable: _realizedDataNotifier,
-          builder: (context, RealizedStockData data, child) {
-            Widget noWidget =
-                _realizedDataNotifier.currentState.getNoWidget(onRetry: () {
+          valueListenable: _realizedDataNotifier!,
+          builder: (context, RealizedStockData? data, child) {
+            Widget? noWidget =
+                _realizedDataNotifier?.currentState.getNoWidget(onRetry: () {
               doUpdate(pullToRefresh: true);
             });
 
@@ -382,13 +385,13 @@ class _ScreenPortfolioRealizedState
               //       .copyWith(color: InvestrendTheme.changeTextColor(data.totalGL), fontWeight: FontWeight.w600),
               // );
             } else {
-              text = InvestrendTheme.formatMoneyDouble(data.totalGL,
+              text = InvestrendTheme.formatMoneyDouble(data?.totalGL,
                   prefixRp: true, prefixPlus: true);
             }
             return Text(
               text,
-              style: Theme.of(context).textTheme.headline4.copyWith(
-                  color: InvestrendTheme.changeTextColor(data.totalGL),
+              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                  color: InvestrendTheme.changeTextColor(data?.totalGL),
                   fontWeight: FontWeight.w600),
             );
           },
@@ -418,13 +421,13 @@ class _ScreenPortfolioRealizedState
         ),
       ),
       ValueListenableBuilder(
-        valueListenable: _realizedDataNotifier,
-        builder: (context, RealizedStockData data, child) {
+        valueListenable: _realizedDataNotifier!,
+        builder: (context, RealizedStockData? data, child) {
           // if (_realizedDataNotifier.invalid()) {
           //   return Center(child: CircularProgressIndicator());
           // }
-          Widget noWidget =
-              _realizedDataNotifier.currentState.getNoWidget(onRetry: () {
+          Widget? noWidget =
+              _realizedDataNotifier?.currentState.getNoWidget(onRetry: () {
             doUpdate(pullToRefresh: true);
           });
           if (noWidget != null) {
@@ -563,11 +566,11 @@ class _ScreenPortfolioRealizedState
   void initState() {
     super.initState();
     _sortNotifier.addListener(sort);
-    _rangeNotifier.addListener(() {
+    _rangeNotifier?.addListener(() {
       context
           .read(propertiesNotifier)
           .properties
-          .saveInt(routeName, PROP_SELECTED_RANGE, _rangeNotifier.value);
+          .saveInt(routeName, PROP_SELECTED_RANGE, _rangeNotifier!.value);
     });
     runPostFrame(() {
       // #1 get properties
@@ -582,7 +585,7 @@ class _ScreenPortfolioRealizedState
 
       // #2 use properties
       _sortNotifier.value = min(selectedSort, _sort_by_option.length - 1);
-      _rangeNotifier.value = min(selectedRange, _range_options.length - 1);
+      _rangeNotifier!.value = min(selectedRange, _range_options.length - 1);
 
       // #3 check properties if changed, then save again
       if (selectedSort != _sortNotifier.value) {
@@ -591,7 +594,7 @@ class _ScreenPortfolioRealizedState
             .properties
             .saveInt(routeName, PROP_SELECTED_SORT, _sortNotifier.value);
       }
-      if (selectedRange != _rangeNotifier.value) {
+      if (selectedRange != _rangeNotifier!.value) {
         context
             .read(propertiesNotifier)
             .properties
@@ -615,7 +618,7 @@ class _ScreenPortfolioRealizedState
     });
     */
 
-    _rangeNotifier.addListener(() {
+    _rangeNotifier?.addListener(() {
       if (mounted) {
         doUpdate(pullToRefresh: true);
       }
@@ -624,21 +627,21 @@ class _ScreenPortfolioRealizedState
 
   @override
   void dispose() {
-    _realizedDataNotifier.dispose();
-    _rangeNotifier.dispose();
+    _realizedDataNotifier?.dispose();
+    _rangeNotifier?.dispose();
     _accountNotifier.dispose();
     _sortNotifier.dispose();
     final container = ProviderContainer();
     if (_activeAccountChangedListener != null) {
       container
           .read(accountChangeNotifier)
-          .removeListener(_activeAccountChangedListener);
+          .removeListener(_activeAccountChangedListener!);
     }
 
     super.dispose();
   }
 
-  VoidCallback _activeAccountChangedListener;
+  VoidCallback? _activeAccountChangedListener;
 
   @override
   void didChangeDependencies() {
@@ -647,7 +650,7 @@ class _ScreenPortfolioRealizedState
     if (_activeAccountChangedListener != null) {
       context
           .read(accountChangeNotifier)
-          .removeListener(_activeAccountChangedListener);
+          .removeListener(_activeAccountChangedListener!);
     } else {
       _activeAccountChangedListener = () {
         if (mounted) {
@@ -662,7 +665,7 @@ class _ScreenPortfolioRealizedState
     }
     context
         .read(accountChangeNotifier)
-        .addListener(_activeAccountChangedListener);
+        .addListener(_activeAccountChangedListener!);
 
     /*
     context.read(accountChangeNotifier).addListener(() {
@@ -684,14 +687,14 @@ class _ScreenPortfolioRealizedState
     //print(routeName + ' onInactive');
   }
 
-  Widget tableRealized(BuildContext context, RealizedStockData data) {
-    TextStyle small500 = InvestrendTheme.of(context).small_w500;
-    TextStyle small400 = InvestrendTheme.of(context).small_w400;
-    TextStyle smallLighter400 = small400.copyWith(
+  Widget tableRealized(BuildContext context, RealizedStockData? data) {
+    TextStyle? small500 = InvestrendTheme.of(context).small_w500;
+    TextStyle? small400 = InvestrendTheme.of(context).small_w400;
+    TextStyle? smallLighter400 = small400?.copyWith(
         color: InvestrendTheme.of(context).greyLighterTextColor);
-    TextStyle smallDarker400 = small400.copyWith(
+    TextStyle? smallDarker400 = small400?.copyWith(
         color: InvestrendTheme.of(context).greyDarkerTextColor);
-    TextStyle reguler700 = InvestrendTheme.of(context).regular_w600;
+    TextStyle? reguler700 = InvestrendTheme.of(context).regular_w600;
 
     const double paddingTopBottom = 15.0;
     const double paddingHeaderTopBottom = 10.0;
@@ -723,9 +726,9 @@ class _ScreenPortfolioRealizedState
       // ),
     ]));
 
-    if (data.count() > 0) {
+    if (data!.count()! > 0) {
       bool first = true;
-      data.datas.forEach((rdn) {
+      data.datas?.forEach((rdn) {
         if (!first) {
           list.add(TableRow(children: [
             // ComponentCreator.divider(context),
@@ -737,7 +740,7 @@ class _ScreenPortfolioRealizedState
         first = false;
 
         GestureTapCallback onTap = () {
-          print('onTap rdn : ' + rdn.date);
+          print('onTap rdn : ' + rdn.date!);
 
           int quantityLot = rdn.lot;
           double averageBuy = rdn.avgBuy;
@@ -749,7 +752,7 @@ class _ScreenPortfolioRealizedState
           List<LabelValueColor> listLVC = [
             LabelValueColor(
               'portfolio_detail_stock_code_label'.tr(),
-              rdn.stockCode,
+              rdn.stockCode!,
             ),
             LabelValueColor(
               'portfolio_detail_quantity_lot_label'.tr(),
@@ -799,7 +802,7 @@ class _ScreenPortfolioRealizedState
             child: Padding(
               padding: const EdgeInsets.only(
                   top: paddingTopBottom, bottom: paddingTopBottom),
-              child: Text(rdn.stockCode, style: smallLighter400),
+              child: Text(rdn.stockCode!, style: smallLighter400),
             ),
           ),
           TableRowInkWell(
@@ -812,7 +815,7 @@ class _ScreenPortfolioRealizedState
                   fit: BoxFit.scaleDown,
                   child: Text(
                     InvestrendTheme.formatMoneyDouble(rdn.gl, prefixRp: true),
-                    style: reguler700.copyWith(color: colorValue),
+                    style: reguler700?.copyWith(color: colorValue),
                     textAlign: TextAlign.left,
                   )),
             ),

@@ -1,12 +1,12 @@
 import 'dart:math';
 
 class BrokerTradeSummaryValue {
-  String message = '';
-  String brokerCode = '';
-  String brokerName = '';
-  int brokerType = 0;
-  int buyStockSector = 0;
-  int sellStockSector = 0;
+  String? message = '';
+  String? brokerCode = '';
+  String? brokerName = '';
+  int? brokerType = 0;
+  int? buyStockSector = 0;
+  int? sellStockSector = 0;
 
   /*
   IDXBASIC = 1 UNGU TUA
@@ -22,26 +22,26 @@ class BrokerTradeSummaryValue {
   IDXTRANS = 11 COKLAT MUDA
   */
 
-  String buyStock = '';
-  String sellStock = '';
-  String board = '';
-  String dataBy = '';
-  String type = '';
-  String from = '';
-  String to = '';
-  bool loaded = false;
-  String lastDate = '';
+  String? buyStock = '';
+  String? sellStock = '';
+  String? board = '';
+  String? dataBy = '';
+  String? type = '';
+  String? from = '';
+  String? to = '';
+  bool? loaded = false;
+  String? lastDate = '';
 
-  String bValue;
-  String bVolume;
-  String bAverage;
-  String sValue;
-  String sVolume;
-  String sAverage;
-  String bValueDomestic;
-  String bValueForeign;
-  String sValueDomestic;
-  String sValueForeign;
+  String? bValue;
+  String? bVolume;
+  String? bAverage;
+  String? sValue;
+  String? sVolume;
+  String? sAverage;
+  String? bValueDomestic;
+  String? bValueForeign;
+  String? sValueDomestic;
+  String? sValueForeign;
 
   BrokerTradeSummaryValue({
     this.message,
@@ -301,19 +301,19 @@ class BrokerTradeSummaryCodeValue {
 }
 
 class IdxBasic {
-  String codeBasic;
+  String? codeBasic;
 
   IdxBasic({this.codeBasic});
 }
 
 class BrokerData {
-  String brokerCode;
-  String brokerName;
-  int brokerType;
-  double bVal;
-  double sVal;
-  double nVal;
-  double tVal;
+  String? brokerCode;
+  String? brokerName;
+  int? brokerType;
+  double? bVal;
+  double? sVal;
+  double? nVal;
+  double? tVal;
 
   BrokerData({
     this.brokerCode,
@@ -321,9 +321,9 @@ class BrokerData {
     this.brokerType,
     this.bVal,
     this.sVal,
-    double nVal,
-    double tVal,
-  })  : nVal = roundDecimal(bVal - sVal),
+    double? nVal,
+    double? tVal,
+  })  : nVal = roundDecimal(bVal! - sVal!),
         tVal = roundDecimal(bVal + sVal);
 
   static List<BrokerData> dummy = [

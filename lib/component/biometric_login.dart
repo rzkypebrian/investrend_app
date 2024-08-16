@@ -1,3 +1,5 @@
+// ignore_for_file: unused_field, unused_element
+
 import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:http/http.dart' as http;
@@ -34,7 +36,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _authenticate() async {
-    final bool isAuthenticated = await _localAuth.authenticateWithBiometrics(
+    final bool isAuthenticated = await _localAuth.authenticate(
       localizedReason: 'Please authenticate to log in',
     );
 

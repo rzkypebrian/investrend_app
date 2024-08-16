@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'dart:math';
 
 import 'package:Investrend/utils/investrend_theme.dart';
@@ -6,14 +8,20 @@ import 'package:flutter/material.dart';
 
 const String TAG_DESC = '#DESC#';
 const String TAG_ASC = '#ASC#';
+
 class ListBottomSheet extends StatelessWidget {
   final ValueNotifier rangeNotifier;
   final List<String> range_options;
   final bool clickAndClose;
   final bool showEmojiDescendingAscending;
-  final String information;
-  final String title;
-  const ListBottomSheet(this.rangeNotifier, this.range_options, {this.title, this.information, this.clickAndClose = false, this.showEmojiDescendingAscending = false, Key key})
+  final String? information;
+  final String? title;
+  const ListBottomSheet(this.rangeNotifier, this.range_options,
+      {this.title,
+      this.information,
+      this.clickAndClose = false,
+      this.showEmojiDescendingAscending = false,
+      Key? key})
       : super(key: key);
 
   @override
@@ -25,9 +33,10 @@ class ListBottomSheet extends StatelessWidget {
     double padding = 24.0;
     double minHeight = height * 0.2;
     double maxHeight = height * 0.7;
-    double contentHeight = padding + 44.0 + (44.0 * range_options.length) + padding;
+    double contentHeight =
+        padding + 44.0 + (44.0 * range_options.length) + padding;
 
-    if(information != null){
+    if (information != null) {
       contentHeight += 30 * 2; // max 2 lines
     }
 
@@ -48,7 +57,6 @@ class ListBottomSheet extends StatelessWidget {
         child: Column(
           //mainAxisSize: MainAxisSize.max,
           children: [
-
             Align(
               alignment: Alignment.centerRight,
               child: IconButton(
@@ -76,10 +84,21 @@ class ListBottomSheet extends StatelessWidget {
                     String ca = range_options.elementAt(i);
                     list.add(createRow(context, ca, selectedIndex == i, i));
                   }
-                  if(information != null){
+                  if (information != null) {
                     list.add(Padding(
-                      padding: const EdgeInsets.only(top: InvestrendTheme.cardPadding),
-                      child: AutoSizeText(information, maxLines: 3, softWrap: true,style: InvestrendTheme.of(context).more_support_w400.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor),textAlign: TextAlign.center,),
+                      padding: const EdgeInsets.only(
+                          top: InvestrendTheme.cardPadding),
+                      child: AutoSizeText(
+                        information!,
+                        maxLines: 3,
+                        softWrap: true,
+                        style: InvestrendTheme.of(context)
+                            .more_support_w400
+                            ?.copyWith(
+                                color: InvestrendTheme.of(context)
+                                    .greyLighterTextColor),
+                        textAlign: TextAlign.center,
+                      ),
                     ));
                   }
 
@@ -125,15 +144,16 @@ class ListBottomSheet extends StatelessWidget {
     );
   }
 
-
-
-  Widget createRow(BuildContext context, String label, bool selected, int index) {
-    TextStyle style = InvestrendTheme.of(context).regular_w400_compact;
+  Widget createRow(
+      BuildContext context, String label, bool selected, int index) {
+    TextStyle? style = InvestrendTheme.of(context).regular_w400_compact;
     //Color colorText = style.color;
     Color colorIcon = Colors.transparent;
 
     if (selected) {
-      style = InvestrendTheme.of(context).regular_w600_compact.copyWith(color: Theme.of(context).colorScheme.secondary);
+      style = InvestrendTheme.of(context)
+          .regular_w600_compact
+          ?.copyWith(color: Theme.of(context).colorScheme.secondary);
       //colorText = Theme.of(context).accentColor;
       colorIcon = Theme.of(context).colorScheme.secondary;
     }
@@ -141,24 +161,41 @@ class ListBottomSheet extends StatelessWidget {
     Widget textWidget;
     if (showEmojiDescendingAscending) {
       if (label.endsWith(TAG_DESC)) {
-        textWidget = Text.rich(TextSpan(text: label.replaceFirst(TAG_DESC, ''), style: style, children: [
-          TextSpan(text: '▼', style: style.copyWith(color: InvestrendTheme.greenText)),
-        ]), textAlign: TextAlign.center,);
+        textWidget = Text.rich(
+          TextSpan(
+              text: label.replaceFirst(TAG_DESC, ''),
+              style: style,
+              children: [
+                TextSpan(
+                    text: '▼',
+                    style: style?.copyWith(color: InvestrendTheme.greenText)),
+              ]),
+          textAlign: TextAlign.center,
+        );
       } else if (label.endsWith(TAG_ASC)) {
-        textWidget = Text.rich(TextSpan(text: label.replaceFirst(TAG_ASC, ''), style: style, children: [
-          TextSpan(text: '▲', style: style.copyWith(color: InvestrendTheme.redText)),
-        ]), textAlign: TextAlign.center);
+        textWidget = Text.rich(
+            TextSpan(
+                text: label.replaceFirst(TAG_ASC, ''),
+                style: style,
+                children: [
+                  TextSpan(
+                      text: '▲',
+                      style: style?.copyWith(color: InvestrendTheme.redText)),
+                ]),
+            textAlign: TextAlign.center);
       } else {
         textWidget = Text(
           label,
-          style: style, //InvestrendTheme.of(context).regular_w700_compact.copyWith(color: colorText),
+          style:
+              style, //InvestrendTheme.of(context).regular_w700_compact.copyWith(color: colorText),
           textAlign: TextAlign.center,
         );
       }
     } else {
       textWidget = Text(
         label,
-        style: style, //InvestrendTheme.of(context).regular_w700_compact.copyWith(color: colorText),
+        style:
+            style, //InvestrendTheme.of(context).regular_w700_compact.copyWith(color: colorText),
         textAlign: TextAlign.center,
       );
     }
@@ -197,9 +234,8 @@ class ListBottomSheet extends StatelessWidget {
           if (clickAndClose) {
             // Future.delayed(Duration(milliseconds: 300),(){
             //Navigator.pop(context);
-            Navigator.pop(context,index);
+            Navigator.pop(context, index);
             // });
-
           }
         },
       ),

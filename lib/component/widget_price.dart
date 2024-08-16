@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable, dead_code
+
 import 'package:Investrend/component/buttons_attention.dart';
 import 'package:Investrend/objects/riverpod_change_notifier.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
@@ -5,24 +7,32 @@ import 'package:Investrend/utils/string_utils.dart';
 import 'package:Investrend/utils/ui_helper.dart';
 import 'package:flutter/material.dart';
 
-
 class WidgetPrice extends StatelessWidget {
-  String code;
-  String name;
-  double close;
-  double change;
-  double percentChange;
-  VoidCallback onPressedButtonBoard;
-  VoidCallback onPressedButtonImportantInformation;
-  VoidCallback onPressedButtonCorporateAction;
-  Color corporateActionColor;
-  StockInformationStatus stockInformationStatus;
-  String attentionCodes;
-  ValueNotifier<bool> animateSpecialNotationNotifier;
-  final String heroTag;
+  String? code;
+  String? name;
+  double? close;
+  double? change;
+  double? percentChange;
+  VoidCallback? onPressedButtonBoard;
+  VoidCallback? onPressedButtonImportantInformation;
+  VoidCallback? onPressedButtonCorporateAction;
+  Color? corporateActionColor;
+  StockInformationStatus? stockInformationStatus;
+  String? attentionCodes;
+  ValueNotifier<bool>? animateSpecialNotationNotifier;
+  final String? heroTag;
   bool isIndex;
-  WidgetPrice(this.code, this.name, this.close, this.change, this.percentChange, this.isIndex,
-      {Key key, this.onPressedButtonBoard, this.onPressedButtonCorporateAction, this.onPressedButtonImportantInformation, this.heroTag, this.corporateActionColor, this.stockInformationStatus, this.attentionCodes, this.animateSpecialNotationNotifier})
+  WidgetPrice(this.code, this.name, this.close, this.change, this.percentChange,
+      this.isIndex,
+      {Key? key,
+      this.onPressedButtonBoard,
+      this.onPressedButtonCorporateAction,
+      this.onPressedButtonImportantInformation,
+      this.heroTag,
+      this.corporateActionColor,
+      this.stockInformationStatus,
+      this.attentionCodes,
+      this.animateSpecialNotationNotifier})
       : super(key: key);
 
   Widget butttonCorporateAction(BuildContext context, double height) {
@@ -30,14 +40,17 @@ class WidgetPrice extends StatelessWidget {
       constraints: BoxConstraints(maxHeight: height),
       child: MaterialButton(
         minWidth: height,
-        padding: EdgeInsets.only(left: 12.0, right: 12.0, top: 1.0, bottom: 1.0),
+        padding:
+            EdgeInsets.only(left: 12.0, right: 12.0, top: 1.0, bottom: 1.0),
         shape: CircleBorder(
-          //borderRadius: BorderRadius.circular(8.0),
-        ),
+            //borderRadius: BorderRadius.circular(8.0),
+            ),
         visualDensity: VisualDensity.compact,
         child: Text(
           'CA',
-          style: InvestrendTheme.of(context).small_w600_compact.copyWith(color: InvestrendTheme.of(context).whiteColor),
+          style: InvestrendTheme.of(context)
+              .small_w600_compact
+              ?.copyWith(color: InvestrendTheme.of(context).whiteColor),
         ),
         color: corporateActionColor ?? Color(0xFFAD5E0C),
         onPressed: this.onPressedButtonCorporateAction,
@@ -46,22 +59,25 @@ class WidgetPrice extends StatelessWidget {
   }
 
   Widget butttonBoard(BuildContext context, double height) {
-
     return SizedBox(
       width: height,
       height: height,
-      child: IconButton(onPressed: this.onPressedButtonBoard, icon: Image.asset(
-        'images/icons/arrow_down.png',
-        color: InvestrendTheme.of(context).greyDarkerTextColor,
-        width: 15.0,
-        height: 15.0,
-      ),),
+      child: IconButton(
+        onPressed: this.onPressedButtonBoard,
+        icon: Image.asset(
+          'images/icons/arrow_down.png',
+          color: InvestrendTheme.of(context).greyDarkerTextColor,
+          width: 15.0,
+          height: 15.0,
+        ),
+      ),
     );
 
     return ConstrainedBox(
       constraints: BoxConstraints(maxHeight: height),
       child: MaterialButton(
-        padding: EdgeInsets.only(left: 15.0, right: 15.0, top: 1.0, bottom: 1.0),
+        padding:
+            EdgeInsets.only(left: 15.0, right: 15.0, top: 1.0, bottom: 1.0),
         minWidth: 40,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8.0),
@@ -110,24 +126,25 @@ class WidgetPrice extends StatelessWidget {
   }
   */
   Widget buttonSpecialNotation(BuildContext context, double height) {
-
-
-    String image = this.stockInformationStatus != null ? this.stockInformationStatus.image : 'images/icons/special_notation.png';
-    if(StringUtils.isEmtpy(image)){
+    String image = this.stockInformationStatus != null
+        ? this.stockInformationStatus!.image
+        : 'images/icons/special_notation.png';
+    if (StringUtils.isEmtpy(image)) {
       image = 'images/icons/special_notation.png';
     }
     return ConstrainedBox(
       constraints: BoxConstraints(maxHeight: height, minWidth: height),
       child: MaterialButton(
         minWidth: height,
-        padding: EdgeInsets.only(left: 12.0, right: 12.0, top: 1.0, bottom: 1.0),
+        padding:
+            EdgeInsets.only(left: 12.0, right: 12.0, top: 1.0, bottom: 1.0),
         shape: CircleBorder(),
         // shape: RoundedRectangleBorder(
         //   borderRadius: BorderRadius.circular(8.0),
         // ),
         visualDensity: VisualDensity.compact,
         child: Image.asset(
-           //'images/icons/special_notation.png',
+          //'images/icons/special_notation.png',
           image,
           width: height,
           height: height,
@@ -140,7 +157,8 @@ class WidgetPrice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Size textSize = UIHelper.textSize('ABCD', InvestrendTheme.of(context).headline3);
+    Size textSize =
+        UIHelper.textSize('ABCD', InvestrendTheme.of(context).headline3!);
 
     List<Widget> rowFirstLine = List.empty(growable: true);
 
@@ -154,16 +172,16 @@ class WidgetPrice extends StatelessWidget {
     ));
      */
 
-    if(StringUtils.isEmtpy(heroTag)){
+    if (StringUtils.isEmtpy(heroTag)) {
       rowFirstLine.add(Text(
-        code,
+        code!,
         style: InvestrendTheme.of(context).headline3,
       ));
-    }else{
+    } else {
       rowFirstLine.add(Hero(
-        tag: heroTag,
+        tag: heroTag!,
         child: Text(
-          code,
+          code!,
           style: InvestrendTheme.of(context).headline3,
         ),
       ));
@@ -184,24 +202,28 @@ class WidgetPrice extends StatelessWidget {
     }
     */
     if (this.onPressedButtonCorporateAction != null) {
-      rowFirstLine.add(
-        ButtonCorporateAction(textSize.height,  corporateActionColor, onPressedButtonCorporateAction)
-      );
+      rowFirstLine.add(ButtonCorporateAction(textSize.height,
+          corporateActionColor, onPressedButtonCorporateAction));
     }
 
-
-    if (this.onPressedButtonImportantInformation != null && (!StringUtils.isEmtpy(attentionCodes) || stockInformationStatus.strip)) {
+    if (this.onPressedButtonImportantInformation != null &&
+        (!StringUtils.isEmtpy(attentionCodes!) ||
+            stockInformationStatus!.strip)) {
       // rowFirstLine.add(
       //   ButtonTextAttention(attentionCodes, textSize.height, onPressedButtonImportantInformation,)
       // );
       // rowFirstLine.add(SizedBox(width: 8.0,));
-      rowFirstLine.add(
-          ButtonTextAttentionMozaic(attentionCodes, textSize.height -3, stockInformationStatus, onPressedButtonImportantInformation, animateSpecialNotationNotifier:animateSpecialNotationNotifier)
+      rowFirstLine.add(ButtonTextAttentionMozaic(
+              attentionCodes,
+              textSize.height - 3,
+              stockInformationStatus,
+              onPressedButtonImportantInformation,
+              animateSpecialNotationNotifier: animateSpecialNotationNotifier)
           // ButtonTextAttentionMozaic('ABCDEGHJKQRP', textSize.height-3, onPressedButtonImportantInformation,)
-        //ButtonTextAttentionMozaic('ABCDE', textSize.height -3, stockInformationStatus,onPressedButtonImportantInformation,)
+          //ButtonTextAttentionMozaic('ABCDE', textSize.height -3, stockInformationStatus,onPressedButtonImportantInformation,)
 
           // ButtonTextAttentionMozaic('ABCDEGHJK', textSize.height - 3, stockInformationStatus,onPressedButtonImportantInformation,)
-      );
+          );
 
       // rowFirstLine.add(
       //     ButtonTextAttentionMozaic('ABCD', textSize.height -3, StockInformationStatus.Suspended, (){},)
@@ -212,7 +234,8 @@ class WidgetPrice extends StatelessWidget {
       // color: Colors.yellow,
       child: Text(
         ' ' + InvestrendTheme.formatPriceDouble(close, showDecimal: isIndex),
-        style: InvestrendTheme.of(context).headline3.copyWith(color: InvestrendTheme.changeTextColor(change), height: 1.0),
+        style: InvestrendTheme.of(context).headline3?.copyWith(
+            color: InvestrendTheme.changeTextColor(change), height: 1.0),
       ),
       /*
       child: Row(
@@ -227,11 +250,10 @@ class WidgetPrice extends StatelessWidget {
        */
     ));
 
-
     String changeText;
-    if(isIndex){
+    if (isIndex) {
       changeText = InvestrendTheme.formatNewChange(change, decimalValue: 2);
-    }else{
+    } else {
       changeText = InvestrendTheme.formatNewChange(change);
     }
 
@@ -289,9 +311,11 @@ class WidgetPrice extends StatelessWidget {
                     //color: Colors.green,
                     child: Text(
                       //'nama yang sangat panjang sekali bisa bisa kepanjangan',
-                      name,
+                      name!,
                       maxLines: 1,
-                      style: InvestrendTheme.of(context).support_w400.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor),
+                      style: InvestrendTheme.of(context).support_w400?.copyWith(
+                          color:
+                              InvestrendTheme.of(context).greyLighterTextColor),
                     ),
                   ),
                 ),
@@ -301,11 +325,15 @@ class WidgetPrice extends StatelessWidget {
                 Container(
                   //color: Colors.yellow,
                   child: Text(
-                    '  ' + changeText + ' (' + InvestrendTheme.formatPercentChange(percentChange) + ')',
-                    style: InvestrendTheme.of(context).regular_w400.copyWith(
-                      color: InvestrendTheme.changeTextColor(change),
-                      height: 1.0,
-                    ),
+                    '  ' +
+                        changeText +
+                        ' (' +
+                        InvestrendTheme.formatPercentChange(percentChange) +
+                        ')',
+                    style: InvestrendTheme.of(context).regular_w400?.copyWith(
+                          color: InvestrendTheme.changeTextColor(change),
+                          height: 1.0,
+                        ),
 
                     /*
                   child: Text(
@@ -324,5 +352,4 @@ class WidgetPrice extends StatelessWidget {
       ),
     );
   }
-
 }

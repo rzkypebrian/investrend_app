@@ -17,7 +17,7 @@ class ScreenFriendsContact extends BaseStatelessWidget {
   @override
   Widget build(BuildContext context) {
     //bool lightTheme = MediaQuery.of(context).platformBrightness == Brightness.light;
-    bool lightTheme = Theme.of(context).brightness == Brightness.light;
+    // bool lightTheme = Theme.of(context).brightness == Brightness.light;
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       body: Container(
@@ -37,13 +37,13 @@ class ScreenFriendsContact extends BaseStatelessWidget {
                     'friends_contact_text_1'.tr(),
                     style: Theme.of(context)
                         .textTheme
-                        .subtitle1
-                        .copyWith(fontWeight: FontWeight.bold),
+                        .titleMedium
+                        ?.copyWith(fontWeight: FontWeight.bold),
                     textAlign: TextAlign.start,
                   ),
                   TextButton(
                     child: Text('friends_contact_button_follow_all'.tr(),
-                        style: Theme.of(context).textTheme.button.copyWith(
+                        style: Theme.of(context).textTheme.labelLarge?.copyWith(
                             color: Theme.of(context).colorScheme.secondary)),
                     onPressed: () {
                       // pressed
@@ -159,14 +159,14 @@ class ScreenFriendsContact extends BaseStatelessWidget {
               children: [
                 Text(
                   name,
-                  style: Theme.of(context).textTheme.subtitle2,
+                  style: Theme.of(context).textTheme.titleSmall,
                 ),
                 Text(
                   username,
                   style: Theme.of(context)
                       .textTheme
-                      .overline
-                      .copyWith(letterSpacing: 0.2),
+                      .labelSmall
+                      ?.copyWith(letterSpacing: 0.2),
                 ),
               ],
             ),
@@ -209,8 +209,8 @@ class ScreenFriendsContact extends BaseStatelessWidget {
                 symbol,
                 style: Theme.of(context)
                     .textTheme
-                    .button
-                    .copyWith(color: Theme.of(context).primaryColor),
+                    .labelLarge
+                    ?.copyWith(color: Theme.of(context).primaryColor),
               ),
             ),
           ),
@@ -220,7 +220,7 @@ class ScreenFriendsContact extends BaseStatelessWidget {
           Expanded(
             child: Text(
               name,
-              style: Theme.of(context).textTheme.subtitle2,
+              style: Theme.of(context).textTheme.titleSmall,
             ),
           ),
           SizedBox(

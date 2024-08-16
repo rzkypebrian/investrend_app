@@ -1,3 +1,4 @@
+// ignore_for_file: unused_local_variable, non_constant_identifier_names
 
 import 'package:Investrend/component/button_rounded.dart';
 import 'package:Investrend/component/chips_range.dart';
@@ -14,7 +15,7 @@ import 'package:easy_localization/easy_localization.dart';
 //import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class CardLocalForeign extends StatefulWidget {
-  final LocalForeignNotifier notifier;
+  final LocalForeignNotifier? notifier;
   //final StringCallback callbackRange;
   //final IntCallback callbackMarket;
   //final RangeCallback callbackRange;
@@ -22,21 +23,21 @@ class CardLocalForeign extends StatefulWidget {
   //final ValueNotifier<int> rangeNotifier;
 
   final RangeNotifier rangeNotifier;
-  const CardLocalForeign(this.notifier, this.marketNotifier, this.rangeNotifier, {/*this.callbackRange, this.callbackMarket,*/ Key key}) : super(key: key);
+  const CardLocalForeign(this.notifier, this.marketNotifier, this.rangeNotifier,
+      {/*this.callbackRange, this.callbackMarket,*/ Key? key})
+      : super(key: key);
 
   @override
   _CardLocalForeignState createState() => _CardLocalForeignState();
 }
 
 class _CardLocalForeignState extends State<CardLocalForeign> {
-
   // List<String> _listChipRange = <String>['1D', '1W', '1M', '3M', '6M', '1Y', '5Y', 'CR'];
   // List<bool> _listChipRangeEnabled = <bool>[true, true, true, true, false, false, false, false];
   List<String> _market_options = [
     'card_local_foreign_button_all_market'.tr(),
     'card_local_foreign_button_rg_market'.tr(),
   ];
-
 
   //RangeNotifier rangeNotifier = RangeNotifier(Range.createBasic());
 
@@ -46,7 +47,6 @@ class _CardLocalForeignState extends State<CardLocalForeign> {
   //int _selectedRange = 0;
   //int _selectedMarket = 0;
   //ValueNotifier<int> _marketNotifier = ValueNotifier<int>(0);
-
 
   // @override
   // void dispose() {
@@ -64,21 +64,20 @@ class _CardLocalForeignState extends State<CardLocalForeign> {
     // }
 
     //widget.rangeNotifier.addListener(() {
-      //_selectedRange = widget.rangeNotifier.value;
-      // if (widget.callbackRange != null) {
-      //   widget.callbackRange(_listChipRange[_selectedRange]);
-      // }
+    //_selectedRange = widget.rangeNotifier.value;
+    // if (widget.callbackRange != null) {
+    //   widget.callbackRange(_listChipRange[_selectedRange]);
+    // }
     //});
   }
 
-
-
   @override
   Widget build(BuildContext context) {
-
     return Container(
       //color: Colors.lightBlueAccent,
-      margin: EdgeInsets.only(top: InvestrendTheme.cardPaddingVertical, bottom: InvestrendTheme.cardPaddingVertical),
+      margin: EdgeInsets.only(
+          top: InvestrendTheme.cardPaddingVertical,
+          bottom: InvestrendTheme.cardPaddingVertical),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -86,32 +85,37 @@ class _CardLocalForeignState extends State<CardLocalForeign> {
           //SizedBox(height: InvestrendTheme.cardPaddingVertical),
           //_chipsRange(context),
           //ChipsRange(_listChipRange, widget.rangeNotifier, paddingLeftRight: InvestrendTheme.cardPaddingGeneral, enable: _listChipRangeEnabled,),
-          ChipsRangeCustom(widget.rangeNotifier,paddingLeftRight: InvestrendTheme.cardPaddingGeneral, paddingBottom: InvestrendTheme.cardPaddingGeneral,),
+          ChipsRangeCustom(
+            widget.rangeNotifier,
+            paddingLeftRight: InvestrendTheme.cardPaddingGeneral,
+            paddingBottom: InvestrendTheme.cardPaddingGeneral,
+          ),
           ValueListenableBuilder(
-            valueListenable: widget.notifier,
-            builder: (context, ForeignDomestic data, child) {
-              Widget noWidget = widget.notifier.currentState.getNoWidget();
+            valueListenable: widget.notifier!,
+            builder: (context, ForeignDomestic? data, child) {
+              Widget? noWidget = widget.notifier?.currentState.getNoWidget();
               // if (widget.notifier.invalid()) {
               //   return Center(child: CircularProgressIndicator());
               // }
-              if(noWidget != null){
+              if (noWidget != null) {
                 return Container(
-                  width: double.maxFinite,
+                    width: double.maxFinite,
                     height: 100,
-                    child: Center(child: noWidget)
-                );
+                    child: Center(child: noWidget));
               }
 
-              String displayTime = data.time;
-              if( !StringUtils.isEmtpy(data.time) && !StringUtils.isEmtpy(data.date)){
+              String? displayTime = data?.time;
+              if (!StringUtils.isEmtpy(data?.time) &&
+                  !StringUtils.isEmtpy(data?.date)) {
                 String infoTime = 'card_local_foreign_time_info'.tr();
 
                 DateFormat dateFormatter = DateFormat('EEEE, dd/MM/yyyy', 'id');
                 DateFormat timeFormatter = DateFormat('HH:mm:ss');
                 DateFormat dateParser = DateFormat('yyyy-MM-dd hh:mm:ss');
-                DateTime dateTime = dateParser.parseUtc(data.date+' '+data.time);
-                print('dateTime : '+dateTime.toString());
-                print('indexSummary.date : '+data.date+' '+data.time);
+                DateTime dateTime =
+                    dateParser.parseUtc(data!.date! + ' ' + data.time!);
+                print('dateTime : ' + dateTime.toString());
+                print('indexSummary.date : ' + data.date! + ' ' + data.time!);
                 String formatedDate = dateFormatter.format(dateTime);
                 String formatedTime = timeFormatter.format(dateTime);
                 infoTime = infoTime.replaceAll('#DATE#', formatedDate);
@@ -123,14 +127,20 @@ class _CardLocalForeignState extends State<CardLocalForeign> {
                 children: [
                   _table(context, data),
                   Padding(
-                    padding: const EdgeInsets.only(left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral, top: InvestrendTheme.cardPaddingGeneral),
+                    padding: const EdgeInsets.only(
+                        left: InvestrendTheme.cardPaddingGeneral,
+                        right: InvestrendTheme.cardPaddingGeneral,
+                        top: InvestrendTheme.cardPaddingGeneral),
                     child: Text(
-                      displayTime,
-                      style: InvestrendTheme.of(context).more_support_w400_compact.copyWith(
-                        fontWeight: FontWeight.w500,
-                        color: InvestrendTheme.of(context).greyDarkerTextColor,
-                        fontStyle: FontStyle.italic,
-                      ),
+                      displayTime!,
+                      style: InvestrendTheme.of(context)
+                          .more_support_w400_compact
+                          ?.copyWith(
+                            fontWeight: FontWeight.w500,
+                            color:
+                                InvestrendTheme.of(context).greyDarkerTextColor,
+                            fontStyle: FontStyle.italic,
+                          ),
                     ),
                   ),
                 ],
@@ -184,8 +194,8 @@ class _CardLocalForeignState extends State<CardLocalForeign> {
     );
   }
 
-  Widget _table(BuildContext context, ForeignDomestic data) {
-    Color defaultColor = InvestrendTheme.of(context).small_w400.color;
+  Widget _table(BuildContext context, ForeignDomestic? data) {
+    Color? defaultColor = InvestrendTheme.of(context).small_w400?.color;
     //double padding = InvestrendTheme.cardPadding + InvestrendTheme.cardMargin;
 
     return Table(
@@ -198,45 +208,67 @@ class _CardLocalForeignState extends State<CardLocalForeign> {
         TableRow(
           children: [
             _label(context, ''),
-            _label(context, 'card_local_foreign_local'.tr(), align: TextAlign.center),
-            _label(context, 'card_local_foreign_foreign'.tr(), align: TextAlign.center, rightPadding: InvestrendTheme.cardPaddingGeneral),
+            _label(context, 'card_local_foreign_local'.tr(),
+                align: TextAlign.center),
+            _label(context, 'card_local_foreign_foreign'.tr(),
+                align: TextAlign.center,
+                rightPadding: InvestrendTheme.cardPaddingGeneral),
           ],
         ),
         _tableRow(
           context,
           'card_local_foreign_buy'.tr(),
-          InvestrendTheme.formatValue(context, data.domesticBuyerValue),
-          InvestrendTheme.formatValue(context, data.foreignBuyerValue),
+          InvestrendTheme.formatValue(context, data?.domesticBuyerValue),
+          InvestrendTheme.formatValue(context, data?.foreignBuyerValue),
         ),
-        _tableRow(context, 'card_local_foreign_sell'.tr(), InvestrendTheme.formatValue(context, data.domesticSellerValue),
-            InvestrendTheme.formatValue(context, data.foreignSellerValue),
+        _tableRow(
+            context,
+            'card_local_foreign_sell'.tr(),
+            InvestrendTheme.formatValue(context, data?.domesticSellerValue),
+            InvestrendTheme.formatValue(context, data?.foreignSellerValue),
             odd: true),
         _tableRow(
-            context, 'card_local_foreign_net'.tr(), InvestrendTheme.formatValue(context, data.domesticNetValue), InvestrendTheme.formatValue(context, data.foreignNetValue),
-            localColor: InvestrendTheme.changeTextColor(data.domesticNetValue.toDouble()),
-            foreignColor: InvestrendTheme.changeTextColor(data.foreignNetValue.toDouble())),
-        _tableRow(context, 'card_local_foreign_percent_turnover'.tr(), InvestrendTheme.formatPercent(data.domesticTotalValueRatio,prefixPlus: false),
-            InvestrendTheme.formatPercent(data.foreignTotalValueRatio,prefixPlus: false),
+            context,
+            'card_local_foreign_net'.tr(),
+            InvestrendTheme.formatValue(context, data?.domesticNetValue),
+            InvestrendTheme.formatValue(context, data?.foreignNetValue),
+            localColor: InvestrendTheme.changeTextColor(
+                data?.domesticNetValue.toDouble()),
+            foreignColor: InvestrendTheme.changeTextColor(
+                data?.foreignNetValue.toDouble())),
+        _tableRow(
+            context,
+            'card_local_foreign_percent_turnover'.tr(),
+            InvestrendTheme.formatPercent(data?.domesticTotalValueRatio,
+                prefixPlus: false),
+            InvestrendTheme.formatPercent(data?.foreignTotalValueRatio,
+                prefixPlus: false),
             odd: true),
       ],
     );
   }
 
-  TableRow _tableRow(BuildContext context, String label, String localValue, String foreignValue,
-      {Color localColor, Color foreignColor, bool odd = false}) {
+  TableRow _tableRow(BuildContext context, String label, String localValue,
+      String foreignValue,
+      {Color? localColor, Color? foreignColor, bool odd = false}) {
     //double padding = InvestrendTheme.cardPadding + InvestrendTheme.cardMargin;
     return TableRow(
         decoration: BoxDecoration(
-          color: odd ? InvestrendTheme.of(context).oddColor : Colors.transparent,
+          color:
+              odd ? InvestrendTheme.of(context).oddColor : Colors.transparent,
         ),
         children: [
-          _label(context, label, leftPadding: InvestrendTheme.cardPaddingGeneral),
+          _label(context, label,
+              leftPadding: InvestrendTheme.cardPaddingGeneral),
           _value(context, localValue, color: localColor),
-          _value(context, foreignValue, color: foreignColor, rightPadding: InvestrendTheme.cardPaddingGeneral),
+          _value(context, foreignValue,
+              color: foreignColor,
+              rightPadding: InvestrendTheme.cardPaddingGeneral),
         ]);
   }
 
-  Widget _label(BuildContext context, String label, {TextAlign align, double leftPadding = 0.0, double rightPadding = 0.0}) {
+  Widget _label(BuildContext context, String label,
+      {TextAlign? align, double leftPadding = 0.0, double rightPadding = 0.0}) {
     Alignment alignment = Alignment.center;
 
     if (align == null) {
@@ -255,12 +287,13 @@ class _CardLocalForeignState extends State<CardLocalForeign> {
     );
   }
 
-  Widget _value(BuildContext context, String value, {TextAlign align, Color color, double rightPadding = 0.0}) {
+  Widget _value(BuildContext context, String value,
+      {TextAlign? align, Color? color, double rightPadding = 0.0}) {
     if (align == null) {
       align = TextAlign.center;
     }
     if (color == null) {
-      color = InvestrendTheme.of(context).small_w400.color;
+      color = InvestrendTheme.of(context).small_w400?.color!;
     }
     return Container(
       alignment: Alignment.center,
@@ -268,18 +301,21 @@ class _CardLocalForeignState extends State<CardLocalForeign> {
       height: 38.0,
       child: Text(
         value,
-        style: InvestrendTheme.of(context).small_w400_compact.copyWith(color: color),
+        style: InvestrendTheme.of(context)
+            .small_w400_compact
+            ?.copyWith(color: color),
         textAlign: align,
       ),
     );
   }
 
-
-
   Widget _title(BuildContext context) {
     //double paddingMargin = InvestrendTheme.cardPadding + InvestrendTheme.cardMargin;
     return Padding(
-      padding: EdgeInsets.only(left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral, bottom: InvestrendTheme.cardPaddingVertical),
+      padding: EdgeInsets.only(
+          left: InvestrendTheme.cardPaddingGeneral,
+          right: InvestrendTheme.cardPaddingGeneral,
+          bottom: InvestrendTheme.cardPaddingVertical),
       child: Row(
         children: [
           Expanded(

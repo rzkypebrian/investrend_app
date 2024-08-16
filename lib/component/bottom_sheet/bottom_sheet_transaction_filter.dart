@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'dart:math';
 
 import 'package:Investrend/component/button_rounded.dart';
@@ -9,9 +11,20 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 enum FilterTransaction { All, Buy, Sell }
-enum FilterStatus { All, Open, Match, /*Partial,*/ Withdraw, Reject, New } //, Amend
 
-enum FilterPeriod { /*All, */Today, ThisWeek, /*ThisMonth*/ }
+enum FilterStatus {
+  All,
+  Open,
+  Match,
+  /*Partial,*/ Withdraw,
+  Reject,
+  New
+} //, Amend
+
+enum FilterPeriod {
+  /*All, */ Today,
+  ThisWeek, /*ThisMonth*/
+}
 
 // New, Open, Partial, Withdraw, Match, Reject
 extension FilterTransactionExtension on FilterTransaction {
@@ -27,6 +40,7 @@ extension FilterTransactionExtension on FilterTransaction {
         return '#unknown_type';
     }
   }
+
   String get filter {
     switch (this) {
       case FilterTransaction.All:
@@ -79,6 +93,7 @@ extension FilterPeriodExtension on FilterPeriod {
         return '#unknown_type';
     }
   }
+
   String get filter {
     switch (this) {
       // case FilterPeriod.All:
@@ -101,18 +116,23 @@ extension FilterPeriodExtension on FilterPeriod {
 ///
 ///****************************************
 class BottomSheetTransactionHistoricalFilter extends StatefulWidget {
-  final int index_period;
-  final int index_transaction;
+  final int? index_period;
+  final int? index_transaction;
 
-  const BottomSheetTransactionHistoricalFilter(this.index_transaction, this.index_period, {Key key}) : super(key: key);
+  const BottomSheetTransactionHistoricalFilter(
+      this.index_transaction, this.index_period,
+      {Key? key})
+      : super(key: key);
 
   @override
-  _BottomSheetTransactionHistoricalFilterState createState() => _BottomSheetTransactionHistoricalFilterState();
+  _BottomSheetTransactionHistoricalFilterState createState() =>
+      _BottomSheetTransactionHistoricalFilterState();
 }
 
-class _BottomSheetTransactionHistoricalFilterState extends State<BottomSheetTransactionHistoricalFilter> {
-  int index_period;
-  int index_transaction;
+class _BottomSheetTransactionHistoricalFilterState
+    extends State<BottomSheetTransactionHistoricalFilter> {
+  int? index_period;
+  int? index_transaction;
 
   @override
   void initState() {
@@ -128,7 +148,10 @@ class _BottomSheetTransactionHistoricalFilterState extends State<BottomSheetTran
     double padding = 24.0;
     double minHeight = height * 0.2;
     double maxHeight = height * 0.7;
-    double contentHeight = padding + 44.0 + ((44.0 * 3) + ((16.0 + 8.0) * 2) + (16.0 * 2) + 8.0 + (20.0 * 2)) + padding;
+    double contentHeight = padding +
+        44.0 +
+        ((44.0 * 3) + ((16.0 + 8.0) * 2) + (16.0 * 2) + 8.0 + (20.0 * 2)) +
+        padding;
 
     if (contentHeight > minHeight) {
       maxHeight = min(contentHeight, maxHeight);
@@ -139,7 +162,8 @@ class _BottomSheetTransactionHistoricalFilterState extends State<BottomSheetTran
     FilterTransaction.values.forEach((transaction) {
       transactionList.add(Expanded(
         flex: 1,
-        child: ButtonSelectionFilter(transaction.text, index_transaction == transaction.index, () {
+        child: ButtonSelectionFilter(
+            transaction.text, index_transaction == transaction.index, () {
           //context.read(transactionHistoricalFilterChangeNotifier).setIndexTransaction(transaction.index);
           setState(() {
             this.index_transaction = transaction.index;
@@ -158,7 +182,8 @@ class _BottomSheetTransactionHistoricalFilterState extends State<BottomSheetTran
 
     List<Widget> periodList = List.empty(growable: true);
     FilterPeriod.values.forEach((period) {
-      periodList.add(ButtonSelectionFilter(period.text, index_period == period.index, () {
+      periodList.add(
+          ButtonSelectionFilter(period.text, index_period == period.index, () {
         //context.read(transactionHistoricalFilterChangeNotifier).setIndexStatus(status.index);
         setState(() {
           this.index_period = period.index;
@@ -216,7 +241,8 @@ class _BottomSheetTransactionHistoricalFilterState extends State<BottomSheetTran
               padding: const EdgeInsets.only(top: 16.0, bottom: 8.0),
               child: Text(
                 'filter_transaction_label'.tr(),
-                style: InvestrendTheme.of(context).small_w400_compact.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor),
+                style: InvestrendTheme.of(context).small_w400_compact?.copyWith(
+                    color: InvestrendTheme.of(context).greyLighterTextColor),
               ),
             ),
             Container(
@@ -230,7 +256,8 @@ class _BottomSheetTransactionHistoricalFilterState extends State<BottomSheetTran
               padding: const EdgeInsets.only(top: 16.0, bottom: 8.0),
               child: Text(
                 'filter_period_label'.tr(),
-                style: InvestrendTheme.of(context).small_w400_compact.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor),
+                style: InvestrendTheme.of(context).small_w400_compact?.copyWith(
+                    color: InvestrendTheme.of(context).greyLighterTextColor),
               ),
             ),
             Container(
@@ -248,9 +275,15 @@ class _BottomSheetTransactionHistoricalFilterState extends State<BottomSheetTran
             Container(
               padding: const EdgeInsets.only(bottom: 8.0),
               width: double.maxFinite,
-              child: ComponentCreator.roundedButton(context, 'filter_apply_button'.tr(), Theme.of(context).colorScheme.secondary,
-                  Theme.of(context).primaryColor, Theme.of(context).colorScheme.secondary, () {
-                context.read(transactionHistoricalFilterChangeNotifier).setIndex(index_transaction, index_period);
+              child: ComponentCreator.roundedButton(
+                  context,
+                  'filter_apply_button'.tr(),
+                  Theme.of(context).colorScheme.secondary,
+                  Theme.of(context).primaryColor,
+                  Theme.of(context).colorScheme.secondary, () {
+                context
+                    .read(transactionHistoricalFilterChangeNotifier)
+                    .setIndex(index_transaction!, index_period!);
                 Navigator.pop(context);
               }),
             ),
@@ -260,28 +293,36 @@ class _BottomSheetTransactionHistoricalFilterState extends State<BottomSheetTran
     );
   }
 
-  Widget button(BuildContext context, String text, bool selected, VoidCallback onPressed) {
+  Widget button(BuildContext context, String text, bool selected,
+      VoidCallback onPressed) {
     //const colorSoft = Color(0xFFF5F0FF);
-    TextStyle style = InvestrendTheme.of(context).small_w400_compact_greyDarker;
+    TextStyle? style =
+        InvestrendTheme.of(context).small_w400_compact_greyDarker;
     //Color colorBackground = selected ? colorSoft : Colors.transparent;
-    Color colorBackground = selected ? InvestrendTheme.of(context).colorSoft : Colors.transparent;
+    Color? colorBackground =
+        selected ? InvestrendTheme.of(context).colorSoft : Colors.transparent;
 
-    Color colorBorder = selected ? Theme.of(context).colorScheme.secondary : Colors.transparent;
-    Color colorText = selected ? Theme.of(context).colorScheme.secondary : style.color;
+    Color colorBorder =
+        selected ? Theme.of(context).colorScheme.secondary : Colors.transparent;
+    Color? colorText =
+        selected ? Theme.of(context).colorScheme.secondary : style?.color;
     return OutlinedButton(
         style: ButtonStyle(
           backgroundColor: MaterialStateColor.resolveWith((states) {
-            final Color colors = states.contains(MaterialState.pressed)
+            final Color? colors = states.contains(MaterialState.pressed)
                 ? colorBackground //Colors.transparent
                 : colorBackground; //Colors.transparent;
-            return colors;
+            return colors!;
           }),
-          padding: MaterialStateProperty.all(EdgeInsets.only(left: 10.0, right: 10.0, top: 2.0, bottom: 2.0)),
-          shape: MaterialStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(
+          padding: MaterialStateProperty.all(
+              EdgeInsets.only(left: 10.0, right: 10.0, top: 2.0, bottom: 2.0)),
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+              RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.0),
             //side: BorderSide(color: Colors.red)
           )),
-          side: MaterialStateProperty.resolveWith<BorderSide>((Set<MaterialState> states) {
+          side: MaterialStateProperty.resolveWith<BorderSide>(
+              (Set<MaterialState> states) {
             final Color colors = states.contains(MaterialState.pressed)
                 ? colorBorder //Theme.of(context).accentColor
                 : colorBorder; //Theme.of(context).accentColor;
@@ -290,7 +331,7 @@ class _BottomSheetTransactionHistoricalFilterState extends State<BottomSheetTran
         ),
         child: Text(
           text,
-          style: style.copyWith(color: colorText),
+          style: style?.copyWith(color: colorText),
         ),
         onPressed: onPressed);
   }
@@ -305,15 +346,20 @@ class BottomSheetTransactionIntradayFilter extends StatefulWidget {
   final int index_status;
   final int index_transaction;
 
-  const BottomSheetTransactionIntradayFilter(this.index_transaction, this.index_status, {Key key}) : super(key: key);
+  const BottomSheetTransactionIntradayFilter(
+      this.index_transaction, this.index_status,
+      {Key? key})
+      : super(key: key);
 
   @override
-  _BottomSheetTransactionIntradayFilterState createState() => _BottomSheetTransactionIntradayFilterState();
+  _BottomSheetTransactionIntradayFilterState createState() =>
+      _BottomSheetTransactionIntradayFilterState();
 }
 
-class _BottomSheetTransactionIntradayFilterState extends State<BottomSheetTransactionIntradayFilter> {
-  int index_status;
-  int index_transaction;
+class _BottomSheetTransactionIntradayFilterState
+    extends State<BottomSheetTransactionIntradayFilter> {
+  int? index_status;
+  int? index_transaction;
 
   @override
   void initState() {
@@ -329,7 +375,10 @@ class _BottomSheetTransactionIntradayFilterState extends State<BottomSheetTransa
     double padding = 24.0;
     double minHeight = height * 0.2;
     double maxHeight = height * 0.7;
-    double contentHeight = padding + 44.0 + ((44.0 * 3) + ((16.0 + 8.0) * 2) + (16.0 * 2) + 8.0 + (20.0 * 2)) + padding;
+    double contentHeight = padding +
+        44.0 +
+        ((44.0 * 3) + ((16.0 + 8.0) * 2) + (16.0 * 2) + 8.0 + (20.0 * 2)) +
+        padding;
 
     if (contentHeight > minHeight) {
       maxHeight = min(contentHeight, maxHeight);
@@ -340,7 +389,8 @@ class _BottomSheetTransactionIntradayFilterState extends State<BottomSheetTransa
     FilterTransaction.values.forEach((transaction) {
       transactionList.add(Expanded(
         flex: 1,
-        child: ButtonSelectionFilter(transaction.text, index_transaction == transaction.index, () {
+        child: ButtonSelectionFilter(
+            transaction.text, index_transaction == transaction.index, () {
           //context.read(transactionIntradayFilterChangeNotifier).setIndexTransaction(transaction.index);
           setState(() {
             this.index_transaction = transaction.index;
@@ -360,7 +410,7 @@ class _BottomSheetTransactionIntradayFilterState extends State<BottomSheetTransa
     List<Widget> statusList = List.empty(growable: true);
     FilterStatus.values.forEach((status) {
       statusList.add(
-        ButtonSelectionFilter( status.text, index_status == status.index, () {
+        ButtonSelectionFilter(status.text, index_status == status.index, () {
           //context.read(transactionIntradayFilterChangeNotifier).setIndexStatus(status.index);
           setState(() {
             this.index_status = status.index;
@@ -421,7 +471,8 @@ class _BottomSheetTransactionIntradayFilterState extends State<BottomSheetTransa
               padding: const EdgeInsets.only(top: 16.0, bottom: 8.0),
               child: Text(
                 'filter_transaction_label'.tr(),
-                style: InvestrendTheme.of(context).small_w400_compact.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor),
+                style: InvestrendTheme.of(context).small_w400_compact?.copyWith(
+                    color: InvestrendTheme.of(context).greyLighterTextColor),
               ),
             ),
             Container(
@@ -435,7 +486,8 @@ class _BottomSheetTransactionIntradayFilterState extends State<BottomSheetTransa
               padding: const EdgeInsets.only(top: 16.0, bottom: 8.0),
               child: Text(
                 'filter_status_label'.tr(),
-                style: InvestrendTheme.of(context).small_w400_compact.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor),
+                style: InvestrendTheme.of(context).small_w400_compact?.copyWith(
+                    color: InvestrendTheme.of(context).greyLighterTextColor),
               ),
             ),
             Container(
@@ -453,9 +505,15 @@ class _BottomSheetTransactionIntradayFilterState extends State<BottomSheetTransa
             Container(
               padding: const EdgeInsets.only(bottom: 8.0),
               width: double.maxFinite,
-              child: ComponentCreator.roundedButton(context, 'filter_apply_button'.tr(), Theme.of(context).colorScheme.secondary,
-                  Theme.of(context).primaryColor, Theme.of(context).colorScheme.secondary, () {
-                context.read(transactionIntradayFilterChangeNotifier).setIndex(index_transaction, index_status);
+              child: ComponentCreator.roundedButton(
+                  context,
+                  'filter_apply_button'.tr(),
+                  Theme.of(context).colorScheme.secondary,
+                  Theme.of(context).primaryColor,
+                  Theme.of(context).colorScheme.secondary, () {
+                context
+                    .read(transactionIntradayFilterChangeNotifier)
+                    .setIndex(index_transaction!, index_status!);
                 Navigator.pop(context);
               }),
             ),

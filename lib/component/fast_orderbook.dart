@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable, unused_element
+
 import 'dart:math';
 
 import 'package:Investrend/component/button_order.dart';
@@ -27,7 +29,7 @@ class FastOrderbook extends StatefulWidget {
   // final TradeCalculateNotifier calculateNotifier;
 
   const FastOrderbook(this.notifier, this._orderType, this.maxShowLevel,
-      {Key key,
+      {Key? key,
       this.owner = '' /*, this.orderDataNotifier, this.calculateNotifier*/
       })
       : super(key: key);
@@ -210,17 +212,17 @@ class _FastOrderbookState extends State<FastOrderbook> {
   //ValueNotifier<bool> loadingNotifier = ValueNotifier<bool>(false);
   //Map details = new Map();
 
-  VoidCallback listener;
+  VoidCallback? listener;
 
   void _enableListener() {
     _controllers.forEach((controller) {
-      controller.addListener(listener);
+      controller.addListener(listener!);
     });
   }
 
   void _disableListener() {
     _controllers.forEach((controller) {
-      controller.removeListener(listener);
+      controller.removeListener(listener!);
     });
   }
 
@@ -236,56 +238,57 @@ class _FastOrderbookState extends State<FastOrderbook> {
     print('FastOrderbook [' +
         widget._orderType.routeName +
         '] widthSection : $widthSection  aaa');
-    OrderbookData data = widget.notifier.value;
+    OrderbookData? data = widget.notifier.value;
 
-    StockSummary stockSummary =
+    StockSummary? stockSummary =
         context.read(stockSummaryChangeNotifier).summary;
-    int prev = stockSummary != null &&
+    int? prev = stockSummary != null &&
             stockSummary.prev != null &&
-            StringUtils.equalsIgnoreCase(stockSummary.code, data.orderbook.code)
+            StringUtils.equalsIgnoreCase(
+                stockSummary.code, data?.orderbook.code!)
         ? stockSummary.prev
         : 0;
 
-    data.orderbook.generateDataForUI(widget.maxShowLevel);
+    data?.orderbook.generateDataForUI(widget.maxShowLevel);
 
-    int totalVolumeShowedBid = data.orderbook.totalVolumeShowedBid;
-    int totalVolumeShowedOffer = data.orderbook.totalVolumeShowedOffer;
+    int? totalVolumeShowedBid = data?.orderbook.totalVolumeShowedBid;
+    int? totalVolumeShowedOffer = data?.orderbook.totalVolumeShowedOffer;
 
-    double fontSize = InvestrendTheme.of(context).small_w400.fontSize;
-    fontSize = useFontSize(context, fontSize, widthSection, data.orderbook);
-    print('FastOrderbook [' +
-        widget._orderType.routeName +
-        '] buildOrderbook  code : ' +
-        data.orderbook.code +
-        '  prev : $prev');
+    double? fontSize = InvestrendTheme.of(context).small_w400?.fontSize!;
+    fontSize = useFontSize(context, fontSize, widthSection, data?.orderbook);
+    // print('FastOrderbook [' +
+    //     widget._orderType.routeName +
+    //     '] buildOrderbook  code : ' +
+    //     data?.orderbook.code! +
+    //     '  prev : $prev');
 
     bool isBuy = widget._orderType == OrderType.Buy;
-    int count = min(widget.maxShowLevel, data.orderbook.countBids());
+    int count = min(widget.maxShowLevel, data!.orderbook.countBids());
 
     for (int index = 0; index < count; index++) {
-      int bid = data.orderbook.bids.elementAt(index);
-      int offer = data.orderbook.offers.elementAt(index);
+      int bid = data.orderbook.bids?.elementAt(index);
+      int offer = data.orderbook.offers?.elementAt(index);
 
       bool showBid = bid > 0;
       bool showOffer = offer > 0;
 
-      String bidQueue = data.orderbook.bidsQueueText.elementAt(index);
-      String bidLot = data.orderbook.bidsLotText.elementAt(index);
-      String bidPrice = data.orderbook.bidsText.elementAt(index);
-      Color bidColor = prev == 0
+      String bidQueue = data.orderbook.bidsQueueText?.elementAt(index);
+      String bidLot = data.orderbook.bidsLotText?.elementAt(index);
+      String bidPrice = data.orderbook.bidsText?.elementAt(index);
+      Color? bidColor = prev == 0
           ? InvestrendTheme.of(context).blackAndWhiteText
-          : InvestrendTheme.priceTextColor(bid, prev: prev);
-      String offerQueue = data.orderbook.offersQueueText.elementAt(index);
-      String offerLot = data.orderbook.offersLotText.elementAt(index);
-      String offerPrice = data.orderbook.offersText.elementAt(index);
-      Color offerColor = prev == 0
+          : InvestrendTheme.priceTextColor(bid, prev: prev!);
+      String offerQueue = data.orderbook.offersQueueText?.elementAt(index);
+      String offerLot = data.orderbook.offersLotText?.elementAt(index);
+      String offerPrice = data.orderbook.offersText?.elementAt(index);
+      Color? offerColor = prev == 0
           ? InvestrendTheme.of(context).blackAndWhiteText
-          : InvestrendTheme.priceTextColor(offer, prev: prev);
+          : InvestrendTheme.priceTextColor(offer, prev: prev!);
 
       WrapperNotifierFast notifier = _notifiers.elementAt(index);
       if (widget._orderType == OrderType.Buy) {
-        OpenOrder openOrder = context.read(openOrderChangeNotifier).get(bid);
-        String lotOpen = openOrder == null
+        OpenOrder? openOrder = context.read(openOrderChangeNotifier).get(bid);
+        String? lotOpen = openOrder == null
             ? '20'
             : InvestrendTheme.formatValue(context, openOrder.lot);
         notifier.primaryPriceNotifier
@@ -297,8 +300,8 @@ class _FastOrderbookState extends State<FastOrderbook> {
             .setValue(offerPrice, fontSize: fontSize, newColor: offerColor);
         notifier.show.value = showBid;
       } else {
-        OpenOrder openOrder = context.read(openOrderChangeNotifier).get(offer);
-        String lotOpen = openOrder == null
+        OpenOrder? openOrder = context.read(openOrderChangeNotifier).get(offer);
+        String? lotOpen = openOrder == null
             ? ''
             : InvestrendTheme.formatValue(context, openOrder.lot);
         notifier.primaryPriceNotifier
@@ -420,7 +423,7 @@ class _FastOrderbookState extends State<FastOrderbook> {
   }
   */
   void calculateOrder() {
-    OrderBook ob = context.read(orderBookChangeNotifier).orderbook;
+    OrderBook? ob = context.read(orderBookChangeNotifier).orderbook;
     bool isBuy = widget._orderType == OrderType.Buy;
     BuySell data =
         context.read(buySellChangeNotifier).getData(widget._orderType);
@@ -428,16 +431,16 @@ class _FastOrderbookState extends State<FastOrderbook> {
     int value = 0;
 
     double averagePrice = 0.0;
-    if (data.orderType.isSellOrAmendSell()) {
+    if (data.orderType!.isSellOrAmendSell()) {
       final lotAverage = context.read(sellLotAvgChangeNotifier);
       averagePrice = lotAverage.averagePrice;
     }
     for (int i = 0; i < _controllers.length; i++) {
       int price;
       if (isBuy) {
-        price = ob.countBids() > i ? ob.bids.elementAt(i) : 0;
+        price = ob!.countBids() > i ? ob.bids?.elementAt(i) : 0;
       } else {
-        price = ob.countOffers() > i ? ob.offers.elementAt(i) : 0;
+        price = ob!.countOffers() > i ? ob.offers?.elementAt(i) : 0;
       }
       TextEditingController controller = _controllers.elementAt(i);
       if (controller.text.isNotEmpty) {
@@ -451,9 +454,9 @@ class _FastOrderbookState extends State<FastOrderbook> {
       }
     }
 
-    if (data.orderType.isBuyOrAmendBuy()) {
-      double feeBuy = context.read(dataHolderChangeNotifier).user.feepct;
-      Account activeAccount = context
+    if (data.orderType!.isBuyOrAmendBuy()) {
+      double feeBuy = context.read(dataHolderChangeNotifier).user.feepct!;
+      Account? activeAccount = context
           .read(dataHolderChangeNotifier)
           .user
           .getAccount(context.read(accountChangeNotifier).index);
@@ -587,7 +590,7 @@ class _FastOrderbookState extends State<FastOrderbook> {
   }
   */
 
-  Size _textSize(String text, TextStyle style) {
+  Size _textSize(String text, TextStyle? style) {
     final TextPainter textPainter = TextPainter(
       text: TextSpan(text: text, style: style),
       maxLines: 1,
@@ -618,7 +621,7 @@ class _FastOrderbookState extends State<FastOrderbook> {
 
     return ValueListenableBuilder(
         valueListenable: widget.notifier,
-        builder: (context, OrderbookData data, child) {
+        builder: (context, OrderbookData? data, child) {
           if (widget.notifier.invalid()) {
             return Center(child: CircularProgressIndicator());
           }
@@ -630,12 +633,12 @@ class _FastOrderbookState extends State<FastOrderbook> {
               : createHeaderSell(context, widthSection);
           list.add(headers);
 
-          StockSummary stockSummary =
+          StockSummary? stockSummary =
               context.read(stockSummaryChangeNotifier).summary;
-          int prev = stockSummary != null &&
+          int? prev = stockSummary != null &&
                   stockSummary.prev != null &&
                   StringUtils.equalsIgnoreCase(
-                      stockSummary.code, data.orderbook.code)
+                      stockSummary.code, data?.orderbook.code!)
               ? stockSummary.prev
               : 0;
 
@@ -647,18 +650,18 @@ class _FastOrderbookState extends State<FastOrderbook> {
           // details['code'] = notifier.orderbook.code;
           // details['board'] = notifier.orderbook.board;
 
-          data.orderbook.generateDataForUI(widget.maxShowLevel);
+          data?.orderbook.generateDataForUI(widget.maxShowLevel);
 
-          int totalVolumeShowedBid = data.orderbook.totalVolumeShowedBid;
-          int totalVolumeShowedOffer = data.orderbook.totalVolumeShowedOffer;
+          int? totalVolumeShowedBid = data?.orderbook.totalVolumeShowedBid;
+          int? totalVolumeShowedOffer = data?.orderbook.totalVolumeShowedOffer;
 
-          double fontSize = InvestrendTheme.of(context).small_w400.fontSize;
+          double? fontSize = InvestrendTheme.of(context).small_w400?.fontSize!;
           fontSize =
-              useFontSize(context, fontSize, widthSection, data.orderbook);
+              useFontSize(context, fontSize, widthSection, data?.orderbook);
           print('FastOrderbook [' +
               widget._orderType.routeName +
               '] buildOrderbook  code : ' +
-              data.orderbook.code +
+              data!.orderbook.code! +
               '  prev : $prev');
 
           bool isBuy = widget._orderType == OrderType.Buy;
@@ -668,8 +671,8 @@ class _FastOrderbookState extends State<FastOrderbook> {
             // double fractionBid = value.bidVol(index) / totalVolumeShowedBid;
             // double fractionOffer = value.offerVol(index) / totalVolumeShowedOffer;
 
-            bool showBid = data.orderbook.bids.elementAt(index) > 0;
-            bool showOffer = data.orderbook.offers.elementAt(index) > 0;
+            bool showBid = data.orderbook.bids?.elementAt(index) > 0;
+            bool showOffer = data.orderbook.offers?.elementAt(index) > 0;
 
             // print('orderbook[$index] --> fractionBid : $fractionBid  fractionOffer --> $fractionOffer');
             // print('orderbook[$index] --> totalBid : ' + value.totalBid.toString() + '  bidVol --> ' + value.bidVol(index).toString());
@@ -685,24 +688,25 @@ class _FastOrderbookState extends State<FastOrderbook> {
             // String offerPrice = InvestrendTheme.formatPrice(value.offers.elementAt(index));
             // Color offerColor = InvestrendTheme.priceTextColor(value.offers.elementAt(index), prev: prev);
 
-            int bid = data.orderbook.bids.elementAt(index);
-            int offer = data.orderbook.offers.elementAt(index);
+            int bid = data.orderbook.bids?.elementAt(index);
+            int offer = data.orderbook.offers?.elementAt(index);
             //Key key = isBuy ? keysBid.elementAt(index) : keysOffer.elementAt(index);
 
-            String bidQueue = data.orderbook.bidsQueueText.elementAt(index);
-            String bidLot = data.orderbook.bidsLotText.elementAt(index);
-            String bidPrice = data.orderbook.bidsText.elementAt(index);
+            String bidQueue = data.orderbook.bidsQueueText?.elementAt(index);
+            String bidLot = data.orderbook.bidsLotText?.elementAt(index);
+            String bidPrice = data.orderbook.bidsText?.elementAt(index);
             //Color bidColor = prev == 0 ? InvestrendTheme.of(context).blackAndWhiteText : InvestrendTheme.priceTextColor(bid, prev: prev, caller: widget._orderType.routeName+'[Bid]');
-            Color bidColor = prev == 0
+            Color? bidColor = prev == 0
                 ? InvestrendTheme.of(context).blackAndWhiteText
-                : InvestrendTheme.priceTextColor(bid, prev: prev);
-            String offerQueue = data.orderbook.offersQueueText.elementAt(index);
-            String offerLot = data.orderbook.offersLotText.elementAt(index);
-            String offerPrice = data.orderbook.offersText.elementAt(index);
+                : InvestrendTheme.priceTextColor(bid, prev: prev!);
+            String offerQueue =
+                data.orderbook.offersQueueText?.elementAt(index);
+            String offerLot = data.orderbook.offersLotText?.elementAt(index);
+            String offerPrice = data.orderbook.offersText?.elementAt(index);
             //Color offerColor = prev == 0 ? InvestrendTheme.of(context).blackAndWhiteText : InvestrendTheme.priceTextColor(offer, prev: prev, caller: widget._orderType.routeName+'[Offer]');
-            Color offerColor = prev == 0
+            Color? offerColor = prev == 0
                 ? InvestrendTheme.of(context).blackAndWhiteText
-                : InvestrendTheme.priceTextColor(offer, prev: prev);
+                : InvestrendTheme.priceTextColor(offer, prev: prev!);
 
             // String bidQueue = '100,000';
             // String bidLot = '1,000,000';
@@ -715,22 +719,22 @@ class _FastOrderbookState extends State<FastOrderbook> {
 
             FocusNode focusNode = _focusNodes.elementAt(index);
             int nextIndex = (index + 1);
-            FocusNode nextFocusNode =
+            FocusNode? nextFocusNode =
                 (nextIndex < count) ? _focusNodes.elementAt(nextIndex) : null;
             TextEditingController controller = _controllers.elementAt(index);
             if (widget._orderType == OrderType.Buy) {
               OpenOrder openOrder =
-                  context.read(openOrderChangeNotifier).get(bid);
+                  context.read(openOrderChangeNotifier).get(bid)!;
               list.add(createRowBuy(
                   context,
                   bidQueue,
                   bidLot,
                   bidPrice,
-                  bidColor,
+                  bidColor!,
                   offerQueue,
                   offerLot,
                   offerPrice,
-                  offerColor,
+                  offerColor!,
                   widthSection,
                   fontSize,
                   _controllers.elementAt(index),
@@ -741,17 +745,17 @@ class _FastOrderbookState extends State<FastOrderbook> {
                   nextFocusNode: nextFocusNode));
             } else {
               OpenOrder openOrder =
-                  context.read(openOrderChangeNotifier).get(offer);
+                  context.read(openOrderChangeNotifier).get(offer)!;
               list.add(createRowSell(
                   context,
                   bidQueue,
                   bidLot,
                   bidPrice,
-                  bidColor,
+                  bidColor!,
                   offerQueue,
                   offerLot,
                   offerPrice,
-                  offerColor,
+                  offerColor!,
                   widthSection,
                   fontSize,
                   _controllers.elementAt(index),
@@ -790,7 +794,7 @@ class _FastOrderbookState extends State<FastOrderbook> {
     for (int index = 0; index < count; index++) {
       FocusNode focusNode = _focusNodes.elementAt(index);
       int nextIndex = (index + 1);
-      FocusNode nextFocusNode =
+      FocusNode? nextFocusNode =
           (nextIndex < count) ? _focusNodes.elementAt(nextIndex) : null;
       TextEditingController controller = _controllers.elementAt(index);
       if (widget._orderType == OrderType.Buy) {
@@ -925,37 +929,37 @@ class _FastOrderbookState extends State<FastOrderbook> {
 
   void reconcileOrderbook() {
     print(widget._orderType.routeName + '.reconcileOrderbook');
-    OrderBook ob = context.read(orderBookChangeNotifier).orderbook;
+    OrderBook? ob = context.read(orderBookChangeNotifier).orderbook;
     bool isBuy = widget._orderType == OrderType.Buy;
     BuySell data =
         context.read(buySellChangeNotifier).getData(widget._orderType);
     List<int> listValid = List.empty(growable: true);
-    int count = min(widget.maxShowLevel, ob.countBids());
+    int count = min(widget.maxShowLevel, ob!.countBids());
     for (int i = 0; i < count; i++) {
-      int price = isBuy ? ob.bids.elementAt(i) : ob.offers.elementAt(i);
+      int price = isBuy ? ob.bids?.elementAt(i) : ob.offers?.elementAt(i);
       TextEditingController controller = _controllers.elementAt(i);
       bool show = price > 0;
       if (show) {
-        PriceLot savedPriceLot = data.getFastPriceLot(price);
+        PriceLot? savedPriceLot = data.getFastPriceLot(price);
 
         if (savedPriceLot != null) {
           // controller.text = savedPriceLot.lot.toString();
           // controller.selection = TextSelection.fromPosition(TextPosition(offset: controller.text.length));
           String newText = InvestrendTheme.formatComma(savedPriceLot.lot);
           if (!StringUtils.equalsIgnoreCase(controller.text, newText)) {
-            controller.removeListener(listener);
+            controller.removeListener(listener!);
             controller.text = newText;
             controller.selection = TextSelection.fromPosition(
                 TextPosition(offset: controller.text.length));
-            controller.addListener(listener);
+            controller.addListener(listener!);
           }
           listValid.add(price);
         } else {
           //controller.removeListener(listener);
           if (!StringUtils.isEmtpy(controller.text)) {
-            controller.removeListener(listener);
+            controller.removeListener(listener!);
             controller.text = '';
-            controller.addListener(listener);
+            controller.addListener(listener!);
           }
           //controller.text = '';
           //controller.addListener(listener);
@@ -965,7 +969,7 @@ class _FastOrderbookState extends State<FastOrderbook> {
 
     List<int> listInvalid = List.empty(growable: true);
     int value = 0;
-    data.listFastPriceLot.forEach((priceLot) {
+    data.listFastPriceLot?.forEach((priceLot) {
       bool valid = listValid.contains(priceLot.price);
       if (!valid) {
         listInvalid.add(priceLot.price);
@@ -980,9 +984,9 @@ class _FastOrderbookState extends State<FastOrderbook> {
     listInvalid.clear();
     listValid.clear();
 
-    if (data.orderType.isBuyOrAmendBuy()) {
-      double feeBuy = context.read(dataHolderChangeNotifier).user.feepct;
-      Account activeAccount = context
+    if (data.orderType!.isBuyOrAmendBuy()) {
+      double feeBuy = context.read(dataHolderChangeNotifier).user.feepct!;
+      Account? activeAccount = context
           .read(dataHolderChangeNotifier)
           .user
           .getAccount(context.read(accountChangeNotifier).index);
@@ -1042,19 +1046,19 @@ class _FastOrderbookState extends State<FastOrderbook> {
      */
   }
 
-  double useFontSize(BuildContext context, double fontSize, double widthSection,
-      OrderBook value,
+  double? useFontSize(BuildContext context, double? fontSize,
+      double widthSection, OrderBook? value,
       {int offset = 0}) {
     print('FastOrderbook[' +
         widget.owner +
         '].useFontSize Try fontSize  : $fontSize  offset : $offset');
-    TextStyle smallW400 =
-        InvestrendTheme.of(context).small_w400.copyWith(fontSize: fontSize);
-    TextStyle smallW500 =
-        InvestrendTheme.of(context).small_w500.copyWith(fontSize: fontSize);
+    TextStyle? smallW400 =
+        InvestrendTheme.of(context).small_w400?.copyWith(fontSize: fontSize);
+    TextStyle? smallW500 =
+        InvestrendTheme.of(context).small_w500?.copyWith(fontSize: fontSize);
     const double font_step = 1.0;
     double widthCell = widthSection / 3;
-    int count = min(widget.maxShowLevel, value.countBids());
+    int count = min(widget.maxShowLevel, value!.countBids());
     for (int index = offset; index < count; index++) {
       // String bidQueue = '100,000';
       // String bidLot = '1,000,000';
@@ -1064,13 +1068,13 @@ class _FastOrderbookState extends State<FastOrderbook> {
       // String offerLot = InvestrendTheme.formatComma(value.offerLot(index));
       // String offerPrice = '1,780';
 
-      String bidQueue = value.bidsQueueText.elementAt(index);
-      String bidLot = value.bidsLotText.elementAt(index);
-      String bidPrice = value.bidsText.elementAt(index);
+      String bidQueue = value.bidsQueueText?.elementAt(index);
+      String bidLot = value.bidsLotText?.elementAt(index);
+      String bidPrice = value.bidsText?.elementAt(index);
 
-      String offerQueue = value.offersQueueText.elementAt(index);
-      String offerLot = value.offersLotText.elementAt(index);
-      String offerPrice = value.offersText.elementAt(index);
+      String offerQueue = value.offersQueueText?.elementAt(index);
+      String offerLot = value.offersLotText?.elementAt(index);
+      String offerPrice = value.offersText?.elementAt(index);
 
       if (widget._orderType == OrderType.Buy) {
         String leftText = bidQueue + bidLot + bidPrice;
@@ -1087,7 +1091,7 @@ class _FastOrderbookState extends State<FastOrderbook> {
         //     ' useFontSize widthSection  : $widthSection   widthSectionTextLeft : $widthSectionTextLeft   widthOffer : $widthOffer  reduceFontSize : $reduceFontSize');
         if (reduceFontSize) {
           fontSize = useFontSize(
-              context, fontSize - font_step, widthSection, value,
+              context, fontSize! - font_step, widthSection, value,
               offset: index);
           //break;
           return fontSize;
@@ -1108,7 +1112,7 @@ class _FastOrderbookState extends State<FastOrderbook> {
         //     ' useFontSize widthSection  : $widthSection   widthSectionTextRight : $widthSectionTextRight   widthBid : $widthBid  reduceFontSize : $reduceFontSize');
         if (reduceFontSize) {
           fontSize = useFontSize(
-              context, fontSize - font_step, widthSection, value,
+              context, fontSize! - font_step, widthSection, value,
               offset: index);
           //break;
           return fontSize;
@@ -1242,15 +1246,15 @@ class _FastOrderbookState extends State<FastOrderbook> {
       String offerPrice,
       Color offerColor,
       double widthSection,
-      double fontSize,
+      double? fontSize,
       TextEditingController controller,
       bool showOffer,
       Key key,
-      OpenOrder openOrder,
-      {FocusNode focusNode,
-      FocusNode nextFocusNode,
-      Key keyRow}) {
-    int open = (openOrder != null ? openOrder.lot : 0);
+      OpenOrder? openOrder,
+      {FocusNode? focusNode,
+      FocusNode? nextFocusNode,
+      Key? keyRow}) {
+    int? open = (openOrder != null ? openOrder.lot : 0);
     //String openString = InvestrendTheme.formatComma(open);
     return Row(
       key: keyRow,
@@ -1321,7 +1325,7 @@ class _FastOrderbookState extends State<FastOrderbook> {
                       PriceFormatter(),
                     ],
                     maxLines: 1,
-                    style: InvestrendTheme.of(context).small_w400.copyWith(
+                    style: InvestrendTheme.of(context).small_w400?.copyWith(
                         color: InvestrendTheme.of(context).greyDarkerTextColor,
                         fontSize: fontSize),
                     textInputAction: TextInputAction.next,
@@ -1360,9 +1364,9 @@ class _FastOrderbookState extends State<FastOrderbook> {
     TextEditingController controller,
     Key key,
     WrapperNotifierFast notifier, {
-    FocusNode focusNode,
-    FocusNode nextFocusNode,
-    Key keyRow,
+    FocusNode? focusNode,
+    FocusNode? nextFocusNode,
+    Key? keyRow,
   }) {
     //int open = (openOrder != null ? openOrder.lot : 0);
     //String openString = InvestrendTheme.formatComma(open);
@@ -1373,7 +1377,7 @@ class _FastOrderbookState extends State<FastOrderbook> {
       children: [
         DragTarget<WrapperNotifierFast>(
           onAccept: (data) {
-            OrderBook ob = context.read(orderBookChangeNotifier).orderbook;
+            OrderBook? ob = context.read(orderBookChangeNotifier).orderbook;
             showDialog(
               context: context,
               builder: (_) => AlertDialog(
@@ -1382,7 +1386,9 @@ class _FastOrderbookState extends State<FastOrderbook> {
                     children: [
                       Text(
                         'preview_buy'.tr(),
-                        style: InvestrendTheme.of(context).medium_w400.copyWith(
+                        style: InvestrendTheme.of(context)
+                            .medium_w400
+                            ?.copyWith(
                               color: Theme.of(context).colorScheme.secondary,
                               fontWeight: FontWeight.bold,
                               fontSize: 22,
@@ -1424,7 +1430,7 @@ class _FastOrderbookState extends State<FastOrderbook> {
                                   'stock_label'.tr(),
                                   style: InvestrendTheme.of(context)
                                       .medium_w400
-                                      .copyWith(
+                                      ?.copyWith(
                                         color: Colors.black,
                                         fontSize: 16,
                                       ),
@@ -1436,10 +1442,10 @@ class _FastOrderbookState extends State<FastOrderbook> {
                                 padding: EdgeInsets.all(5),
                                 alignment: Alignment.centerLeft,
                                 child: Text(
-                                  ob.code,
+                                  ob!.code!,
                                   style: InvestrendTheme.of(context)
                                       .medium_w400
-                                      .copyWith(
+                                      ?.copyWith(
                                         color: Colors.black,
                                         fontSize: 16,
                                       ),
@@ -1458,7 +1464,7 @@ class _FastOrderbookState extends State<FastOrderbook> {
                                   'trade_confirmation_price_label'.tr(),
                                   style: InvestrendTheme.of(context)
                                       .medium_w400
-                                      .copyWith(
+                                      ?.copyWith(
                                         color: Colors.black,
                                         fontSize: 16,
                                       ),
@@ -1470,10 +1476,10 @@ class _FastOrderbookState extends State<FastOrderbook> {
                                 padding: EdgeInsets.all(5),
                                 alignment: Alignment.centerLeft,
                                 child: Text(
-                                  '${data.secondaryPriceNotifier.value.value}',
+                                  '${data.secondaryPriceNotifier.value?.value}',
                                   style: InvestrendTheme.of(context)
                                       .medium_w400
-                                      .copyWith(
+                                      ?.copyWith(
                                         color: Colors.black,
                                         fontSize: 16,
                                       ),
@@ -1492,7 +1498,7 @@ class _FastOrderbookState extends State<FastOrderbook> {
                                   'Price After',
                                   style: InvestrendTheme.of(context)
                                       .medium_w400
-                                      .copyWith(
+                                      ?.copyWith(
                                         color: Colors.black,
                                         fontSize: 16,
                                       ),
@@ -1504,10 +1510,10 @@ class _FastOrderbookState extends State<FastOrderbook> {
                                 padding: EdgeInsets.all(5),
                                 alignment: Alignment.centerLeft,
                                 child: Text(
-                                  '${notifier.secondaryPriceNotifier.value.value}',
+                                  '${notifier.secondaryPriceNotifier.value?.value}',
                                   style: InvestrendTheme.of(context)
                                       .medium_w400
-                                      .copyWith(
+                                      ?.copyWith(
                                         color: Colors.black,
                                         fontSize: 16,
                                       ),
@@ -1526,7 +1532,7 @@ class _FastOrderbookState extends State<FastOrderbook> {
                                   'trade_confirmation_lot_label'.tr(),
                                   style: InvestrendTheme.of(context)
                                       .medium_w400
-                                      .copyWith(
+                                      ?.copyWith(
                                         color: Colors.black,
                                         fontSize: 16,
                                       ),
@@ -1540,10 +1546,10 @@ class _FastOrderbookState extends State<FastOrderbook> {
                                 padding: EdgeInsets.all(5),
                                 alignment: Alignment.centerLeft,
                                 child: Text(
-                                  '${data.primaryOpenNotifier.value.value}',
+                                  '${data.primaryOpenNotifier.value?.value}',
                                   style: InvestrendTheme.of(context)
                                       .medium_w400
-                                      .copyWith(
+                                      ?.copyWith(
                                         color: Colors.black,
                                         fontSize: 16,
                                       ),
@@ -1570,7 +1576,7 @@ class _FastOrderbookState extends State<FastOrderbook> {
                           'Place Order Buy',
                           style: InvestrendTheme.of(context)
                               .textLabelStyle
-                              .copyWith(
+                              ?.copyWith(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -1582,15 +1588,15 @@ class _FastOrderbookState extends State<FastOrderbook> {
               ),
             );
           },
-          builder: (BuildContext context, List<Object> candidateData,
+          builder: (BuildContext context, List<Object?> candidateData,
               List<dynamic> rejectedData) {
             return Container(
                 width: widthSection / 3,
                 child: ValueListenableBuilder(
                   valueListenable: notifier.secondaryPriceNotifier,
-                  builder: (context, StringColorFont data, child) {
-                    return createLabelPrice(context, data.fontSize, data.value,
-                        TextAlign.right, data.color);
+                  builder: (context, StringColorFont? data, child) {
+                    return createLabelPrice(context, data?.fontSize,
+                        data?.value, TextAlign.right, data?.color);
                   },
                 ));
           },
@@ -1604,7 +1610,7 @@ class _FastOrderbookState extends State<FastOrderbook> {
           color: Theme.of(context).dividerColor,
           child: createLabelPrice(
               context,
-              InvestrendTheme.of(context).small_w500.fontSize,
+              InvestrendTheme.of(context).small_w500?.fontSize,
               '',
               TextAlign.right,
               InvestrendTheme.sellTextColor),
@@ -1619,7 +1625,7 @@ class _FastOrderbookState extends State<FastOrderbook> {
             children: [
               createLabelPrice(
                   context,
-                  InvestrendTheme.of(context).small_w500.fontSize,
+                  InvestrendTheme.of(context).small_w500?.fontSize,
                   '',
                   TextAlign.right,
                   InvestrendTheme.sellTextColor),
@@ -1627,9 +1633,13 @@ class _FastOrderbookState extends State<FastOrderbook> {
                 //child: createLabelPrice(context, fontSize, offerPrice, TextAlign.left, offerColor /*, key: key*/),
                 child: ValueListenableBuilder(
                   valueListenable: notifier.primaryPriceNotifier,
-                  builder: (context, StringColorFont data, child) {
-                    return createLabelPrice(context, data.fontSize, data.value,
-                        TextAlign.left, data.color /*, key: key*/);
+                  builder: (context, StringColorFont? data, child) {
+                    return createLabelPrice(
+                        context,
+                        data?.fontSize,
+                        data?.value,
+                        TextAlign.left,
+                        data?.color /*, key: key*/);
                   },
                 ),
               ),
@@ -1637,8 +1647,8 @@ class _FastOrderbookState extends State<FastOrderbook> {
                 //child: createLabelLot(context, fontSize, offerLot),
                 child: ValueListenableBuilder(
                   valueListenable: notifier.primaryLotNotifier,
-                  builder: (context, StringColorFont data, child) {
-                    return createLabelLot(context, data.fontSize, data.value);
+                  builder: (context, StringColorFont? data, child) {
+                    return createLabelLot(context, data?.fontSize, data?.value);
                   },
                 ),
               ),
@@ -1646,7 +1656,7 @@ class _FastOrderbookState extends State<FastOrderbook> {
                 //child: createLabelQueue(context, fontSize, offerQueue, TextAlign.right),
                 child: DragTarget<WrapperNotifierFast>(
                   onAccept: (data) {
-                    OrderBook ob =
+                    OrderBook? ob =
                         context.read(orderBookChangeNotifier).orderbook;
                     showDialog(
                       context: context,
@@ -1658,7 +1668,7 @@ class _FastOrderbookState extends State<FastOrderbook> {
                                 'preview_sell'.tr(),
                                 style: InvestrendTheme.of(context)
                                     .medium_w400
-                                    .copyWith(
+                                    ?.copyWith(
                                       color: Theme.of(context)
                                           .colorScheme
                                           .secondary,
@@ -1702,7 +1712,7 @@ class _FastOrderbookState extends State<FastOrderbook> {
                                           'stock_label'.tr(),
                                           style: InvestrendTheme.of(context)
                                               .medium_w400
-                                              .copyWith(
+                                              ?.copyWith(
                                                 color: Colors.black,
                                                 fontSize: 16,
                                               ),
@@ -1714,10 +1724,10 @@ class _FastOrderbookState extends State<FastOrderbook> {
                                         padding: EdgeInsets.all(5),
                                         alignment: Alignment.centerLeft,
                                         child: Text(
-                                          ob.code,
+                                          ob!.code!,
                                           style: InvestrendTheme.of(context)
                                               .medium_w400
-                                              .copyWith(
+                                              ?.copyWith(
                                                 color: Colors.black,
                                                 fontSize: 16,
                                               ),
@@ -1736,7 +1746,7 @@ class _FastOrderbookState extends State<FastOrderbook> {
                                           'trade_confirmation_price_label'.tr(),
                                           style: InvestrendTheme.of(context)
                                               .medium_w400
-                                              .copyWith(
+                                              ?.copyWith(
                                                 color: Colors.black,
                                                 fontSize: 16,
                                               ),
@@ -1748,10 +1758,10 @@ class _FastOrderbookState extends State<FastOrderbook> {
                                         padding: EdgeInsets.all(5),
                                         alignment: Alignment.centerLeft,
                                         child: Text(
-                                          '${data.primaryPriceNotifier.value.value}',
+                                          '${data.primaryPriceNotifier.value?.value}',
                                           style: InvestrendTheme.of(context)
                                               .medium_w400
-                                              .copyWith(
+                                              ?.copyWith(
                                                 color: Colors.black,
                                                 fontSize: 16,
                                               ),
@@ -1770,7 +1780,7 @@ class _FastOrderbookState extends State<FastOrderbook> {
                                           'Price After',
                                           style: InvestrendTheme.of(context)
                                               .medium_w400
-                                              .copyWith(
+                                              ?.copyWith(
                                                 color: Colors.black,
                                                 fontSize: 16,
                                               ),
@@ -1782,10 +1792,10 @@ class _FastOrderbookState extends State<FastOrderbook> {
                                         padding: EdgeInsets.all(5),
                                         alignment: Alignment.centerLeft,
                                         child: Text(
-                                          '${notifier.primaryPriceNotifier.value.value}',
+                                          '${notifier.primaryPriceNotifier.value?.value}',
                                           style: InvestrendTheme.of(context)
                                               .medium_w400
-                                              .copyWith(
+                                              ?.copyWith(
                                                 color: Colors.black,
                                                 fontSize: 16,
                                               ),
@@ -1804,7 +1814,7 @@ class _FastOrderbookState extends State<FastOrderbook> {
                                           'trade_confirmation_lot_label'.tr(),
                                           style: InvestrendTheme.of(context)
                                               .medium_w400
-                                              .copyWith(
+                                              ?.copyWith(
                                                 color: Colors.black,
                                                 fontSize: 16,
                                               ),
@@ -1818,10 +1828,10 @@ class _FastOrderbookState extends State<FastOrderbook> {
                                         padding: EdgeInsets.all(5),
                                         alignment: Alignment.centerLeft,
                                         child: Text(
-                                          '${data.primaryOpenNotifier.value.value}',
+                                          '${data.primaryOpenNotifier.value?.value}',
                                           style: InvestrendTheme.of(context)
                                               .medium_w400
-                                              .copyWith(
+                                              ?.copyWith(
                                                 color: Colors.black,
                                                 fontSize: 16,
                                               ),
@@ -1848,7 +1858,7 @@ class _FastOrderbookState extends State<FastOrderbook> {
                                   'Place Order Buy',
                                   style: InvestrendTheme.of(context)
                                       .textLabelStyle
-                                      .copyWith(
+                                      ?.copyWith(
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -1860,15 +1870,15 @@ class _FastOrderbookState extends State<FastOrderbook> {
                       ),
                     );
                   },
-                  builder: (BuildContext context, List<Object> candidateData,
+                  builder: (BuildContext context, List<Object?> candidateData,
                       List<dynamic> rejectedData) {
                     return Container(
                       width: widthSection / 3,
                       child: ValueListenableBuilder(
                         valueListenable: notifier.primaryQueNotifier,
-                        builder: (context, StringColorFont data, child) {
-                          return createLabelQueue(context, data.fontSize,
-                              data.value, TextAlign.right);
+                        builder: (context, StringColorFont? data, child) {
+                          return createLabelQueue(context, data?.fontSize,
+                              data?.value, TextAlign.right);
                         },
                       ),
                     );
@@ -1878,15 +1888,15 @@ class _FastOrderbookState extends State<FastOrderbook> {
             ],
           ),
         ),
-        notifier.primaryOpenNotifier.value.value == '0' ||
-                notifier.primaryOpenNotifier.value.value == ''
+        notifier.primaryOpenNotifier.value?.value == '0' ||
+                notifier.primaryOpenNotifier.value?.value == ''
             ? Container(
                 width: widthSection / 3,
                 child: ValueListenableBuilder(
                   valueListenable: notifier.primaryOpenNotifier,
-                  builder: (context, StringColorFont data, child) {
+                  builder: (context, StringColorFont? data, child) {
                     return createLabelOpenStatic(
-                        context, data.fontSize, data.value, TextAlign.left);
+                        context, data?.fontSize, data?.value, TextAlign.left);
                   },
                 ),
               )
@@ -1896,14 +1906,14 @@ class _FastOrderbookState extends State<FastOrderbook> {
                   width: widthSection / 3,
                   child: ValueListenableBuilder(
                     valueListenable: notifier.primaryOpenNotifier,
-                    builder: (context, StringColorFont data, child) {
-                      return createLabelOpenStatic(
-                          context, data.fontSize, data.value, TextAlign.right);
+                    builder: (context, StringColorFont? data, child) {
+                      return createLabelOpenStatic(context, data?.fontSize,
+                          data?.value, TextAlign.right);
                     },
                   ),
                 ),
-                feedback: notifier.primaryOpenNotifier.value.value == '0' ||
-                        notifier.primaryOpenNotifier.value.value == ''
+                feedback: notifier.primaryOpenNotifier.value?.value == '0' ||
+                        notifier.primaryOpenNotifier.value?.value == ''
                     ? SizedBox()
                     : Container(
                         padding: EdgeInsets.only(left: 5.0, right: 5.0),
@@ -1926,22 +1936,23 @@ class _FastOrderbookState extends State<FastOrderbook> {
                         child: Center(
                           child: ValueListenableBuilder(
                             valueListenable: notifier.primaryOpenNotifier,
-                            builder: (context, StringColorFont data, child) {
+                            builder: (context, StringColorFont? data, child) {
                               //return createLabelOpenStatic(context, data.fontSize, data.value, TextAlign.right);
                               return Row(
                                 children: [
                                   createLabelPriceStatic(
                                       context,
-                                      data.fontSize,
-                                      notifier.primaryPriceNotifier.value.value,
+                                      data?.fontSize,
+                                      notifier
+                                          .primaryPriceNotifier.value?.value,
                                       TextAlign.left,
                                       notifier
-                                          .primaryPriceNotifier.value.color),
+                                          .primaryPriceNotifier.value?.color),
                                   SizedBox(
                                     width: 10.0,
                                   ),
-                                  createLabelOpenStatic(context, data.fontSize,
-                                      data.value, TextAlign.left),
+                                  createLabelOpenStatic(context, data?.fontSize,
+                                      data?.value, TextAlign.left),
                                 ],
                               );
                             },
@@ -1968,7 +1979,7 @@ class _FastOrderbookState extends State<FastOrderbook> {
                     focusNode: focusNode,
                     onSubmitted: (_) {
                       print('onSubmitted');
-                      focusNode.unfocus();
+                      focusNode!.unfocus();
                       // if (nextFocusNode != null) {
                       //   print('onSubmitted nextFocusNode.requestFocus');
                       //   nextFocusNode.requestFocus();
@@ -1981,10 +1992,10 @@ class _FastOrderbookState extends State<FastOrderbook> {
                       PriceFormatter(),
                     ],
                     maxLines: 1,
-                    style: InvestrendTheme.of(context).small_w400.copyWith(
+                    style: InvestrendTheme.of(context).small_w400?.copyWith(
                         color: InvestrendTheme.of(context).greyDarkerTextColor,
                         fontSize:
-                            InvestrendTheme.of(context).small_w400.fontSize),
+                            InvestrendTheme.of(context).small_w400?.fontSize),
                     textInputAction: TextInputAction.done,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
@@ -2024,15 +2035,15 @@ class _FastOrderbookState extends State<FastOrderbook> {
       String offerPrice,
       Color offerColor,
       double widthSection,
-      double fontSize,
+      double? fontSize,
       TextEditingController controller,
       bool showBid,
       Key key,
-      OpenOrder openOrder,
-      {FocusNode focusNode,
-      FocusNode nextFocusNode,
-      Key keyRow}) {
-    int open = (openOrder != null ? openOrder.lot : 0);
+      OpenOrder? openOrder,
+      {FocusNode? focusNode,
+      FocusNode? nextFocusNode,
+      Key? keyRow}) {
+    int? open = (openOrder != null ? openOrder.lot : 0);
     //String openString = InvestrendTheme.formatComma(open);
     return Row(
       key: keyRow,
@@ -2063,7 +2074,7 @@ class _FastOrderbookState extends State<FastOrderbook> {
                       PriceFormatter(),
                     ],
                     maxLines: 1,
-                    style: InvestrendTheme.of(context).small_w400.copyWith(
+                    style: InvestrendTheme.of(context).small_w400?.copyWith(
                         color: InvestrendTheme.of(context).greyDarkerTextColor,
                         fontSize: fontSize),
                     textInputAction: TextInputAction.next,
@@ -2142,9 +2153,9 @@ class _FastOrderbookState extends State<FastOrderbook> {
     TextEditingController controller,
     Key key,
     WrapperNotifierFast notifier, {
-    FocusNode focusNode,
-    FocusNode nextFocusNode,
-    Key keyRow,
+    FocusNode? focusNode,
+    FocusNode? nextFocusNode,
+    Key? keyRow,
     // String lockedOpen = '',
     // String lockedBid = '',
     // String lockedAsk = '',
@@ -2172,7 +2183,7 @@ class _FastOrderbookState extends State<FastOrderbook> {
                   focusNode: focusNode,
                   onSubmitted: (_) {
                     print('onSubmitted');
-                    focusNode.unfocus();
+                    focusNode!.unfocus();
                     // if (nextFocusNode != null) {
                     //   print('onSubmitted nextFocusNode.requestFocus');
                     //   nextFocusNode.requestFocus();
@@ -2185,10 +2196,10 @@ class _FastOrderbookState extends State<FastOrderbook> {
                     PriceFormatter(),
                   ],
                   maxLines: 1,
-                  style: InvestrendTheme.of(context).small_w400.copyWith(
+                  style: InvestrendTheme.of(context).small_w400?.copyWith(
                       color: InvestrendTheme.of(context).greyDarkerTextColor,
                       fontSize:
-                          InvestrendTheme.of(context).small_w400.fontSize),
+                          InvestrendTheme.of(context).small_w400?.fontSize),
                   textInputAction: TextInputAction.done,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
@@ -2197,7 +2208,8 @@ class _FastOrderbookState extends State<FastOrderbook> {
                         borderSide: BorderSide(color: Colors.grey, width: 1.0)),
                     focusedBorder: UnderlineInputBorder(
                         borderSide: BorderSide(
-                            color: Theme.of(context).colorScheme.secondary, width: 1.0)),
+                            color: Theme.of(context).colorScheme.secondary,
+                            width: 1.0)),
                     focusColor: Theme.of(context).colorScheme.secondary,
                     prefixStyle: InvestrendTheme.of(context).inputPrefixStyle,
                     hintStyle: InvestrendTheme.of(context).inputHintStyle,
@@ -2212,15 +2224,15 @@ class _FastOrderbookState extends State<FastOrderbook> {
             ),
           ),
         ),
-        notifier.primaryOpenNotifier.value.value == "0" ||
-                notifier.primaryOpenNotifier.value.value == ""
+        notifier.primaryOpenNotifier.value?.value == "0" ||
+                notifier.primaryOpenNotifier.value?.value == ""
             ? Container(
                 width: widthSection / 3,
                 child: ValueListenableBuilder(
                   valueListenable: notifier.primaryOpenNotifier,
-                  builder: (context, StringColorFont data, child) {
+                  builder: (context, StringColorFont? data, child) {
                     return createLabelOpenStatic(
-                        context, data.fontSize, data.value, TextAlign.left);
+                        context, data?.fontSize, data?.value, TextAlign.left);
                   },
                 ),
               )
@@ -2230,14 +2242,14 @@ class _FastOrderbookState extends State<FastOrderbook> {
                   width: widthSection / 3,
                   child: ValueListenableBuilder(
                     valueListenable: notifier.primaryOpenNotifier,
-                    builder: (context, StringColorFont data, child) {
+                    builder: (context, StringColorFont? data, child) {
                       return createLabelOpenStatic(
-                          context, data.fontSize, data.value, TextAlign.left);
+                          context, data?.fontSize, data?.value, TextAlign.left);
                     },
                   ),
                 ),
-                feedback: notifier.primaryOpenNotifier.value.value == '0' ||
-                        notifier.primaryOpenNotifier.value.value == ''
+                feedback: notifier.primaryOpenNotifier.value?.value == '0' ||
+                        notifier.primaryOpenNotifier.value?.value == ''
                     ? SizedBox()
                     : Container(
                         padding: EdgeInsets.only(left: 5.0, right: 5.0),
@@ -2259,21 +2271,22 @@ class _FastOrderbookState extends State<FastOrderbook> {
                         child: Center(
                           child: ValueListenableBuilder(
                             valueListenable: notifier.primaryOpenNotifier,
-                            builder: (context, StringColorFont data, child) {
+                            builder: (context, StringColorFont? data, child) {
                               return Row(
                                 children: [
                                   createLabelPriceStatic(
                                       context,
-                                      data.fontSize,
-                                      notifier.primaryPriceNotifier.value.value,
+                                      data?.fontSize,
+                                      notifier
+                                          .primaryPriceNotifier.value?.value,
                                       TextAlign.left,
                                       notifier
-                                          .primaryPriceNotifier.value.color),
+                                          .primaryPriceNotifier.value?.color),
                                   SizedBox(
                                     width: 10.0,
                                   ),
-                                  createLabelOpenStatic(context, data.fontSize,
-                                      data.value, TextAlign.left),
+                                  createLabelOpenStatic(context, data?.fontSize,
+                                      data?.value, TextAlign.left),
                                 ],
                               );
                             },
@@ -2288,32 +2301,32 @@ class _FastOrderbookState extends State<FastOrderbook> {
             children: [
               createLabelPrice(
                   context,
-                  InvestrendTheme.of(context).small_w500.fontSize,
+                  InvestrendTheme.of(context).small_w500?.fontSize,
                   '',
                   TextAlign.right,
                   InvestrendTheme.buyTextColor),
               Positioned.fill(
                 child: ValueListenableBuilder(
                   valueListenable: notifier.primaryQueNotifier,
-                  builder: (context, StringColorFont data, child) {
+                  builder: (context, StringColorFont? data, child) {
                     return createLabelQueueStatic(
-                        context, data.fontSize, data.value, TextAlign.left);
+                        context, data?.fontSize, data?.value, TextAlign.left);
                   },
                 ),
               ),
               Positioned.fill(
                 child: ValueListenableBuilder(
                   valueListenable: notifier.primaryLotNotifier,
-                  builder: (context, StringColorFont data, child) {
+                  builder: (context, StringColorFont? data, child) {
                     return createLabelLotStatic(
-                        context, data.fontSize, data.value);
+                        context, data?.fontSize, data?.value);
                   },
                 ),
               ),
               Positioned.fill(
                 child: DragTarget<WrapperNotifierFast>(
                   onAccept: (data) {
-                    OrderBook ob =
+                    OrderBook? ob =
                         context.read(orderBookChangeNotifier).orderbook;
                     showDialog(
                       context: context,
@@ -2325,7 +2338,7 @@ class _FastOrderbookState extends State<FastOrderbook> {
                                 'preview_buy'.tr(),
                                 style: InvestrendTheme.of(context)
                                     .medium_w400
-                                    .copyWith(
+                                    ?.copyWith(
                                       color: Theme.of(context)
                                           .colorScheme
                                           .secondary,
@@ -2369,7 +2382,7 @@ class _FastOrderbookState extends State<FastOrderbook> {
                                           'stock_label'.tr(),
                                           style: InvestrendTheme.of(context)
                                               .medium_w400
-                                              .copyWith(
+                                              ?.copyWith(
                                                 color: Colors.black,
                                                 fontSize: 16,
                                               ),
@@ -2381,10 +2394,10 @@ class _FastOrderbookState extends State<FastOrderbook> {
                                         padding: EdgeInsets.all(5),
                                         alignment: Alignment.centerLeft,
                                         child: Text(
-                                          ob.code,
+                                          ob!.code!,
                                           style: InvestrendTheme.of(context)
                                               .medium_w400
-                                              .copyWith(
+                                              ?.copyWith(
                                                 color: Colors.black,
                                                 fontSize: 16,
                                               ),
@@ -2403,7 +2416,7 @@ class _FastOrderbookState extends State<FastOrderbook> {
                                           'trade_confirmation_price_label'.tr(),
                                           style: InvestrendTheme.of(context)
                                               .medium_w400
-                                              .copyWith(
+                                              ?.copyWith(
                                                 color: Colors.black,
                                                 fontSize: 16,
                                               ),
@@ -2415,10 +2428,10 @@ class _FastOrderbookState extends State<FastOrderbook> {
                                         padding: EdgeInsets.all(5),
                                         alignment: Alignment.centerLeft,
                                         child: Text(
-                                          '${data.primaryPriceNotifier.value.value}',
+                                          '${data.primaryPriceNotifier.value?.value}',
                                           style: InvestrendTheme.of(context)
                                               .medium_w400
-                                              .copyWith(
+                                              ?.copyWith(
                                                 color: Colors.black,
                                                 fontSize: 16,
                                               ),
@@ -2437,7 +2450,7 @@ class _FastOrderbookState extends State<FastOrderbook> {
                                           'Price After',
                                           style: InvestrendTheme.of(context)
                                               .medium_w400
-                                              .copyWith(
+                                              ?.copyWith(
                                                 color: Colors.black,
                                                 fontSize: 16,
                                               ),
@@ -2449,10 +2462,10 @@ class _FastOrderbookState extends State<FastOrderbook> {
                                         padding: EdgeInsets.all(5),
                                         alignment: Alignment.centerLeft,
                                         child: Text(
-                                          '${notifier.primaryPriceNotifier.value.value}',
+                                          '${notifier.primaryPriceNotifier.value?.value}',
                                           style: InvestrendTheme.of(context)
                                               .medium_w400
-                                              .copyWith(
+                                              ?.copyWith(
                                                 color: Colors.black,
                                                 fontSize: 16,
                                               ),
@@ -2471,7 +2484,7 @@ class _FastOrderbookState extends State<FastOrderbook> {
                                           'trade_confirmation_lot_label'.tr(),
                                           style: InvestrendTheme.of(context)
                                               .medium_w400
-                                              .copyWith(
+                                              ?.copyWith(
                                                 color: Colors.black,
                                                 fontSize: 16,
                                               ),
@@ -2483,10 +2496,10 @@ class _FastOrderbookState extends State<FastOrderbook> {
                                         padding: EdgeInsets.all(5),
                                         alignment: Alignment.centerLeft,
                                         child: Text(
-                                          '${data.primaryOpenNotifier.value.value}',
+                                          '${data.primaryOpenNotifier.value?.value}',
                                           style: InvestrendTheme.of(context)
                                               .medium_w400
-                                              .copyWith(
+                                              ?.copyWith(
                                                 color: Colors.black,
                                                 fontSize: 16,
                                               ),
@@ -2513,7 +2526,7 @@ class _FastOrderbookState extends State<FastOrderbook> {
                                   'Place Order Buy',
                                   style: InvestrendTheme.of(context)
                                       .textLabelStyle
-                                      .copyWith(
+                                      ?.copyWith(
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -2525,19 +2538,19 @@ class _FastOrderbookState extends State<FastOrderbook> {
                       ),
                     );
                   },
-                  builder: (BuildContext context, List<Object> candidateData,
+                  builder: (BuildContext context, List<Object?> candidateData,
                       List<dynamic> rejectedData) {
                     return Container(
                       width: widthSection / 3,
                       child: ValueListenableBuilder(
                         valueListenable: notifier.primaryPriceNotifier,
-                        builder: (context, StringColorFont data, child) {
+                        builder: (context, StringColorFont? data, child) {
                           return createLabelPriceStatic(
                               context,
-                              data.fontSize,
-                              data.value,
+                              data?.fontSize,
+                              data?.value,
                               TextAlign.right,
-                              data.color /*, key: key*/);
+                              data?.color /*, key: key*/);
                         },
                       ),
                     );
@@ -2555,7 +2568,7 @@ class _FastOrderbookState extends State<FastOrderbook> {
           color: Theme.of(context).dividerColor,
           child: createLabelPriceStatic(
               context,
-              InvestrendTheme.of(context).small_w500.fontSize,
+              InvestrendTheme.of(context).small_w500?.fontSize,
               '',
               TextAlign.right,
               InvestrendTheme.buyTextColor),
@@ -2565,7 +2578,7 @@ class _FastOrderbookState extends State<FastOrderbook> {
         ),
         DragTarget<WrapperNotifierFast>(
           onAccept: (data) {
-            OrderBook ob = context.read(orderBookChangeNotifier).orderbook;
+            OrderBook? ob = context.read(orderBookChangeNotifier).orderbook;
             showDialog(
               context: context,
               builder: (_) => AlertDialog(
@@ -2574,7 +2587,9 @@ class _FastOrderbookState extends State<FastOrderbook> {
                     children: [
                       Text(
                         'preview_buy'.tr(),
-                        style: InvestrendTheme.of(context).medium_w400.copyWith(
+                        style: InvestrendTheme.of(context)
+                            .medium_w400
+                            ?.copyWith(
                               color: Theme.of(context).colorScheme.secondary,
                               fontWeight: FontWeight.bold,
                               fontSize: 22,
@@ -2616,7 +2631,7 @@ class _FastOrderbookState extends State<FastOrderbook> {
                                   'stock_label'.tr(),
                                   style: InvestrendTheme.of(context)
                                       .medium_w400
-                                      .copyWith(
+                                      ?.copyWith(
                                         color: Colors.black,
                                         fontSize: 16,
                                       ),
@@ -2628,10 +2643,10 @@ class _FastOrderbookState extends State<FastOrderbook> {
                                 padding: EdgeInsets.all(5),
                                 alignment: Alignment.centerLeft,
                                 child: Text(
-                                  ob.code,
+                                  ob!.code!,
                                   style: InvestrendTheme.of(context)
                                       .medium_w400
-                                      .copyWith(
+                                      ?.copyWith(
                                         color: Colors.black,
                                         fontSize: 16,
                                       ),
@@ -2650,7 +2665,7 @@ class _FastOrderbookState extends State<FastOrderbook> {
                                   'trade_confirmation_price_label'.tr(),
                                   style: InvestrendTheme.of(context)
                                       .medium_w400
-                                      .copyWith(
+                                      ?.copyWith(
                                         color: Colors.black,
                                         fontSize: 16,
                                       ),
@@ -2662,10 +2677,10 @@ class _FastOrderbookState extends State<FastOrderbook> {
                                 padding: EdgeInsets.all(5),
                                 alignment: Alignment.centerLeft,
                                 child: Text(
-                                  '${data.secondaryPriceNotifier.value.value}',
+                                  '${data.secondaryPriceNotifier.value?.value}',
                                   style: InvestrendTheme.of(context)
                                       .medium_w400
-                                      .copyWith(
+                                      ?.copyWith(
                                         color: Colors.black,
                                         fontSize: 16,
                                       ),
@@ -2684,7 +2699,7 @@ class _FastOrderbookState extends State<FastOrderbook> {
                                   'Price After',
                                   style: InvestrendTheme.of(context)
                                       .medium_w400
-                                      .copyWith(
+                                      ?.copyWith(
                                         color: Colors.black,
                                         fontSize: 16,
                                       ),
@@ -2696,10 +2711,10 @@ class _FastOrderbookState extends State<FastOrderbook> {
                                 padding: EdgeInsets.all(5),
                                 alignment: Alignment.centerLeft,
                                 child: Text(
-                                  '${notifier.secondaryPriceNotifier.value.value}',
+                                  '${notifier.secondaryPriceNotifier.value?.value}',
                                   style: InvestrendTheme.of(context)
                                       .medium_w400
-                                      .copyWith(
+                                      ?.copyWith(
                                         color: Colors.black,
                                         fontSize: 16,
                                       ),
@@ -2718,7 +2733,7 @@ class _FastOrderbookState extends State<FastOrderbook> {
                                   'trade_confirmation_lot_label'.tr(),
                                   style: InvestrendTheme.of(context)
                                       .medium_w400
-                                      .copyWith(
+                                      ?.copyWith(
                                         color: Colors.black,
                                         fontSize: 16,
                                       ),
@@ -2776,7 +2791,7 @@ class _FastOrderbookState extends State<FastOrderbook> {
                           'Place Order Sell',
                           style: InvestrendTheme.of(context)
                               .textLabelStyle
-                              .copyWith(
+                              ?.copyWith(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -2791,15 +2806,15 @@ class _FastOrderbookState extends State<FastOrderbook> {
             print(
                 "BERHASIL MASUKKKKK ON ACCEPT  == = = = = = = ==================");
           },
-          builder: (BuildContext context, List<Object> candidateData,
+          builder: (BuildContext context, List<Object?> candidateData,
               List<dynamic> rejectedData) {
             return Container(
                 width: widthSection / 3,
                 child: ValueListenableBuilder(
                   valueListenable: notifier.secondaryPriceNotifier,
-                  builder: (context, StringColorFont data, child) {
-                    return createLabelPriceStatic(context, data.fontSize,
-                        data.value, TextAlign.left, data.color);
+                  builder: (context, StringColorFont? data, child) {
+                    return createLabelPriceStatic(context, data?.fontSize,
+                        data?.value, TextAlign.left, data?.color);
                   },
                 ));
           },
@@ -2841,13 +2856,13 @@ class _FastOrderbookState extends State<FastOrderbook> {
     );
   }
 
-  Widget createLabelQueue(
-      BuildContext context, double fontSize, String text, TextAlign textAlign) {
+  Widget createLabelQueue(BuildContext context, double? fontSize, String? text,
+      TextAlign textAlign) {
     return Padding(
       padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
       child: Text(
-        text,
-        style: InvestrendTheme.of(context).small_w400.copyWith(
+        text!,
+        style: InvestrendTheme.of(context).small_w400?.copyWith(
             color: InvestrendTheme.of(context).greyLighterTextColor,
             fontSize: fontSize),
         textAlign: textAlign,
@@ -2855,13 +2870,13 @@ class _FastOrderbookState extends State<FastOrderbook> {
     );
   }
 
-  Widget createLabelQueueStatic(
-      BuildContext context, double fontSize, String text, TextAlign textAlign) {
+  Widget createLabelQueueStatic(BuildContext context, double? fontSize,
+      String? text, TextAlign textAlign) {
     return Padding(
       padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
       child: Text(
-        text,
-        style: InvestrendTheme.of(context).small_w400.copyWith(
+        text!,
+        style: InvestrendTheme.of(context).small_w400?.copyWith(
             color: InvestrendTheme.of(context).greyLighterTextColor,
             fontSize: fontSize),
         textAlign: textAlign,
@@ -2869,12 +2884,12 @@ class _FastOrderbookState extends State<FastOrderbook> {
     );
   }
 
-  Widget createLabelLot(BuildContext context, double fontSize, String text) {
+  Widget createLabelLot(BuildContext context, double? fontSize, String? text) {
     return Padding(
       padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
       child: Text(
-        text,
-        style: InvestrendTheme.of(context).small_w400.copyWith(
+        text!,
+        style: InvestrendTheme.of(context).small_w400?.copyWith(
             color: InvestrendTheme.of(context).greyDarkerTextColor,
             fontSize: fontSize),
         textAlign: TextAlign.center,
@@ -2883,12 +2898,12 @@ class _FastOrderbookState extends State<FastOrderbook> {
   }
 
   Widget createLabelLotStatic(
-      BuildContext context, double fontSize, String text) {
+      BuildContext context, double? fontSize, String? text) {
     return Padding(
       padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
       child: Text(
-        text,
-        style: InvestrendTheme.of(context).small_w400.copyWith(
+        text!,
+        style: InvestrendTheme.of(context).small_w400?.copyWith(
             color: InvestrendTheme.of(context).greyDarkerTextColor,
             fontSize: fontSize),
         textAlign: TextAlign.center,
@@ -2896,7 +2911,7 @@ class _FastOrderbookState extends State<FastOrderbook> {
     );
   }
 
-  Widget createLabelOpen(BuildContext context, double fontSize, int lot,
+  Widget createLabelOpen(BuildContext context, double? fontSize, int lot,
       TextAlign textAlign, bool show) {
     return Padding(
       padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
@@ -2905,7 +2920,7 @@ class _FastOrderbookState extends State<FastOrderbook> {
               textAlign: textAlign,
               text: TextSpan(
                 text: InvestrendTheme.formatComma(lot),
-                style: InvestrendTheme.of(context).small_w400.copyWith(
+                style: InvestrendTheme.of(context).small_w400?.copyWith(
                     color: InvestrendTheme.of(context).greyDarkerTextColor,
                     fontSize: fontSize),
                 children: <TextSpan>[
@@ -2913,7 +2928,7 @@ class _FastOrderbookState extends State<FastOrderbook> {
                     text: lot > 0 ? '*' : '',
                     style: InvestrendTheme.of(context)
                         .small_w400
-                        .copyWith(color: Colors.red, fontSize: fontSize),
+                        ?.copyWith(color: Colors.red, fontSize: fontSize),
                   ),
                 ],
               ),
@@ -2924,8 +2939,8 @@ class _FastOrderbookState extends State<FastOrderbook> {
     );
   }
 
-  Widget createLabelOpenStatic(BuildContext context, double fontSize,
-      String openText, TextAlign textAlign) {
+  Widget createLabelOpenStatic(BuildContext context, double? fontSize,
+      String? openText, TextAlign textAlign) {
     bool empty = StringUtils.isEmtpy(openText) ||
         StringUtils.equalsIgnoreCase(openText, '0');
     return Padding(
@@ -2934,7 +2949,7 @@ class _FastOrderbookState extends State<FastOrderbook> {
         textAlign: textAlign,
         text: TextSpan(
           text: openText,
-          style: InvestrendTheme.of(context).small_w400.copyWith(
+          style: InvestrendTheme.of(context).small_w400?.copyWith(
               color: InvestrendTheme.of(context).greyDarkerTextColor,
               fontSize: fontSize),
           children: <TextSpan>[
@@ -2942,7 +2957,7 @@ class _FastOrderbookState extends State<FastOrderbook> {
               text: !empty ? '*' : '',
               style: InvestrendTheme.of(context)
                   .small_w400
-                  .copyWith(color: Colors.red, fontSize: fontSize),
+                  ?.copyWith(color: Colors.red, fontSize: fontSize),
             ),
           ],
         ),
@@ -2958,7 +2973,7 @@ class _FastOrderbookState extends State<FastOrderbook> {
         textAlign: textAlign,
         text: TextSpan(
           text: InvestrendTheme.formatComma(openLot),
-          style: InvestrendTheme.of(context).small_w400.copyWith(
+          style: InvestrendTheme.of(context).small_w400?.copyWith(
               color: InvestrendTheme.of(context).greyDarkerTextColor,
               fontSize: fontSize),
           children: <TextSpan>[
@@ -2966,7 +2981,7 @@ class _FastOrderbookState extends State<FastOrderbook> {
               text: openLot > 0 ? '*' : '',
               style: InvestrendTheme.of(context)
                   .small_w400
-                  .copyWith(color: Colors.red, fontSize: fontSize),
+                  ?.copyWith(color: Colors.red, fontSize: fontSize),
             ),
           ],
         ),
@@ -2974,33 +2989,33 @@ class _FastOrderbookState extends State<FastOrderbook> {
     );
   }
 
-  Widget createLabelPrice(BuildContext context, double fontSize, String text,
-      TextAlign textAlign, Color color,
-      {Key key}) {
+  Widget createLabelPrice(BuildContext context, double? fontSize, String? text,
+      TextAlign textAlign, Color? color,
+      {Key? key}) {
     return Padding(
       padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
       child: Text(
-        text,
+        text!,
         key: key,
         style: InvestrendTheme.of(context)
             .small_w500
-            .copyWith(color: color, fontSize: fontSize),
+            ?.copyWith(color: color, fontSize: fontSize),
         textAlign: textAlign,
       ),
     );
   }
 
-  Widget createLabelPriceStatic(BuildContext context, double fontSize,
-      String text, TextAlign textAlign, Color color,
-      {Key key}) {
+  Widget createLabelPriceStatic(BuildContext context, double? fontSize,
+      String? text, TextAlign? textAlign, Color? color,
+      {Key? key}) {
     return Padding(
       padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
       child: Text(
-        text,
+        text!,
         key: key,
         style: InvestrendTheme.of(context)
             .small_w500
-            .copyWith(color: color, fontSize: fontSize),
+            ?.copyWith(color: color, fontSize: fontSize),
         textAlign: textAlign,
       ),
     );
@@ -3013,7 +3028,7 @@ class _FastOrderbookState extends State<FastOrderbook> {
       TextEditingController controller,
       FocusNode focusNode,
       TextAlign textAlign,
-      {FocusNode nextFocusNode}) {
+      {FocusNode? nextFocusNode}) {
     return AutoSizeTextField(
       controller: controller,
       key: fieldKey,
@@ -3033,9 +3048,9 @@ class _FastOrderbookState extends State<FastOrderbook> {
         PriceFormatter(),
       ],
       maxLines: 1,
-      style: InvestrendTheme.of(context).small_w400.copyWith(
+      style: InvestrendTheme.of(context).small_w400?.copyWith(
           color: InvestrendTheme.of(context).greyDarkerTextColor,
-          fontSize: InvestrendTheme.of(context).small_w400.fontSize),
+          fontSize: InvestrendTheme.of(context).small_w400?.fontSize),
       textInputAction: TextInputAction.done,
       keyboardType: TextInputType.number,
       decoration: InputDecoration(
@@ -3043,8 +3058,8 @@ class _FastOrderbookState extends State<FastOrderbook> {
         border: UnderlineInputBorder(
             borderSide: BorderSide(color: Colors.grey, width: 1.0)),
         focusedBorder: UnderlineInputBorder(
-            borderSide:
-                BorderSide(color: Theme.of(context).colorScheme.secondary, width: 1.0)),
+            borderSide: BorderSide(
+                color: Theme.of(context).colorScheme.secondary, width: 1.0)),
         focusColor: Theme.of(context).colorScheme.secondary,
         prefixStyle: InvestrendTheme.of(context).inputPrefixStyle,
         hintStyle: InvestrendTheme.of(context).inputHintStyle,

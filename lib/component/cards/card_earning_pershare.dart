@@ -7,12 +7,11 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-
-
 class CardEarningPerShare extends StatelessWidget {
-  final EarningPerShareNotifier notifier;
-  final VoidCallback onRetry;
-  const CardEarningPerShare(this.notifier,{this.onRetry, Key key}) : super(key: key);
+  final EarningPerShareNotifier? notifier;
+  final VoidCallback? onRetry;
+  const CardEarningPerShare(this.notifier, {this.onRetry, Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,18 +22,22 @@ class CardEarningPerShare extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: EdgeInsets.only(left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral, bottom: InvestrendTheme.cardPaddingVertical),
-            child: ComponentCreator.subtitle(context, 'card_earning_per_share_title'.tr()),
+            padding: EdgeInsets.only(
+                left: InvestrendTheme.cardPaddingGeneral,
+                right: InvestrendTheme.cardPaddingGeneral,
+                bottom: InvestrendTheme.cardPaddingVertical),
+            child: ComponentCreator.subtitle(
+                context, 'card_earning_per_share_title'.tr()),
           ),
           //SizedBox(height: InvestrendTheme.cardPaddingPlusMargin,),
           ValueListenableBuilder(
-            valueListenable: notifier,
-            builder: (context, EarningPerShareData data, child) {
-
-              Widget noWidget = notifier.currentState.getNoWidget(onRetry: onRetry);
-              if(noWidget != null){
+            valueListenable: notifier!,
+            builder: (context, EarningPerShareData? data, child) {
+              Widget? noWidget =
+                  notifier?.currentState.getNoWidget(onRetry: onRetry!);
+              if (noWidget != null) {
                 return Container(
-                  width: double.maxFinite,
+                    width: double.maxFinite,
                     height: 8 * 30.0,
                     child: Center(child: noWidget));
               }
@@ -47,15 +50,19 @@ class CardEarningPerShare extends StatelessWidget {
               // );
 
               return Padding(
-                padding: const EdgeInsets.only(left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral),
+                padding: const EdgeInsets.only(
+                    left: InvestrendTheme.cardPaddingGeneral,
+                    right: InvestrendTheme.cardPaddingGeneral),
                 child: createTable(context, data),
               );
             },
           ),
-          SizedBox(height: 12.0,),
+          SizedBox(
+            height: 12.0,
+          ),
           ValueListenableBuilder(
-            valueListenable: notifier,
-            builder: (context, EarningPerShareData data, child) {
+            valueListenable: notifier!,
+            builder: (context, EarningPerShareData? data, child) {
               // if (notifier.invalid()) {
               //   return Center(child: CircularProgressIndicator());
               // }
@@ -63,17 +70,29 @@ class CardEarningPerShare extends StatelessWidget {
               //   fallbackWidth: double.maxFinite,
               //   fallbackHeight: 220.0,
               // );
-              Widget noWidget = notifier.currentState.getNoWidget(onRetry: onRetry);
-              if(noWidget != null){
-                return SizedBox(height: 1.0,);
+              Widget? noWidget =
+                  notifier?.currentState.getNoWidget(onRetry: onRetry!);
+              if (noWidget != null) {
+                return SizedBox(
+                  height: 1.0,
+                );
               }
 
-              String info = 'card_earning_per_share_info'.tr()+' '+ data.recentQuarter;
+              String? info = 'card_earning_per_share_info'.tr() +
+                  ' ' +
+                  data!.recentQuarter!;
               return Container(
                 width: double.maxFinite,
-                padding: EdgeInsets.only(left: InvestrendTheme.cardPaddingGeneral, right: InvestrendTheme.cardPaddingGeneral, top: 15.0, bottom: 15.0),
+                padding: EdgeInsets.only(
+                    left: InvestrendTheme.cardPaddingGeneral,
+                    right: InvestrendTheme.cardPaddingGeneral,
+                    top: 15.0,
+                    bottom: 15.0),
                 color: InvestrendTheme.of(context).oddColor,
-                child: Text(info, style: InvestrendTheme.of(context).small_w400_compact,),
+                child: Text(
+                  info,
+                  style: InvestrendTheme.of(context).small_w400_compact,
+                ),
               );
             },
           ),
@@ -82,39 +101,71 @@ class CardEarningPerShare extends StatelessWidget {
     );
   }
 
-
-  TableRow createHeader(BuildContext context, String label, List<String> datas){
-    TextStyle style = InvestrendTheme.of(context).small_w600_compact;
+  TableRow createHeader(
+      BuildContext context, String label, List<String>? datas) {
+    TextStyle? style = InvestrendTheme.of(context).small_w600_compact;
 
     int count = datas != null ? datas.length : 0;
 
-    return TableRow(
-        children: [
-          createTextLeft(context, label, style,),
-          createTextCenter(context,(count > 0 ? datas.elementAt(0) : ' ') ,  style),
-          createTextCenter(context,(count > 1 ? datas.elementAt(1) : ' ') ,  style),
-          createTextCenter(context,(count > 2 ? datas.elementAt(2) : ' ') ,  style),
-          createTextCenter(context,(count > 3 ? datas.elementAt(3) : ' ') ,  style),
-        ]
-    );
+    return TableRow(children: [
+      createTextLeft(
+        context,
+        label,
+        style,
+      ),
+      createTextCenter(context, (count > 0 ? datas?.elementAt(0) : ' '), style),
+      createTextCenter(context, (count > 1 ? datas?.elementAt(1) : ' '), style),
+      createTextCenter(context, (count > 2 ? datas?.elementAt(2) : ' '), style),
+      createTextCenter(context, (count > 3 ? datas?.elementAt(3) : ' '), style),
+    ]);
   }
-  
-  TableRow createRow(BuildContext context, String label, List<double> datas){
-    TextStyle style = InvestrendTheme.of(context).small_w400_compact;
 
-    int count = datas != null ? datas.length : 0;
+  TableRow createRow(BuildContext context, String label, List<double>? datas) {
+    TextStyle? style = InvestrendTheme.of(context).small_w400_compact;
 
-    Color color = InvestrendTheme.of(context).greyDarkerTextColor;
+    int? count = datas != null ? datas.length : 0;
 
-    return TableRow(
-        children: [
-          createTextLeft(context, label, style.copyWith(color: color),),
-          createTextCenter(context,(count > 0 && datas.elementAt(0) != 0 ? datas.elementAt(0).toString() : ' ') , style.copyWith(color: datas.elementAt(0) < 0 ? InvestrendTheme.redText : color)),
-          createTextCenter(context,(count > 1 && datas.elementAt(1) != 0 ? datas.elementAt(1).toString() : ' ') , style.copyWith(color: datas.elementAt(1) < 0 ? InvestrendTheme.redText : color)),
-          createTextCenter(context,(count > 2 && datas.elementAt(2) != 0 ? datas.elementAt(2).toString() : ' ') , style.copyWith(color: datas.elementAt(2) < 0 ? InvestrendTheme.redText : color)),
-          createTextCenter(context,(count > 3 && datas.elementAt(3) != 0 ? datas.elementAt(3).toString() : ' ') , style.copyWith(color: datas.elementAt(3) < 0 ? InvestrendTheme.redText : color)),
-        ]
-    );
+    Color? color = InvestrendTheme.of(context).greyDarkerTextColor;
+
+    return TableRow(children: [
+      createTextLeft(
+        context,
+        label,
+        style?.copyWith(color: color),
+      ),
+      createTextCenter(
+          context,
+          (count > 0 && datas?.elementAt(0) != 0
+              ? datas?.elementAt(0).toString()
+              : ' '),
+          style?.copyWith(
+              color:
+                  datas!.elementAt(0) < 0 ? InvestrendTheme.redText : color)),
+      createTextCenter(
+          context,
+          (count > 1 && datas?.elementAt(1) != 0
+              ? datas?.elementAt(1).toString()
+              : ' '),
+          style?.copyWith(
+              color:
+                  datas!.elementAt(1) < 0 ? InvestrendTheme.redText : color)),
+      createTextCenter(
+          context,
+          (count > 2 && datas?.elementAt(2) != 0
+              ? datas?.elementAt(2).toString()
+              : ' '),
+          style?.copyWith(
+              color:
+                  datas!.elementAt(2) < 0 ? InvestrendTheme.redText : color)),
+      createTextCenter(
+          context,
+          (count > 3 && datas?.elementAt(3) != 0
+              ? datas?.elementAt(3).toString()
+              : ' '),
+          style?.copyWith(
+              color:
+                  datas!.elementAt(3) < 0 ? InvestrendTheme.redText : color)),
+    ]);
 
     // return TableRow(
     //     children: [
@@ -126,26 +177,54 @@ class CardEarningPerShare extends StatelessWidget {
     //     ]
     // );
   }
-  
-  
-  
-  
-  TableRow createRowDouble(BuildContext context, String label, List<double> datas){
-    TextStyle style = InvestrendTheme.of(context).small_w400_compact;
 
-    int count = datas != null ? datas.length : 0;
+  TableRow createRowDouble(
+      BuildContext context, String label, List<double>? datas) {
+    TextStyle? style = InvestrendTheme.of(context).small_w400_compact;
 
-    Color color = InvestrendTheme.of(context).greyDarkerTextColor;
+    int? count = datas != null ? datas.length : 0;
 
-    return TableRow(
-        children: [
-          createTextLeft(context,label, style.copyWith(color: color),),
-          createTextCenter(context, (count > 0 && datas.elementAt(0) != 0 ? datas.elementAt(0).toString() : ' ') , style.copyWith(color: datas.elementAt(0) < 0 ? InvestrendTheme.redText : color),),
-          createTextCenter(context, (count > 1 && datas.elementAt(1) != 0 ? datas.elementAt(1).toString() : ' ') , style.copyWith(color: datas.elementAt(1) < 0 ? InvestrendTheme.redText : color),),
-          createTextCenter(context, (count > 2 && datas.elementAt(2) != 0 ? datas.elementAt(2).toString() : ' ') , style.copyWith(color: datas.elementAt(2) < 0 ? InvestrendTheme.redText : color),),
-          createTextCenter(context, (count > 3 && datas.elementAt(3) != 0 ? datas.elementAt(3).toString() : ' ') , style.copyWith(color: datas.elementAt(3) < 0 ? InvestrendTheme.redText : color),),
-        ]
-    );
+    Color? color = InvestrendTheme.of(context).greyDarkerTextColor;
+
+    return TableRow(children: [
+      createTextLeft(
+        context,
+        label,
+        style?.copyWith(color: color),
+      ),
+      createTextCenter(
+        context,
+        (count > 0 && datas?.elementAt(0) != 0
+            ? datas?.elementAt(0).toString()
+            : ' '),
+        style?.copyWith(
+            color: datas!.elementAt(0) < 0 ? InvestrendTheme.redText : color),
+      ),
+      createTextCenter(
+        context,
+        (count > 1 && datas?.elementAt(1) != 0
+            ? datas?.elementAt(1).toString()
+            : ' '),
+        style?.copyWith(
+            color: datas!.elementAt(1) < 0 ? InvestrendTheme.redText : color),
+      ),
+      createTextCenter(
+        context,
+        (count > 2 && datas?.elementAt(2) != 0
+            ? datas?.elementAt(2).toString()
+            : ' '),
+        style?.copyWith(
+            color: datas!.elementAt(2) < 0 ? InvestrendTheme.redText : color),
+      ),
+      createTextCenter(
+        context,
+        (count > 3 && datas?.elementAt(3) != 0
+            ? datas?.elementAt(3).toString()
+            : ' '),
+        style?.copyWith(
+            color: datas!.elementAt(3) < 0 ? InvestrendTheme.redText : color),
+      ),
+    ]);
 
     // return TableRow(
     //     children: [
@@ -157,23 +236,54 @@ class CardEarningPerShare extends StatelessWidget {
     //     ]
     // );
   }
-  TableRow createRowPercent(BuildContext context, String label, List<double> datas){
-    TextStyle style = InvestrendTheme.of(context).small_w400_compact;
+
+  TableRow createRowPercent(
+      BuildContext context, String label, List<double>? datas) {
+    TextStyle? style = InvestrendTheme.of(context).small_w400_compact;
 
     int count = datas != null ? datas.length : 0;
 
-    Color color = InvestrendTheme.of(context).greyDarkerTextColor;
+    Color? color = InvestrendTheme.of(context).greyDarkerTextColor;
 
-    return TableRow(
-        children: [
-          createTextLeft(context,label, style.copyWith(color: color),),
-          createTextCenter(context, (count > 0 && datas.elementAt(0) != 0 ? InvestrendTheme.formatPercent(datas.elementAt(0)) : ' ') , style.copyWith(color: datas.elementAt(0) < 0 ? InvestrendTheme.redText : color), ),
-          createTextCenter(context, (count > 1 && datas.elementAt(1) != 0 ? InvestrendTheme.formatPercent(datas.elementAt(1)) : ' ') ,  style.copyWith(color: datas.elementAt(1) < 0 ? InvestrendTheme.redText : color), ),
-          createTextCenter(context, (count > 2 && datas.elementAt(2) != 0 ? InvestrendTheme.formatPercent(datas.elementAt(2)) : ' ') , style.copyWith(color: datas.elementAt(2) < 0 ? InvestrendTheme.redText : color), ),
-          createTextCenter(context, (count > 3 && datas.elementAt(3) != 0 ? InvestrendTheme.formatPercent(datas.elementAt(3)) : ' ') , style.copyWith(color: datas.elementAt(3) < 0 ? InvestrendTheme.redText : color), ),
-        ]
-    );
-
+    return TableRow(children: [
+      createTextLeft(
+        context,
+        label,
+        style?.copyWith(color: color),
+      ),
+      createTextCenter(
+        context,
+        (count > 0 && datas?.elementAt(0) != 0
+            ? InvestrendTheme.formatPercent(datas?.elementAt(0))
+            : ' '),
+        style?.copyWith(
+            color: datas!.elementAt(0) < 0 ? InvestrendTheme.redText : color),
+      ),
+      createTextCenter(
+        context,
+        (count > 1 && datas?.elementAt(1) != 0
+            ? InvestrendTheme.formatPercent(datas?.elementAt(1))
+            : ' '),
+        style?.copyWith(
+            color: datas!.elementAt(1) < 0 ? InvestrendTheme.redText : color),
+      ),
+      createTextCenter(
+        context,
+        (count > 2 && datas?.elementAt(2) != 0
+            ? InvestrendTheme.formatPercent(datas?.elementAt(2))
+            : ' '),
+        style?.copyWith(
+            color: datas!.elementAt(2) < 0 ? InvestrendTheme.redText : color),
+      ),
+      createTextCenter(
+        context,
+        (count > 3 && datas?.elementAt(3) != 0
+            ? InvestrendTheme.formatPercent(datas?.elementAt(3))
+            : ' '),
+        style?.copyWith(
+            color: datas!.elementAt(3) < 0 ? InvestrendTheme.redText : color),
+      ),
+    ]);
 
     // return TableRow(
     //     children: [
@@ -186,21 +296,30 @@ class CardEarningPerShare extends StatelessWidget {
     // );
   }
 
-
-  Widget createTextLeft(BuildContext context, String label, TextStyle style){
+  Widget createTextLeft(BuildContext context, String label, TextStyle? style) {
     return Padding(
-      padding: const EdgeInsets.only(top:  12.0, bottom: 12.0),
-      child: AutoSizeText(label , style: style, textAlign: TextAlign.left,),
-    );
-  }
-  Widget createTextCenter(BuildContext context, String label, TextStyle style){
-    return Padding(
-      padding: const EdgeInsets.only( left: 5.0,  top:  12.0, bottom: 12.0),
-      child: AutoSizeText(label , style: style, textAlign: TextAlign.center,),
+      padding: const EdgeInsets.only(top: 12.0, bottom: 12.0),
+      child: AutoSizeText(
+        label,
+        style: style,
+        textAlign: TextAlign.left,
+      ),
     );
   }
 
-  Widget createTable(BuildContext context, EarningPerShareData data){
+  Widget createTextCenter(
+      BuildContext context, String? label, TextStyle? style) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 5.0, top: 12.0, bottom: 12.0),
+      child: AutoSizeText(
+        label!,
+        style: style,
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+
+  Widget createTable(BuildContext context, EarningPerShareData? data) {
     return Table(
       columnWidths: {
         0: FractionColumnWidth(.2),
@@ -211,22 +330,23 @@ class CardEarningPerShare extends StatelessWidget {
       },
       defaultVerticalAlignment: TableCellVerticalAlignment.middle,
       children: [
-        createHeader(context, 'card_earning_per_share_period'.tr(), data.years),
-        createRow(context, 'card_earning_per_share_q1'.tr(), data.quarter1),
-        createRow(context, 'card_earning_per_share_q2'.tr(), data.quarter2),
-        createRow(context, 'card_earning_per_share_q3'.tr(), data.quarter3),
-        createRow(context, 'card_earning_per_share_q4'.tr(), data.quarter4),
+        createHeader(
+            context, 'card_earning_per_share_period'.tr(), data!.years!),
+        createRow(context, 'card_earning_per_share_q1'.tr(), data.quarter1!),
+        createRow(context, 'card_earning_per_share_q2'.tr(), data.quarter2!),
+        createRow(context, 'card_earning_per_share_q3'.tr(), data.quarter3!),
+        createRow(context, 'card_earning_per_share_q4'.tr(), data.quarter4!),
         divider(context),
-        createRow(context, 'card_earning_per_share_eps'.tr(), data.eps),
+        createRow(context, 'card_earning_per_share_eps'.tr(), data.eps!),
         divider(context),
-        createRowDouble(context, 'card_earning_per_share_dps'.tr(), data.dps),
+        createRowDouble(context, 'card_earning_per_share_dps'.tr(), data.dps!),
         divider(context),
-        createRowPercent(context, 'card_earning_per_share_dpr'.tr(), data.dpr),
+        createRowPercent(context, 'card_earning_per_share_dpr'.tr(), data.dpr!),
       ],
     );
   }
 
-  TableRow divider(BuildContext context){
+  TableRow divider(BuildContext context) {
     return TableRow(children: [
       Container(
         color: Theme.of(context).dividerColor,
@@ -255,13 +375,6 @@ class CardEarningPerShare extends StatelessWidget {
       ),
     ]);
   }
-  
-  
-  
-
-
-
-
 }
 
 /*

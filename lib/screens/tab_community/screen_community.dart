@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_null_comparison
+
 import 'package:Investrend/objects/riverpod_change_notifier.dart';
 import 'package:Investrend/screens/base/base_state.dart';
 import 'package:Investrend/screens/screen_coming_soon.dart';
@@ -10,79 +12,82 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ScreenCommunity extends StatefulWidget {
-  const ScreenCommunity({Key key}) : super(key: key);
+  const ScreenCommunity({Key? key}) : super(key: key);
   @override
   _ScreenCommunityState createState() => _ScreenCommunityState();
 }
+
 enum TabsCommunity { Feed, Competitions }
+
 class _ScreenCommunityState extends BaseStateWithTabs<ScreenCommunity> {
   String timeCreation = '-';
-  int initialIndex = 0;
-  VoidCallback menuChangeListener;
-  List<String> tabs = ['comunity_tab_feed'.tr(), 'comunity_tab_competitions'.tr()];
+  int? initialIndex = 0;
+  VoidCallback? menuChangeListener;
+  List<String> tabs = [
+    'comunity_tab_feed'.tr(),
+    'comunity_tab_competitions'.tr()
+  ];
 
   bool comingsoon = true;
 
-  _ScreenCommunityState() : super('/community');
+  _ScreenCommunityState() : super('/community', null, null);
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     timeCreation = DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.now());
   }
 
-
   @override
-  Widget createAppBar(BuildContext context) {
-    // TODO: implement createAppBar
+  PreferredSizeWidget? createAppBar(BuildContext context) {
     return null;
   }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
     initialIndex = context.read(mainMenuChangeNotifier).subTabTransaction;
     print('ScreenTransaction.didChangeDependencies : $initialIndex');
-    if(menuChangeListener != null){
-      context.read(mainMenuChangeNotifier).removeListener(menuChangeListener);
-    }else {
-    //if(menuChangeListener == null){
-      menuChangeListener = (){
-        if(!mounted
-            || context == null
-            || pTabController == null
-        ){
-          print('ScreenTransaction.menuChangeListener aborted, caused by widget mounted : '+mounted.toString());
+    if (menuChangeListener != null) {
+      context.read(mainMenuChangeNotifier).removeListener(menuChangeListener!);
+    } else {
+      //if(menuChangeListener == null){
+      menuChangeListener = () {
+        if (!mounted || context == null || pTabController == null) {
+          print(
+              'ScreenTransaction.menuChangeListener aborted, caused by widget mounted : ' +
+                  mounted.toString());
           return;
         }
         Tabs mainTab = context.read(mainMenuChangeNotifier).mainTab;
-        if(mainTab == Tabs.Community){
-          int subTab = context.read(mainMenuChangeNotifier).subTabCommunity;
-          int currentTab = pTabController.index;
-          if(subTab != currentTab){
-            pTabController.index = subTab;
+        if (mainTab == Tabs.Community) {
+          int? subTab = context.read(mainMenuChangeNotifier).subTabCommunity;
+          int? currentTab = pTabController?.index;
+          if (subTab != currentTab) {
+            pTabController?.index = subTab!;
           }
         }
       };
     }
-    context.read(mainMenuChangeNotifier).addListener(menuChangeListener);
+    context.read(mainMenuChangeNotifier).addListener(menuChangeListener!);
   }
 
   @override
   void dispose() {
     final container = ProviderContainer();
-    if(menuChangeListener != null){
-      container.read(mainMenuChangeNotifier).removeListener(menuChangeListener);
+    if (menuChangeListener != null) {
+      container
+          .read(mainMenuChangeNotifier)
+          .removeListener(menuChangeListener!);
     }
-
 
     super.dispose();
   }
-  @override
-  Widget createBody(BuildContext context,double paddingBottom) {
 
-    if(comingsoon){
+  @override
+  Widget createBody(BuildContext context, double paddingBottom) {
+    if (comingsoon) {
       return ScreenComingSoon();
     }
 
@@ -90,13 +95,13 @@ class _ScreenCommunityState extends BaseStateWithTabs<ScreenCommunity> {
       controller: pTabController,
       children: List<Widget>.generate(
         tabs.length,
-            (int index) {
+        (int index) {
           print(tabs[index]);
-          if(index == 0){
-            return ScreenCommunityFeed(0, pTabController);
+          if (index == 0) {
+            return ScreenCommunityFeed(0, pTabController!);
           }
-          if(index == 1){
-            return ScreenCommunityCompetitions(1, pTabController);
+          if (index == 1) {
+            return ScreenCommunityCompetitions(1, pTabController!);
           }
           return Container(
             child: Center(
@@ -109,17 +114,18 @@ class _ScreenCommunityState extends BaseStateWithTabs<ScreenCommunity> {
   }
 
   @override
-  Widget createTabs(BuildContext context) {
-    if(comingsoon){
+  PreferredSizeWidget? createTabs(BuildContext context) {
+    if (comingsoon) {
       return null;
     }
     return new TabBar(
-      labelPadding: InvestrendTheme.paddingTab, //EdgeInsets.symmetric(horizontal: 12.0),
+      labelPadding:
+          InvestrendTheme.paddingTab, //EdgeInsets.symmetric(horizontal: 12.0),
       controller: pTabController,
       isScrollable: true,
       tabs: List<Widget>.generate(
         tabs.length,
-            (int index) {
+        (int index) {
           print(tabs[index]);
           return new Tab(text: tabs[index]);
         },
@@ -133,13 +139,11 @@ class _ScreenCommunityState extends BaseStateWithTabs<ScreenCommunity> {
   }
 
   @override
-  void onActive() {
-    // TODO: implement onActive
-  }
+  void onActive() {}
 
   @override
   void onInactive() {
-    // TODO: implement onInactive
+    //
   }
 
   // Widget createComingSoonPage(BuildContext context){
@@ -163,6 +167,3 @@ class _ScreenCommunityState extends BaseStateWithTabs<ScreenCommunity> {
   //   );
   // }
 }
-
-
-

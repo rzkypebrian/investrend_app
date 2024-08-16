@@ -7,19 +7,18 @@ class BaseStatelessWidget extends StatelessWidget {
       appBar: createAppBar(context),
       backgroundColor: Theme.of(context).colorScheme.background,
       body: createBody(context),
-
     );
   }
-  Widget createBody(BuildContext context){
+
+  Widget createBody(BuildContext context) {
     return Container(
       child: Text('Base Body'),
     );
   }
-  Widget createAppBar(BuildContext context){
+
+  PreferredSizeWidget createAppBar(BuildContext context) {
     return AppBar(
       backgroundColor: Theme.of(context).colorScheme.background,
     );
   }
-
 }
-

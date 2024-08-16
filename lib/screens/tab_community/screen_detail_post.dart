@@ -1,3 +1,4 @@
+// ignore_for_file: unused_local_variable
 
 import 'package:Investrend/component/avatar.dart';
 import 'package:Investrend/component/cards/card_social_media.dart';
@@ -20,62 +21,75 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class ScreenDetailPost extends StatefulWidget {
   final Post post;
   final bool showKeyboard;
-  const ScreenDetailPost(this.post, {this.showKeyboard = false, Key key}) : super(key: key);
+  const ScreenDetailPost(this.post, {this.showKeyboard = false, Key? key})
+      : super(key: key);
 
   @override
-  _ScreenDetailPostState createState() => _ScreenDetailPostState(this.post, this.showKeyboard);
+  _ScreenDetailPostState createState() =>
+      _ScreenDetailPostState(this.post, this.showKeyboard);
 }
 
 class _ScreenDetailPostState extends BaseStateNoTabs<ScreenDetailPost> {
   final Post post;
   final bool showKeyboard;
   final ValueNotifier<int> _selectedCarouselNotifier = ValueNotifier<int>(0);
-  TextEditingController fieldTextController;
+  TextEditingController? fieldTextController;
   FocusNode fieldCommentNode = FocusNode();
   bool commentAdded = false;
   _ScreenDetailPostState(this.post, this.showKeyboard) : super('/detail_post');
 
   // only for Activity / Transaction
-  String activityCode    = '';
-  String activityPercent    = '';
+  String activityCode = '';
+  String activityPercent = '';
   ActivityType activityType = ActivityType.Unknown;
 
-  ScrollController _scrollController;
+  ScrollController? _scrollController;
 
   void _scrollToTop() {
-    _scrollController.animateTo(0,
+    _scrollController?.animateTo(0,
         duration: Duration(seconds: 2), curve: Curves.easeInOutQuint);
   }
+
   void scrollListener() {
-    if (_scrollController.offset >= _scrollController.position.maxScrollExtent &&
-        !_scrollController.position.outOfRange) {
+    if (_scrollController!.offset >=
+            _scrollController!.position.maxScrollExtent &&
+        !_scrollController!.position.outOfRange) {
       // "reach the bottom";
-      if(mounted){
+      if (mounted) {
         fetchNextPage();
       }
     }
-    if (_scrollController.offset <= _scrollController.position.minScrollExtent &&
-        !_scrollController.position.outOfRange) {
+    if (_scrollController!.offset <=
+            _scrollController!.position.minScrollExtent &&
+        !_scrollController!.position.outOfRange) {
       // "reach the top";
     }
   }
+
   bool showedLastPageInfo = false;
-  void fetchNextPage(){
-    if(context.read(sosmedCommentChangeNotifier).loadingBottom){
-      print('scrollListener nextPage onProgress : '+context.read(sosmedCommentChangeNotifier).loadingBottom.toString());
+  void fetchNextPage() {
+    if (context.read(sosmedCommentChangeNotifier).loadingBottom) {
+      print('scrollListener nextPage onProgress : ' +
+          context.read(sosmedCommentChangeNotifier).loadingBottom.toString());
       return;
     }
     print('reach the bottom');
 
-    String nextPageUrl = context.read(sosmedCommentChangeNotifier).next_page_url;
+    String nextPageUrl =
+        context.read(sosmedCommentChangeNotifier).next_page_url;
     int currentPage = context.read(sosmedCommentChangeNotifier).current_page;
     int lastPage = context.read(sosmedCommentChangeNotifier).last_page;
-    if(currentPage >= lastPage){
-      if(showedLastPageInfo){
+    if (currentPage >= lastPage) {
+      if (showedLastPageInfo) {
         return;
       }
       showedLastPageInfo = true;
-      InvestrendTheme.of(context).showSnackBar(context, 'sosmed_label_all_comment_viewed'.tr(), buttonOnPress: _scrollToTop, buttonLabel: 'button_latest_comment'.tr(), buttonColor: Colors.orange, seconds: 5);
+      InvestrendTheme.of(context).showSnackBar(
+          context, 'sosmed_label_all_comment_viewed'.tr(),
+          buttonOnPress: _scrollToTop,
+          buttonLabel: 'button_latest_comment'.tr(),
+          buttonColor: Colors.orange,
+          seconds: 5);
       // Future.delayed(Duration(seconds: 1),(){
       //   context.read(sosmedCommentChangeNotifier).showLoadingBottom(false);
       // });
@@ -85,7 +99,7 @@ class _ScreenDetailPostState extends BaseStateNoTabs<ScreenDetailPost> {
     int nextPage = currentPage + 1;
     final result = doUpdate(nextPage: nextPage);
   }
-  
+
   @override
   Widget build(BuildContext context) {
     double paddingBottom = MediaQuery.of(context).viewPadding.bottom;
@@ -98,13 +112,15 @@ class _ScreenDetailPostState extends BaseStateNoTabs<ScreenDetailPost> {
       child: Stack(
         children: [
           SafeArea(
-            child: ComponentCreator.keyboardHider(context, Scaffold(
-              backgroundColor: Theme.of(context).colorScheme.background,
-              appBar: createAppBar(context),
-              body: createBody(context, paddingBottomFake),
-              bottomSheet: createBottomSheet(context, paddingBottomFake),
-              bottomNavigationBar: createBottomNavigationBar(context),
-            )),
+            child: ComponentCreator.keyboardHider(
+                context,
+                Scaffold(
+                  backgroundColor: Theme.of(context).colorScheme.background,
+                  appBar: createAppBar(context),
+                  body: createBody(context, paddingBottomFake),
+                  bottomSheet: createBottomSheet(context, paddingBottomFake),
+                  bottomNavigationBar: createBottomNavigationBar(context),
+                )),
           ),
           Align(
             alignment: Alignment.bottomCenter,
@@ -118,10 +134,10 @@ class _ScreenDetailPostState extends BaseStateNoTabs<ScreenDetailPost> {
       ),
     );
   }
-  
+
   @override
   void dispose() {
-    fieldTextController.dispose();
+    fieldTextController?.dispose();
     _selectedCarouselNotifier.dispose();
     fieldCommentNode.dispose();
     super.dispose();
@@ -134,41 +150,40 @@ class _ScreenDetailPostState extends BaseStateNoTabs<ScreenDetailPost> {
     fieldTextController = TextEditingController();
 
     _scrollController = ScrollController();
-    _scrollController.addListener(scrollListener);
+    _scrollController?.addListener(scrollListener);
 
-    if(post.postType == PostType.TRANSACTION){
-      activityCode = post?.code;
-      if(StringUtils.equalsIgnoreCase(post.transaction_type, 'BUY')){
+    if (post.postType == PostType.TRANSACTION) {
+      activityCode = post.code!;
+      if (StringUtils.equalsIgnoreCase(post.transaction_type!, 'BUY')) {
         activityType = ActivityType.Invested;
-      }else if(StringUtils.equalsIgnoreCase(post.transaction_type, 'SELL')){
-        int change = post.sell_price - post.start_price;
-        double percentChange = Utils.calculatePercent(post.start_price, post.sell_price);
+      } else if (StringUtils.equalsIgnoreCase(post.transaction_type!, 'SELL')) {
+        int change = post.sell_price! - post.start_price!;
+        double percentChange =
+            Utils.calculatePercent(post.start_price!, post.sell_price!);
         activityPercent = InvestrendTheme.formatPercentChange(percentChange);
-        if(change > 0 ){
+        if (change > 0) {
           activityType = ActivityType.Gain;
-        }else if(change < 0 ){
+        } else if (change < 0) {
           activityType = ActivityType.Loss;
-        }else{
+        } else {
           activityType = ActivityType.NoChange;
         }
-      }else{
+      } else {
         activityType = ActivityType.Unknown;
       }
     }
 
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      if(showKeyboard){
+      if (showKeyboard) {
         fieldCommentNode.requestFocus();
       }
 
       doUpdate();
     });
-    
-
-
   }
+
   @override
-  Widget createAppBar(BuildContext context) {
+  PreferredSizeWidget createAppBar(BuildContext context) {
     // return null;
 
     return AppBar(
@@ -177,21 +192,19 @@ class _ScreenDetailPostState extends BaseStateNoTabs<ScreenDetailPost> {
       title: AppBarTitleText('sosmed_detail_post_title'.tr()),
       leading: AppBarActionIcon(
         'images/icons/action_back.png',
-            () {
-
+        () {
           hideKeyboard();
-          if(commentAdded){
+          if (commentAdded) {
             Navigator.of(context).pop('REFRESH');
-          }else{
+          } else {
             Navigator.of(context).pop();
           }
-
         },
       ),
       actions: [
         AppBarActionIcon(
           'images/icons/menu_vertical_dots.png',
-              () {
+          () {
             hideKeyboard();
             //Navigator.of(context).pop();
           },
@@ -200,16 +213,16 @@ class _ScreenDetailPostState extends BaseStateNoTabs<ScreenDetailPost> {
     );
   }
 
-  Widget topWidget(BuildContext context){
-
+  Widget topWidget(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 12.0, right: 12.0, top: 16.0, bottom: 16.0),
+      padding: const EdgeInsets.only(
+          left: 12.0, right: 12.0, top: 16.0, bottom: 16.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           AvatarProfileButton(
-            fullname: post?.user?.name,
-            url: post?.user?.featured_attachment,
+            fullname: post.user!.name,
+            url: post.user!.featured_attachment,
             size: 40.0,
           ),
           SizedBox(
@@ -221,10 +234,20 @@ class _ScreenDetailPostState extends BaseStateNoTabs<ScreenDetailPost> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-
               children: [
-                Text(post?.user.name, style: InvestrendTheme.of(context).small_w400_compact,),
-                Text(Utils.displayPostDateDetail(post?.created_at), style: InvestrendTheme.of(context).more_support_w400_compact.copyWith(fontSize:10.0, color: InvestrendTheme.of(context).greyLighterTextColor),),
+                Text(
+                  post.user!.name,
+                  style: InvestrendTheme.of(context).small_w400_compact,
+                ),
+                Text(
+                  Utils.displayPostDateDetail(post.created_at!),
+                  style: InvestrendTheme.of(context)
+                      .more_support_w400_compact
+                      ?.copyWith(
+                          fontSize: 10.0,
+                          color:
+                              InvestrendTheme.of(context).greyLighterTextColor),
+                ),
               ],
             ),
           )
@@ -232,23 +255,25 @@ class _ScreenDetailPostState extends BaseStateNoTabs<ScreenDetailPost> {
       ),
     );
   }
+
   void onPageChange(int index, CarouselPageChangedReason changeReason) {
     _selectedCarouselNotifier.value = index;
     print('selectedCarousel : $_selectedCarouselNotifier.value');
   }
 
-  Widget imagesWidget(BuildContext context){
+  Widget imagesWidget(BuildContext context) {
     double size = MediaQuery.of(context).size.width;
-    if(post.attachmentsCount() <= 0){
-      return SizedBox(width: 1.0,);
-    }else if(post.attachmentsCount() == 1){
+    if (post.attachmentsCount()! <= 0) {
+      return SizedBox(
+        width: 1.0,
+      );
+    } else if (post.attachmentsCount() == 1) {
       //return Image.network(post.attachments.first.attachment, fit: BoxFit.contain, width: size, height: size,);
-      return SizedBox
-        (
+      return SizedBox(
         width: size,
         height: size,
         child: ComponentCreator.imageNetwork(
-          post.attachments.first.attachment,
+          post.attachments!.first!.attachment,
           width: size,
           height: size,
           fit: BoxFit.contain,
@@ -274,10 +299,10 @@ class _ScreenDetailPostState extends BaseStateNoTabs<ScreenDetailPost> {
             onPageChanged: onPageChange,
             scrollDirection: Axis.horizontal,
           ),
-          items: post.attachments.map((attachment) {
+          items: post.attachments?.map((attachment) {
             //return Image.network(attachment.attachment);
             return ComponentCreator.imageNetwork(
-              attachment.attachment,
+              attachment!.attachment,
               width: size,
               height: size,
               fit: BoxFit.contain,
@@ -289,123 +314,168 @@ class _ScreenDetailPostState extends BaseStateNoTabs<ScreenDetailPost> {
         ),
         Padding(
           padding: const EdgeInsets.all(5.0),
-          child: ComponentCreator.dotsIndicator(context, post.attachmentsCount(), 0, _selectedCarouselNotifier),
+          child: ComponentCreator.dotsIndicator(
+              context, post.attachmentsCount()!, 0, _selectedCarouselNotifier),
         ),
       ],
     );
   }
-  Widget commentWidget(BuildContext context){
-    int topCommentsCount = post?.top_comments != null ? post.top_comments.length : 0;
+
+  Widget commentWidget(BuildContext context) {
+    int topCommentsCount =
+        post.top_comments != null ? post.top_comments!.length : 0;
     return (topCommentsCount > 0
-        ? TopCommentsWidget(post.top_comments, post.comment_count ,onTap: onShowMoreComment,)
+        ? TopCommentsWidget(
+            post.top_comments,
+            post.comment_count,
+            onTap: onShowMoreComment,
+          )
         : SizedBox(
-      width: 1.0,
-    ));
-  }
-  void onShowMoreComment(){
-
+            width: 1.0,
+          ));
   }
 
-  Widget postWidget(BuildContext context){
-    switch(post.postType){
+  void onShowMoreComment() {}
+
+  Widget postWidget(BuildContext context) {
+    switch (post.postType) {
       case PostType.POLL:
         {
           //return NewCardSocialTextPoll(post, shareClick: (){}, commentClick: (){},likeClick:()=> likeClicked(context, post), onTap: ()=>showDetailPost(context, post), key: Key(post.keyString),);
-          final String infoVotes = post.voter_count.toString() + ' votes • ' + Utils.displayExpireDate(post.expired_at);
+          final String infoVotes = post.voter_count.toString() +
+              ' votes • ' +
+              Utils.displayExpireDate(post.expired_at!);
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(post?.text, style: InvestrendTheme.of(context).small_w400.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor),),
-              SizedBox(height: 16.0,),
+              Text(
+                post.text!,
+                style: InvestrendTheme.of(context).small_w400?.copyWith(
+                    color: InvestrendTheme.of(context).greyDarkerTextColor),
+              ),
+              SizedBox(
+                height: 16.0,
+              ),
               PollWidget(post),
-              SizedBox(height: 12.0,),
+              SizedBox(
+                height: 12.0,
+              ),
               Text(infoVotes,
                   style: InvestrendTheme.of(context)
                       .more_support_w400_compact
-                      .copyWith(color: InvestrendTheme.of(context).greyLighterTextColor, fontSize: 11.0)),
+                      ?.copyWith(
+                          color:
+                              InvestrendTheme.of(context).greyLighterTextColor,
+                          fontSize: 11.0)),
             ],
           );
         }
-        break;
+
       case PostType.PREDICTION:
         {
           //return NewCardSocialTextPrediction(post, shareClick: (){}, commentClick: (){},likeClick: ()=> likeClicked(context, post), onTap: ()=>showDetailPost(context, post), key: Key(post.keyString));
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(post?.text, style: InvestrendTheme.of(context).small_w400.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor),),
-              SizedBox(height: 16.0,),
+              Text(
+                post.text!,
+                style: InvestrendTheme.of(context).small_w400?.copyWith(
+                    color: InvestrendTheme.of(context).greyDarkerTextColor),
+              ),
+              SizedBox(
+                height: 16.0,
+              ),
               NewPredictionWidget(post),
             ],
           );
         }
-        break;
       case PostType.TRANSACTION:
         {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ActivityWidget(activityType, activityCode, activityPercent),
-              SizedBox(height: 16.0,),
-              Text(post?.text, style: InvestrendTheme.of(context).small_w400.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor),),
+              SizedBox(
+                height: 16.0,
+              ),
+              Text(
+                post.text!,
+                style: InvestrendTheme.of(context).small_w400?.copyWith(
+                    color: InvestrendTheme.of(context).greyDarkerTextColor),
+              ),
             ],
           );
         }
-        break;
       case PostType.TEXT:
         {
-          if(post.attachmentsCount() > 0 ){
+          if (post.attachmentsCount()! > 0) {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(post?.text, style: InvestrendTheme.of(context).small_w400.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor),),
-                SizedBox(height: 16.0,),
+                Text(
+                  post.text!,
+                  style: InvestrendTheme.of(context).small_w400?.copyWith(
+                      color: InvestrendTheme.of(context).greyDarkerTextColor),
+                ),
+                SizedBox(
+                  height: 16.0,
+                ),
                 imagesWidget(context),
               ],
             );
-          }else{
-            return Text(post?.text, style: InvestrendTheme.of(context).small_w400.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor),);
+          } else {
+            return Text(
+              post.text!,
+              style: InvestrendTheme.of(context).small_w400?.copyWith(
+                  color: InvestrendTheme.of(context).greyDarkerTextColor),
+            );
           }
         }
-        break;
       case PostType.Unknown:
         {
-          return Text(post.type+' -->  is Unknown');
+          return Text(post.type! + ' -->  is Unknown');
         }
-        break;
       default:
         {
-          return Text(post.type+' -->  is Unknown[default]');
+          return Text(post.type! + ' -->  is Unknown[default]');
         }
-        break;
     }
   }
 
-  Widget textWidget(BuildContext context, bool abovePostWidget){
-
-    if(abovePostWidget){
-      if(post.postType == PostType.TRANSACTION){
-        return SizedBox(width: 1.0,);
+  Widget textWidget(BuildContext context, bool abovePostWidget) {
+    if (abovePostWidget) {
+      if (post.postType == PostType.TRANSACTION) {
+        return SizedBox(
+          width: 1.0,
+        );
       }
       return Padding(
-        padding: const EdgeInsets.only(left: 12.0,right: 12.0, bottom: 16.0),
-        child: Text(post?.text, style: InvestrendTheme.of(context).small_w400.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor),),
+        padding: const EdgeInsets.only(left: 12.0, right: 12.0, bottom: 16.0),
+        child: Text(
+          post.text!,
+          style: InvestrendTheme.of(context).small_w400?.copyWith(
+              color: InvestrendTheme.of(context).greyDarkerTextColor),
+        ),
       );
-    }else{
-      if(post.postType != PostType.TRANSACTION){
-        return SizedBox(width: 1.0,);
+    } else {
+      if (post.postType != PostType.TRANSACTION) {
+        return SizedBox(
+          width: 1.0,
+        );
       }
       return Padding(
-        padding: const EdgeInsets.only(left: 12.0,right: 12.0, bottom: 16.0),
-        child: Text(post?.text, style: InvestrendTheme.of(context).small_w400.copyWith(color: InvestrendTheme.of(context).greyDarkerTextColor),),
+        padding: const EdgeInsets.only(left: 12.0, right: 12.0, bottom: 16.0),
+        child: Text(
+          post.text!,
+          style: InvestrendTheme.of(context).small_w400?.copyWith(
+              color: InvestrendTheme.of(context).greyDarkerTextColor),
+        ),
       );
     }
-
-
   }
+
   @override
   Widget createBody(BuildContext context, double paddingBottom) {
-
     List<Widget> preChilds = [
       topWidget(context),
       Padding(
@@ -413,14 +483,14 @@ class _ScreenDetailPostState extends BaseStateNoTabs<ScreenDetailPost> {
         child: postWidget(context),
       ),
       LikeCommentShareWidget(
-        post?.like_count,
-        post?.comment_count,
-        post?.liked,
-        likeClick: ()=> likeClicked(context),
+        post.like_count!,
+        post.comment_count!,
+        post.liked,
+        likeClick: () => likeClicked(context),
         //likeClick: ()=> likeClicked(context, post),
         //likeClick: onLikeButtonTapped(context, post),
-        commentClick: ()=> fieldCommentNode.requestFocus(),
-        shareClick: (){},
+        commentClick: () => fieldCommentNode.requestFocus(),
+        shareClick: () {},
         post: post,
       ),
       ComponentCreator.divider(context),
@@ -429,7 +499,12 @@ class _ScreenDetailPostState extends BaseStateNoTabs<ScreenDetailPost> {
     List<Widget> preChildsLoading = List.from(preChilds);
     preChildsLoading.add(Padding(
       padding: const EdgeInsets.only(top: 16.0),
-      child: Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.secondary, backgroundColor: Theme.of(context).colorScheme.secondary.withOpacity(0.2),)),
+      child: Center(
+          child: CircularProgressIndicator(
+        color: Theme.of(context).colorScheme.secondary,
+        backgroundColor:
+            Theme.of(context).colorScheme.secondary.withOpacity(0.2),
+      )),
     ));
 
     return RefreshIndicator(
@@ -438,51 +513,75 @@ class _ScreenDetailPostState extends BaseStateNoTabs<ScreenDetailPost> {
       onRefresh: onRefresh,
       child: Consumer(builder: (context, watch, child) {
         final notifier = watch(sosmedCommentChangeNotifier);
-        if(notifier.countData() == 0){
-
+        if (notifier.countData() == 0) {
           return ListView(
             padding: const EdgeInsets.all(InvestrendTheme.cardMargin),
             children: showLoadingFirstTime ? preChildsLoading : preChilds,
           );
         }
 
-        int totalCount = notifier.countData() + preChilds.length;
-        if(notifier.loadingBottom || notifier.retryBottom){
-          totalCount  = totalCount + 1;
+        int totalCount = notifier.countData()! + preChilds.length;
+        if (notifier.loadingBottom || notifier.retryBottom) {
+          totalCount = totalCount + 1;
         }
         return ListView.builder(
             controller: _scrollController,
             shrinkWrap: false,
-            padding: const EdgeInsets.only(left: InvestrendTheme.cardMargin, right: InvestrendTheme.cardMargin, top: InvestrendTheme.cardMargin, bottom: (InvestrendTheme.cardMargin + 100.0)),
+            padding: const EdgeInsets.only(
+                left: InvestrendTheme.cardMargin,
+                right: InvestrendTheme.cardMargin,
+                top: InvestrendTheme.cardMargin,
+                bottom: (InvestrendTheme.cardMargin + 100.0)),
             //itemCount: notifier.countPost() + pre_childs.length ,
-            itemCount:totalCount,
+            itemCount: totalCount,
             itemBuilder: (BuildContext context, int index) {
-              if(index < preChilds.length){
+              if (index < preChilds.length) {
                 return preChilds.elementAt(index);
-              }else if(index < (preChilds.length + notifier.countData())){
-
+              } else if (index < (preChilds.length + notifier.countData()!)) {
                 int indexPost = index - preChilds.length;
-                PostComment comment = notifier.datas().elementAt(indexPost);
+                PostComment? comment = notifier.datas()?.elementAt(indexPost);
 
-                if(comment != null){
-                  return CommentWidget(comment,key: Key(comment.keyString),);
-                }else{
-                  return EmptyLabel(text: 'comment index $index is null',);
+                if (comment != null) {
+                  return CommentWidget(
+                    comment,
+                    key: Key(comment.keyString!),
+                  );
+                } else {
+                  return EmptyLabel(
+                    text: 'comment index $index is null',
+                  );
                 }
-
-              }else{
-                if(notifier.loadingBottom){
-                  return Center(child: CircularProgressIndicator(color: Theme.of(context).colorScheme.secondary, backgroundColor: Theme.of(context).colorScheme.secondary.withOpacity(0.2),));
-                }else if(notifier.retryBottom){
-                  return Center(child: TextButton(child: Text('button_retry'.tr(), style: InvestrendTheme.of(context).small_w400_compact.copyWith(color: Theme.of(context).colorScheme.secondary),), onPressed: (){
-                    fetchNextPage();
-                  },));
-                }else{
-                  return Center(child: EmptyLabel(text: 'infinity_label️'.tr(),));
+              } else {
+                if (notifier.loadingBottom) {
+                  return Center(
+                      child: CircularProgressIndicator(
+                    color: Theme.of(context).colorScheme.secondary,
+                    backgroundColor: Theme.of(context)
+                        .colorScheme
+                        .secondary
+                        .withOpacity(0.2),
+                  ));
+                } else if (notifier.retryBottom) {
+                  return Center(
+                      child: TextButton(
+                    child: Text(
+                      'button_retry'.tr(),
+                      style: InvestrendTheme.of(context)
+                          .small_w400_compact
+                          ?.copyWith(
+                              color: Theme.of(context).colorScheme.secondary),
+                    ),
+                    onPressed: () {
+                      fetchNextPage();
+                    },
+                  ));
+                } else {
+                  return Center(
+                      child: EmptyLabel(
+                    text: 'infinity_label️'.tr(),
+                  ));
                 }
               }
-
-
             });
       }),
     );
@@ -522,6 +621,7 @@ class _ScreenDetailPostState extends BaseStateNoTabs<ScreenDetailPost> {
     );
     */
   }
+
   @override
   Widget createBottomSheet(BuildContext context, double paddingBottom) {
     double height = 50.0 + paddingBottom;
@@ -539,19 +639,20 @@ class _ScreenDetailPostState extends BaseStateNoTabs<ScreenDetailPost> {
         //mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(left: 12.0, right: 8.0, top: 12.0, bottom: 12.0),
+            padding: const EdgeInsets.only(
+                left: 12.0, right: 8.0, top: 12.0, bottom: 12.0),
             child: Consumer(builder: (context, watch, child) {
               final notifier = watch(avatarChangeNotifier);
-              String url = notifier.url;
+              String? url = notifier.url;
               if (notifier.invalid()) {
                 url = 'https://' +
                     InvestrendTheme.tradingHttp.tradingBaseUrl +
                     '/getpic?username=' +
-                    context.read(dataHolderChangeNotifier).user.username +
+                    context.read(dataHolderChangeNotifier).user.username! +
                     '&url=&nocache=';
               }
               return AvatarProfileButton(
-                fullname: context.read(dataHolderChangeNotifier).user.realname,
+                fullname: context.read(dataHolderChangeNotifier).user.realname!,
                 url: url,
                 size: 32.0,
               );
@@ -601,16 +702,33 @@ class _ScreenDetailPostState extends BaseStateNoTabs<ScreenDetailPost> {
                   hintText: 'create_comment_information'.tr(),
                   hintStyle: InvestrendTheme.of(context)
                       .more_support_w400_compact
-                      .copyWith(color: InvestrendTheme.of(context).greyLighterTextColor),
+                      ?.copyWith(
+                          color:
+                              InvestrendTheme.of(context).greyLighterTextColor),
                   counterStyle: InvestrendTheme.of(context)
-                      .more_support_w400_compact.copyWith(fontSize: 10.0)
-                      .copyWith(color: InvestrendTheme.of(context).greyLighterTextColor),
-                  border: UnderlineInputBorder(borderSide: BorderSide(color: Colors.transparent, width: 0.0)),
-                  focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.transparent, width: 0.0)),
-                  disabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.transparent, width: 0.0)),
-                  enabledBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.transparent, width: 0.0)),
-                  errorBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.transparent, width: 0.0)),
-                  focusedErrorBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.transparent, width: 0.0)),
+                      .more_support_w400_compact
+                      ?.copyWith(fontSize: 10.0)
+                      .copyWith(
+                          color:
+                              InvestrendTheme.of(context).greyLighterTextColor),
+                  border: UnderlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Colors.transparent, width: 0.0)),
+                  focusedBorder: UnderlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Colors.transparent, width: 0.0)),
+                  disabledBorder: UnderlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Colors.transparent, width: 0.0)),
+                  enabledBorder: UnderlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Colors.transparent, width: 0.0)),
+                  errorBorder: UnderlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Colors.transparent, width: 0.0)),
+                  focusedErrorBorder: UnderlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Colors.transparent, width: 0.0)),
                   focusColor: Theme.of(context).colorScheme.secondary,
                 ),
               ),
@@ -618,10 +736,14 @@ class _ScreenDetailPostState extends BaseStateNoTabs<ScreenDetailPost> {
           ),
           //SizedBox(width: 8.0,),
           TapableWidget(
-            onTap: ()=>submitComment(context),
+            onTap: () => submitComment(context),
             child: Padding(
               padding: const EdgeInsets.all(12.0),
-              child: Image.asset('images/icons/send.png', width: 32, height: 32,),
+              child: Image.asset(
+                'images/icons/send.png',
+                width: 32,
+                height: 32,
+              ),
             ),
           ),
           // IconButton(onPressed: (){},
@@ -633,10 +755,12 @@ class _ScreenDetailPostState extends BaseStateNoTabs<ScreenDetailPost> {
       ),
     );
   }
+
   void submitComment(BuildContext context) async {
-    String text = fieldTextController.text;
-    if(StringUtils.isEmtpy(text)){
-      InvestrendTheme.of(context).showSnackBar(context, 'sosmed_comment_error_empty'.tr());
+    String text = fieldTextController!.text;
+    if (StringUtils.isEmtpy(text)) {
+      InvestrendTheme.of(context)
+          .showSnackBar(context, 'sosmed_comment_error_empty'.tr());
       return;
     }
     showModalBottomSheet(
@@ -644,31 +768,39 @@ class _ScreenDetailPostState extends BaseStateNoTabs<ScreenDetailPost> {
         isDismissible: false,
         enableDrag: false,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(topLeft: Radius.circular(24.0), topRight: Radius.circular(24.0)),
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(24.0), topRight: Radius.circular(24.0)),
         ),
         //backgroundColor: Colors.transparent,
         context: context,
         builder: (context) {
-
-
-          return LoadingBottomSheetSimple('sosmed_comment_submit_loading_text'.tr());
+          return LoadingBottomSheetSimple(
+              'sosmed_comment_submit_loading_text'.tr());
         });
 
-    try{
+    try {
       //SubmitCreateComment submitResult = await SosMedHttp.sosmedCreateComment('123',post.id, fieldTextController.text, InvestrendTheme.of(context).applicationPlatform, InvestrendTheme.of(context).applicationVersion, language: EasyLocalization.of(context).locale.languageCode);
 
-      SubmitCreateComment submitResult = await InvestrendTheme.tradingHttp.sosmedCreateComment(post.id, fieldTextController.text, InvestrendTheme.of(context).applicationPlatform, InvestrendTheme.of(context).applicationVersion, language: EasyLocalization.of(context).locale.languageCode);
+      SubmitCreateComment? submitResult = await InvestrendTheme.tradingHttp
+          .sosmedCreateComment(
+              post.id!,
+              fieldTextController!.text,
+              InvestrendTheme.of(context).applicationPlatform,
+              InvestrendTheme.of(context).applicationVersion,
+              language: EasyLocalization.of(context)!.locale.languageCode);
 
-      if(submitResult != null ){
-        print('submitResult = '+submitResult.toString());
-        bool success = submitResult.status == 200;// && submitResult?.result?.id >= 0;
-        if(mounted) {
-          InvestrendTheme.of(context).showSnackBar(context, submitResult.message);
+      if (submitResult != null) {
+        print('submitResult = ' + submitResult.toString());
+        bool success =
+            submitResult.status == 200; // && submitResult?.result?.id >= 0;
+        if (mounted) {
+          InvestrendTheme.of(context)
+              .showSnackBar(context, submitResult.message);
         }
-        if(success){
+        if (success) {
           commentAdded = true;
-          if(mounted){
-            fieldTextController.text = '';
+          if (mounted) {
+            fieldTextController!.text = '';
             hideKeyboard();
             doUpdate();
           }
@@ -684,8 +816,8 @@ class _ScreenDetailPostState extends BaseStateNoTabs<ScreenDetailPost> {
         }
       }
       Navigator.of(context).pop();
-    }catch(error){
-      print(routeName + '.submitComment Exception like : '+error.toString());
+    } catch (error) {
+      print(routeName + '.submitComment Exception like : ' + error.toString());
       print(error);
       Navigator.of(context).pop();
       //DebugWriter.info(routeName+' stockPosition Exception : ' + e.toString());
@@ -704,59 +836,65 @@ class _ScreenDetailPostState extends BaseStateNoTabs<ScreenDetailPost> {
       }
 
        */
-
-    }finally {
+    } finally {
       // Future.delayed(Duration(seconds: 2),(){
       //Navigator.of(context).pop();
       //
     }
   }
 
-  Future<bool> onLikeButtonTapped(BuildContext context, Post post) async{
-    try{
+  Future<bool> onLikeButtonTapped(BuildContext context, Post post) async {
+    try {
       //SubmitLike submitResult = await SosMedHttp.sosmedLike(!post.liked ,'123',post.id, InvestrendTheme.of(context).applicationPlatform, InvestrendTheme.of(context).applicationVersion, language: EasyLocalization.of(context).locale.languageCode);
-      SubmitLike submitResult = await InvestrendTheme.tradingHttp.sosmedLike(!post.liked, post.id, InvestrendTheme.of(context).applicationPlatform, InvestrendTheme.of(context).applicationVersion, language: EasyLocalization.of(context).locale.languageCode);
+      SubmitLike? submitResult = await InvestrendTheme.tradingHttp.sosmedLike(
+          !post.liked!,
+          post.id!,
+          InvestrendTheme.of(context).applicationPlatform,
+          InvestrendTheme.of(context).applicationVersion,
+          language: EasyLocalization.of(context)!.locale.languageCode);
 
-      if(submitResult != null ){
-        print('submitResult = '+submitResult.toString());
-        bool success = submitResult.status == 200;// && submitResult?.result?.id >= 0;
-        if(mounted) {
-          InvestrendTheme.of(context).showSnackBar(context, submitResult.message);
+      if (submitResult != null) {
+        print('submitResult = ' + submitResult.toString());
+        bool success =
+            submitResult.status == 200; // && submitResult?.result?.id >= 0;
+        if (mounted) {
+          InvestrendTheme.of(context)
+              .showSnackBar(context, submitResult.message);
         }
-        if(success){
-          if(StringUtils.equalsIgnoreCase(submitResult.message, 'Like deleted!')){
+        if (success) {
+          if (StringUtils.equalsIgnoreCase(
+              submitResult.message, 'Like deleted!')) {
             post.likedUndoed();
-          }else if(StringUtils.equalsIgnoreCase(submitResult.message, 'Like created!')){
+          } else if (StringUtils.equalsIgnoreCase(
+              submitResult.message, 'Like created!')) {
             post.likedSuccess();
           }
-          if(mounted){
+          if (mounted) {
             context.read(sosmedCommentChangeNotifier).mustNotifyListener();
-            setState(() {
-
-            });
+            setState(() {});
           }
         }
       }
-    }catch(error){
-      print(routeName + '.likeClicked Exception like : '+error.toString());
+    } catch (error) {
+      print(routeName + '.likeClicked Exception like : ' + error.toString());
       print(error);
-      InvestrendTheme.of(context).showSnackBar(context, 'general_error_information'.tr());
-    }finally {
+      InvestrendTheme.of(context)
+          .showSnackBar(context, 'general_error_information'.tr());
+    } finally {
       // Future.delayed(Duration(seconds: 2),(){
       //Navigator.of(context).pop();
       //
     }
-    return post.liked;
+    return post.liked!;
   }
 
-  void likeClicked(BuildContext context){
-    if(mounted){
+  void likeClicked(BuildContext context) {
+    if (mounted) {
       context.read(sosmedCommentChangeNotifier).mustNotifyListener();
-      setState(() {
-
-      });
+      setState(() {});
     }
   }
+
   /*
   void likeClicked(BuildContext context, Post post) async{
     showModalBottomSheet(
@@ -806,41 +944,46 @@ class _ScreenDetailPostState extends BaseStateNoTabs<ScreenDetailPost> {
   }
   */
   @override
-  void onActive() {
-
-  }
+  void onActive() {}
 
   @override
-  void onInactive() {
-    // TODO: implement onInactive
-  }
+  void onInactive() {}
 
   Future onRefresh() {
-
     return doUpdate(pullToRefresh: true);
     // return Future.delayed(Duration(seconds: 3));
   }
-  Future doUpdate({bool pullToRefresh = false, int nextPage}) async {
+
+  Future doUpdate({bool pullToRefresh = false, int? nextPage}) async {
     print(routeName + '.doUpdate');
     showedLastPageInfo = false;
-    try{
+    try {
       context.read(sosmedCommentChangeNotifier).showLoadingBottom(true);
       //final fetchComment = await SosMedHttp.sosmedFetchComment(post?.id?.toString(), '123', InvestrendTheme.of(context).applicationPlatform, InvestrendTheme.of(context).applicationVersion, page: nextPage, language: EasyLocalization.of(context).locale.languageCode);
-      final fetchComment = await InvestrendTheme.tradingHttp.sosmedFetchComment(post?.id?.toString(),  InvestrendTheme.of(context).applicationPlatform, InvestrendTheme.of(context).applicationVersion, page: nextPage, language: EasyLocalization.of(context).locale.languageCode);
-      if(fetchComment.result != null ){
-        print('fetchComment = '+fetchComment.status.toString() +' --> '+fetchComment.message);
+      final fetchComment = await InvestrendTheme.tradingHttp.sosmedFetchComment(
+          post.id.toString(),
+          InvestrendTheme.of(context).applicationPlatform,
+          InvestrendTheme.of(context).applicationVersion,
+          page: nextPage,
+          language: EasyLocalization.of(context)!.locale.languageCode);
+      if (fetchComment.result != null) {
+        print('fetchComment = ' +
+            fetchComment.status.toString() +
+            ' --> ' +
+            fetchComment.message);
         //_pageSize = fetchPost.result.per_page;
         showLoadingFirstTime = false;
-        context.read(sosmedCommentChangeNotifier).setResult(fetchComment.result);
+        context
+            .read(sosmedCommentChangeNotifier)
+            .setResult(fetchComment.result);
         // Future.delayed(Duration(seconds: 2),(){
         context.read(sosmedCommentChangeNotifier).showLoadingBottom(false);
         // });
-
       }
-    }catch(error){
-      print(routeName + '.doUpdate Exception fetch_post : '+error.toString());
+    } catch (error) {
+      print(routeName + '.doUpdate Exception fetch_post : ' + error.toString());
       //context.read(sosmedPostChangeNotifier).showLoadingBottom(false);
-      if(mounted){
+      if (mounted) {
         //InvestrendTheme.of(context).showSnackBar(context, 'Error : '+error.toString());
         // Future.delayed(Duration(seconds: 2),(){
         //context.read(sosmedPostChangeNotifier).showLoadingBottom(false);
@@ -867,12 +1010,8 @@ class _ScreenDetailPostState extends BaseStateNoTabs<ScreenDetailPost> {
       // _pagingController.error = error;
     }
 
-
-
     print(routeName + '.doUpdate finished. pullToRefresh : $pullToRefresh');
 
     return true;
   }
-
-  
 }

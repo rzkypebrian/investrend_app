@@ -12,13 +12,14 @@ class BottomSheetSelectStock extends StatelessWidget {
   // final ValueNotifier rangeNotifier;
   // final List<String> range_options;
 
-  const BottomSheetSelectStock(/*this.rangeNotifier, this.range_options,*/ {Key key}) : super(key: key);
+  const BottomSheetSelectStock(
+      /*this.rangeNotifier, this.range_options,*/ {Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     //final selected = watch(marketChangeNotifier);
     //print('selectedIndex : ' + selected.index.toString());
-
 
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
@@ -48,7 +49,7 @@ class BottomSheetSelectStock extends StatelessWidget {
               margin: EdgeInsets.only(bottom: 40.0),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(2.0),
-                color:const Color(0xFFE0E0E0),
+                color: const Color(0xFFE0E0E0),
               ),
             ),
             /*
@@ -62,7 +63,7 @@ class BottomSheetSelectStock extends StatelessWidget {
                   }),
             ),
             */
-            ComponentCreator.textFieldSearch(context, onTap: (){
+            ComponentCreator.textFieldSearch(context, onTap: () {
               FocusScope.of(context).requestFocus(new FocusNode());
               final result = InvestrendTheme.showFinderScreen(context);
               result.then((value) {
@@ -74,9 +75,9 @@ class BottomSheetSelectStock extends StatelessWidget {
 
                   context.read(primaryStockChangeNotifier).setStock(value);
                   //InvestrendTheme.of(context).showStockDetail(context);
-                  print('result finder = ' + value.code);
+                  print('result finder = ' + value.code!);
                 } else if (value is People) {
-                  print('result finder = ' + value.name);
+                  print('result finder = ' + value.name!);
                 }
               });
             }),
@@ -85,26 +86,23 @@ class BottomSheetSelectStock extends StatelessWidget {
               child: Consumer(builder: (context, watch, child) {
                 final notifier = watch(primaryStockChangeNotifier);
 
-
                 List<Widget> rows = List.empty(growable: true);
-                String codeSelected = notifier.isValid() ? notifier.stock.code : '';
+                String? codeSelected =
+                    notifier.isValid() ? notifier.stock?.code : '';
 
                 if (!StringUtils.isEmtpy(codeSelected)) {
                   rows.add(createRow(context, codeSelected, true));
                   rows.add(ComponentCreator.divider(context));
                 }
 
-                
-                InvestrendTheme.storedData.listFinderRecent.forEach((object) {
+                InvestrendTheme.storedData?.listFinderRecent?.forEach((object) {
                   if (object is Stock) {
-                    String code = object.code;
-                    if(!StringUtils.equalsIgnoreCase(codeSelected, code)){
+                    String? code = object.code;
+                    if (!StringUtils.equalsIgnoreCase(codeSelected, code)) {
                       rows.add(createRow(context, code, false));
                     }
                   }
                 });
-
-
 
                 return ListView(
                   children: rows,
@@ -167,13 +165,16 @@ class BottomSheetSelectStock extends StatelessWidget {
     );
   }
 
-  Widget createRow(BuildContext context, String label, bool selected /*, int index*/) {
-    TextStyle style = InvestrendTheme.of(context).regular_w600_compact;
+  Widget createRow(
+      BuildContext context, String? label, bool selected /*, int index*/) {
+    TextStyle? style = InvestrendTheme.of(context).regular_w600_compact;
     //Color colorText = style.color;
     Color colorIcon = Colors.transparent;
 
     if (selected) {
-      style = InvestrendTheme.of(context).regular_w600_compact.copyWith(color: Theme.of(context).colorScheme.secondary);
+      style = InvestrendTheme.of(context)
+          .regular_w600_compact
+          ?.copyWith(color: Theme.of(context).colorScheme.secondary);
       //colorText = Theme.of(context).accentColor;
       colorIcon = Theme.of(context).colorScheme.secondary;
     }
@@ -192,8 +193,9 @@ class BottomSheetSelectStock extends StatelessWidget {
             Expanded(
                 flex: 1,
                 child: Text(
-                  label,
-                  style: style, //InvestrendTheme.of(context).regular_w700_compact.copyWith(color: colorText),
+                  label!,
+                  style:
+                      style, //InvestrendTheme.of(context).regular_w700_compact.copyWith(color: colorText),
                   textAlign: TextAlign.left,
                 )),
             (selected
@@ -211,9 +213,8 @@ class BottomSheetSelectStock extends StatelessWidget {
         ),
       ),
       onPressed: () {
-
-        Stock stock = InvestrendTheme.storedData.findStock(label);
-        if(stock != null){
+        Stock? stock = InvestrendTheme.storedData?.findStock(label);
+        if (stock != null) {
           context.read(primaryStockChangeNotifier).setStock(stock);
           Navigator.of(context).pop();
         }

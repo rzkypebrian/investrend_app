@@ -1,5 +1,3 @@
-
-
 import 'package:Investrend/component/component_creator.dart';
 import 'package:Investrend/objects/serializeable.dart';
 import 'package:Investrend/utils/investrend_theme.dart';
@@ -9,12 +7,17 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 
 class WatchlistBottomSheet extends StatelessWidget {
   final ValueNotifier watchlistNotifier;
-  final List<Watchlist> watchlistOption;
-  final VoidCallback onTapCreate;
+  final List<Watchlist>? watchlistOption;
+  final VoidCallback? onTapCreate;
   final bool onClickClosed;
-  final Function onSlideDelete;
-  final Function onSlideRename;
-  const WatchlistBottomSheet(this.watchlistNotifier, this.watchlistOption, {this.onTapCreate, this.onClickClosed = false, this.onSlideDelete, this.onSlideRename, Key key})
+  final Function? onSlideDelete;
+  final Function? onSlideRename;
+  const WatchlistBottomSheet(this.watchlistNotifier, this.watchlistOption,
+      {this.onTapCreate,
+      this.onClickClosed = false,
+      this.onSlideDelete,
+      this.onSlideRename,
+      Key? key})
       : super(key: key);
 
   @override
@@ -26,27 +29,25 @@ class WatchlistBottomSheet extends StatelessWidget {
     double padding = 24.0;
     double minHeight = height * 0.2;
     double maxHeight = height * 0.7;
-    int count = watchlistOption == null ? 0 : watchlistOption.length + 1;
+    int count = watchlistOption == null ? 0 : watchlistOption!.length + 1;
     //double contentHeight = padding + 44.0 + (44.0 * count) + padding + padding + 2.0 + 15.0;
     double buttonCloseHeight = 44.0;
-    double buttonAddHeight = 44.0 ;
-    double dividerHeight = 1.0  ;
+    double buttonAddHeight = 44.0;
+    double dividerHeight = 1.0;
     double safeAreaBottom = MediaQuery.of(context).viewPadding.bottom;
-    double contentHeight = (44.0 * count) + buttonCloseHeight + buttonAddHeight + dividerHeight + safeAreaBottom;
+    double contentHeight = (44.0 * count) +
+        buttonCloseHeight +
+        buttonAddHeight +
+        dividerHeight +
+        safeAreaBottom;
 
-
-
-    if(contentHeight < maxHeight && contentHeight > minHeight){
+    if (contentHeight < maxHeight && contentHeight > minHeight) {
       maxHeight = contentHeight;
-    }else if(contentHeight < minHeight){
+    } else if (contentHeight < minHeight) {
       maxHeight = minHeight;
     }
     // maxHeight = min(contentHeight, maxHeight);
     // minHeight = min(minHeight, maxHeight);
-
-
-
-
 
     return ConstrainedBox(
       constraints: new BoxConstraints(
@@ -83,7 +84,7 @@ class WatchlistBottomSheet extends StatelessWidget {
               ),
             ));
             */
-            int count = watchlistOption.length;
+            int count = watchlistOption!.length;
             /*
             for (int i = 0; i < count; i++) {
               Watchlist ca = watchlistOption.elementAt(i);
@@ -96,37 +97,47 @@ class WatchlistBottomSheet extends StatelessWidget {
               list.add(createRow(context, ca.name, selectedIndex == i, i, enable: enable, disableText: disableText));
             }
             */
-            if(onClickClosed){
+            if (onClickClosed) {
               List<StringIndex> listFull = List.empty(growable: true);
               List<StringIndex> listAvailable = List.empty(growable: true);
               for (int i = 0; i < count; i++) {
-                Watchlist ca = watchlistOption.elementAt(i);
-                if(ca.count() < InvestrendTheme.MAX_STOCK_PER_WATCHLIST){
+                Watchlist ca = watchlistOption!.elementAt(i);
+                if (ca.count() < InvestrendTheme.MAX_STOCK_PER_WATCHLIST) {
                   listAvailable.add(StringIndex(name: ca.name, index: i));
-                }else{
+                } else {
                   listFull.add(StringIndex(name: ca.name, index: i));
                 }
               }
               for (int i = 0; i < listAvailable.length; i++) {
                 StringIndex ca = listAvailable.elementAt(i);
-                list.add(createRow(context, ca.name, selectedIndex == ca.index, ca.index));
+                list.add(createRow(
+                    context, ca.name, selectedIndex == ca.index, ca.index));
               }
 
-              if(listFull.isNotEmpty){
+              if (listFull.isNotEmpty) {
                 list.add(Padding(
                     padding: EdgeInsets.only(left: 24.0, right: 24.0),
                     child: Align(
                         alignment: Alignment.centerLeft,
-                        child: Text('watchlist_full_label'.tr(), style: InvestrendTheme.of(context).more_support_w400_compact.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor),))));
+                        child: Text(
+                          'watchlist_full_label'.tr(),
+                          style: InvestrendTheme.of(context)
+                              .more_support_w400_compact
+                              ?.copyWith(
+                                  color: InvestrendTheme.of(context)
+                                      .greyLighterTextColor),
+                        ))));
 
                 for (int i = 0; i < listFull.length; i++) {
                   StringIndex ca = listFull.elementAt(i);
-                  list.add(createRow(context, ca.name, selectedIndex == ca.index, ca.index, enable: false));
+                  list.add(createRow(
+                      context, ca.name, selectedIndex == ca.index, ca.index,
+                      enable: false));
                 }
               }
-            }else{
+            } else {
               for (int i = 0; i < count; i++) {
-                Watchlist ca = watchlistOption.elementAt(i);
+                Watchlist ca = watchlistOption!.elementAt(i);
                 list.add(createRow(context, ca.name, selectedIndex == i, i));
               }
             }
@@ -156,34 +167,46 @@ class WatchlistBottomSheet extends StatelessWidget {
             */
 
             Widget bottomWidget;
-            if(count < InvestrendTheme.MAX_WATCHLIST){
+            if (count < InvestrendTheme.MAX_WATCHLIST) {
               bottomWidget = Padding(
-                padding: EdgeInsets.only(left: padding, right: padding , bottom: 8.0),
-                child: createRow(context, 'search_watchlist_add_button'.tr(), true, -1, onTap: onTapCreate),
+                padding:
+                    EdgeInsets.only(left: padding, right: padding, bottom: 8.0),
+                child: createRow(
+                    context, 'search_watchlist_add_button'.tr(), true, -1,
+                    onTap: onTapCreate!),
               );
-            }else{
+            } else {
               bottomWidget = Container(
                 width: double.maxFinite,
                 padding: EdgeInsets.only(bottom: 8.0),
                 height: 44.0,
                 child: Center(
-                  child: Text('error_maximum_create_watchlist'.tr().replaceFirst('#MAX#', InvestrendTheme.MAX_WATCHLIST.toString()), style: InvestrendTheme.of(context).more_support_w400_compact.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor),),
+                  child: Text(
+                    'error_maximum_create_watchlist'.tr().replaceFirst(
+                        '#MAX#', InvestrendTheme.MAX_WATCHLIST.toString()),
+                    style: InvestrendTheme.of(context)
+                        .more_support_w400_compact
+                        ?.copyWith(
+                            color: InvestrendTheme.of(context)
+                                .greyLighterTextColor),
+                  ),
                 ),
               );
             }
 
-
             return Column(
               children: [
                 Padding(
-                  padding: EdgeInsets.only(top: padding, left: padding, right: padding),
+                  padding: EdgeInsets.only(
+                      top: padding, left: padding, right: padding),
                   child: Align(
                     alignment: Alignment.centerRight,
                     child: IconButton(
-                      //icon: Icon(Icons.clear),
+                        //icon: Icon(Icons.clear),
                         icon: Image.asset(
                           'images/icons/action_clear.png',
-                          color: InvestrendTheme.of(context).greyLighterTextColor,
+                          color:
+                              InvestrendTheme.of(context).greyLighterTextColor,
                           width: 12.0,
                           height: 12.0,
                         ),
@@ -204,7 +227,8 @@ class WatchlistBottomSheet extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(left: padding, right: padding, bottom: 8.0),
+                  padding: EdgeInsets.only(
+                      left: padding, right: padding, bottom: 8.0),
                   child: ComponentCreator.divider(context),
                 ),
                 bottomWidget,
@@ -216,20 +240,25 @@ class WatchlistBottomSheet extends StatelessWidget {
     );
   }
 
-  Widget createRow(BuildContext context, String label, bool selected, int index, {VoidCallback onTap, bool enable=true}) {
-    TextStyle style = InvestrendTheme.of(context).regular_w400_compact;
+  Widget createRow(BuildContext context, String label, bool selected, int index,
+      {VoidCallback? onTap, bool enable = true}) {
+    TextStyle? style = InvestrendTheme.of(context).regular_w400_compact;
     //Color colorText = style.color;
     Color colorIcon = Colors.transparent;
 
-    if (selected ) {
-      style = InvestrendTheme.of(context).regular_w600_compact.copyWith(color: Theme.of(context).colorScheme.secondary);
+    if (selected) {
+      style = InvestrendTheme.of(context)
+          .regular_w600_compact
+          ?.copyWith(color: Theme.of(context).colorScheme.secondary);
       //colorText = Theme.of(context).accentColor;
       colorIcon = Theme.of(context).colorScheme.secondary;
-    }else if(!enable){
-      style = style.copyWith(color: InvestrendTheme.of(context).greyLighterTextColor);
+    } else if (!enable) {
+      style = style?.copyWith(
+          color: InvestrendTheme.of(context).greyLighterTextColor);
     }
 
-    bool useSlideAction = onTap == null && (onSlideDelete != null || onSlideRename != null);
+    bool useSlideAction =
+        onTap == null && (onSlideDelete != null || onSlideRename != null);
     if (onTap == null && enable) {
       onTap = () {
         watchlistNotifier.value = index;
@@ -239,46 +268,47 @@ class WatchlistBottomSheet extends StatelessWidget {
       };
     }
 
-
-
-    Widget row = Padding(padding: EdgeInsets.only(left: 24.0,right: 24.0), child: SizedBox(
-      height: 44.0,
-      child: TextButton(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SizedBox(
-              width: 20.0,
-              height: 20.0,
+    Widget row = Padding(
+        padding: EdgeInsets.only(left: 24.0, right: 24.0),
+        child: SizedBox(
+          height: 44.0,
+          child: TextButton(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 20.0,
+                  height: 20.0,
+                ),
+                Expanded(
+                    flex: 1,
+                    child: Text(
+                      label,
+                      style:
+                          style, //InvestrendTheme.of(context).regular_w700_compact.copyWith(color: colorText),
+                      textAlign: TextAlign.center,
+                    )),
+                (selected && index >= 0
+                    ? Image.asset(
+                        'images/icons/check.png',
+                        color: colorIcon,
+                        width: 20.0,
+                        height: 20.0,
+                      )
+                    : SizedBox(
+                        width: 20.0,
+                        height: 20.0,
+                      )),
+              ],
             ),
-            Expanded(
-                flex: 1,
-                child: Text(
-                  label,
-                  style: style, //InvestrendTheme.of(context).regular_w700_compact.copyWith(color: colorText),
-                  textAlign: TextAlign.center,
-                )),
-            (selected && index >= 0
-                ? Image.asset(
-              'images/icons/check.png',
-              color: colorIcon,
-              width: 20.0,
-              height: 20.0,
-            )
-                : SizedBox(
-              width: 20.0,
-              height: 20.0,
-            )),
-          ],
-        ),
-        onPressed: onTap,
-      ),
-    ));
+            onPressed: onTap,
+          ),
+        ));
 
     if (useSlideAction) {
       List<Widget> listActionSlide = List.empty(growable: true);
-      if(onSlideDelete != null){
+      if (onSlideDelete != null) {
         listActionSlide.add(IconSlideAction(
           caption: 'button_remove'.tr(),
           color: Colors.orange,
@@ -286,12 +316,13 @@ class WatchlistBottomSheet extends StatelessWidget {
           onTap: () {
             //print('Clicked Remove on : '+label);
             //InvestrendTheme.of(context).showSnackBar(context, 'Clicked Remove on : '+label);
-            onSlideDelete(index);
+            onSlideDelete!(index);
           },
-          foregroundColor: InvestrendTheme.of(context).textWhite /*Colors.white*/,
+          foregroundColor:
+              InvestrendTheme.of(context).textWhite /*Colors.white*/,
         ));
       }
-      if(onSlideRename != null){
+      if (onSlideRename != null) {
         listActionSlide.add(IconSlideAction(
           caption: 'button_rename'.tr(),
           color: Colors.cyan,
@@ -299,9 +330,10 @@ class WatchlistBottomSheet extends StatelessWidget {
           onTap: () {
             //print('Clicked Remove on : '+label);
             //InvestrendTheme.of(context).showSnackBar(context, 'Clicked Remove on : '+label);
-            onSlideRename(index);
+            onSlideRename!(index);
           },
-          foregroundColor: InvestrendTheme.of(context).textWhite /*Colors.white*/,
+          foregroundColor:
+              InvestrendTheme.of(context).textWhite /*Colors.white*/,
         ));
       }
       return Slidable(
@@ -315,9 +347,10 @@ class WatchlistBottomSheet extends StatelessWidget {
     }
   }
 }
+
 class StringIndex {
   final String name;
   final int index;
 
-  const StringIndex({this.name='', this.index=-1});
+  const StringIndex({this.name = '', this.index = -1});
 }

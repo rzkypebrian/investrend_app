@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'package:Investrend/component/component_app_bar.dart';
 import 'package:Investrend/component/component_creator.dart';
 import 'package:Investrend/screens/screen_content.dart';
@@ -5,11 +7,11 @@ import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+// import 'package:url_launcher/url_launcher.dart';
+// import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ScreenAgreement extends StatefulWidget {
-  const ScreenAgreement({Key key}) : super(key: key);
+  const ScreenAgreement({Key? key}) : super(key: key);
 
   @override
   State<ScreenAgreement> createState() => _ScreenAgreementState();
@@ -71,7 +73,7 @@ class _ScreenAgreementState extends State<ScreenAgreement> {
     );
   }
 
-  Widget createBottomSheet(BuildContext context, double paddingBottom) {
+  Widget? createBottomSheet(BuildContext context, double paddingBottom) {
     return null;
   }
 
@@ -108,9 +110,9 @@ class _ScreenAgreementState extends State<ScreenAgreement> {
           rowAgreement(context, 'settings_tnc'.tr(), _tncNotifier, () {
             print('tnc_content pressed');
             String content = 'tnc_content'.tr();
-            String applicationName =
+            String? applicationName =
                 InvestrendTheme.of(context).applicationName;
-            content = content.replaceAll('<APP_NAME/>', applicationName);
+            content = content.replaceAll('<APP_NAME/>', applicationName!);
             Navigator.push(
                 context,
                 CupertinoPageRoute(
@@ -128,9 +130,9 @@ class _ScreenAgreementState extends State<ScreenAgreement> {
               context, 'settings_privacy_policy'.tr(), _privacyNotifier, () {
             print('privacy_policy pressed');
             String content = 'privacy_policy_content'.tr();
-            String applicationName =
+            String? applicationName =
                 InvestrendTheme.of(context).applicationName;
-            content = content.replaceAll('<APP_NAME/>', applicationName);
+            content = content.replaceAll('<APP_NAME/>', applicationName!);
             Navigator.push(
                 context,
                 CupertinoPageRoute(
@@ -148,9 +150,9 @@ class _ScreenAgreementState extends State<ScreenAgreement> {
               () {
             print('disclaimer pressed');
             String content = 'disclaimers_content'.tr();
-            String applicationName =
+            String? applicationName =
                 InvestrendTheme.of(context).applicationName;
-            content = content.replaceAll('<APP_NAME/>', applicationName);
+            content = content.replaceAll('<APP_NAME/>', applicationName!);
             Navigator.push(
                 context,
                 CupertinoPageRoute(
@@ -215,7 +217,7 @@ class _ScreenAgreementState extends State<ScreenAgreement> {
         ),
         TextButton(
           style: TextButton.styleFrom(
-              primary: InvestrendTheme.of(context).hyperlink,
+              foregroundColor: InvestrendTheme.of(context).hyperlink,
               animationDuration: Duration(milliseconds: 500),
               backgroundColor: Colors.transparent,
               textStyle:

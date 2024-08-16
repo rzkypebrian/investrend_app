@@ -1,3 +1,4 @@
+/*
 import 'package:Investrend/utils/investrend_theme.dart';
 import 'package:charts_common/src/common/palette.dart';
 import 'package:charts_common/src/common/color.dart' as chart;
@@ -42,3 +43,4 @@ class ChartColorPurple extends Palette {
   @override
   chart.Color get shadeDefault => _shade500;
 }
+*/
